@@ -50,12 +50,12 @@ export default function LongevitySystems({
     <section className="py-120 3xl:py-150 overflow-hidden">
       {/* ── UPPER: container ── */}
       <div ref={containerRef} className="container">
-        <div className="flex flex-wrap items-start justify-between gap-y-20 gap-x-8 mb-60">
+        <div className="flex flex-wrap  items-start justify-between gap-y-20 gap-x-8 mb-60">
           {/* Heading */}
           <h2 className="text-secondary text-heading">{data.heading}</h2>
 
           {/* Category grid — two columns */}
-          <div className="grid grid-cols-2 lg:flex gap-30 3xl:gap-[34px]">
+          <div className="grid grid-cols-2 lg:flex gap-30 3xl:gap-[34px] w-fit lg:ml-auto ">
             {[leftCol, rightCol].map((col, colIdx) => (
               <ul key={colIdx} className="flex flex-col lg:w-[380px]">
                 {col.map((cat) => {
@@ -76,7 +76,7 @@ export default function LongevitySystems({
                         onClick={() => handleCategoryClick(globalIdx)}
                         className="group w-full text-left bg-none border-none cursor-pointer "
                       >
-                        <div className="flex items-center justify-between lg:py-[16px] relative overflow-hidden min-h-[60px]">
+                        <div className="flex items-center justify-between relative overflow-hidden min-h-[60px] md:min-h-0">
                           {/* Animated bg — expands from w-0 to w-full */}
                           <AnimatePresence>
                             {isActive && (
@@ -99,7 +99,7 @@ export default function LongevitySystems({
                           </AnimatePresence>
 
                           <span
-                            className={`relative z-10 text-19 leading-[1] tracking-[-0.03em] transition-colors duration-300 ${isActive
+                            className={`relative z-10 text-19 leading-[2.631578947368421] tracking-[-0.03em] transition-colors duration-300 ${isActive
                                 ? "text-secondary font-semibold"
                                 : "text-secondary hover:text-secondary/80"
                               }`}
@@ -147,7 +147,7 @@ export default function LongevitySystems({
           spaceBetween={20}
           breakpoints={{
             1650: {
-              slidesPerView: 3.16,
+              slidesPerView: 3.17,
               spaceBetween: 30,
             },
             1024: {

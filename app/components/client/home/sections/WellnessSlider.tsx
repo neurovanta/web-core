@@ -21,7 +21,7 @@ export type WellnessSliderData = {
 
 const AUTOPLAY_DELAY = 3000;
 
-export default function WellnessSlider({ data }: { data: WellnessSliderData }) {
+export default function WellnessSlider({ data, descriptionMaxWidth = "max-w-[52ch]" }: { data: WellnessSliderData; descriptionMaxWidth?: string }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const { slides } = data;
   const swiperRef = useRef<SwiperType | null>(null);
@@ -87,11 +87,18 @@ export default function WellnessSlider({ data }: { data: WellnessSliderData }) {
 
       <div className="container relative z-10 h-full flex flex-col py-120 3xl:py-0 3xl:pt-120 3xl:pb-[112px]">
         {/* Top row */}
-        <div className="flex flex-wrap items-center justify-between gap-8">
-          <h1 className="text-white text-heading max-w-[985px]">
-            {data.heading}
-          </h1>
+       <div className="flex items-center justify-between">
+          <div className="flex flex-col gap-20">
+            <h1 className="text-white text-heading max-w-[985px]">
+              {data.heading}
+            </h1>
 
+            <div className="mb-60 md:mb-0">
+              <p className={`text-white text-19 leading-[1.52] ${descriptionMaxWidth}`}>
+                {data.description}
+              </p>
+            </div>
+          </div>
           <div className="hidden sm:flex sm:flex-col items-end gap-20 shrink-0">
             {data.buttons.map((btn) => (
               <CustomButton
@@ -102,14 +109,9 @@ export default function WellnessSlider({ data }: { data: WellnessSliderData }) {
               />
             ))}
           </div>
-        </div>
+       </div>
 
         {/* Description */}
-        <div className="mt-20 max-w-[701px] mb-60 md:mb-0">
-          <p className="text-white text-19 leading-[1.52]">
-            {data.description}
-          </p>
-        </div>
         <div className="flex sm:hidden flex-col items-end gap-20 shrink-0">
           {data.buttons.map((btn) => (
             <CustomButton
@@ -132,7 +134,7 @@ export default function WellnessSlider({ data }: { data: WellnessSliderData }) {
                 setActiveIndex(swiper.activeIndex);
               });
             }}
-            spaceBetween={30}
+            spaceBetween={29}
             loop={false}
             allowTouchMove={true}
             initialSlide={0}
@@ -152,17 +154,15 @@ export default function WellnessSlider({ data }: { data: WellnessSliderData }) {
                     className="w-full text-left focus:outline-none cursor-pointer"
                   >
                     <span
-                      className={`block text-15 leading-[1.73] mb-[14px] transition-colors duration-300 ${
-                        isActive ? "text-white" : "text-white/40"
-                      }`}
+                      className={`block text-15 leading-[1.73] mb-[14px] transition-colors duration-300 ${isActive ? "text-white" : "text-white/40"
+                        }`}
                     >
                       {slide.number}
                     </span>
 
                     <span
-                      className={`block text-19 leading-[1.5263] mb-25 transition-colors duration-300 ${
-                        isActive ? "text-white font-semibold" : "text-white/60"
-                      }`}
+                      className={`block text-19 leading-[1.5263] mb-25 transition-colors duration-300 ${isActive ? "text-white font-semibold" : "text-white/60"
+                        }`}
                     >
                       {slide.title}
                     </span>
