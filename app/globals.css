@@ -1,26 +1,269 @@
-@import "tailwindcss";
+@import "tailwindcss"; 
+ 
+ 
+@theme {
+  --breakpoint-*: initial;
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-2xl: 1440px;
+  --breakpoint-3xl: 1601px;
+}
 
+@font-face {
+  font-family: "DM Sans";
+  src: url("/assets/fonts/dm-sans.woff2") format("woff2"),
+    url("/assets/fonts/dm-sans.woff2") format("woff2");
+  font-style: normal;
+  font-display: swap;
+}
+
+ 
+/* scrollbar hide */
+::-webkit-scrollbar {
+  display: none;
+}
+
+html {
+  scrollbar-width: none;
+}
+
+html {
+  -ms-overflow-style: none;
+}
+ 
+ 
+/* ---------- Variables ---------- */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+--background: #ffffff;
+--primary: #E2D3C3;
+--secondary: #51463E;
+--cream-bg: #F9F5F0;
+--border-color: #CBC3BB;
 
+
+/* 150px → 60px at 390px, 150px at 1810px */
+--text-150: clamp(60px, 6.34vw + 35.3px, 150px);
+ 
+/* 70px → 30px at 390px, 70px at 1810px */
+--text-70: clamp(30px, 2.82vw + 19px, 70px);
+
+/* 60px → 28px at 390px, 60px at 1810px */
+--text-60: clamp(28px, 2.25vw + 19.2px, 60px);
+
+/* 32px → 24px at 390px, 32px at 1810px */
+--text-32: clamp(25px, 0.81vw + 17.3px, 32px);
+
+/* 30px → 18px at 390px, 30px at 1810px */
+--text-30: clamp(18px, 0.85vw + 14.7px, 30px);
+
+/* 19px → 13px at 390px, 19px at 1810px */
+--text-19: clamp(13px, 0.42vw + 11.4px, 19px);
+
+/* 15px → 11px at 390px, 15px at 1810px */
+--text-15: clamp(11px, 0.28vw + 9.9px, 15px);
+ 
+ 
+ 
+ 
+/* 20px → 12px at 390px, 20px at 1810px */
+--space-20: clamp(17px, 0.56vw + 9.8px, 20px);
+ 
+/* 25px → 14px at 390px, 25px at 1810px */
+--space-25: clamp(15px, 0.77vw + 10px, 25px);
+ 
+/* 30px → 18px at 390px, 30px at 1810px */
+--space-30: clamp(18px, 0.84vw + 14.7px, 30px);
+
+/* 40px → 24px at 390px, 40px at 1810px */
+--space-40: clamp(24px, 1.22vw + 19.6px, 40px);
+ 
+/* 50px → 28px at 390px, 50px at 1810px */
+--space-50: clamp(28px, 1.55vw + 21.9px, 50px);
+ 
+/* 60px → 32px at 390px, 60px at 1810px */
+--space-60: clamp(32px, 1.97vw + 24.3px, 60px);
+ 
+/* 70px → 36px at 390px, 70px at 1810px */
+--space-70: clamp(36px, 2.39vw + 26.7px, 70px);
+ 
+/* 80px → 40px at 390px, 80px at 1810px */
+--space-80: clamp(40px, 2.81vw + 29px, 80px);
+
+/* 90px → 44px at 390px, 90px at 1810px */
+--space-90: clamp(44px, 3.24vw + 31.4px, 90px);
+ 
+/* 100px → 44px at 390px, 100px at 1810px */
+--space-100: clamp(44px, 3.94vw + 28.6px, 100px);
+ 
+/* 120px → 50px at 390px, 120px at 1810px */
+--space-120: clamp(50px, 4.93vw + 30.8px, 120px);
+
+/* 130px → 55px at 390px, 130px at 1810px */
+--space-130: clamp(55px, 5.63vw + 33.1px, 130px);
+
+/* 150px → 60px at 390px, 150px at 1810px */
+--space-150: clamp(60px, 6.34vw + 35.3px, 150px);
+ 
+/* 160px → 65px at 390px, 160px at 1810px */
+--space-160: clamp(65px, 6.69vw + 38.9px, 160px);
+
+/* 170px → 69px at 390px, 170px at 1810px */
+--space-170: clamp(69px, 7.11vw + 41.3px, 170px);
+ 
+/* 200px → 80px at 390px, 200px at 1810px */
+--space-200: clamp(80px, 8.45vw + 47px, 200px);
+ 
+/* 225px → 90px at 390px, 225px at 1810px */
+--space-225: clamp(90px, 9.51vw + 52.9px, 225px);
+}
+ 
 @theme inline {
+  --color-primary: var(--primary);
+  --color-secondary: var(--secondary);
+  --color-cream-bg: var(--cream-bg);
+  --color-border-color: var(--border-color);
   --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --text-150: var(--text-150);
+  --text-70: var(--text-70);
+  --text-60: var(--text-60);
+  --text-32: var(--text-32);
+  --text-30: var(--text-30);
+  --text-19: var(--text-19);
+  --text-15: var(--text-15);
+ 
+  --spacing-20: var(--space-20);
+  --spacing-25: var(--space-25);
+  --spacing-30: var(--space-30);
+  --spacing-40: var(--space-40);
+  --spacing-50: var(--space-50);
+  --spacing-60: var(--space-60);
+  --spacing-70: var(--space-70);    
+  --spacing-80: var(--space-80);
+  --spacing-90: var(--space-90);
+  --spacing-100: var(--space-100);
+  --spacing-120: var(--space-120);
+  --spacing-130: var(--space-130);
+  --spacing-150: var(--space-150);
+  --spacing-160: var(--space-160);
+  --spacing-170: var(--space-170);
+  --spacing-200: var(--space-200);
+  --spacing-225: var(--space-225);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* ---------- Base Styles ---------- */
+body {
+  background: var(--background);
+  color: var(--secondary);
+  font-family: "DM Sans", sans-serif;
+}
+ 
+@utility text-heading {
+  @apply uppercase text-32 md:text-60  leading-[1.36] md:leading-[1.166666];
+}
+ 
+@utility text-description {
+  @apply text-19 leading-[1.5263];
+}
+
+@utility text-subHeading {
+  @apply text-30 leading-[1.23333];
+}
+ 
+
+/* custom scrollbar hide */
+@utility scrollbar-hide {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+ 
+.container {
+  @apply mx-auto w-full px-[15px];
+}
+ 
+@media (min-width: 640px) {
+  .container { max-width: 600px; }
+}
+ 
+@media (min-width: 720px) {
+  .container { max-width: 680px; }
+}
+ 
+@media (min-width: 768px) {
+  .container { max-width: 740px; }
+}
+ 
+@media (min-width: 820px) {
+  .container { max-width: 800px; }
+}
+ 
+@media (min-width: 860px) {
+  .container { max-width: 840px; }
+}
+ 
+@media (min-width: 920px) {
+  .container { max-width: 890px; }
+}
+ 
+@media (min-width: 960px) {
+  .container { max-width: 900px; }
+}
+ 
+@media (min-width: 1024px) {
+  .container { max-width: 960px; }
+}
+ 
+@media (min-width: 1100px) {
+  .container { max-width: 1050px; }
+}
+ 
+@media (min-width: 1140px) {
+  .container { max-width: 1100px; }
+}
+ 
+@media (min-width: 1280px) {
+  .container { max-width: 1200px; }
+}
+ 
+@media (min-width: 1340px) {
+  .container { max-width: 1250px; }
+}
+ 
+@media (min-width: 1440px) {
+  .container { max-width: 1360px; }
+}
+ 
+@media (min-width: 1500px) {
+  .container { max-width: 1440px; }
+}
+ 
+@media (min-width: 1600px) {
+  .container { max-width: 1520px; }
+}
+ 
+@media (min-width: 1700px) {
+  .container { max-width: 1620px; }
+}
+ 
+@media (min-width: 1830px) {
+  .container { max-width: 1750px; }
+}
+ 
+
+@keyframes gradientFill {
+  from {
+    opacity: 0;
+    transform: translateX(-100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0%);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+.active-bg {
+  animation: gradientFill 0.3s ease forwards;
 }
