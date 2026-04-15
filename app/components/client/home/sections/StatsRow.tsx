@@ -39,8 +39,8 @@ export function StatRow({
         <AnimatePresence>
           {isActive && (
             <motion.div
-              className="absolute inset-[-1px] z-10"
-              style={{ backgroundColor: "#D9CEBB" }}
+              className="absolute inset-[-1px] z-10 bg-primary"
+              
               initial={{ width: "0%" }}
               animate={{ width: "100%" }}
               exit={{ width: "0%" }}
@@ -70,13 +70,7 @@ export function StatRow({
                   exit={{ opacity: 0, scale: 0.8 }}
                   transition={{ duration: 0.35, ease: "easeInOut" }}
                 >
-                  <Image
-                    src={icon}
-                    alt={label}
-                    width={100}
-                    height={100}
-                    className="object-contain w-auto h-[50px] 2xl:w-[73px] 2xl:h-[70px] pointer-events-none"
-                  />
+                  <Image src={icon} alt={label} width={100} height={100} className="object-contain w-auto h-[50px] 2xl:w-[73px] 2xl:h-[70px] pointer-events-none" />
                 </motion.div>
               )}
             </AnimatePresence>
@@ -112,7 +106,7 @@ export default function HeroStats() {
         <div className="flex flex-wrap w-full justify-between lg:gap-x-170 gap-y-5 items-end">
           {/* Custom button */}
           <div className="mt-12 lg:mt-0">
-            <CustomButton label="For Commercial" href="#" variant={2} />
+            <CustomButton label="About Neuro Vanta" href="#" variant={2} />
           </div>
           <div className="flex flex-col lg:flex-1 w-full max-w-[1136px]">
             {stats.map((stat, idx) => (

@@ -12,8 +12,8 @@ const Index = () => {
   return (
     <>
     <HeroSection />
-    <WellnessSlider data={wellnessSliderData} />
-    <WellnessSlider data={wellnessSliderData2} />
+    <WellnessSlider data={wellnessSliderData}  />
+    <WellnessSlider data={wellnessSliderData2} descriptionMaxWidth='max-w-[65ch]' />
     <LongevitySystems data={longevitySystemsData} />
     <HeroStats />
     <WhyNeuroVanta data={whyNeuroVantaData} />

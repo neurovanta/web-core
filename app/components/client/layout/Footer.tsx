@@ -108,7 +108,7 @@ export default function Footer() {
                 key={menu.heading}
               >
                 {/* Heading */}
-                <h3 className="text-secondary text-subHeading mb-2.5 md:mb-40">
+                <h3 className="text-secondary text-subHeading mb-2.5 md:mb-40 tracking-[-0.03em]">
                   {menu.heading}
                 </h3>
 
@@ -120,7 +120,7 @@ export default function Footer() {
                       <li key={label}>
                         <Link
                           href={href}
-                          className="text-secondary text-19 leading-[1.789] hover:opacity-70 transition-opacity"
+                          className="text-secondary text-19 leading-[1.789] tracking-[-0.03em] hover:opacity-70 transition-opacity"
                         >
                           {label}
                         </Link>
@@ -135,7 +135,7 @@ export default function Footer() {
                         <li key={label}>
                           <Link
                             href={href}
-                            className="text-secondary text-19 leading-[1.789] hover:opacity-70 transition-opacity"
+                            className="text-secondary text-19 leading-[1.789] tracking-[-0.03em] hover:opacity-70 transition-opacity"
                           >
                             {label}
                           </Link>

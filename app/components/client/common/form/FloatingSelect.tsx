@@ -51,11 +51,10 @@ export const FloatingSelect: React.FC<FloatingSelectProps> = ({
         className={`
           absolute left-0 flex w-full justify-between items-center
           transition-all duration-300 ease-in-out
-         ${
-  isFloated
-    ? "-top-[15px] text-15"
-    : "text-19"
-}
+         ${isFloated
+            ? "-top-[15px] text-15"
+            : "text-19"
+          }
         `}
       >
         <label
@@ -70,9 +69,8 @@ export const FloatingSelect: React.FC<FloatingSelectProps> = ({
           alt="Chevron Down"
           width={13}
           height={13}
-          className={`h-[10px] 3xl:h-[12px] w-auto transition-transform duration-300 ${
-            open ? "rotate-180" : "rotate-0"
-          }`}
+          className={`h-[10px] 3xl:h-[12px] w-auto transition-transform duration-300 ${open ? "rotate-180" : "rotate-0"
+            }`}
         />
       </div>
 
@@ -83,7 +81,7 @@ export const FloatingSelect: React.FC<FloatingSelectProps> = ({
         className={`
           w-full bg-transparent border-0 border-b outline-none appearance-none
           text-secondary text-19 cursor-pointer
-          pt-[30px]
+          pt-4 md:pt-[30px]
           transition-colors duration-300
           ${error ? "border-b-red-500" : "border-b-secondary"}
         `}
@@ -156,9 +154,8 @@ export const FloatingSelect: React.FC<FloatingSelectProps> = ({
       {/* Error */}
       <div className="h-[20px] mt-1">
         <div
-          className={`transition-opacity duration-150 ${
-            error ? "opacity-100" : "opacity-0 pointer-events-none"
-          }`}
+          className={`transition-opacity duration-150 ${error ? "opacity-100" : "opacity-0 pointer-events-none"
+            }`}
         >
           <ErrorMessage message={error ?? ""} />
         </div>

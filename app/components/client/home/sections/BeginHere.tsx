@@ -63,7 +63,7 @@ export default function BeginHerePage() {
           className="w-full lg:w-[66%] lg:ml-auto"
         >
           {/* Row 1 — First Name + For Company */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-30 mb-60">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-y-30 gap-x-30 mb-60">
             <FloatingInput
               id="firstName"
               label="First Name*"
@@ -83,7 +83,7 @@ export default function BeginHerePage() {
             />
           </div>
           {/* Row 2 — Email + Phone */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-30 mb-60">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-y-30 gap-x-30 mb-60">
             <FloatingInput
               id="email"
               label="Email*"
@@ -114,7 +114,7 @@ export default function BeginHerePage() {
             />
           </div>
           {/* Textarea — no floating label */}
-          <div className="mb-50">
+          <div className="mb-30">
             <FloatingTextarea
               id="details"
               rows={4}

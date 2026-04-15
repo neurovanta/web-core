@@ -49,7 +49,7 @@ export const FloatingInput: React.FC<FloatingInputProps> = ({
         className={`
           w-full bg-transparent border-0 border-b outline-none
           text-secondary text-19
-          pt-[30px]
+          pt-4 md:pt-[30px]
           transition-colors duration-200
           ${error ? "border-b-red-500" : "border-b-secondary"}
         `}
