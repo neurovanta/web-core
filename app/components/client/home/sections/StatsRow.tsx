@@ -49,14 +49,14 @@ export function StatRow({
           )}
         </AnimatePresence>
 
-        <div className="relative z-10 flex items-center min-h-[70px]">
+        <div className="relative z-10 flex items-center  min-h-[70px]">
           {/* Number */}
           <span className="text-heading text-secondary shrink-0">
             {number}
           </span>
 
           {/* Label */}
-          <span className="flex-1 text-subHeading tracking-[-0.03em] text-secondary pl-[300px] 3xl:pl-[350px]">
+          <span className="flex-1 text-subHeading tracking-[-0.03em] text-secondary lg:pl-[300px] 3xl:pl-[350px]">
             {label}
           </span>
 
@@ -75,7 +75,7 @@ export function StatRow({
                     alt={label}
                     width={100}
                     height={100}
-                    className="object-contain w-auto 3xl:w-[73px] h-[70px] pointer-events-none"
+                    className="object-contain w-auto h-[50px] 2xl:w-[73px] 2xl:h-[70px] pointer-events-none"
                   />
                 </motion.div>
               )}
@@ -98,7 +98,7 @@ export default function HeroStats() {
     <section className="w-full bg-cream-bg py-120">
       <div className="container flex flex-col">
         {/* Left col */}
-        <div className="flex flex-col mb-120">
+        <div className="flex flex-col md:mb-120">
           <div>
             <h1 className="text-heading text-secondary mb-50 max-w-[1313px]">
               {title}
@@ -109,12 +109,12 @@ export default function HeroStats() {
           </div>
         </div>
 
-        <div className="flex w-full justify-between gap-x-170 items-end">
+        <div className="flex flex-wrap w-full justify-between lg:gap-x-170 gap-y-5 items-end">
           {/* Custom button */}
           <div className="mt-12 lg:mt-0">
             <CustomButton label="For Commercial" href="#" variant={2} />
           </div>
-          <div className="flex flex-col flex-1 max-w-[1136px]">
+          <div className="flex flex-col lg:flex-1 w-full max-w-[1136px]">
             {stats.map((stat, idx) => (
               <StatRow
                 key={stat.id}

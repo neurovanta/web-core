@@ -188,12 +188,12 @@ export default function CustomButton({
       className={`relative inline-flex group items-center rounded-full cursor-pointer overflow-visible 3xl:h-[50px] ${v.wrapper}`}
     >
       <span
-        className={`absolute -inset-[1px] rounded-full ${hovered ? "w-[100%]" : "w-[50px]"} h-[50px] z-[1] duration-500 ease-in-out ${v.pillBg}`}
+        className={`absolute -inset-[1px] rounded-full ${hovered ? "w-[100%]" : "w-[40px] sm:w-[50px]"} h-[40px] sm:h-[50px] z-[1] duration-500 ease-in-out ${v.pillBg}`}
       />
 
       {/* Circle — z-10 keeps it above the fill at all times */}
       <span
-        className={`relative flex items-center justify-center w-[50px] h-[50px] rounded-full shrink-0 -m-[1px] transition-all duration-500 ease-in-out z-10 ${v.circle}`}
+        className={`relative flex items-center justify-center w-[40px] h-[40px] sm:w-[50px] sm:h-[50px] rounded-full shrink-0 -m-[1px] transition-all duration-500 ease-in-out z-10 ${v.circle}`}
         style={{ transform: `translateX(${circleTravel}px)` }}
       >
         <svg

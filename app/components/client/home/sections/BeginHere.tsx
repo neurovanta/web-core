@@ -60,7 +60,7 @@ export default function BeginHerePage() {
         <form
           onSubmit={handleSubmit(onSubmit)}
           noValidate
-          className="w-[66%] ml-auto"
+          className="w-full lg:w-[66%] lg:ml-auto"
         >
           {/* Row 1 — First Name + For Company */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-30 mb-60">
