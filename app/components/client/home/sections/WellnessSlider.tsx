@@ -75,7 +75,7 @@ export default function WellnessSlider({ data }: { data: WellnessSliderData }) {
   };
 
   return (
-    <section className="relative w-full h-[92vh] overflow-hidden">
+    <section className="relative w-full h-[90vh] sm:h-[80vh] xl:h-[92vh] overflow-hidden">
       {/* Background */}
       <div
         className="absolute inset-0 bg-cover bg-center transition-all duration-700"
@@ -87,12 +87,12 @@ export default function WellnessSlider({ data }: { data: WellnessSliderData }) {
 
       <div className="container relative z-10 h-full flex flex-col py-120 3xl:py-0 3xl:pt-120 3xl:pb-[112px]">
         {/* Top row */}
-        <div className="flex items-center justify-between gap-8">
+        <div className="flex flex-wrap items-center justify-between gap-8">
           <h1 className="text-white text-heading max-w-[985px]">
             {data.heading}
           </h1>
 
-          <div className="flex flex-col items-end gap-20 shrink-0">
+          <div className="hidden sm:flex sm:flex-col items-end gap-20 shrink-0">
             {data.buttons.map((btn) => (
               <CustomButton
                 key={btn.label}
@@ -105,12 +105,21 @@ export default function WellnessSlider({ data }: { data: WellnessSliderData }) {
         </div>
 
         {/* Description */}
-        <div className="mt-20 max-w-[701px]">
+        <div className="mt-20 max-w-[701px] mb-60 md:mb-0">
           <p className="text-white text-19 leading-[1.52]">
             {data.description}
           </p>
         </div>
-
+        <div className="flex sm:hidden flex-col items-end gap-20 shrink-0">
+          {data.buttons.map((btn) => (
+            <CustomButton
+              key={btn.label}
+              label={btn.label}
+              href={btn.href}
+              variant={1}
+            />
+          ))}
+        </div>
         {/* Spacer */}
         <div className="flex-1" />
 

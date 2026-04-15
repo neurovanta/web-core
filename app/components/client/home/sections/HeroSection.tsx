@@ -17,7 +17,7 @@ export default function HeroSection() {
       </video>
       <div className="absolute inset-0 bg-black/65" />
 
-      <div className="relative z-10 flex flex-col items-center text-center gap-50">
+      <div className="container relative z-10 flex flex-col items-center text-center gap-50">
         <h1 className="text-70 text-white text-center uppercase leading-[1.142] max-w-[1135px]">
           Advanced Longevity. <br /> Designed for Life Performance.
         </h1>

@@ -50,14 +50,14 @@ export default function LongevitySystems({
     <section className="py-120 3xl:py-150 overflow-hidden">
       {/* ── UPPER: container ── */}
       <div ref={containerRef} className="container">
-        <div className="flex items-start justify-between gap-8 mb-60">
+        <div className="flex flex-wrap items-start justify-between gap-y-20 gap-x-8 mb-60">
           {/* Heading */}
           <h2 className="text-secondary text-heading">{data.heading}</h2>
 
           {/* Category grid — two columns */}
-          <div className="flex gap-30 3xl:gap-[34px]">
+          <div className="grid grid-cols-2 lg:flex gap-30 3xl:gap-[34px]">
             {[leftCol, rightCol].map((col, colIdx) => (
-              <ul key={colIdx} className="flex flex-col w-[380px]">
+              <ul key={colIdx} className="flex flex-col lg:w-[380px]">
                 {col.map((cat) => {
                   const globalIdx =
                     colIdx === 0
@@ -74,9 +74,9 @@ export default function LongevitySystems({
                     <li key={cat.label}>
                       <button
                         onClick={() => handleCategoryClick(globalIdx)}
-                        className="group w-full text-left bg-none border-none cursor-pointer"
+                        className="group w-full text-left bg-none border-none cursor-pointer "
                       >
-                        <div className="flex items-center justify-between py-[16px] relative overflow-hidden">
+                        <div className="flex items-center justify-between lg:py-[16px] relative overflow-hidden min-h-[60px]">
                           {/* Animated bg — expands from w-0 to w-full */}
                           <AnimatePresence>
                             {isActive && (
@@ -99,11 +99,10 @@ export default function LongevitySystems({
                           </AnimatePresence>
 
                           <span
-                            className={`relative z-10 text-19 leading-[1] tracking-[-0.03em] transition-colors duration-300 ${
-                              isActive
+                            className={`relative z-10 text-19 leading-[1] tracking-[-0.03em] transition-colors duration-300 ${isActive
                                 ? "text-secondary font-semibold"
                                 : "text-secondary hover:text-secondary/80"
-                            }`}
+                              }`}
                           >
                             {cat.label}
                           </span>
@@ -144,8 +143,8 @@ export default function LongevitySystems({
 
       <div style={{ paddingLeft: inset }}>
         <Swiper
-          slidesPerView={3.16}
-          spaceBetween={30}
+          slidesPerView={1.16}
+          spaceBetween={20}
           breakpoints={{
             1650: {
               slidesPerView: 3.16,
@@ -158,9 +157,7 @@ export default function LongevitySystems({
             768: {
               slidesPerView: 2.16,
             },
-            480: {
-              slidesPerView: 1.16,
-            },
+         
           }}
           className="!overflow-visible"
         >
@@ -182,7 +179,7 @@ function SlideCard({ slide }: { slide: LongevitySlide }) {
     <Link href={slide.href} className="block group">
       {/* Image container */}
       <div
-        className="relative overflow-hidden h-[420px] 3xl:h-[550px]"
+        className="relative overflow-hidden h-[250px] lg:h-[420px] 3xl:h-[550px]"
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
       >
@@ -195,19 +192,17 @@ function SlideCard({ slide }: { slide: LongevitySlide }) {
 
         {/* Hover overlay */}
         <div
-          className={`absolute inset-0 transition-opacity duration-300 ${
-            hovered ? "opacity-100" : "opacity-0"
-          }`}
+          className={`absolute inset-0 transition-opacity duration-300 ${hovered ? "opacity-100" : "opacity-0"
+            }`}
           style={{ background: "#00000066" }}
         />
 
         {/* Arrow — top right on hover */}
         <div
-          className={`absolute top-30 right-30 3xl:top-[34px] 3xl:right-[34px] transition-all duration-300 ${
-            hovered
+          className={`absolute top-30 right-30 3xl:top-[34px] 3xl:right-[34px] transition-all duration-300 ${hovered
               ? "opacity-100 translate-y-0 translate-x-0"
               : "opacity-0 translate-y-8 -translate-x-8"
-          }`}
+            }`}
         >
           <Image
             src="/assets/icons/top-right-arrow.svg"

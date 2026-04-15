@@ -174,20 +174,17 @@ export default function WhySection({ data }: { data: WhySectionData }) {
 
         {/* Heading */}
         <div className="container">
-            <h2 className="text-[#1a1a1a] text-[32px] md:text-[40px] lg:text-[48px] font-light tracking-[-0.02em] leading-[1.1] mb-[60px] 2xl:mb-[80px]">
+            <h2 className="text-heading mb-60 text-secondary ">
               {heading}
             </h2>
         </div>
         <div style={{background: "linear-gradient(270deg, rgba(251, 247, 244, 0.1) 0%, #FBF7F4 48.08%, rgba(251, 247, 244, 0.1) 100%)"}} className="w-full h-[1px]"></div>
 
         {/* Slider */}
-        <div
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
-        >
+        <div onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} >
           <Swiper
             onSwiper={(swiper) => {
-              swiperRef.current = swiper;
+              swiperRef.current = swiper
             }}
             onSlideChange={(swiper) => {
               setActiveIndex(swiper.activeIndex);
@@ -203,15 +200,8 @@ export default function WhySection({ data }: { data: WhySectionData }) {
             }}
           >
             {slides.map((slide, index) => (
-              <SwiperSlide key={index} className="!h-[520px] 3xl:!h-[571px]">
-                <SlideCard
-                  slide={slide}
-                  index={index}
-                  isActive={index === activeIndex}
-                  isLast={index === slides.length - 1}
-                  autoplayDelay={AUTOPLAY_DELAY}
-                  onClick={handleSlideClick}
-                />
+              <SwiperSlide key={index} className="!h-[300px] xl:!h-[520px] 3xl:!h-[571px]">
+                <SlideCard slide={slide} index={index} isActive={index === activeIndex} isLast={index === slides.length - 1} autoplayDelay={AUTOPLAY_DELAY} onClick={handleSlideClick} />
               </SwiperSlide>
             ))}
           </Swiper>

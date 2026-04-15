@@ -34,28 +34,28 @@ export default function Footer() {
       <div className="container">
 
         {/* Logo */}
-        <div className="w-full h-[218px] pt-20">
+        <div className="w-full xl:h-[218px] pt-20">
           <Image
             src="/assets/logos/footer-logo.svg" 
             alt="Neuro Vanta"
             width={2000}
             height={300}
-            className="w-full h-[218px]"
+            className="w-full xl:h-[218px]"
           />
         </div>
 
         {/* ── Top section: address + contact ── */}
-        <div className="flex flex-row mt-130 3xl:mt-[136px]">
+        <div className="flex flex-wrap mt-60 md:mt-130 gap-y-20 3xl:mt-[136px]">
 
           {/* Left – address */}
-          <div className="w-[51%] 3xl:pt-[16px]">
+          <div className="sm:w-[51%] 3xl:pt-[16px]">
               <p className="text-secondary text-19 leading-[1.42] whitespace-pre-line">
                 {`Neuro Vanta\nP.O.Box 13653, 901 – SIT Tower\nDubai Silicon Oasis\nDubai, UAE`}
               </p>
           </div>
 
           {/* Right – email, phone, then gap, then socials */}
-          <div className="w-[49%]">
+          <div className="sm:w-[49%]">
             <div className="text-secondary text-30 lg:text-60 flex flex-col">
               <Link
                 href="mailto:Info@neurovanta.com"
@@ -72,7 +72,7 @@ export default function Footer() {
             </div>
 
             {/* Gap before socials */}
-            <div className="mb-50" />
+            <div className="mb-20 sm:mb-50" />
 
             {/* Social links */}
             <div className="flex flex-wrap gap-x-30 gap-y-[5px]">
@@ -94,10 +94,10 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="h-px w-full bg-border-color mt-120 mb-100" />
+        <div className="h-px w-full bg-border-color mt-20 mb-20 sm:mt-120 sm:mb-100" />
 
         {/* ── Menus ── */}
-        <div className="flex flex-row gap-x-50 3xl:gap-x-[150px]">
+        <div className="flex flex-wrap gap-y-20 gap-x-50 3xl:gap-x-[150px]">
 
           {footerMenus.map((menu) => {
             const [col1, col2] = splitItems(menu.items);
@@ -108,7 +108,7 @@ export default function Footer() {
                 key={menu.heading}
               >
                 {/* Heading */}
-                <h3 className="text-secondary text-subHeading mb-40">
+                <h3 className="text-secondary text-subHeading mb-2.5 md:mb-40">
                   {menu.heading}
                 </h3>
 
