@@ -154,8 +154,7 @@ export default function WellnessSlider({ data, descriptionMaxWidth = "max-w-[52c
                     className="w-full text-left focus:outline-none cursor-pointer"
                   >
                     <span
-                      className={`block text-15 leading-[1.73] mb-[14px] transition-colors duration-300 ${isActive ? "text-white" : "text-white/40"
-                        }`}
+                      className={`block text-15 leading-[1.73] mb-[14px] transition-colors duration-300 text-white/40 `}
                     >
                       {slide.number}
                     </span>
