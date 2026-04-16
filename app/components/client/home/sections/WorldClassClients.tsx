@@ -36,7 +36,7 @@ export default function WorldClassClients() {
 
   return (
     <section className="container pt-90 3xl:pt-[94px] pb-120 3xl:pb-150">
-      <div className="mb-50">
+      <div className="mb-20 md:mb-50">
         <h2 className="text-heading text-secondary max-w-[21ch]">{heading}</h2>
       </div>
 
