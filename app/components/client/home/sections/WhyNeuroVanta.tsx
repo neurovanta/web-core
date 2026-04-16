@@ -174,7 +174,7 @@ export default function WhySection({ data }: { data: WhySectionData }) {
 
         {/* Heading */}
         <div className="container">
-            <h2 className="text-heading mb-60 text-secondary ">
+            <h2 className="text-heading mb-20 lg:mb-60 text-secondary ">
               {heading}
             </h2>
         </div>

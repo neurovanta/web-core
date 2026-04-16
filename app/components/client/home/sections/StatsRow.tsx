@@ -94,7 +94,7 @@ export default function HeroStats() {
         {/* Left col */}
         <div className="flex flex-col md:mb-120">
           <div>
-            <h1 className="text-heading text-secondary mb-50 max-w-[1313px]">
+            <h1 className="text-heading text-secondary mb-20 md:mb-50 max-w-[1313px]">
               {title}
             </h1>
             <p className="text-19 leading-[1.47] text-secondary max-w-[730px] tracking-[-0.03em]">

@@ -99,7 +99,7 @@ export default function LongevitySystems({
                           </AnimatePresence>
 
                           <span
-                            className={`relative z-10 text-19 leading-[2.631578947368421] tracking-[-0.03em] transition-colors duration-300 ${isActive
+                            className={`relative z-10 text-19 leading-[1.2] 2xl:leading-[2.631578947368421] tracking-[-0.03em] transition-colors duration-300 ${isActive
                                 ? "text-secondary font-semibold"
                                 : "text-secondary hover:text-secondary/80"
                               }`}

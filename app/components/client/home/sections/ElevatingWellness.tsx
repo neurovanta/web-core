@@ -17,7 +17,7 @@ export default function ElevatingWellness() {
           <div className="hidden xl:block" />
 
           {/* Row 1 — Col 2: Heading */}
-          <h2 className="text-heading text-secondary max-w-[885px] mb-60">
+          <h2 className="text-heading text-secondary max-w-[885px] mb-20 lg:mb-60">
             {heading}
           </h2>
 
