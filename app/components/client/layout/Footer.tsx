@@ -1,6 +1,11 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import { footerMenus, socialLinks, SocialType } from "./data";
+import { motion } from "framer-motion";
+import { SectionDescription } from "../animations/SectionDescription";
+import { moveUp } from "../animations/motionVarinats";
 
 /* ─── Social brand styles ─────────────────────────────────────────── */
 const socialStyles: Record<SocialType, React.CSSProperties> = {
@@ -32,47 +37,82 @@ export default function Footer() {
     <footer className="bg-white">
       {/* ── Main content container ── */}
       <div className="container">
-
         {/* Logo */}
-        <div className="w-full xl:h-[218px] pt-20">
+        <div className="w-full relative xl:h-[218px] mt-20 overflow-hidden">
           <Image
-            src="/assets/logos/footer-logo.svg" 
+            src="/assets/logos/footer-logo.svg"
             alt="Neuro Vanta"
             width={2000}
             height={300}
             className="w-full xl:h-[218px]"
           />
+
+          {/* LEFT HALF */}
+          <motion.div
+            initial={{ x: "0%" }}
+            whileInView={{ x: "-100%" }}
+            transition={{ duration: 1.5, ease: [0.77, 0, 0.175, 1] }}
+            viewport={{ once: true }}
+            className="absolute top-0 left-0 w-1/2 h-full bg-white z-10"
+          />
+
+          {/* RIGHT HALF */}
+          <motion.div
+            initial={{ x: "0%" }}
+            whileInView={{ x: "100%" }}
+            transition={{ duration: 1.5, ease: [0.77, 0, 0.175, 1] }}
+            viewport={{ once: true }}
+            className="absolute top-0 right-0 w-1/2 h-full bg-white z-10"
+          />
         </div>
 
         {/* ── Top section: address + contact ── */}
         <div className="flex flex-wrap mt-60 md:mt-130 gap-y-20 3xl:mt-[136px]">
-
           {/* Left – address */}
           <div className="sm:w-[51%] 3xl:pt-[16px]">
-              <p className="text-secondary text-19 leading-[1.42] whitespace-pre-line">
-                {`Neuro Vanta\nP.O.Box 13653, 901 – SIT Tower\nDubai Silicon Oasis\nDubai, UAE`}
-              </p>
+            <SectionDescription
+              text={[
+                "Neuro Vanta",
+                "P.O.Box 13653, 901 – SIT Tower",
+                "Dubai Silicon Oasis",
+                "Dubai, UAE",
+              ].join("\n")}
+              className="text-secondary text-19 leading-[1.42] whitespace-pre-line"
+            />
           </div>
 
           {/* Right – email, phone, then gap, then socials */}
           <div className="sm:w-[49%]">
-            <div className="text-secondary text-30 lg:text-60 flex flex-col">
-              <Link
-                href="mailto:Info@neurovanta.com"
-                className="hover:opacity-80 transition-opacity duration-300"
+            <div className="text-secondary text-30 lg:text-60 flex flex-col mb-20 sm:mb-50">
+              <motion.div
+                variants={moveUp(0)}
+                initial="hidden"
+                whileInView="show"
+                viewport={{ once: true }}
               >
-                Info@neurovanta.com
-              </Link>
-              <Link
-                href="tel:+97145821133"
-                className="hover:opacity-80 transition-opacity duration-300 -mt-[6px]"
+                <Link
+                  href="mailto:Info@neurovanta.com"
+                  className="contact-link"
+                  data-text="Info@neurovanta.com"
+                >
+                  Info@neurovanta.com
+                </Link>
+              </motion.div>
+              <motion.div
+                variants={moveUp(0.15)}
+                initial="hidden"
+                whileInView="show"
+                viewport={{ once: true }}
               >
-                +971 4 582 1133
-              </Link>
+                <Link
+                  href="tel:+97145821133"
+                  className="contact-link -mt-[6px]"
+                  data-text="+971 4 582 1133"
+                >
+                  +971 4 582 1133
+                </Link>
+              </motion.div>
             </div>
-
-            {/* Gap before socials */}
-            <div className="mb-20 sm:mb-50" />
 
             {/* Social links */}
             <div className="flex flex-wrap gap-x-30 gap-y-[5px]">
@@ -80,12 +120,13 @@ export default function Footer() {
                 <Link
                   key={type}
                   href={href}
-                  className="text-19 leading-[1.42] tracking-[-0.03em]"
+                  className="contact-link text-19 leading-[1.42] tracking-[-0.03em] hover:scale-[1.05] transition-transform duration-300"
                   style={
                     type === "instagram"
                       ? instagramGradient
                       : socialStyles[type]
                   }
+                  data-text={label}
                 >
                   {label}
                 </Link>
@@ -98,15 +139,12 @@ export default function Footer() {
 
         {/* ── Menus ── */}
         <div className="flex flex-wrap gap-y-20 gap-x-50 3xl:gap-x-[150px]">
-
           {footerMenus.map((menu) => {
             const [col1, col2] = splitItems(menu.items);
             const isWide = col2.length > 0;
 
             return (
-              <div
-                key={menu.heading}
-              >
+              <div key={menu.heading}>
                 {/* Heading */}
                 <h3 className="text-secondary text-subHeading mb-2.5 md:mb-40 tracking-[-0.03em]">
                   {menu.heading}
@@ -154,12 +192,10 @@ export default function Footer() {
       </div>
 
       {/* ── Copyright bar ── */}
-      <div
-        className="w-full py-[10px] bg-[#FFF8F0]"
-      >
+      <div className="w-full py-[10px] bg-[#FFF8F0]">
         <div className="container">
           <p className="text-secondary text-15 leading-[2.666] tracking-[-0.03em]">
-            Copyright {new Date().getFullYear()}© Neuro Vanta All Rights 
+            Copyright {new Date().getFullYear()}© Neuro Vanta All Rights
           </p>
         </div>
       </div>

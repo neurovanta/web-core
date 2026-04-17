@@ -6,6 +6,10 @@ import { heroStatsData } from "../data";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import CustomButton from "../../common/CustomButton";
+import { AnimatedHeading } from "../../animations/AnimateHeading";
+import { SectionDescription } from "../../animations/SectionDescription";
+import Reveal from "../../animations/RevealItemsOneByOneAnimation";
+import { moveRight, moveUp, moveUpV2 } from "../../animations/motionVarinats";
 
 interface StatRowProps {
   number: string;
@@ -26,21 +30,18 @@ export function StatRow({
   onClick,
 }: StatRowProps) {
   return (
-    <div
-      className="relative"
-      onMouseEnter={onHover}
-      onClick={onClick}
-    >
+    <div className="relative" onMouseEnter={onHover} onClick={onClick}>
       {/* Top border */}
       <div className="h-px w-full bg-border-color z-0" />
 
-      <div className={`relative py-40 ${isActive ? "px-60" : ""} transition-all duration-300 ease-in-out`}>
+      <div
+        className={`relative py-40 ${isActive ? "px-60" : ""} transition-all duration-300 ease-in-out`}
+      >
         {/* Active bg */}
         <AnimatePresence>
           {isActive && (
             <motion.div
               className="absolute inset-[-1px] z-10 bg-primary"
-              
               initial={{ width: "0%" }}
               animate={{ width: "100%" }}
               exit={{ width: "0%" }}
@@ -51,9 +52,7 @@ export function StatRow({
 
         <div className="relative z-10 flex items-center  min-h-[70px]">
           {/* Number */}
-          <span className="text-heading text-secondary shrink-0">
-            {number}
-          </span>
+          <span className="text-heading text-secondary shrink-0">{number}</span>
 
           {/* Label */}
           <span className="flex-1 text-subHeading tracking-[-0.03em] text-secondary lg:pl-[300px] 3xl:pl-[350px]">
@@ -70,7 +69,13 @@ export function StatRow({
                   exit={{ opacity: 0, scale: 0.8 }}
                   transition={{ duration: 0.35, ease: "easeInOut" }}
                 >
-                  <Image src={icon} alt={label} width={100} height={100} className="object-contain w-auto h-[50px] 2xl:w-[73px] 2xl:h-[70px] pointer-events-none" />
+                  <Image
+                    src={icon}
+                    alt={label}
+                    width={100}
+                    height={100}
+                    className="object-contain w-auto h-[50px] 2xl:w-[73px] 2xl:h-[70px] pointer-events-none"
+                  />
                 </motion.div>
               )}
             </AnimatePresence>
@@ -94,32 +99,46 @@ export default function HeroStats() {
         {/* Left col */}
         <div className="flex flex-col md:mb-120">
           <div>
-            <h1 className="text-heading text-secondary mb-20 md:mb-50 max-w-[1313px]">
-              {title}
-            </h1>
-            <p className="text-19 leading-[1.47] text-secondary max-w-[730px] tracking-[-0.03em]">
-              {description}
-            </p>
+            <AnimatedHeading
+              title={title}
+              className="text-secondary text-heading mb-20 md:mb-50 max-w-[1313px]"
+              mode="reveal"
+              delay={0.2}
+            />
+            <SectionDescription
+              text={description}
+              className="text-19 leading-[1.47] text-secondary max-w-[730px] tracking-[-0.03em]"
+              as="p"
+            />
           </div>
         </div>
 
         <div className="flex flex-wrap w-full justify-between lg:gap-x-170 gap-y-5 items-end">
           {/* Custom button */}
-          <div className="mt-12 lg:mt-0">
-            <CustomButton label="About Neuro Vanta" href="#" variant={2} />
+          <div className="overflow-hidden mt-12 lg:mt-0">
+            <motion.div
+              initial="hidden"
+              whileInView="show"
+              variants={moveRight(0.15)}
+              viewport={{ once: true }}
+              className=""
+            >
+              <CustomButton label="About Neuro Vanta" href="#" variant={2} />
+            </motion.div>
           </div>
           <div className="flex flex-col lg:flex-1 w-full max-w-[1136px]">
             {stats.map((stat, idx) => (
-              <StatRow
-                key={stat.id}
-                number={stat.number}
-                label={stat.label}
-                icon={stat.icon}
-                isActive={activeIndex === idx}
-                isLast={idx === stats.length - 1}
-                onHover={() => setActiveIndex(idx)}
-                onClick={() => setActiveIndex(idx)}
-              />
+              <Reveal key={stat.id} variants={moveUpV2} delayRange={idx * 0.15}>
+                <StatRow
+                  number={stat.number}
+                  label={stat.label}
+                  icon={stat.icon}
+                  isActive={activeIndex === idx}
+                  isLast={idx === stats.length - 1}
+                  onHover={() => setActiveIndex(idx)}
+                  onClick={() => setActiveIndex(idx)}
+                />
+              </Reveal>
             ))}
           </div>
         </div>
