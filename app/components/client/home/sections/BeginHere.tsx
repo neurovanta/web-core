@@ -5,6 +5,9 @@ import { FloatingInput } from "@/app/components/client/common/form/FloatingInput
 import { FloatingSelect } from "@/app/components/client/common/form/FloatingSelect";
 import CustomButton from "@/app/components/client/common/CustomButton";
 import { FloatingTextarea } from "../../common/form/FloatingTextarea";
+import { AnimatedHeading } from "../../animations/AnimateHeading";
+import { motion } from "framer-motion";
+import { moveUp } from "../../animations/motionVarinats";
 
 interface FormData {
   firstName: string;
@@ -51,10 +54,16 @@ export default function BeginHerePage() {
       {/* Headings */}
       <div className="container">
         <div className="mb-100">
-          <p className="text-heading text-secondary mb-20">
-            Where Intelligence Meets Longevity
-          </p>
-          <h1 className="text-150 text-secondary leading-[1]">BEGIN HERE.</h1>
+
+          <AnimatedHeading
+            title="Where Intelligence Meets Longevity"
+            className="text-heading text-secondary mb-20"
+          />
+          <AnimatedHeading
+            title="BEGIN HERE."
+            className="text-150 text-secondary leading-none"
+            mode="blade"
+          />
         </div>
         {/* Form */}
         <form
@@ -63,7 +72,11 @@ export default function BeginHerePage() {
           className="w-full lg:w-[66%] lg:ml-auto"
         >
           {/* Row 1 — First Name + For Company */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-y-30 gap-x-30 mb-60">
+          <motion.div
+          initial="hidden"
+          whileInView="show"
+          variants={moveUp(0)}
+           className="grid grid-cols-1 md:grid-cols-2 gap-y-30 gap-x-30 mb-60">
             <FloatingInput
               id="firstName"
               label="First Name*"
@@ -81,9 +94,13 @@ export default function BeginHerePage() {
               registration={register("forCompany")}
               value={watchedValues.forCompany}
             />
-          </div>
+          </motion.div>
           {/* Row 2 — Email + Phone */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-y-30 gap-x-30 mb-60">
+          <motion.div
+          initial="hidden"
+          whileInView="show"
+          variants={moveUp(0.1)}
+           className="grid grid-cols-1 md:grid-cols-2 gap-y-30 gap-x-30 mb-60">
             <FloatingInput
               id="email"
               label="Email*"
@@ -112,9 +129,13 @@ export default function BeginHerePage() {
               error={errors.phone?.message}
               value={watchedValues.phone}
             />
-          </div>
+          </motion.div>
           {/* Textarea — no floating label */}
-          <div className="mb-30">
+          <motion.div
+          initial="hidden"
+          whileInView="show"
+          variants={moveUp(0.15)}
+           className="mb-30">
             <FloatingTextarea
               id="details"
               rows={4}
@@ -123,9 +144,15 @@ export default function BeginHerePage() {
               error={errors.details?.message}
               value={watchedValues.details}
             />
-          </div>
+          </motion.div>
           {/* Submit */}
-          <CustomButton label="Send" variant={3} />
+          <motion.div
+          initial="hidden"
+          whileInView="show"
+          variants={moveUp(0.22)}
+           >
+            <CustomButton label="Send" variant={3} />
+          </motion.div>
         </form>
       </div>
     </section>

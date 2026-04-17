@@ -5,6 +5,10 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import type { Swiper as SwiperType } from "swiper";
 import "swiper/css";
 import Image from "next/image";
+import { AnimatedHeading } from "../../animations/AnimateHeading";
+import Reveal from "../../animations/RevealItemsOneByOneAnimation";
+import { moveUp, moveUpV2 } from "../../animations/motionVarinats";
+import { motion } from "framer-motion";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -29,7 +33,10 @@ function SlideDivider() {
   return (
     <div
       className="absolute right-0 bottom-0 h-full w-[1px] pointer-events-none z-10"
-      style={{ "background": "linear-gradient(270deg, rgba(251, 247, 244, 0.1) 0%, #FBF7F4 100%)" }}
+      style={{
+        background:
+          "linear-gradient(180deg, rgba(251, 247, 244, 0.1) 0%, #FBF7F4 100%)",
+      }}
     />
   );
 }
@@ -41,14 +48,12 @@ function SlideCard({
   index,
   isActive,
   isLast,
-  autoplayDelay,
   onClick,
 }: {
   slide: WhySlide;
   index: number;
   isActive: boolean;
   isLast: boolean;
-  autoplayDelay: number;
   onClick: (index: number) => void;
 }) {
   return (
@@ -61,20 +66,29 @@ function SlideCard({
 
       <div className="flex flex-col justify-between h-full">
         {/* Icon — top */}
-        <div
-        >
-          <Image src={slide.icon} alt="icon" width={100} height={100} className="h-[70px] w-auto" />
+        <div>
+          <Image
+            src={slide.icon}
+            alt="icon"
+            width={100}
+            height={100}
+            className="h-[70px] w-auto"
+          />
         </div>
 
         {/* Text — bottom */}
         <div>
-          <p
-            className={`text-subHeading tracking-[-0.03em] text-secondary transition-all duration-500 ${
+          <motion.p
+            key={`${index}-${isActive}`}
+            initial="hidden"
+            animate="show"
+            variants={moveUp(0)}
+            className={`text-subHeading tracking-[-0.03em] text-secondary ${
               isActive ? "mb-30" : "mb-0"
             }`}
           >
             {slide.title}
-          </p>
+          </motion.p>
 
           {/* Description expands only on active */}
           <div
@@ -82,9 +96,15 @@ function SlideCard({
               isActive ? "opacity-100" : "opacity-0 max-h-0"
             }`}
           >
-            <p className="text-secondary text-19 leading-[1.4210]">
+            <motion.p
+              key={`${index}-${isActive}`}
+              initial="hidden"
+              animate="show"
+              variants={moveUp(0)}
+              className="text-secondary text-19 leading-[1.4210]"
+            >
               {slide.description}
-            </p>
+            </motion.p>
           </div>
         </div>
       </div>
@@ -171,48 +191,58 @@ export default function WhySection({ data }: { data: WhySectionData }) {
 
   return (
     <section className="relative w-full bg-primary pt-120 overflow-hidden">
+      {/* Heading */}
+      <div className="container">
+        <AnimatedHeading
+          title={heading}
+          className="text-heading mb-20 lg:mb-60 text-secondary"
+          mode="reveal"
+        />
+      </div>
+      <div
+        style={{
+          background:
+            "linear-gradient(270deg, rgba(251, 247, 244, 0.1) 0%, #FBF7F4 48.08%, rgba(251, 247, 244, 0.1) 100%)",
+        }}
+        className="w-full h-[1px]"
+      ></div>
 
-        {/* Heading */}
-        <div className="container">
-            <h2 className="text-heading mb-20 lg:mb-60 text-secondary ">
-              {heading}
-            </h2>
-        </div>
-        <div style={{background: "linear-gradient(270deg, rgba(251, 247, 244, 0.1) 0%, #FBF7F4 48.08%, rgba(251, 247, 244, 0.1) 100%)"}} className="w-full h-[1px]"></div>
-
-        {/* Slider */}
-        <div onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} >
-          <Swiper
-            onSwiper={(swiper) => {
-              swiperRef.current = swiper
-            }}
-            onSlideChange={(swiper) => {
-              setActiveIndex(swiper.activeIndex);
-            }}
-            loop={false}
-            allowTouchMove={true}
-            initialSlide={0}
-            breakpoints={{
-              0: { slidesPerView: 1 },
-              640: { slidesPerView: 2 },
-              768: { slidesPerView: 3 },
-              1280: { slidesPerView: 4 },
-            }}
-          >
-            {slides.map((slide, index) => (
-              <SwiperSlide key={index} className="!h-[300px] xl:!h-[520px] 3xl:!h-[571px]">
-                <SlideCard slide={slide} index={index} isActive={index === activeIndex} isLast={index === slides.length - 1} autoplayDelay={AUTOPLAY_DELAY} onClick={handleSlideClick} />
-              </SwiperSlide>
-            ))}
-          </Swiper>
-        </div>
-
-      <style jsx global>{`
-        @keyframes why-progress {
-          from { transform: scaleX(0); }
-          to   { transform: scaleX(1); }
-        }
-      `}</style>
+      {/* Slider */}
+      <div onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+        <Swiper
+          onSwiper={(swiper) => {
+            swiperRef.current = swiper;
+          }}
+          onSlideChange={(swiper) => {
+            setActiveIndex(swiper.activeIndex);
+          }}
+          loop={false}
+          allowTouchMove={true}
+          initialSlide={0}
+          breakpoints={{
+            0: { slidesPerView: 1 },
+            640: { slidesPerView: 2 },
+            768: { slidesPerView: 3 },
+            1280: { slidesPerView: 4 },
+          }}
+        >
+          {slides.map((slide, index) => (
+            <SwiperSlide key={index}>
+              <Reveal variants={moveUpV2} delayRange={index * 0.14}>
+                <div className="!h-[300px] xl:!h-[520px] 3xl:!h-[571px]">
+                  <SlideCard
+                    slide={slide}
+                    index={index}
+                    isActive={index === activeIndex}
+                    isLast={index === slides.length - 1}
+                    onClick={handleSlideClick}
+                  />
+                </div>
+              </Reveal>
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      </div>
     </section>
   );
 }
