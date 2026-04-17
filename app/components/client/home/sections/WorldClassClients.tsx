@@ -47,142 +47,150 @@ export default function WorldClassClients() {
   const { heading, rows } = brandsData;
   const sectionRef = useRef<HTMLDivElement | null>(null);
 
-useEffect(() => {
-  const ctx = gsap.context(() => {
-    const row1 = gsap.utils.toArray<HTMLElement>(".logo-wrap > div:nth-child(1) .brand-card");
-    const row2 = gsap.utils.toArray<HTMLElement>(".logo-wrap > div:nth-child(2) .brand-card");
-    const row3Left = gsap.utils.toArray<HTMLElement>(".logo-wrap > div:nth-child(3) > div:first-child .brand-card");
-    const row3Right = gsap.utils.toArray<HTMLElement>(".logo-wrap > div:nth-child(3) > div:last-child .brand-card");
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      const row1 = gsap.utils.toArray<HTMLElement>(
+        ".logo-wrap > div:nth-child(1) .brand-card",
+      );
+      const row2 = gsap.utils.toArray<HTMLElement>(
+        ".logo-wrap > div:nth-child(2) .brand-card",
+      );
+      const row3Left = gsap.utils.toArray<HTMLElement>(
+        ".logo-wrap > div:nth-child(3) > div:first-child .brand-card",
+      );
+      const row3Right = gsap.utils.toArray<HTMLElement>(
+        ".logo-wrap > div:nth-child(3) > div:last-child .brand-card",
+      );
 
-    const allCards = gsap.utils.toArray<HTMLElement>(".brand-card");
+      const allCards = gsap.utils.toArray<HTMLElement>(".brand-card");
 
-    // Initial state
-    gsap.set(allCards, {
-      opacity: 0,
-      scale: 0.9,
-      filter: "blur(3px)",
-    });
+      // Initial state
+      gsap.set(allCards, {
+        opacity: 0,
+        scale: 0.9,
+        filter: "blur(3px)",
+      });
 
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: sectionRef.current,
-        start: "top 80%",
-        once: true,
-      },
-    });
-
-    // Row 1 — from RIGHT
-    tl.fromTo(
-      row1,
-      { x: 120 },
-      {
-        x: 0,
-        opacity: 1,
-        scale: 1,
-        filter: "blur(0px)",
-        duration: 0.8,
-        ease: "power3.out",
-        stagger: 0.15,
-      }
-    )
-
-      // Row 2 — from LEFT
-      .fromTo(
-        row2,
-        { x: -120 },
-        {
-          x: 0,
-          opacity: 1,
-          scale: 1,
-          filter: "blur(0px)",
-          duration: 0.8,
-          ease: "power3.out",
-          stagger: 0.15,
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top 80%",
+          once: true,
         },
-        "-=0.4"
-      )
+      });
 
-      // Row 3 LEFT — from LEFT
-      .fromTo(
-        row3Left,
-        { x: -120 },
-        {
-          x: 0,
-          opacity: 1,
-          scale: 1,
-          filter: "blur(0px)",
-          duration: 0.8,
-          ease: "power3.out",
-        },
-        "-=0.3"
-      )
-
-      // Row 3 RIGHT — from RIGHT
-      .fromTo(
-        row3Right,
+      // Row 1 — from RIGHT
+      tl.fromTo(
+        row1,
         { x: 120 },
         {
           x: 0,
           opacity: 1,
           scale: 1,
           filter: "blur(0px)",
-          duration: 0.8,
+          duration: 0.72,
           ease: "power3.out",
           stagger: 0.15,
         },
-        "-=0.6"
-      );
+      )
 
-    // ✅ Hover animation (GSAP-safe)
-allCards.forEach((card) => {
-  const el = card as CardWithHandlers;
+        // Row 2 — from LEFT
+        .fromTo(
+          row2,
+          { x: -120 },
+          {
+            x: 0,
+            opacity: 1,
+            scale: 1,
+            filter: "blur(0px)",
+            duration: 0.72,
+            ease: "power3.out",
+            stagger: 0.15,
+          },
+          "-=0.4",
+        )
 
-  const enter = () => {
-    gsap.to(el, {
-      scale: 1.04,
-      duration: 0.5, // smoother
-      ease: "power3.out",
-      borderColor: "var(--primary)",
-    });
-  };
+        // Row 3 LEFT — from LEFT
+        .fromTo(
+          row3Left,
+          { x: -120 },
+          {
+            x: 0,
+            opacity: 1,
+            scale: 1,
+            filter: "blur(0px)",
+            duration: 0.72,
+            ease: "power3.out",
+          },
+          "-=0.3",
+        )
 
-  const leave = () => {
-    gsap.to(el, {
-      scale: 1,
-      duration: 0.5,
-      ease: "power3.out",
-      borderColor: "var(--border-color)",
-    });
-  };
+        // Row 3 RIGHT — from RIGHT
+        .fromTo(
+          row3Right,
+          { x: 120 },
+          {
+            x: 0,
+            opacity: 1,
+            scale: 1,
+            filter: "blur(0px)",
+            duration: 0.72,
+            ease: "power3.out",
+            stagger: 0.15,
+          },
+          "-=0.6",
+        );
 
-  el.addEventListener("mouseenter", enter);
-  el.addEventListener("mouseleave", leave);
+      // ✅ Hover animation (GSAP-safe)
+      allCards.forEach((card) => {
+        const el = card as CardWithHandlers;
 
-  el._enter = enter;
-  el._leave = leave;
-});
-  }, sectionRef);
+        const enter = () => {
+          gsap.to(el, {
+            scale: 1.04,
+            duration: 0.5, // smoother
+            ease: "power3.out",
+            borderColor: "var(--primary)",
+          });
+        };
 
-  return () => {
-    // cleanup GSAP context
-    ctx.revert();
+        const leave = () => {
+          gsap.to(el, {
+            scale: 1,
+            duration: 0.5,
+            ease: "power3.out",
+            borderColor: "var(--border-color)",
+          });
+        };
 
-    // cleanup event listeners
-const cards = document.querySelectorAll<HTMLElement>(".brand-card");
+        el.addEventListener("mouseenter", enter);
+        el.addEventListener("mouseleave", leave);
 
-cards.forEach((card) => {
-  const el = card as CardWithHandlers;
+        el._enter = enter;
+        el._leave = leave;
+      });
+    }, sectionRef);
 
-  if (el._enter) {
-    el.removeEventListener("mouseenter", el._enter);
-  }
+    return () => {
+      // cleanup GSAP context
+      ctx.revert();
 
-  if (el._leave) {
-    el.removeEventListener("mouseleave", el._leave);
-  }
-});
-  };
-}, []);
+      // cleanup event listeners
+      const cards = document.querySelectorAll<HTMLElement>(".brand-card");
+
+      cards.forEach((card) => {
+        const el = card as CardWithHandlers;
+
+        if (el._enter) {
+          el.removeEventListener("mouseenter", el._enter);
+        }
+
+        if (el._leave) {
+          el.removeEventListener("mouseleave", el._leave);
+        }
+      });
+    };
+  }, []);
 
   return (
     <section

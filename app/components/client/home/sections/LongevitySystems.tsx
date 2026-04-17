@@ -228,6 +228,7 @@
 //   );
 // }
 
+
 "use client";
 
 import { useRef, useState, useCallback, useEffect } from "react";
@@ -283,10 +284,14 @@ export default function LongevitySystems({
 
   const tlRef = useRef<gsap.core.Timeline | null>(null);
   const pendingIndexRef = useRef<number>(0);
-  const animKeyRef = useRef<number>(0); // increments on each click to cancel stale RAFs
+  const animKeyRef = useRef<number>(0);
+  const swiperRef = useRef<any>(null);
 
   const overlayWrapRefs = useRef<(HTMLDivElement | null)[]>([]);
   const overlayTitleRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+  // ── NEW: refs for the currently-visible base slide titles ──
+  const baseTitleRefs = useRef<(HTMLParagraphElement | null)[]>([]);
 
   const [leftCol, rightCol] = splitColumns(data.categories);
 
@@ -313,6 +318,7 @@ export default function LongevitySystems({
       if (index === activeIndex) return;
 
       setActiveIndex(index);
+      swiperRef.current?.slideTo(0, 700);
 
       // Kill any running timeline immediately
       if (tlRef.current) {
@@ -320,14 +326,24 @@ export default function LongevitySystems({
         tlRef.current = null;
       }
 
+      // ── GSAP: animate current base titles out (move up + fade) ──
+      baseTitleRefs.current.forEach((el, i) => {
+        if (!el) return;
+        gsap.to(el, {
+          opacity: 0,
+          y: -40,
+          duration: 0.35,
+          ease: "power2.in",
+          delay: i * 0.06,
+        });
+      });
+
       const nextSlides = data.categories[index].slides;
 
-      // Reset refs arrays sized for next slides
       overlayWrapRefs.current = new Array(nextSlides.length).fill(null);
       overlayTitleRefs.current = new Array(nextSlides.length).fill(null);
 
       pendingIndexRef.current = index;
-      // Bump key so any pending RAF from a previous click becomes a no-op
       animKeyRef.current += 1;
 
       setPendingSlides(nextSlides);
@@ -342,14 +358,12 @@ export default function LongevitySystems({
     const capturedKey = animKeyRef.current;
 
     const raf = requestAnimationFrame(() => {
-      // Stale click — a newer click fired before this frame ran
       if (capturedKey !== animKeyRef.current) return;
 
       const maxLen = pendingSlides.length;
       const mounted = overlayWrapRefs.current.filter(Boolean);
       if (mounted.length === 0) return;
 
-      // Set hidden initial state
       for (let i = 0; i < maxLen; i++) {
         const wrap = overlayWrapRefs.current[i];
         const titleEl = overlayTitleRefs.current[i];
@@ -517,6 +531,7 @@ export default function LongevitySystems({
       {/* ── SLIDER ── */}
       <div style={{ paddingLeft: inset }}>
         <Swiper
+        onSwiper={(swiper) => { swiperRef.current = swiper; }}
           slidesPerView={1.16}
           spaceBetween={20}
           speed={700}
@@ -527,11 +542,6 @@ export default function LongevitySystems({
           }}
           className="!overflow-visible"
         >
-          {/* 
-            Key the SwiperSlide list on visibleIndex so Swiper always
-            re-mounts slides when the committed category changes.
-            During animation, pendingSlides drives the overlay count.
-          */}
           {(pendingSlides ?? data.categories[visibleIndex].slides).map(
             (_, i) => {
               const baseSlide = data.categories[visibleIndex].slides[i];
@@ -540,12 +550,15 @@ export default function LongevitySystems({
               return (
                 <SwiperSlide key={`${visibleIndex}-${i}`}>
                   <div className="relative overflow-hidden">
-                    {/* BASE layer — only render if we have a slide at this index */}
+                    {/* BASE layer */}
                     {baseSlide && (
                       <SlideCard
                         slide={baseSlide}
                         index={visibleIndex}
-                        isAnimating={!!pendingSlides} // ← hides title during overlay animation
+                        // ── pass ref so LongevitySystems can GSAP-animate the title out ──
+                        titleRef={(el) => {
+                          baseTitleRefs.current[i] = el;
+                        }}
                       />
                     )}
 
@@ -568,10 +581,7 @@ export default function LongevitySystems({
                           />
                         </div>
 
-                        {/* 
-                          Title: AnimatePresence drives exit (up) + enter (from below).
-                          The overlay title enters from below as the clip wipe reveals it.
-                        */}
+                        {/* Overlay title — enters from below via GSAP */}
                         <div className="overflow-hidden mt-30">
                           <p
                             ref={(el) => {
@@ -595,15 +605,16 @@ export default function LongevitySystems({
   );
 }
 
-// Pass isAnimating down to SlideCard
+// ── SlideCard: title is now a plain <p> with a forwarded ref ──
+// Framer Motion AnimatePresence removed from the title — GSAP owns the exit.
 function SlideCard({
   slide,
   index,
-  isAnimating, // ← new prop
+  titleRef,
 }: {
   slide: LongevitySlide;
   index: number;
-  isAnimating?: boolean;
+  titleRef?: (el: HTMLParagraphElement | null) => void;
 }) {
   const [hovered, setHovered] = useState(false);
 
@@ -644,24 +655,14 @@ function SlideCard({
         </div>
       </div>
 
+      {/* Title — plain <p> with ref; GSAP animates it out on category click */}
       <div className="overflow-hidden mt-30">
-        <AnimatePresence mode="wait" initial={false}>
-          {!isAnimating && (
-            <motion.p
-              key={`${index}-${slide.title}`}
-              initial={{ opacity: 1, y: 0 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{
-                opacity: 0,
-                y: -50,
-                transition: { duration: 0.4, ease: [0.25, 0.1, 0.25, 1] },
-              }}
-              className="text-subHeading tracking-[-0.03em] text-secondary"
-            >
-              {slide.title}
-            </motion.p>
-          )}
-        </AnimatePresence>
+        <p
+          ref={titleRef}
+          className="text-subHeading tracking-[-0.03em] text-secondary"
+        >
+          {slide.title}
+        </p>
       </div>
     </Link>
   );

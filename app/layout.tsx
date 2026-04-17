@@ -25,8 +25,8 @@ export default function RootLayout({
     <html lang="en" className={`${dmSans.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">
         <LenisProvider>
-          {/* <Header /> */}
-          {/* {children} */}
+          <Header />
+          {children}
           <Footer />
         </LenisProvider>
       </body>
