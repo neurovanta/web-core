@@ -260,23 +260,19 @@ export const brandsData = {
         logo: "/assets/images/home/clients/3.jpg",
       },
     ],
-    row3: {
-      left: [
-        {
-          id: "aws-3",
-          logo: "/assets/images/home/clients/3.jpg",
-        },
-      ],
-      right: [
-        {
-          id: "logitech-2",
-          logo: "/assets/images/home/clients/2.jpg",
-        },
-        {
-          id: "hp-2",
-          logo: "/assets/images/home/clients/4.jpg",
-        },
-      ],
-    },
+row3: [
+  {
+    id: "aws-3",
+    logo: "/assets/images/home/clients/3.jpg",
+  },
+  {
+    id: "logitech-2",
+    logo: "/assets/images/home/clients/2.jpg",
+  },
+  {
+    id: "hp-2",
+    logo: "/assets/images/home/clients/4.jpg",
+  },
+],
   },
 };

@@ -39,13 +39,13 @@ export default function Footer() {
       {/* ── Main content container ── */}
       <div className="container pb-80 3xl:pb-[84px]">
         {/* Logo */}
-        <div className="w-full relative xl:h-[218px] mt-20 overflow-hidden">
+        <div className="w-full relative h-full max-h-[218px] mt-20 overflow-hidden">
           <Image
             src="/assets/logos/footer-logo.svg"
             alt="Neuro Vanta"
             width={2000}
             height={300}
-            className="w-full xl:h-[218px]"
+            className="w-full h-full max-h-[218px]"
           />
 
           {/* LEFT HALF */}

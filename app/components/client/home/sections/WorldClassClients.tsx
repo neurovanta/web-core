@@ -22,14 +22,13 @@ type CardWithHandlers = HTMLElement & {
 function BrandCard({ brand }: { brand: Brand }) {
   return (
     <div
-      className=" brand-card
-        flex items-center justify-center border border-border-color 
+      className="        flex items-center justify-center border border-border-color 
         w-full h-[136px]
-        sm:w-[280px] sm:h-[205px]
-        xl:w-[270px] xl:h-[185px]
+        sm:w-full sm:h-[160px]
+        lg:w-[270px] lg:h-[185px]
         2xl:w-[280px] 2xl:h-[190px]
         3xl:w-[366px] 3xl:h-[250px]
-        flex-shrink-0
+        flex-shrink-0 sm:flex-shrink lg:flex-shrink-0
       "
     >
       <Image
@@ -37,12 +36,11 @@ function BrandCard({ brand }: { brand: Brand }) {
         alt={brand.id}
         width={220}
         height={91}
-        className="object-contain h-[80px] 3xl:h-[91px] w-auto pointer-events-none"
+        className="object-contain h-[50px] lg:h-[65px] xl:h-[80px] 3xl:h-[91px] w-auto pointer-events-none"
       />
     </div>
   );
 }
-
 export default function WorldClassClients() {
   const { heading, rows } = brandsData;
   const sectionRef = useRef<HTMLDivElement | null>(null);
@@ -206,28 +204,26 @@ export default function WorldClassClients() {
 
       <div className="logo-wrap flex flex-col gap-5 3xl:mt-[5px]">
         {/* Row 1 */}
-        <div className="grid grid-cols-2 md:flex flex-wrap w-full justify-end gap-20">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:flex lg:flex-wrap w-full lg:justify-end gap-20">
           {rows.row1.map((brand) => (
             <BrandCard key={brand.id} brand={brand} />
           ))}
         </div>
 
         {/* Row 2 */}
-        <div className="grid grid-cols-2 md:flex flex-wrap w-full justify-start gap-20 justify-content-end">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:flex lg:flex-wrap w-full lg:justify-start gap-20">
           {rows.row2.map((brand) => (
             <BrandCard key={brand.id} brand={brand} />
           ))}
         </div>
 
         {/* Row 3 */}
-        <div className="grid grid-cols-2 gap-20 sm:flex w-full md:justify-between">
-          <div className="order-2 md:order-1">
-            {rows.row3.left.map((brand) => (
-            <BrandCard key={brand.id} brand={brand} />
-            ))}
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-20 lg:flex w-full lg:justify-between">
+          <div className="order-2 sm:order-1 lg:order-1">
+            <BrandCard key={rows.row3[0].id} brand={rows.row3[0]} />
           </div>
-          <div className="flex gap-20 flex-wrap order-1 md:order-2">
-            {rows.row3.right.map((brand) => (
+          <div className="col-span-1 sm:col-span-2 sm:grid sm:grid-cols-2 flex gap-20 flex-wrap order-1 sm:order-2 lg:order-2 lg:flex lg:flex-wrap">
+            {rows.row3.slice(1).map((brand) => (
               <BrandCard key={brand.id} brand={brand} />
             ))}
           </div>
