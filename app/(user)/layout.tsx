@@ -1,9 +1,11 @@
+
 import type { Metadata } from "next";
 import { DM_Sans } from "next/font/google";
-import "./globals.css";
-import { LenisProvider } from "./components/client/layout/LenisProvider";
-import Footer from "./components/client/layout/Footer";
-import Header from "./components/client/layout/Header";
+import "../globals.css";
+import { LenisProvider } from "../components/client/layout/LenisProvider";
+import Footer from "../components/client/layout/Footer";
+import Header from "../components/client/layout/Header";
+import AppShell from "../components/client/layout/AppShell";
 
 const dmSans = DM_Sans({
   variable: "--font-dm-sans",
@@ -22,12 +24,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${dmSans.variable} h-full antialiased`}>
+    <html style={{ overflow: "hidden" }} lang="en" className={`${dmSans.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">
         <LenisProvider>
-          <Header />
-          {children}
-          <Footer />
+          <AppShell>
+            <Header />
+            {children}
+            <Footer />
+          </AppShell>
         </LenisProvider>
       </body>
     </html>

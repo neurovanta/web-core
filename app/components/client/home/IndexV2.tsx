@@ -1,4 +1,4 @@
-import HeroSection from "./sections/HeroSection";
+import HeroSectionV2 from "./sections/HeroSectionV2";
 import WellnessSlider from "./sections/WellnessSlider";
 import {
   wellnessSliderData,
@@ -19,7 +19,7 @@ const Index = () => {
       <div style={{ position: "relative" }}>
         {/* Section 1 — Hero */}
         <div style={{ position: "sticky", top: 0, height: "100vh", zIndex: 1 }}>
-          <HeroSection />
+          <HeroSectionV2 />
         </div>
 
         {/* Section 2 — Wellness Slider 1 */}
