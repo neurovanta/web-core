@@ -89,7 +89,7 @@ export default function WellnessSlider({
         setTopIndex(null);
       }, TRANSITION_DURATION + 50); // +50ms buffer
     },
-    [baseIndex]
+    [baseIndex],
   );
 
   useEffect(() => {
@@ -154,7 +154,7 @@ export default function WellnessSlider({
 
   return (
     // <section className="relative w-full h-[90vh] sm:h-[80vh] xl:h-[92vh] overflow-hidden">
-    <section className="relative w-full h-screen overflow-hidden">
+    <section className="relative w-full h-dvh overflow-hidden">
       {/* ── Background layers ─────────────────────────────────────────────── */}
 
       {/* Base layer — always fully opaque, holds the "settled" image */}
@@ -219,7 +219,7 @@ export default function WellnessSlider({
         <div className="flex-1" />
 
         {/* ── Slide strip ─────────────────────────────────────────────────── */}
-        <div>
+        <div className="[&_.swiper-wrapper]:items-end">
           <Swiper
             onSwiper={(swiper) => {
               swiperRef.current = swiper;
@@ -254,7 +254,7 @@ export default function WellnessSlider({
                           {slide.number}
                         </span>
                         <span
-                          className={`block text-19 leading-[1.5263] mb-25 transition-colors duration-300 ${
+                          className={`block text-19 leading-[1.5263] mb-25 min-h-[45px] 2xl:min-h-0 transition-colors duration-300 ${
                             isActive
                               ? "text-white font-semibold"
                               : "text-white/60"

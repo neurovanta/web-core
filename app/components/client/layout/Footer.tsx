@@ -170,7 +170,7 @@ export default function Footer() {
                   </h3>
 
                   {/* Items: single or double column */}
-                  <div className={isWide ? "flex flex-row gap-50" : ""}>
+                  <div className={isWide ? "flex flex-col sm:flex-row sm:gap-50" : ""}>
                     {/* Column 1 (always present) */}
                     <ul className="flex flex-col">
                       {col1.map(({ label, href }) => (

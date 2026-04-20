@@ -229,7 +229,7 @@ export default function WhySection({ data }: { data: WhySectionData }) {
           {slides.map((slide, index) => (
             <SwiperSlide key={index}>
               <Reveal variants={moveUpV2} delayRange={index * 0.14}>
-                <div className="!h-[300px] xl:!h-[520px] 3xl:!h-[571px]">
+                <div className="!h-[270px] xl:!h-[520px] 3xl:!h-[571px]">
                   <SlideCard
                     slide={slide}
                     index={index}
