@@ -60,7 +60,7 @@ import Image from "next/image";
 import { IoSearch } from "react-icons/io5";
 import { MdLocalPhone } from "react-icons/md";
 import { motion } from "framer-motion";
-import { useAppShell } from "./AppShell";
+import { useAppShell } from "./AppShellV2";
 import { useLenis } from "./LenisProvider";
 import { useEffect, useRef } from "react";
 
@@ -77,7 +77,7 @@ const dropDown = (delay: number) => ({
   },
 });
 
-export default function Header() {
+export default function HeaderV2() {
   const { animateIn } = useAppShell();
   const { scrollTo } = useLenis();
   const headerRef = useRef<HTMLElement>(null);

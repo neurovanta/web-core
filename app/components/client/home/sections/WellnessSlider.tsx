@@ -65,11 +65,6 @@ export default function WellnessSlider({
     slides.forEach((s) => preloadImage(s.image));
   }, [slides]);
 
-  // ── Crossfade logic ───────────────────────────────────────────────────────
-  // Called when we want to switch to a new background index.
-  // 1. Place new image on top layer (opacity 0)
-  // 2. Fade it in (opacity 1)
-  // 3. After transition ends, promote it to base layer and hide top
   const transitionTo = useCallback(
     (nextIndex: number) => {
       if (nextIndex === baseIndex) return;
@@ -158,7 +153,8 @@ export default function WellnessSlider({
   };
 
   return (
-    <section className="relative w-full h-[90vh] sm:h-[80vh] xl:h-[92vh] overflow-hidden">
+    // <section className="relative w-full h-[90vh] sm:h-[80vh] xl:h-[92vh] overflow-hidden">
+    <section className="relative w-full h-screen overflow-hidden">
       {/* ── Background layers ─────────────────────────────────────────────── */}
 
       {/* Base layer — always fully opaque, holds the "settled" image */}
