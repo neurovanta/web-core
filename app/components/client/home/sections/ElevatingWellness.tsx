@@ -14,7 +14,7 @@ export default function ElevatingWellness() {
   const [activeIndex, setActiveIndex] = useState(0);
 
   return (
-    <section className="bg-cream-bg py-120 3xl:py-0 3xl:pt-150 3xl:pb-170 min-[1700px]:py-[177px]">
+    <section className="bg-cream-bg py-120 3xl:py-0 3xl:pt-150 3xl:pb-170 min-[1700px]:py-[177px] overflow-hidden">
       <div className="container">
         <div className="grid xl:grid-cols-[320px_auto] 3xl:grid-cols-[364px_auto]  gap-x-160 3xl:gap-x-225">
           {/* Row 1 — Col 2: Heading */}

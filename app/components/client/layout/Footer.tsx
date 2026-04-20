@@ -35,7 +35,7 @@ function splitItems<T>(items: T[]): [T[], T[]] {
 /* ─── Component ───────────────────────────────────────────────────── */
 export default function Footer() {
   return (
-    <footer className="bg-white">
+    <footer className="bg-white overflow-hidden">
       {/* ── Main content container ── */}
       <div className="container pb-80 3xl:pb-[84px]">
         {/* Logo */}

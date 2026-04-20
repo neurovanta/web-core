@@ -94,7 +94,7 @@ export default function HeroStats() {
   const [activeIndex, setActiveIndex] = useState(1);
 
   return (
-    <section className="w-full bg-cream-bg py-120">
+    <section className="w-full bg-cream-bg py-120 overflow-hidden">
       <div className="container flex flex-col">
         {/* Left col */}
         <div className="flex flex-col md:mb-120">
