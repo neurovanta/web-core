@@ -261,10 +261,12 @@ export const brandsData = {
       },
     ],
     row3: {
-      left: {
-        id: "aws-3",
-        logo: "/assets/images/home/clients/3.jpg",
-      },
+      left: [
+        {
+          id: "aws-3",
+          logo: "/assets/images/home/clients/3.jpg",
+        },
+      ],
       right: [
         {
           id: "logitech-2",

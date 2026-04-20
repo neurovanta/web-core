@@ -25,7 +25,7 @@ function BrandCard({ brand }: { brand: Brand }) {
       className=" brand-card
         flex items-center justify-center border border-border-color 
         w-full h-[136px]
-        sm:w-[300px] sm:h-[205px]
+        sm:w-[280px] sm:h-[205px]
         xl:w-[270px] xl:h-[185px]
         2xl:w-[280px] 2xl:h-[190px]
         3xl:w-[366px] 3xl:h-[250px]
@@ -222,7 +222,9 @@ export default function WorldClassClients() {
         {/* Row 3 */}
         <div className="grid grid-cols-2 gap-20 sm:flex w-full md:justify-between">
           <div className="order-2 md:order-1">
-            <BrandCard brand={rows.row3.left} />
+            {rows.row3.left.map((brand) => (
+            <BrandCard key={brand.id} brand={brand} />
+            ))}
           </div>
           <div className="flex gap-20 flex-wrap order-1 md:order-2">
             {rows.row3.right.map((brand) => (
