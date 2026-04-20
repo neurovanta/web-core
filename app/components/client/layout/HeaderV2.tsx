@@ -126,6 +126,7 @@ export default function HeaderV2() {
 
   return (
     <header
+      className="pt-[20px] lg:pt-[40px] 3xl:pt-[50px]"
       ref={headerRef}
       style={{
         position: "fixed",
@@ -133,7 +134,6 @@ export default function HeaderV2() {
         left: 0,
         width: "100%",
         zIndex: 998,
-        paddingTop: "50px",
         transform: "translateY(0%)",
         opacity: 1,
         transition: "transform 0.9s cubic-bezier(0.77,0,0.175,1), opacity 0.6s ease",

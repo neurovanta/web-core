@@ -50,7 +50,7 @@ export default function BeginHerePage() {
   };
 
   return (
-    <section className="bg-primary py-120">
+    <section className="bg-primary py-120 overflow-hidden">
       {/* Headings */}
       <div className="container">
         <div className="mb-100">
