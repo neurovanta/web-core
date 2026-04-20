@@ -228,7 +228,6 @@
 //   );
 // }
 
-
 "use client";
 
 import { useRef, useState, useCallback, useEffect } from "react";
@@ -432,7 +431,7 @@ export default function LongevitySystems({
             mode="reveal"
           />
 
-          <div className="grid grid-cols-2 lg:flex gap-30 3xl:gap-[34px] w-fit lg:ml-auto">
+          <div className="grid grid-cols-2 lg:flex gap-[10px] sm:gap-30 3xl:gap-[34px] w-fit lg:ml-auto">
             {[leftCol, rightCol].map((col, colIdx) => (
               <ul key={colIdx} className="flex flex-col lg:w-[380px]">
                 {col.map((cat, itemIndex) => {
@@ -459,7 +458,7 @@ export default function LongevitySystems({
                           onMouseEnter={() => handleCategoryHover(globalIdx)}
                           className="group w-full text-left bg-none border-none cursor-pointer"
                         >
-                          <div className="flex items-center justify-between relative overflow-hidden min-h-[60px]">
+                          <div className="flex items-center gap-[6px] justify-between relative overflow-hidden min-h-[60px]">
                             <AnimatePresence>
                               {isActive && (
                                 <motion.span
@@ -481,7 +480,8 @@ export default function LongevitySystems({
                             </AnimatePresence>
 
                             <span
-                              className={`relative z-10 text-19 leading-[1.2] 2xl:leading-[2.631578947368421] tracking-[-0.03em] transition-colors duration-300 ${
+                              data-text={cat.label}
+                              className={`contact-link relative z-10 text-[12px] md:text-19 leading-[1.2] 2xl:leading-[2.631578947368421] tracking-[-0.03em] transition-colors duration-300 ${
                                 isActive
                                   ? "text-secondary font-semibold"
                                   : "text-secondary hover:text-secondary/80"
@@ -531,7 +531,9 @@ export default function LongevitySystems({
       {/* ── SLIDER ── */}
       <div style={{ paddingLeft: inset }}>
         <Swiper
-        onSwiper={(swiper) => { swiperRef.current = swiper; }}
+          onSwiper={(swiper) => {
+            swiperRef.current = swiper;
+          }}
           slidesPerView={1.16}
           spaceBetween={20}
           speed={700}
@@ -650,7 +652,7 @@ function SlideCard({
             alt="Arrow right tip"
             width={200}
             height={200}
-            className="h-[80px] w-auto object-contain pointer-events-none"
+            className="h-[40px] md:h-[50px] xl:h-[80px] w-auto object-contain pointer-events-none"
           />
         </div>
       </div>

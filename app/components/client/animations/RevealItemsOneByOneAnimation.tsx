@@ -20,7 +20,7 @@ export default function Reveal({
 
   return (
     <motion.div
-      ref={ref}
+      ref={ref} 
       variants={variants}
       initial="hidden"
       animate={controls}

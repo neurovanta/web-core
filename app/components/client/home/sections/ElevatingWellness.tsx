@@ -101,13 +101,13 @@ export default function ElevatingWellness() {
                       initial={{  y: 30 }}
                       animate={{  y: 0 }}
                       transition={{ duration: 0.6 }}
-                       className="px-30">
+                       className="px-30 py-20">
                         <Image
                           src={item.image}
                           alt={item.label}
                           width={500}
                           height={500}
-                          className="object-contain h-[250px] md:h-[290px] w-full"
+                          className="object-contain h-[170px] md:h-[220px] w-full"
                         />
                       </motion.div>
                     </div>

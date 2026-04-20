@@ -50,7 +50,7 @@ export function StatRow({
           )}
         </AnimatePresence>
 
-        <div className="relative z-10 flex items-center  min-h-[70px]">
+        <div className="relative z-10 flex items-center gap-30 md:gap-50 min-h-[60px] md:min-h-[70px]">
           {/* Number */}
           <span className="text-heading text-secondary shrink-0">{number}</span>
 
@@ -113,9 +113,9 @@ export default function HeroStats() {
           </div>
         </div>
 
-        <div className="flex flex-wrap w-full justify-between lg:gap-x-170 gap-y-5 items-end">
+        <div className="flex flex-wrap w-full justify-between lg:gap-x-170 gap-y-80 items-end">
           {/* Custom button */}
-          <div className="overflow-hidden mt-12 lg:mt-0">
+          <div className="overflow-hidden mt-40 lg:mt-0">
             <motion.div
               initial="hidden"
               whileInView="show"

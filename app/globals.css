@@ -74,7 +74,7 @@ html {
 --space-25: clamp(15px, 0.77vw + 10px, 25px);
  
 /* 30px → 18px at 390px, 30px at 1810px */
---space-30: clamp(18px, 0.84vw + 14.7px, 30px);
+--space-30: clamp(20px, 0.84vw + 14.7px, 30px);
 
 /* 40px → 24px at 390px, 40px at 1810px */
 --space-40: clamp(24px, 1.22vw + 19.6px, 40px);
@@ -277,7 +277,7 @@ body {
 /* Footer */
 .contact-link {
   position: relative;
-  display: inline-block;
+  display: block;
   color: inherit;
   text-decoration: none;
 }
@@ -293,7 +293,6 @@ body {
   clip-path: inset(0 100% 0 0);
   transition: clip-path 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   pointer-events: none;
-  white-space: nowrap;
 }
 
 .contact-link:hover::after {
