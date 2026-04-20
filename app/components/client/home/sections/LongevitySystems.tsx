@@ -431,7 +431,7 @@ export default function LongevitySystems({
             mode="reveal"
           />
 
-          <div className="grid grid-cols-2 lg:flex gap-[10px] sm:gap-30 3xl:gap-[34px] w-fit lg:ml-auto">
+          <div className="grid grid-cols-2 lg:flex gap-[10px] sm:gap-[30px] 3xl:gap-[34px] w-fit lg:ml-auto">
             {[leftCol, rightCol].map((col, colIdx) => (
               <ul key={colIdx} className="flex flex-col lg:w-[380px]">
                 {col.map((cat, itemIndex) => {
