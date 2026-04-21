@@ -22,7 +22,7 @@ type CardWithHandlers = HTMLElement & {
 function BrandCard({ brand }: { brand: Brand }) {
   return (
     <div
-      className="        flex items-center justify-center border border-border-color 
+      className="brand-card flex items-center justify-center border border-border-color 
         w-full h-[136px]
         sm:w-full sm:h-[160px]
         lg:w-[270px] lg:h-[185px]
