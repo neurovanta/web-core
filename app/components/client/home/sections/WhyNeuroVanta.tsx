@@ -48,18 +48,18 @@ function SlideCard({
   index,
   isActive,
   isLast,
-  onClick,
+  onHover,          // ← was onClick
 }: {
   slide: WhySlide;
   index: number;
   isActive: boolean;
   isLast: boolean;
-  onClick: (index: number) => void;
+  onHover: (index: number) => void;  // ← was onClick
 }) {
   return (
     <div
       className="relative h-full cursor-pointer select-none pt-60 3xl:pt-80 px-50 3xl:px-70 pb-70 3xl:pb-[74px]"
-      onClick={() => onClick(index)}
+      onMouseEnter={() => onHover(index)}   // ← was onClick
     >
       {/* Vertical divider — rendered on every slide except the last */}
       {!isLast && <SlideDivider />}
@@ -230,13 +230,13 @@ export default function WhySection({ data }: { data: WhySectionData }) {
             <SwiperSlide key={index}>
               <Reveal variants={moveUpV2} delayRange={index * 0.14}>
                 <div className="!h-[270px] sm:!h-[400px] xl:!h-[520px] 3xl:!h-[571px]">
-                  <SlideCard
-                    slide={slide}
-                    index={index}
-                    isActive={index === activeIndex}
-                    isLast={index === slides.length - 1}
-                    onClick={handleSlideClick}
-                  />
+                <SlideCard
+  slide={slide}
+  index={index}
+  isActive={index === activeIndex}
+  isLast={index === slides.length - 1}
+  onHover={handleSlideClick}   
+/>
                 </div>
               </Reveal>
             </SwiperSlide>

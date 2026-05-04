@@ -85,44 +85,58 @@ export default function Header() {
   const isHidden = useRef(false);
 
   useEffect(() => {
-    const onScroll = () => {
-      const currentY = window.scrollY;
-      const diff = currentY - lastScrollY.current;
-      lastScrollY.current = currentY;
+  const onScroll = () => {
+    const currentY = window.scrollY;
+    const diff = currentY - lastScrollY.current;
+    lastScrollY.current = currentY;
 
-      const el = headerRef.current;
-      if (!el) return;
+    const el = headerRef.current;
+    if (!el) return;
 
-      if (currentY <= 10) {
-        // At the very top — always visible
-        if (isHidden.current) {
-          isHidden.current = false;
-          el.style.transform = "translateY(0%)";
-          el.style.opacity = "1";
-          el.style.pointerEvents = "auto";
-        }
-      } else if (diff > 0) {
-        // Scrolling down — hide
-        if (!isHidden.current) {
-          isHidden.current = true;
-          el.style.transform = "translateY(-130%)";
-          el.style.opacity = "0";
-          el.style.pointerEvents = "none";
-        }
-      } else if (diff < 0) {
-        // Scrolling up — show
-        if (isHidden.current) {
-          isHidden.current = false;
-          el.style.transform = "translateY(0%)";
-          el.style.opacity = "1";
-          el.style.pointerEvents = "auto";
-        }
+    if (currentY <= 10) {
+      // 🔝 Top — initial state
+      el.style.background = "transparent";
+      el.style.backdropFilter = "blur(0px)";
+      el.style.paddingTop = "50px";      // ✅ UPDATED
+      el.style.paddingBottom = "50px";   // optional (keep consistent)
+
+      if (isHidden.current) {
+        isHidden.current = false;
+        el.style.transform = "translateY(0%)";
+        el.style.opacity = "1";
+        el.style.pointerEvents = "auto";
       }
-    };
+    } else if (diff > 0) {
+      // ⬇️ Scroll down — hide
+      if (!isHidden.current) {
+        isHidden.current = true;
+        el.style.transform = "translateY(-130%)";
+        el.style.opacity = "0";
+        el.style.pointerEvents = "none";
+      }
+    } else if (diff < 0) {
+      // ⬆️ Scroll up — show + style
+      if (isHidden.current) {
+        isHidden.current = false;
+        el.style.transform = "translateY(0%)";
+        el.style.opacity = "1";
+        el.style.pointerEvents = "auto";
+      }
 
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+      // ✅ Black glass
+   el.style.background =
+  "linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0) 100%)";
+      el.style.backdropFilter = "blur(20px)";
+
+      // ✅ Reduced padding
+      el.style.paddingTop = "25px";
+      el.style.paddingBottom = "25px";
+    }
+  };
+
+  window.addEventListener("scroll", onScroll, { passive: true });
+  return () => window.removeEventListener("scroll", onScroll);
+}, []);
 
   return (
     <header
@@ -136,7 +150,7 @@ export default function Header() {
         zIndex: 998,
         transform: "translateY(0%)",
         opacity: 1,
-        transition: "transform 0.9s cubic-bezier(0.77,0,0.175,1), opacity 0.6s ease",
+       transition: "all 0.6s cubic-bezier(0.77,0,0.175,1)",
         pointerEvents: "auto",
       }}
     >
