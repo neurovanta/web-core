@@ -184,11 +184,11 @@ export default function WellnessSlider({
       {/* ── Content ───────────────────────────────────────────────────────── */}
       <div className="container relative z-10 h-full flex flex-col py-120 3xl:py-0 3xl:pt-120 3xl:pb-[112px]">
         {/* Top row */}
-        <div className="flex items-center justify-between">
+        <div className="flex items-start justify-between">
           <div className="flex flex-col gap-20">
             <AnimatedHeading
               title={data.heading}
-              className="text-white text-heading max-w-[985px]"
+              className="text-white text-heading max-w-[900px] 2xl:max-w-[985px]"
             />
             <div className="mb-60 md:mb-0">
               <SectionDescription
@@ -198,7 +198,7 @@ export default function WellnessSlider({
             </div>
           </div>
 
-          <div className="hidden sm:flex sm:flex-col items-end gap-20 shrink-0">
+          <div className="hidden min-[870px]:flex min-[870px]:flex-col items-end gap-20 shrink-0 xl:pt-[13px]">
             {data.buttons.map((btn, i) => (
               <Reveal key={btn.label} variants={moveUpV2} delayRange={i * 0.2}>
                 <CustomButton label={btn.label} href={btn.href} variant={1} />
@@ -208,7 +208,7 @@ export default function WellnessSlider({
         </div>
 
         {/* Mobile buttons */}
-        <div className="flex sm:hidden flex-col items-end gap-20 shrink-0">
+        <div className="flex min-[870px]:hidden flex-col items-end gap-20 shrink-0 sm:mt-20">
           {data.buttons.map((btn) => (
             <Reveal key={btn.label} variants={moveUpV2} delayRange={0.2}>
               <CustomButton label={btn.label} href={btn.href} variant={1} />

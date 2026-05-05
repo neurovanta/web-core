@@ -35,7 +35,7 @@
 //         {/* Right - Contact + Search */}
 //         <div className="w-1/3 flex items-center justify-end gap-[6px]">
 //           {/* Contact Button */}
-//           <button className="hidden md:flex bg-primary text-secondary leading-[1.7333] rounded-[50px] text-16 uppercase px-20 py-[3px] cursor-pointer">
+//           <button className="hidden md:flex bg-primary text-secondary leading-[1.7333] rounded-[50px] 5 uppercase px-20 py-[3px] cursor-pointer">
 //             Contact
 //           </button>
 //           <button className="flex md:hidden items-center justify-center w-8 h-8 rounded-full border border-primary cursor-pointer">
@@ -50,9 +50,6 @@
 //     </header>
 //   );
 // }
-
-
-
 
 "use client";
 
@@ -85,62 +82,62 @@ export default function Header() {
   const isHidden = useRef(false);
 
   useEffect(() => {
-  const onScroll = () => {
-    const currentY = window.scrollY;
-    const diff = currentY - lastScrollY.current;
-    lastScrollY.current = currentY;
+    const onScroll = () => {
+      const currentY = window.scrollY;
+      const diff = currentY - lastScrollY.current;
+      lastScrollY.current = currentY;
 
-    const el = headerRef.current;
-    if (!el) return;
+      const el = headerRef.current;
+      if (!el) return;
 
-    if (currentY <= 10) {
-      // 🔝 Top — initial state
-      el.style.background = "transparent";
-      el.style.backdropFilter = "blur(0px)";
-      el.style.paddingTop = "50px";      // ✅ UPDATED
-      el.style.paddingBottom = "50px";   // optional (keep consistent)
+      if (currentY <= 10) {
+        // 🔝 Top — initial state
+        el.style.background = "transparent";
+        el.style.backdropFilter = "blur(0px)";
+        el.style.paddingTop = "50px"; // ✅ UPDATED
+        el.style.paddingBottom = "50px"; // optional (keep consistent)
 
-      if (isHidden.current) {
-        isHidden.current = false;
-        el.style.transform = "translateY(0%)";
-        el.style.opacity = "1";
-        el.style.pointerEvents = "auto";
+        if (isHidden.current) {
+          isHidden.current = false;
+          el.style.transform = "translateY(0%)";
+          el.style.opacity = "1";
+          el.style.pointerEvents = "auto";
+        }
+      } else if (diff > 0) {
+        // ⬇️ Scroll down — hide
+        if (!isHidden.current) {
+          isHidden.current = true;
+          el.style.transform = "translateY(-130%)";
+          el.style.opacity = "0";
+          el.style.pointerEvents = "none";
+        }
+      } else if (diff < 0) {
+        // ⬆️ Scroll up — show + style
+        if (isHidden.current) {
+          isHidden.current = false;
+          el.style.transform = "translateY(0%)";
+          el.style.opacity = "1";
+          el.style.pointerEvents = "auto";
+        }
+
+        // ✅ Black glass
+        el.style.background =
+          "linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0) 100%)";
+        el.style.backdropFilter = "blur(20px)";
+
+        // ✅ Reduced padding
+        el.style.paddingTop = "25px";
+        el.style.paddingBottom = "25px";
       }
-    } else if (diff > 0) {
-      // ⬇️ Scroll down — hide
-      if (!isHidden.current) {
-        isHidden.current = true;
-        el.style.transform = "translateY(-130%)";
-        el.style.opacity = "0";
-        el.style.pointerEvents = "none";
-      }
-    } else if (diff < 0) {
-      // ⬆️ Scroll up — show + style
-      if (isHidden.current) {
-        isHidden.current = false;
-        el.style.transform = "translateY(0%)";
-        el.style.opacity = "1";
-        el.style.pointerEvents = "auto";
-      }
+    };
 
-      // ✅ Black glass
-   el.style.background =
-  "linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0) 100%)";
-      el.style.backdropFilter = "blur(20px)";
-
-      // ✅ Reduced padding
-      el.style.paddingTop = "25px";
-      el.style.paddingBottom = "25px";
-    }
-  };
-
-  window.addEventListener("scroll", onScroll, { passive: true });
-  return () => window.removeEventListener("scroll", onScroll);
-}, []);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   return (
     <header
-    className="pt-[20px] lg:pt-[40px] 3xl:pt-[50px]"
+      className="pt-[20px] lg:pt-[40px] 3xl:pt-[50px]"
       ref={headerRef}
       style={{
         position: "fixed",
@@ -150,12 +147,11 @@ export default function Header() {
         zIndex: 998,
         transform: "translateY(0%)",
         opacity: 1,
-       transition: "all 0.6s cubic-bezier(0.77,0,0.175,1)",
+        transition: "all 0.6s cubic-bezier(0.77,0,0.175,1)",
         pointerEvents: "auto",
       }}
     >
       <div className="flex items-center justify-between w-full container">
-
         {/* Left - Hamburger */}
         <motion.div
           className="w-1/5 md:w-1/3 flex items-center"
@@ -197,7 +193,7 @@ export default function Header() {
           animate={animateIn ? "visible" : "hidden"}
           variants={dropDown(0.18)}
         >
-          <button className="hidden md:flex bg-primary text-secondary leading-[1.7333] rounded-[50px] text-16 uppercase px-20 py-[3px] cursor-pointer">
+          <button className="hidden md:flex bg-primary text-secondary leading-[1.7333] rounded-[50px] text-15 uppercase px-20 py-[3px] cursor-pointer 3xl:w-[109px] 3xl:h-[32px]">
             Contact
           </button>
           <button className="flex md:hidden items-center justify-center w-8 h-8 rounded-full border border-primary cursor-pointer">
@@ -207,7 +203,6 @@ export default function Header() {
             <IoSearch className="w-auto h-[20px] text-primary" />
           </button>
         </motion.div>
-
       </div>
     </header>
   );

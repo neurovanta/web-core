@@ -197,17 +197,17 @@ export const whyNeuroVantaData = {
     },
     {
       icon: "/assets/images/home/why-neuro/2.svg",
-      title: "Science-Driven Longevity Systems",
+      title: "Bespoke Wellness Environments",
       description: "Fully customized wellness and recovery ecosystems—integrating technology, design, and human performance.",
     },
     {
       icon: "/assets/images/home/why-neuro/3.svg",
-      title: "Science-Driven Longevity Systems",
+      title: "End-to-End Expertise Across Industries",
       description: "Fully customized wellness and recovery ecosystems—integrating technology, design, and human performance.",
     },
     {
       icon: "/assets/images/home/why-neuro/4.svg",
-      title: "Science-Driven Longevity Systems",
+      title: "Scalable Across Environments",
       description: "Fully customized wellness and recovery ecosystems—integrating technology, design, and human performance.",
     },
   ],
