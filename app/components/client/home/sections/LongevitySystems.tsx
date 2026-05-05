@@ -458,7 +458,7 @@ export default function LongevitySystems({
                           onMouseEnter={() => handleCategoryHover(globalIdx)}
                           className="group w-full text-left bg-none border-none cursor-pointer"
                         >
-                          <div className="flex items-center gap-[6px] justify-between relative overflow-hidden min-h-[60px]">
+                          <div className="flex items-center gap-[6px] justify-between relative overflow-hidden max-h-[49px]">
                             <AnimatePresence>
                               {isActive && (
                                 <motion.span
@@ -507,7 +507,7 @@ export default function LongevitySystems({
                                     alt="Arrow right tip"
                                     width={250}
                                     height={250}
-                                    className="h-[18px] w-auto object-contain pointer-events-none"
+                                    className="h-[22px] w-auto object-contain pointer-events-none"
                                   />
                                 </motion.div>
                               )}

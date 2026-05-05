@@ -50,12 +50,12 @@ export function StatRow({
           )}
         </AnimatePresence>
 
-        <div className="relative z-10 flex items-center gap-30 md:gap-50 min-h-[60px] md:min-h-[70px]">
+        <div className="relative z-10 flex items-center gap-30 md:gap-50 2xl:gap-0 min-h-[60px] md:min-h-[70px]">
           {/* Number */}
           <span className="text-heading text-secondary shrink-0">{number}</span>
 
           {/* Label */}
-          <span className="flex-1 text-subHeading tracking-[-0.03em] text-secondary lg:pl-[300px] 3xl:pl-[350px]">
+          <span className="flex-1 text-subHeading tracking-[-0.03em] text-secondary lg:pl-[300px] 3xl:pl-[347px]">
             {label}
           </span>
 
@@ -98,18 +98,20 @@ export default function HeroStats() {
       <div className="container flex flex-col">
         {/* Left col */}
         <div className="flex flex-col md:mb-120">
-          <div>
+          <div className="w-ful">
             <AnimatedHeading
               title={title}
               className="text-secondary text-heading mb-20 md:mb-50 max-w-[1313px]"
               mode="reveal"
               delay={0.2}
             />
-            <SectionDescription
-              text={description}
-              className="text-19 leading-[1.47] text-secondary max-w-[730px] tracking-[-0.03em]"
-              as="p"
-            />
+            <div className="max-w-[820px] 3xl:max-w-[735px]">
+              <SectionDescription
+                text={description}
+                className="text-19 leading-[1.47] text-secondary tracking-[-0.03em]"
+                as="p"
+              />
+            </div>
           </div>
         </div>
 

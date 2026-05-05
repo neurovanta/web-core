@@ -31,7 +31,7 @@ const Index = () => {
         <div style={{ position: "sticky", top: 0, height: "100vh", zIndex: 3 }}>
           <WellnessSlider
             data={wellnessSliderData2}
-            descriptionMaxWidth="max-w-[65ch]"
+            descriptionMaxWidth="max-w-[60ch] 2xl:max-w-[65ch]"
           />
         </div>
       </div>
