@@ -52,7 +52,7 @@ export function StatRow({
 
         <div className="relative z-10 flex items-center gap-30 md:gap-50 2xl:gap-0 min-h-[60px] md:min-h-[70px]">
           {/* Number */}
-          <span className="text-heading text-secondary shrink-0">{number}</span>
+          <span className="text-heading text-secondary shrink-0 min-w-[94px] 3xl:min-w-[104px]">{number}</span>
 
           {/* Label */}
           <span className="flex-1 text-subHeading tracking-[-0.03em] text-secondary lg:pl-[300px] 3xl:pl-[347px]">
