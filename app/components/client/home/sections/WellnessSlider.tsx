@@ -24,7 +24,7 @@ export type WellnessSliderData = {
 };
 
 const AUTOPLAY_DELAY = 3000;
-const TRANSITION_DURATION = 700; // ms — must match CSS transition below
+const TRANSITION_DURATION = 700;
 
 function preloadImage(src: string): void {
   if (!src) return;
@@ -40,19 +40,17 @@ export default function WellnessSlider({
   descriptionMaxWidth?: string;
 }) {
   const [activeIndex, setActiveIndex] = useState(0);
-  // Tracks which image is "settled" in the base layer after the crossfade finishes
   const [baseIndex, setBaseIndex] = useState(0);
-  // Controls opacity of the incoming (top) layer: false = 0, true = 1
   const [topVisible, setTopVisible] = useState(false);
-  // The image currently fading in on top
   const [topIndex, setTopIndex] = useState<number | null>(null);
 
   const { slides } = data;
   const swiperRef = useRef<SwiperType | null>(null);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const settleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // ↓ NEW: prevents onSlideChange from hijacking activeIndex on programmatic scrolls
+  const isProgrammaticScrollRef = useRef(false);
 
-  // ── Preload neighbours whenever active index changes ──────────────────────
   useEffect(() => {
     const next = (activeIndex + 1) % slides.length;
     const prev = (activeIndex - 1 + slides.length) % slides.length;
@@ -60,7 +58,6 @@ export default function WellnessSlider({
     preloadImage(slides[prev].image);
   }, [activeIndex, slides]);
 
-  // ── Preload ALL images once on mount ─────────────────────────────────────
   useEffect(() => {
     slides.forEach((s) => preloadImage(s.image));
   }, [slides]);
@@ -68,15 +65,11 @@ export default function WellnessSlider({
   const transitionTo = useCallback(
     (nextIndex: number) => {
       if (nextIndex === baseIndex) return;
-
-      // Clear any pending settle
       if (settleTimerRef.current) clearTimeout(settleTimerRef.current);
 
       setTopIndex(nextIndex);
       setTopVisible(false);
 
-      // One microtask tick to ensure the top layer renders at opacity-0 first,
-      // then trigger the fade-in.
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
           setTopVisible(true);
@@ -87,7 +80,7 @@ export default function WellnessSlider({
         setBaseIndex(nextIndex);
         setTopVisible(false);
         setTopIndex(null);
-      }, TRANSITION_DURATION + 50); // +50ms buffer
+      }, TRANSITION_DURATION + 50);
     },
     [baseIndex],
   );
@@ -96,20 +89,48 @@ export default function WellnessSlider({
     transitionTo(activeIndex);
   }, [activeIndex, transitionTo]);
 
-  // ── Swiper visibility helper ──────────────────────────────────────────────
-  const isIndexVisible = useCallback((index: number) => {
+  // ── Swiper helpers ────────────────────────────────────────────────────────
+
+  const getSlidesPerView = useCallback((): number => {
     const swiper = swiperRef.current;
-    if (!swiper) return true;
-    const spv =
-      typeof swiper.params.slidesPerView === "number"
-        ? swiper.params.slidesPerView
-        : 1;
-    const start = swiper.activeIndex;
-    const end = start + Math.floor(spv) - 1;
-    return index >= start && index <= end;
+    if (!swiper) return 1;
+    const spv = swiper.params.slidesPerView;
+    return typeof spv === "number" ? Math.floor(spv) : 1;
   }, []);
 
+  const isIndexVisible = useCallback(
+    (index: number): boolean => {
+      const swiper = swiperRef.current;
+      if (!swiper) return true;
+      const spv = getSlidesPerView();
+      const start = swiper.activeIndex;
+      const end = start + spv - 1;
+      return index >= start && index <= end;
+    },
+    [getSlidesPerView],
+  );
+
+  const ensureVisible = useCallback(
+    (index: number) => {
+      const swiper = swiperRef.current;
+      if (!swiper || isIndexVisible(index)) return;
+
+      const spv = getSlidesPerView();
+      const start = swiper.activeIndex;
+
+      isProgrammaticScrollRef.current = true;
+
+      if (index < start) {
+        swiper.slideTo(index);
+      } else {
+        swiper.slideTo(index - spv + 1);
+      }
+    },
+    [isIndexVisible, getSlidesPerView],
+  );
+
   // ── Autoplay ──────────────────────────────────────────────────────────────
+
   const startAutoplay = useCallback(() => {
     if (timerRef.current) clearTimeout(timerRef.current);
     timerRef.current = setTimeout(() => {
@@ -117,15 +138,16 @@ export default function WellnessSlider({
         const next = prev + 1 >= slides.length ? 0 : prev + 1;
         requestAnimationFrame(() => {
           if (next === 0) {
+            isProgrammaticScrollRef.current = true;
             swiperRef.current?.slideTo(0);
-          } else if (!isIndexVisible(next)) {
-            swiperRef.current?.slideTo(next);
+          } else {
+            ensureVisible(next);
           }
         });
         return next;
       });
     }, AUTOPLAY_DELAY);
-  }, [slides.length, isIndexVisible]);
+  }, [slides.length, ensureVisible]);
 
   useEffect(() => {
     startAutoplay();
@@ -134,7 +156,6 @@ export default function WellnessSlider({
     };
   }, [activeIndex, startAutoplay]);
 
-  // Cleanup settle timer on unmount
   useEffect(() => {
     return () => {
       if (settleTimerRef.current) clearTimeout(settleTimerRef.current);
@@ -144,20 +165,14 @@ export default function WellnessSlider({
   const handleSlideClick = (index: number) => {
     if (timerRef.current) clearTimeout(timerRef.current);
     setActiveIndex(index);
-    requestAnimationFrame(() => {
-      if (!isIndexVisible(index)) {
-        swiperRef.current?.slideTo(index);
-      }
-    });
+    requestAnimationFrame(() => ensureVisible(index));
     startAutoplay();
   };
 
   return (
     // <section className="relative w-full h-[90vh] sm:h-[80vh] xl:h-[92vh] overflow-hidden">
     <section className="relative w-full h-dvh overflow-hidden">
-      {/* ── Background layers ─────────────────────────────────────────────── */}
-
-      {/* Base layer — always fully opaque, holds the "settled" image */}
+      {/* Base layer */}
       <div
         className="absolute inset-0 bg-cover bg-center"
         style={{
@@ -167,7 +182,7 @@ export default function WellnessSlider({
         }}
       />
 
-      {/* Top layer — fades in over base, then gets replaced */}
+      {/* Top layer */}
       {topIndex !== null && (
         <div
           className="absolute inset-0 bg-cover bg-center"
@@ -181,9 +196,7 @@ export default function WellnessSlider({
         />
       )}
 
-      {/* ── Content ───────────────────────────────────────────────────────── */}
       <div className="container relative z-10 h-full flex flex-col py-120 3xl:py-0 3xl:pt-120 3xl:pb-[112px]">
-        {/* Top row */}
         <div className="flex items-start justify-between">
           <div className="flex flex-col gap-20">
             <AnimatedHeading
@@ -200,14 +213,13 @@ export default function WellnessSlider({
 
           <div className="hidden min-[870px]:flex min-[870px]:flex-col items-end gap-20 shrink-0 xl:pt-[13px]">
             {data.buttons.map((btn, i) => (
-              <Reveal key={btn.label} variants={moveUpV2} delayRange={i * 0.2}>
+              <Reveal key={btn.label} variants={moveUpV2} delayRange={i * 0.12}>
                 <CustomButton label={btn.label} href={btn.href} variant={1} />
               </Reveal>
             ))}
           </div>
         </div>
 
-        {/* Mobile buttons */}
         <div className="flex min-[870px]:hidden flex-col items-end gap-20 shrink-0 sm:mt-20">
           {data.buttons.map((btn) => (
             <Reveal key={btn.label} variants={moveUpV2} delayRange={0.2}>
@@ -218,13 +230,18 @@ export default function WellnessSlider({
 
         <div className="flex-1" />
 
-        {/* ── Slide strip ─────────────────────────────────────────────────── */}
         <div className="[&_.swiper-wrapper]:items-end">
           <Swiper
             onSwiper={(swiper) => {
               swiperRef.current = swiper;
             }}
             onSlideChange={(swiper) => {
+              // Programmatic scroll — don't touch activeIndex
+              if (isProgrammaticScrollRef.current) {
+                isProgrammaticScrollRef.current = false;
+                return;
+              }
+              // User swiped manually → follow leftmost visible slide
               requestAnimationFrame(() => {
                 setActiveIndex(swiper.activeIndex);
               });
@@ -263,9 +280,7 @@ export default function WellnessSlider({
                           {slide.title}
                         </span>
 
-                        {/* Progress line */}
                         <div className="relative w-full h-[2px] overflow-hidden">
-                          {/* Base gradient line */}
                           <div
                             className="absolute inset-0 opacity-60 h-px"
                             style={{
@@ -273,7 +288,6 @@ export default function WellnessSlider({
                                 "linear-gradient(90deg, #E2D3C3 0%, rgba(226, 211, 195, 0.1) 100%)",
                             }}
                           />
-                          {/* Active animated line */}
                           {isActive && (
                             <div
                               key={`progress-${activeIndex}`}
