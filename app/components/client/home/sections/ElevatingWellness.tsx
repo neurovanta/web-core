@@ -55,8 +55,8 @@ export default function ElevatingWellness() {
                   <li
                     onMouseEnter={() => setActiveIndex(index)}
                     onClick={() => setActiveIndex(index)}
-                    className={`border-b border-[#c9b8a8] cursor-pointer transition-all duration-400 ${
-                      isActive ? "xl:px-30" : "px-0"
+                    className={`border-b border-[#c9b8a8] cursor-pointer transition-all duration-400 pr-30 ${
+                      isActive ? "xl:pl-30" : "pl-0"
                     }`}
                   >
                     <div className="flex items-center justify-between py-25">
@@ -83,8 +83,10 @@ export default function ElevatingWellness() {
                             alt="arrow"
                             width={50}
                             height={50}
-                            className={`shrink-0 transition-all duration-200 w-auto h-[50px] ${
-                              isActive ? "opacity-100" : "opacity-0"
+                            className={`shrink-0 transition-all duration-300 w-auto h-[50px] ${
+                              isActive
+                                ? "opacity-100 translate-x-0 translate-y-0"
+                                : "opacity-0 -translate-x-4 translate-y-4"
                             }`}
                           />
                         </div>
@@ -97,11 +99,12 @@ export default function ElevatingWellness() {
                       }`}
                     >
                       <motion.div
-                      key={activeIndex}
-                      initial={{  y: 30 }}
-                      animate={{  y: 0 }}
-                      transition={{ duration: 0.6 }}
-                       className="px-30 py-20">
+                        key={activeIndex}
+                        initial={{ y: 30 }}
+                        animate={{ y: 0 }}
+                        transition={{ duration: 0.6 }}
+                        className="px-30 py-20"
+                      >
                         <Image
                           src={item.image}
                           alt={item.label}
