@@ -1,3 +1,4 @@
+// ─── Full corrected component ─────────────────────────────────────────────────
 "use client";
 
 import { useEffect, useRef, useState, useCallback } from "react";
@@ -10,8 +11,6 @@ import Reveal from "../../animations/RevealItemsOneByOneAnimation";
 import { moveUp, moveUpV2 } from "../../animations/motionVarinats";
 import { motion } from "framer-motion";
 
-// ─── Types ───────────────────────────────────────────────────────────────────
-
 export type WhySlide = {
   icon: string;
   title: string;
@@ -23,11 +22,7 @@ export type WhySectionData = {
   slides: WhySlide[];
 };
 
-// ─── Constants ───────────────────────────────────────────────────────────────
-
 const AUTOPLAY_DELAY = 3000;
-
-// ─── Vertical divider rendered between slides ────────────────────────────────
 
 function SlideDivider() {
   return (
@@ -41,31 +36,26 @@ function SlideDivider() {
   );
 }
 
-// ─── Single slide card ───────────────────────────────────────────────────────
-
 function SlideCard({
   slide,
   index,
   isActive,
   isLast,
-  onHover,          // ← was onClick
+  onHover,
 }: {
   slide: WhySlide;
   index: number;
   isActive: boolean;
   isLast: boolean;
-  onHover: (index: number) => void;  // ← was onClick
+  onHover: (index: number) => void;
 }) {
   return (
     <div
       className="relative h-full cursor-pointer select-none pt-60 3xl:pt-80 px-50 3xl:px-70 pb-70 3xl:pb-[74px]"
-      onMouseEnter={() => onHover(index)}   // ← was onClick
+      onMouseEnter={() => onHover(index)}
     >
-      {/* Vertical divider — rendered on every slide except the last */}
       {!isLast && <SlideDivider />}
-
       <div className="flex flex-col justify-between h-full">
-        {/* Icon — top */}
         <div>
           <Image
             src={slide.icon}
@@ -75,8 +65,6 @@ function SlideCard({
             className="h-[70px] w-auto"
           />
         </div>
-
-        {/* Text — bottom */}
         <div>
           <motion.p
             key={`${index}-${isActive}`}
@@ -89,15 +77,13 @@ function SlideCard({
           >
             {slide.title}
           </motion.p>
-
-          {/* Description expands only on active */}
           <div
             className={`overflow-hidden transition-all duration-500 ${
               isActive ? "opacity-100" : "opacity-0 max-h-0"
             }`}
           >
             <motion.p
-              key={`${index}-${isActive}`}
+              key={`${index}-${isActive}-desc`}
               initial="hidden"
               animate="show"
               variants={moveUp(0)}
@@ -112,49 +98,65 @@ function SlideCard({
   );
 }
 
-// ─── Main component ───────────────────────────────────────────────────────────
-
 export default function WhySection({ data }: { data: WhySectionData }) {
   const { heading, slides } = data;
   const swiperRef = useRef<SwiperType | null>(null);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isHoveringRef = useRef(false);
+  // ↓ NEW: flag to suppress onSlideChange during programmatic scrolls
+  const isProgrammaticScrollRef = useRef(false);
   const [activeIndex, setActiveIndex] = useState(0);
 
-  // Check if a slide index is visible in the current swiper viewport
-  const isIndexVisible = useCallback((index: number) => {
+  const getSlidesPerView = useCallback((): number => {
     const swiper = swiperRef.current;
-    if (!swiper) return true;
-    const spv =
-      typeof swiper.params.slidesPerView === "number"
-        ? swiper.params.slidesPerView
-        : 1;
-    const start = swiper.activeIndex;
-    const end = start + Math.floor(spv) - 1;
-    return index >= start && index <= end;
+    if (!swiper) return 1;
+    const spv = swiper.params.slidesPerView;
+    return typeof spv === "number" ? Math.floor(spv) : 1;
   }, []);
 
-  // Scroll swiper so active slide is visible
+  const isIndexVisible = useCallback(
+    (index: number): boolean => {
+      const swiper = swiperRef.current;
+      if (!swiper) return true;
+      const spv = getSlidesPerView();
+      const start = swiper.activeIndex;
+      const end = start + spv - 1;
+      return index >= start && index <= end;
+    },
+    [getSlidesPerView],
+  );
+
   const ensureVisible = useCallback(
     (index: number) => {
       const swiper = swiperRef.current;
       if (!swiper) return;
-      if (!isIndexVisible(index)) {
+      if (isIndexVisible(index)) return; // already visible — don't touch the swiper
+
+      const spv = getSlidesPerView();
+      const start = swiper.activeIndex;
+
+      isProgrammaticScrollRef.current = true; // ← suppress onSlideChange
+
+      if (index < start) {
+        // Active card slid off the LEFT — bring it to the left edge
         swiper.slideTo(index);
+      } else {
+        // Active card slid off the RIGHT — bring it to the right edge
+        swiper.slideTo(index - spv + 1);
       }
     },
-    [isIndexVisible],
+    [isIndexVisible, getSlidesPerView],
   );
 
-  // Start (or restart) the autoplay timer
   const startAutoplay = useCallback(() => {
     if (timerRef.current) clearTimeout(timerRef.current);
     timerRef.current = setTimeout(() => {
-      if (isHoveringRef.current) return; // paused on hover
+      if (isHoveringRef.current) return;
       setActiveIndex((prev) => {
         const next = (prev + 1) % slides.length;
         requestAnimationFrame(() => {
           if (next === 0) {
+            isProgrammaticScrollRef.current = true;
             swiperRef.current?.slideTo(0);
           } else {
             ensureVisible(next);
@@ -165,7 +167,6 @@ export default function WhySection({ data }: { data: WhySectionData }) {
     }, AUTOPLAY_DELAY);
   }, [slides.length, ensureVisible]);
 
-  // Re-arm timer whenever activeIndex changes
   useEffect(() => {
     startAutoplay();
     return () => {
@@ -173,10 +174,10 @@ export default function WhySection({ data }: { data: WhySectionData }) {
     };
   }, [activeIndex, startAutoplay]);
 
-  const handleSlideClick = (index: number) => {
+  const handleSlideHover = (index: number) => {
     setActiveIndex(index);
     requestAnimationFrame(() => ensureVisible(index));
-    startAutoplay(); // restart timer from zero on manual click
+    startAutoplay();
   };
 
   const handleMouseEnter = () => {
@@ -191,7 +192,6 @@ export default function WhySection({ data }: { data: WhySectionData }) {
 
   return (
     <section className="relative w-full bg-primary pt-120 overflow-hidden">
-      {/* Heading */}
       <div className="container">
         <AnimatedHeading
           title={heading}
@@ -205,15 +205,20 @@ export default function WhySection({ data }: { data: WhySectionData }) {
             "linear-gradient(270deg, rgba(251, 247, 244, 0.1) 0%, #FBF7F4 48.08%, rgba(251, 247, 244, 0.1) 100%)",
         }}
         className="w-full h-[1px]"
-      ></div>
+      />
 
-      {/* Slider */}
       <div onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
         <Swiper
           onSwiper={(swiper) => {
             swiperRef.current = swiper;
           }}
           onSlideChange={(swiper) => {
+            // ↓ If we triggered this slide programmatically, ignore it
+            if (isProgrammaticScrollRef.current) {
+              isProgrammaticScrollRef.current = false;
+              return;
+            }
+            // User swiped manually → follow the leftmost visible slide
             setActiveIndex(swiper.activeIndex);
           }}
           loop={false}
@@ -230,13 +235,13 @@ export default function WhySection({ data }: { data: WhySectionData }) {
             <SwiperSlide key={index}>
               <Reveal variants={moveUpV2} delayRange={index * 0.14}>
                 <div className="!h-[270px] sm:!h-[400px] xl:!h-[520px] 3xl:!h-[571px]">
-                <SlideCard
-  slide={slide}
-  index={index}
-  isActive={index === activeIndex}
-  isLast={index === slides.length - 1}
-  onHover={handleSlideClick}   
-/>
+                  <SlideCard
+                    slide={slide}
+                    index={index}
+                    isActive={index === activeIndex}
+                    isLast={index === slides.length - 1}
+                    onHover={handleSlideHover}
+                  />
                 </div>
               </Reveal>
             </SwiperSlide>
