@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="355" height="347" viewBox="0 0 355 347" fill="none">
+<style>
+.p  { fill: none; stroke: #51463E; stroke-width: 2; }
+.r  { stroke-linecap: round; }
+.s  { stroke-linecap: square; }
+
+/* Total cycle: 2.6s draw + 2s hold + 0.4s reset = 5s
+   2.6/5 = 52% draw window
+   walls:    0  → 25%
+   brackets: 25% → 42%
+   flame:    42% → 52%
+   hold:     52% → 92%
+   reset:    92% → 100% */
+
+@keyframes d-wall {
+  0%    { stroke-dashoffset: var(--len) }
+  25%   { stroke-dashoffset: 0 }
+  92%   { stroke-dashoffset: 0 }
+  100%  { stroke-dashoffset: var(--len) }
+}
+@keyframes d-bracket {
+  0%, 25%  { stroke-dashoffset: var(--len) }
+  42%      { stroke-dashoffset: 0 }
+  92%      { stroke-dashoffset: 0 }
+  100%     { stroke-dashoffset: var(--len) }
+}
+@keyframes d-flame {
+  0%, 42%  { stroke-dashoffset: 800 }
+  52%      { stroke-dashoffset: 0 }
+  92%      { stroke-dashoffset: 0 }
+  100%     { stroke-dashoffset: 800 }
+}
+
+.aw1 { --len: 285; stroke-dasharray: 285; stroke-dashoffset: 285; animation: d-wall    5s linear infinite; }
+.aw2 { --len: 61;  stroke-dasharray: 61;  stroke-dashoffset: 61;  animation: d-wall    5s linear infinite; }
+.aw3 { --len: 58;  stroke-dasharray: 58;  stroke-dashoffset: 58;  animation: d-wall    5s linear infinite; }
+.aw4 { --len: 286; stroke-dasharray: 286; stroke-dashoffset: 286; animation: d-wall    5s linear infinite; }
+.ab1 { --len: 195; stroke-dasharray: 195; stroke-dashoffset: 195; animation: d-bracket 5s linear infinite; }
+.ab2 { --len: 195; stroke-dasharray: 195; stroke-dashoffset: 195; animation: d-bracket 5s linear infinite; }
+.af  { stroke-dasharray: 800; stroke-dashoffset: 800;             animation: d-flame   5s linear infinite; }
+</style>
+
+<!-- STATIC: floor base line -->
+<path class="p r" d="M353.459 345.414C224.56 345.414 129.899 345.414 1 345.414"/>
+
+<!-- STATIC: door/window rectangle -->
+<path class="p r" d="M226.104 345.11C226.104 342.944 226.104 343.588 226.104 342.944C226.104 297.654 226.561 255.373 226.104 210.097C152.974 210.097 160.474 210.097 123.106 210.097C123.012 253.775 123.092 301.432 123.106 345.11"/>
+
+<!-- ANIMATED: left wall vertical -->
+<path class="p s aw1" d="M61.9736 343.914C61.9736 255.605 61.867 163.157 61.867 74.8473C61.867 73.5046 61.867 59.4142 61.867 59.4142"/>
+
+<!-- ANIMATED: left top horizontal -->
+<path class="p s aw2" d="M61.9736 59.4147C62.5707 59.4147 88.4125 59.4136 122.974 59.4142"/>
+
+<!-- ANIMATED: right top horizontal -->
+<path class="p s aw3" d="M230.474 59.4142C259.506 59.4141 282.061 59.4157 287.974 59.4142"/>
+
+<!-- ANIMATED: right wall vertical -->
+<path class="p s aw4" d="M288.125 345.159V339.439C288.125 250.74 287.974 148.113 287.974 59.4142"/>
+
+<!-- ANIMATED: left bracket -->
+<path class="p r ab1" d="M16.3677 170.145C16.3677 226.224 16.3585 285.361 16.3585 341.441V345.145M16.8914 170.145L32.3585 170.145"/>
+
+<!-- ANIMATED: right bracket -->
+<path class="p r ab2" d="M331.35 170.145C331.35 226.224 331.359 285.361 331.359 341.441V345.145M330.859 170.145L316.359 170.145"/>
+
+<!-- ANIMATED: flame/leaf shape -->
+<path class="p af" d="M199 46.9281C208.191 40.2946 219.337 36.4038 231.337 36.4038H233.709V38.7763C233.709 70.6531 209.443 96.7316 179.142 98.0317V98.0886H174.397V98.0317C144.095 96.7316 119.83 70.6531 119.83 38.7763V36.4038H122.202C134.202 36.4038 145.348 40.2994 154.539 46.9281C155.398 31.0135 162.606 15.5733 175.09 3.09394L176.769 1.41421L178.449 3.09394C190.929 15.578 198.141 31.0135 199 46.9281Z"/>
+</svg>
