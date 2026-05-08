@@ -218,13 +218,13 @@ export const elevatingWellnessData = {
   heading: "ELEVATING WELLNESS ACROSS INDUSTRIES",
 
   items: [
-    { id: 1, label: "Longevity Clinics", image: "/assets/images/home/elevating-wellness/1.svg" },
-    { id: 2, label: "Wellness & Medical Resorts", image: "/assets/images/home/elevating-wellness/2.svg" },
-    { id: 3, label: "Premium Gyms & Sports Clubs", image: "/assets/images/home/elevating-wellness/3.svg" },
-    { id: 4, label: "Luxury Hotels & Spas", image: "/assets/images/home/elevating-wellness/4.svg" },
-    { id: 5, label: "Corporate Wellness Spaces", image: "/assets/images/home/elevating-wellness/5.svg" },
-    { id: 6, label: "Private Clients & Residences", image: "/assets/images/home/elevating-wellness/6.svg" },
-    { id: 7, label: "Hospitals & Rehabilitation Centres", image: "/assets/images/home/elevating-wellness/7.svg" },
+    { id: 1, label: "Longevity Clinics", image: "/assets/images/home/elevating-wellness/1-anim.svg" },
+    { id: 2, label: "Wellness & Medical Resorts", image: "/assets/images/home/elevating-wellness/2-anim.svg" },
+    { id: 3, label: "Premium Gyms & Sports Clubs", image: "/assets/images/home/elevating-wellness/3-anim.svg" },
+    { id: 4, label: "Luxury Hotels & Spas", image: "/assets/images/home/elevating-wellness/4-anim.svg" },
+    { id: 5, label: "Corporate Wellness Spaces", image: "/assets/images/home/elevating-wellness/5-anim.svg" },
+    { id: 6, label: "Private Clients & Residences", image: "/assets/images/home/elevating-wellness/6-anim.svg" },
+    { id: 7, label: "Hospitals & Rehabilitation Centres", image: "/assets/images/home/elevating-wellness/7-anim.svg" },
   ],
 };
 
