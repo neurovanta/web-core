@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="364" height="366" viewBox="0 0 364 366" fill="none">
+<style>
+.p{fill:none;stroke:#51463E;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+@keyframes draw-in{
+  0%{stroke-dashoffset:0}
+  22.5%{stroke-dashoffset:0}
+  22.51%{stroke-dashoffset:var(--dl)}
+  75%{stroke-dashoffset:0}
+  100%{stroke-dashoffset:0}
+}
+@keyframes d-ph{
+  0%{stroke-dashoffset:0}
+  22.5%{stroke-dashoffset:0}
+  22.51%{stroke-dashoffset:56}
+  75%{stroke-dashoffset:0}
+  100%{stroke-dashoffset:0}
+}
+@keyframes d-pv{
+  0%{stroke-dashoffset:0}
+  22.5%{stroke-dashoffset:0}
+  22.51%{stroke-dashoffset:56}
+  75%{stroke-dashoffset:0}
+  100%{stroke-dashoffset:0}
+}
+.p3{stroke-dasharray:460;stroke-dashoffset:0;--dl:460;animation:draw-in 7.1s linear infinite;}
+.p4{stroke-dasharray:56;stroke-dashoffset:0;animation:d-pv 7.1s linear infinite;}
+.p5{stroke-dasharray:56;stroke-dashoffset:0;animation:d-ph 7.1s linear infinite;}
+.p6{stroke-dasharray:490;stroke-dashoffset:0;--dl:490;animation:draw-in 7.1s linear infinite;}
+</style>
+<path class="p" d="M333.452 144.974H30.9062V354.117H333.452V144.974Z"/>
+<path class="p" d="M352.364 106.948H12V144.974H352.364V106.948Z"/>
+<path class="p p3" d="M238.908 11.8833H125.453V106.948H238.908V11.8833Z"/>
+<path class="p p4" d="M182.18 31.728V87.1033"/>
+<path class="p p5" d="M209.717 59.4155H154.645"/>
+<path class="p p6" d="M135 354.117V202.013H229.545V354.117"/>
+</svg>
