@@ -1,28 +1,33 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="341" height="355" viewBox="0 0 341 355" fill="none">
 <style>
 @keyframes d1 {
-  0%    { stroke-dashoffset: 232 }
-  20%   { stroke-dashoffset: 0 }
-  91.6% { stroke-dashoffset: 0 }
-  100%  { stroke-dashoffset: 232 }
+  0%     { stroke-dashoffset: 0 }
+  22.53% { stroke-dashoffset: 0 }
+  22.54% { stroke-dashoffset: 232 }
+  50%    { stroke-dashoffset: 0 }
+  100%   { stroke-dashoffset: 0 }
 }
 @keyframes d2 {
-  0%, 20%  { stroke-dashoffset: 155 }
-  40%      { stroke-dashoffset: 0 }
-  91.6%    { stroke-dashoffset: 0 }
-  100%     { stroke-dashoffset: 155 }
+  0%     { stroke-dashoffset: 0 }
+  22.53% { stroke-dashoffset: 0 }
+  22.54% { stroke-dashoffset: 155 }
+  50%    { stroke-dashoffset: 155 }
+  64%    { stroke-dashoffset: 0 }
+  100%   { stroke-dashoffset: 0 }
 }
 @keyframes d3 {
-  0%, 38%  { stroke-dashoffset: 340 }
-  58.3%    { stroke-dashoffset: 0 }
-  91.6%    { stroke-dashoffset: 0 }
-  100%     { stroke-dashoffset: 340 }
+  0%     { stroke-dashoffset: 0 }
+  22.53% { stroke-dashoffset: 0 }
+  22.54% { stroke-dashoffset: 340 }
+  64%    { stroke-dashoffset: 340 }
+  85%    { stroke-dashoffset: 0 }
+  100%   { stroke-dashoffset: 0 }
 }
 
 .st { fill: none; stroke: #51463E; stroke-width: 2; stroke-linecap: round; }
-.a1 { stroke-dasharray: 232; stroke-dashoffset: 232; animation: d1 6s linear infinite; }
-.a2 { stroke-dasharray: 155; stroke-dashoffset: 155; animation: d2 6s linear infinite; }
-.a3 { stroke-dasharray: 340; stroke-dashoffset: 340; animation: d3 6s linear infinite; }
+.a1 { stroke-dasharray: 232; stroke-dashoffset: 0; animation: d1 7.1s linear infinite; }
+.a2 { stroke-dasharray: 155; stroke-dashoffset: 0; animation: d2 7.1s linear infinite; }
+.a3 { stroke-dasharray: 340; stroke-dashoffset: 0; animation: d3 7.1s linear infinite; }
 </style>
 
 <!-- STATIC: floor left -->
