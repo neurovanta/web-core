@@ -15,13 +15,13 @@ export default function ElevatingWellness() {
   const [reloadKeys, setReloadKeys] = useState<Record<number, number>>({});
 
   const handleActivate = (index: number) => {
+    if (index === activeIndex) return;
     setActiveIndex(index);
-    setReloadKeys(prev => ({
+    setReloadKeys((prev) => ({
       ...prev,
       [index]: (prev[index] ?? 0) + 1,
     }));
   };
-
   return (
     <section className="bg-cream-bg py-120 3xl:py-0 3xl:pt-150 3xl:pb-170 min-[1700px]:py-[177px] overflow-hidden">
       <div className="container">
@@ -54,7 +54,11 @@ export default function ElevatingWellness() {
             {items.map((item, index) => {
               const isActive = index === activeIndex;
               return (
-                <Reveal key={item.id} variants={moveUpV2} delayRange={index * 0.13}>
+                <Reveal
+                  key={item.id}
+                  variants={moveUpV2}
+                  delayRange={index * 0.13}
+                >
                   <li
                     onMouseEnter={() => handleActivate(index)}
                     onClick={() => handleActivate(index)}
@@ -63,7 +67,9 @@ export default function ElevatingWellness() {
                     }`}
                   >
                     <div className="flex items-center justify-between py-25">
-                      <span className={`text-subHeading text-secondary tracking-[-0.03em] transition-all duration-300 ${isActive ? "font-semibold" : ""}`}>
+                      <span
+                        className={`text-subHeading text-secondary tracking-[-0.03em] transition-all duration-300 ${isActive ? "font-semibold" : ""}`}
+                      >
                         {item.label}
                       </span>
                       <div className="flex items-center gap-10">
@@ -81,14 +87,18 @@ export default function ElevatingWellness() {
                             width={50}
                             height={50}
                             className={`shrink-0 transition-all duration-300 w-auto h-[50px] ${
-                              isActive ? "opacity-100 translate-x-0 translate-y-0" : "opacity-0 -translate-x-4 translate-y-4"
+                              isActive
+                                ? "opacity-100 translate-x-0 translate-y-0"
+                                : "opacity-0 -translate-x-4 translate-y-4"
                             }`}
                           />
                         </div>
                       </div>
                     </div>
 
-                    <div className={`overflow-hidden transition-[max-height] duration-400 xl:hidden ${isActive ? "max-h-[600px] pb-25" : "max-h-0"}`}>
+                    <div
+                      className={`overflow-hidden transition-[max-height] duration-400 xl:hidden ${isActive ? "max-h-[600px] pb-25" : "max-h-0"}`}
+                    >
                       <motion.div
                         key={activeIndex}
                         initial={{ y: 30 }}
