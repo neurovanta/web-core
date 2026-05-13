@@ -19,7 +19,7 @@ export type Slide = {
 export type WellnessSliderData = {
   heading: string;
   description: string;
-  buttons: { label: string; href: string }[];
+  button: { label: string; href: string };
   slides: Slide[];
 };
 
@@ -32,9 +32,9 @@ function preloadImage(src: string): void {
   img.src = src;
 }
 
-export default function WellnessSlider({
+export default function WellnessRequirements({
   data,
-  descriptionMaxWidth = "max-w-[52ch]",
+  descriptionMaxWidth = "max-w-[54ch]",
 }: {
   data: WellnessSliderData;
   descriptionMaxWidth?: string;
@@ -170,8 +170,7 @@ export default function WellnessSlider({
   };
 
   return (
-    // <section className="relative w-full h-[90vh] sm:h-[80vh] xl:h-[92vh] overflow-hidden">
-    <section className="relative w-full h-dvh overflow-hidden">
+    <section className="relative w-full overflow-hidden">
       {/* Base layer */}
       <div
         className="absolute inset-0 bg-cover bg-center"
@@ -196,39 +195,22 @@ export default function WellnessSlider({
 
       <div className="absolute inset-0 bg-black/70" />
 
-      <div className="container relative z-10 h-full flex flex-col py-120 3xl:py-0 3xl:pt-120 3xl:pb-[112px]">
-        <div className="flex items-start justify-between">
-          <div className="flex flex-col gap-20">
-            <AnimatedHeading
-              title={data.heading}
-              className="text-white text-heading max-w-[900px] 2xl:max-w-[985px]"
+      <div className="container relative z-10 flex flex-col py-120">
+        <div className="flex flex-col mb-120">
+          <AnimatedHeading
+            title={data.heading}
+            className="text-white text-heading max-w-[23ch] mb-20"
+          />
+          <SectionDescription
+            text={data.description}
+            className={`text-white text-19 leading-[1.52] mb-50 ${descriptionMaxWidth}`}
+          />
+            <CustomButton
+              label={data.button.label}
+              href={data.button.href}
+              variant={1}
             />
-            <div className="mb-60 md:mb-0">
-              <SectionDescription
-                text={data.description}
-                className={`text-white text-19 leading-[1.52] ${descriptionMaxWidth}`}
-              />
-            </div>
-          </div>
-
-          <div className="hidden min-[870px]:flex min-[870px]:flex-col items-end gap-20 shrink-0 xl:pt-[13px]">
-            {data.buttons.map((btn, i) => (
-              <Reveal key={btn.label} variants={moveUpV2} delayRange={i * 0.12}>
-                <CustomButton label={btn.label} href={btn.href} variant={1} />
-              </Reveal>
-            ))}
-          </div>
         </div>
-
-        <div className="flex min-[870px]:hidden flex-col items-end gap-20 shrink-0 sm:mt-20">
-          {data.buttons.map((btn) => (
-            <Reveal key={btn.label} variants={moveUpV2} delayRange={0.2}>
-              <CustomButton label={btn.label} href={btn.href} variant={1} />
-            </Reveal>
-          ))}
-        </div>
-
-        <div className="flex-1" />
 
         <div className="[&_.swiper-wrapper]:items-end">
           <Swiper
@@ -236,12 +218,10 @@ export default function WellnessSlider({
               swiperRef.current = swiper;
             }}
             onSlideChange={(swiper) => {
-              // Programmatic scroll — don't touch activeIndex
               if (isProgrammaticScrollRef.current) {
                 isProgrammaticScrollRef.current = false;
                 return;
               }
-              // User swiped manually → follow leftmost visible slide
               requestAnimationFrame(() => {
                 setActiveIndex(swiper.activeIndex);
               });

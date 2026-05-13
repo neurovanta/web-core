@@ -3,13 +3,24 @@
 import Image from "next/image";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { approachData } from "../data";
 import { AnimatedHeading } from "@/app/components/client/animations/AnimateHeading";
-import Reveal from "../../animations/RevealItemsOneByOneAnimation";
-import { moveUpV2 } from "../../animations/motionVarinats";
+import Reveal from "@/app/components/client/animations/RevealItemsOneByOneAnimation";
+import { moveUpV2 } from "@/app/components/client/animations/motionVarinats";
+import { SectionDescription } from "@/app/components/client/animations/SectionDescription";
 
-export default function Approach() {
-  const { title, subtitle, tabs } = approachData;
+interface TabsImageProps {
+  data: {
+    title: string;
+    subtitle: string;
+    tabs: {
+      title: string;
+      image: string;
+    }[];
+  };
+}
+
+export default function TabsImage({data}: TabsImageProps) {
+  const { title, subtitle, tabs } = data;
   const [activeIndex, setActiveIndex] = useState(0);
 
   const half = Math.ceil(tabs.length / 2);
@@ -29,12 +40,13 @@ export default function Approach() {
           <div className="flex flex-col">
             <AnimatedHeading
               title={title}
-              mode="blade"
+              mode="reveal"
               className="text-secondary mb-20 max-w-[12ch]"
             />
-            <p className="text-description text-secondary tracking-[-0.03em] mb-60">
-              {subtitle}
-            </p>
+            <SectionDescription
+              text={subtitle}
+              className="text-description text-secondary tracking-[-0.03em] mb-60"
+            />
 
             <div className="grid grid-cols-2 gap-x-30 3xl:gap-x-[33px]">
               {[leftCol, rightCol].map((col, colIdx) => (
@@ -103,7 +115,19 @@ export default function Approach() {
           </div>
 
           {/* Right Side */}
-          <div className="relative w-full lg:flex-1 aspect-[4/3] lg:aspect-auto lg:h-[480px] 3xl:h-[578px] overflow-hidden">
+          <div className="relative w-full lg:flex-1 aspect-4/3 lg:aspect-auto lg:h-[480px] 3xl:h-[578px] overflow-hidden">
+            {/* Base layer — previous image, always visible underneath */}
+            <Image
+              src={
+                tabs[activeIndex === 0 ? tabs.length - 1 : activeIndex - 1]
+                  ?.image ?? tabs[0].image
+              }
+              alt="previous"
+              fill
+              className="object-cover"
+            />
+
+            {/* Wipe-in layer — new image slides over the base */}
             <AnimatePresence initial={false}>
               <motion.div
                 key={activeIndex}

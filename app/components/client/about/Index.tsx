@@ -1,11 +1,11 @@
 import InnerBanner from "../common/InnerBanner";
 import SectionHeader from "../common/SectionHeader";
-import { bannerData, sectionHeaderData, whySetsUsApartData, ctaBannerData } from "./data";
-import EndToEndApproach from "./sections/EndToEndApproach";
+import { bannerData, sectionHeaderData, whySetsUsApartData, ctaBannerData, approachData } from "./data";
 import InfiniteClients from "./sections/InfiniteClients";
 import Purposes from "./sections/Purposes";
-import WhySetsUsApart from "./sections/WhySetsUsApart";
 import InnerCta from "../common/InnerCta";
+import CommonSlider from "../common/CommonSlider";
+import TabsImage from "../common/TabsImage";
 
 const Index = () => {
   return (
@@ -13,8 +13,8 @@ const Index = () => {
       <InnerBanner {...bannerData} />
       <SectionHeader {...sectionHeaderData} maxWDescription="max-w-[949px]" />
       <Purposes />
-      <WhySetsUsApart data={whySetsUsApartData} />
-      <EndToEndApproach />
+      <CommonSlider data={whySetsUsApartData} />
+      <TabsImage data={approachData} />
       <InfiniteClients />
       <InnerCta data={ctaBannerData} maxW="max-w-[19ch]" />
     </>

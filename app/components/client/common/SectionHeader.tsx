@@ -25,13 +25,15 @@ export default function SectionHeader({
 
   return (
     <div className="container py-120 3xl:py-150">
-      <div className="flex justify-between items-start w-full">
+      <div className="flex justify-between  items-start w-full">
         <div className={`w-[42.4%] shrink-0`}>
-          <AnimatedHeading
-            title={title}
-            className={`text-heading text-secondary tracking-[0%] font-dm-regular ${maxWTitle}`}
-            mode="reveal"
-          />
+          <div className="max-w-[88%]">
+            <AnimatedHeading
+              title={title}
+              className={`text-heading text-secondary tracking-[0%] font-dm-regular ${maxWTitle}`}
+              mode="reveal"
+            />
+          </div>
         </div>
         <div className={`flex flex-col gap-20 w-full`}>
           {subtitle && (

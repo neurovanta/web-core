@@ -13,7 +13,7 @@ export default function InnerBanner({
   breadcrumbs?: any[];
 }) {
   return (
-    <section className="relative w-full xl:min-h-[570px] 3xl:h-[639px]">
+    <section className="relative w-full xl:min-h-[560px] 3xl:h-[639px]">
       <div className="absolute inset-0 w-full h-full">
         <Image
           src={image}

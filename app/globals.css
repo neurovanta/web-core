@@ -72,7 +72,7 @@ input:-webkit-autofill:active {
 /* 60px → 28px at 390px, 60px at 1810px */
 --text-60: clamp(28px, 2.25vw + 19.2px, 60px);
 
-/* 32px → 24px at 390px, 32px at 1810px */
+/* 32px → 25px at 390px, 32px at 1810px */
 --text-32: clamp(25px, 0.81vw + 17.3px, 32px);
 
 /* 30px → 18px at 390px, 30px at 1810px */
@@ -181,7 +181,7 @@ body {
 }
  
 @utility text-heading {
-  @apply uppercase text-32 md:text-60  leading-[1.36] md:leading-[1.166666];
+  @apply uppercase text-32 md:text-[32px] lg:text-[40px] xl:text-[45px] 3xl:text-60  leading-[1.36] md:leading-[1.166666];
 }
  
 @utility text-description {

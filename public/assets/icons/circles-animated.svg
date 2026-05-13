@@ -1,0 +1,57 @@
+<svg width="743" height="743" viewBox="0 0 743 743" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="paint0_linear" x1="371.962" y1="218.095" x2="371.962" y2="525.83" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#51463E" stop-opacity="0"/>
+      <stop offset="0.5" stop-color="#51463E" stop-opacity="0.5"/>
+      <stop offset="1" stop-color="#51463E" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="paint1_linear" x1="371.5" y1="103.503" x2="371.5" y2="639.498" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#51463E" stop-opacity="0"/>
+      <stop offset="0.5" stop-color="#51463E" stop-opacity="0.5"/>
+      <stop offset="1" stop-color="#51463E" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="paint2_linear" x1="371.5" y1="0" x2="371.5" y2="743" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#51463E" stop-opacity="0"/>
+      <stop offset="0.5" stop-color="#51463E" stop-opacity="0.5"/>
+      <stop offset="1" stop-color="#51463E" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <g opacity="0.5">
+    <!-- Inner circle: clockwise, 6s -->
+    <g>
+      <animateTransform
+        attributeName="transform"
+        type="rotate"
+        from="0 371.962 371.962"
+        to="360 371.962 371.962"
+        dur="6s"
+        repeatCount="indefinite"/>
+      <circle cx="371.962" cy="371.962" r="153.405" stroke="url(#paint0_linear)" stroke-width="0.924129"/>
+    </g>
+
+    <!-- Middle circle: counter-clockwise, 9s -->
+    <g>
+      <animateTransform
+        attributeName="transform"
+        type="rotate"
+        from="0 371.5 371.5"
+        to="-360 371.5 371.5"
+        dur="9s"
+        repeatCount="indefinite"/>
+      <circle cx="371.5" cy="371.5" r="267.535" stroke="url(#paint1_linear)" stroke-width="0.924129"/>
+    </g>
+
+    <!-- Outer circle: clockwise, 13s -->
+    <g>
+      <animateTransform
+        attributeName="transform"
+        type="rotate"
+        from="0 371.5 371.5"
+        to="360 371.5 371.5"
+        dur="13s"
+        repeatCount="indefinite"/>
+      <circle cx="371.5" cy="371.5" r="371.038" stroke="url(#paint2_linear)" stroke-width="0.924129"/>
+    </g>
+  </g>
+</svg>

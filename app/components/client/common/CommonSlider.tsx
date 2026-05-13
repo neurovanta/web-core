@@ -1,29 +1,29 @@
 "use client";
 
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useRef } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import type { Swiper as SwiperType } from "swiper";
 import "swiper/css";
 import Image from "next/image";
-import { AnimatedHeading } from "../../animations/AnimateHeading";
-import Reveal from "../../animations/RevealItemsOneByOneAnimation";
-import { moveUp, moveUpV2 } from "../../animations/motionVarinats";
+import { AnimatedHeading } from "../animations/AnimateHeading";
+import Reveal from "../animations/RevealItemsOneByOneAnimation";
+import { moveUp, moveUpV2 } from "../animations/motionVarinats";
 import { motion } from "framer-motion";
-import SliderNavButton from "../../common/SliderButton";
+import SliderNavButton from "../common/SliderButton";
 
-export type WhySlide = {
+export type CommonSlide = {
   icon: string;
   title: string;
 };
 
-export type WhySectionData = {
+export type CommonSectionData = {
   heading: string;
-  slides: WhySlide[];
+  slides: CommonSlide[];
 };
 
 const AUTOPLAY_DELAY = 3000;
 
-function SlideDivider() {
+function CommonSlideDivider() {
   return (
     <div
       className="absolute right-0 bottom-0 h-full w-[1px] pointer-events-none z-10"
@@ -35,18 +35,16 @@ function SlideDivider() {
   );
 }
 
-function SlideCard({
+function CommonSlideCard({
   slide,
   index,
 }: {
-  slide: WhySlide;
+  slide: CommonSlide;
   index: number;
 }) {
   return (
-    <div
-      className="relative h-full cursor-pointer select-none pt-60 3xl:pt-80 px-50 3xl:px-70 pb-70 3xl:pb-[74px]"
-    >
-      {<SlideDivider />}
+    <div className="relative h-full cursor-pointer select-none pt-60 3xl:pt-80 px-50 3xl:px-70 pb-70 3xl:pb-[74px]">
+      {<CommonSlideDivider />}
       <div className="flex flex-col justify-between h-full">
         <div>
           <Image
@@ -73,10 +71,9 @@ function SlideCard({
   );
 }
 
-export default function WhySetsUsApart({ data }: { data: WhySectionData }) {
+export default function CommonSlider({ data }: { data: CommonSectionData }) {
   const { heading, slides } = data;
   const swiperRef = useRef<SwiperType | null>(null);
-
 
   return (
     <section className="relative w-full bg-primary pt-120 overflow-hidden">
@@ -87,8 +84,14 @@ export default function WhySetsUsApart({ data }: { data: WhySectionData }) {
           mode="reveal"
         />
         <div className="flex items-center gap-[10px]">
-          <SliderNavButton direction="prev" onClick={() => swiperRef.current?.slidePrev()} />
-          <SliderNavButton direction="next" onClick={() => swiperRef.current?.slideNext()} />
+          <SliderNavButton
+            direction="prev"
+            onClick={() => swiperRef.current?.slidePrev()}
+          />
+          <SliderNavButton
+            direction="next"
+            onClick={() => swiperRef.current?.slideNext()}
+          />
         </div>
       </div>
 
@@ -123,10 +126,7 @@ export default function WhySetsUsApart({ data }: { data: WhySectionData }) {
             <SwiperSlide key={index}>
               <Reveal variants={moveUpV2} delayRange={index * 0.14}>
                 <div className="!h-[270px] sm:!h-[320px] xl:!h-[420px] 3xl:!h-[471px]">
-                  <SlideCard
-                    slide={slide}
-                    index={index}
-                  />
+                  <CommonSlideCard slide={slide} index={index} />
                 </div>
               </Reveal>
             </SwiperSlide>

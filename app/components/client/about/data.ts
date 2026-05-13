@@ -62,18 +62,8 @@ export const whySetsUsApartData = {
   ],
 };
 
-export interface ApproachTab {
-  title: string;
-  image: string;
-}
 
-export interface ApproachData {
-  title: string;
-  subtitle: string;
-  tabs: ApproachTab[];
-}
-
-export const approachData: ApproachData = {
+export const approachData = {
   title: "OUR END-TO-END APPROACH",
   subtitle: "We provide complete turnkey solutions:",
   tabs: [
@@ -83,7 +73,7 @@ export const approachData: ApproachData = {
     },
     {
       title: "Space Planning & Design",
-      image: "/assets/images/about/banner.jpg",
+      image: "/assets/images/about/approach/2.jpg",
     },
     {
       title: "Technology Selection",
@@ -144,7 +134,6 @@ export const brandsData: BrandsData = {
     },
   ],
 };
-
 
 export const ctaBannerData = {
   bgImage: "/assets/images/about/cta.jpg",

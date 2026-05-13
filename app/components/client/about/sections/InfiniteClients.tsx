@@ -69,7 +69,7 @@ export default function InfiniteClients() {
       <div ref={containerRef} className="container">
         <AnimatedHeading
           title={title}
-          mode="blade"
+          mode="reveal"
           className="text-secondary mb-60 max-w-[20ch]"
         />
       </div>

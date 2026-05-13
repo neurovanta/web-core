@@ -62,7 +62,7 @@ export default function BeginHerePage() {
           <AnimatedHeading
             title="BEGIN HERE."
             className="text-150 text-secondary leading-none"
-            mode="blade"
+            mode="reveal"
           />
         </div>
         {/* Form */}
