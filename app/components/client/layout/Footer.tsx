@@ -92,9 +92,9 @@ export default function Footer() {
                 viewport={{ once: true }}
               >
                 <Link
-                  href="mailto:Info@neurovanta.com"
+                  href="mailto:mail@360-wellness.com"
                   className="contact-link leading-[1.433]"
-                  data-text="Info@neurovanta.com"
+                  data-text="mail@360-wellness.com"
                 >
                   mail@360-wellness.com
                 </Link>
@@ -106,7 +106,7 @@ export default function Footer() {
                 viewport={{ once: true }}
               >
                 <Link
-                  href="tel:+97145821133"
+                  href="tel:+97143332175"
                   className="contact-link leading-[1.433]"
                   data-text="+97143332175"
                 >
