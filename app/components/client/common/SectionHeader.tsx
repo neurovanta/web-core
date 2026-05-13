@@ -1,9 +1,10 @@
 import { AnimatedHeading } from "../animations/AnimateHeading";
+import { SectionDescription } from "../animations/SectionDescription";
 
 interface SectionHeaderProps {
   title: string;
   subtitle?: string;
-  description?: string | string[];
+  description?: string;
   maxWTitle?: string;
   maxWSubtitle?: string;
   maxWDescription?: string;
@@ -17,12 +18,6 @@ export default function SectionHeader({
   maxWSubtitle = "",
   maxWDescription = "",
 }: SectionHeaderProps) {
-  const descriptions = Array.isArray(description)
-    ? description
-    : description
-      ? [description]
-      : [];
-
   return (
     <div className="container py-120 3xl:py-150">
       <div className="flex justify-between  items-start w-full">
@@ -37,17 +32,17 @@ export default function SectionHeader({
         </div>
         <div className={`flex flex-col gap-20 w-full`}>
           {subtitle && (
-            <p
-              className={`text-subHeading text-secondary tracking-[-3%] ${maxWSubtitle}`}
-            >
-              {subtitle}
-            </p>
+            <SectionDescription
+              text={subtitle}
+              className={`!text-subHeading text-secondary tracking-[-3%] ${maxWSubtitle}`}
+            />
           )}
-          <p
-            className={`text-description text-secondary tracking-[-0.03em] ${maxWDescription}`}
-          >
-            {description}
-          </p>
+          {description && (
+            <SectionDescription
+              text={description} delay={0.8}
+              className={`text-description text-secondary tracking-[-0.03em] ${maxWDescription}`}
+            />
+          )}
         </div>
       </div>
     </div>
