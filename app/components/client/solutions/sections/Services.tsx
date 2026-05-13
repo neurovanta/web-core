@@ -2,12 +2,22 @@
 
 import Image from "next/image";
 import { useRef } from "react";
-import { serviceCardsData, ServiceCard } from "../data";
+import { serviceCardsData } from "../data";
 import CustomButton from "../../common/CustomButton";
 import { AnimatedHeading } from "../../animations/AnimateHeading";
 import { SectionDescription } from "../../animations/SectionDescription";
 import { useContainerInset } from "@/app/hooks/useContainerInset";
 import ContainerAnchor from "../../layout/ContainerAnchor";
+
+export interface ServiceCard {
+  title: string;
+  description: string;
+  bgImage: string;
+  buttons: {
+    label: string;
+    href: string;
+  }[];
+}
 
 function ServiceCard({
   card,

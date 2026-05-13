@@ -27,17 +27,7 @@ export const introData: IntroData = {
   imageAlt: "Integrated Solutions",
 };
 
-export interface ServiceCard {
-  title: string;
-  description: string;
-  bgImage: string;
-  buttons: {
-    label: string;
-    href: string;
-  }[];
-}
-
-export const serviceCardsData: ServiceCard[] = [
+export const serviceCardsData = [
   {
     title: "BESPOKE WELLNESS & LONGEVITY SOLUTIONS",
     description:
