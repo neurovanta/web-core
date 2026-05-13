@@ -19,13 +19,13 @@
   font-display: swap;
 }
 
-@font-face {
+/* @font-face {
   font-family: "DM Sans Regular-30";
   src: url("/assets/fonts/dm-sans-regular.ttf") format("truetype"),
     url("/assets/fonts/dm-sans-regular.ttf") format("truetype");
   font-style: normal;
   font-display: swap;
-}
+} */
 
  
 /* scrollbar hide */
@@ -60,7 +60,7 @@ input:-webkit-autofill:active {
 --secondary: #51463E;
 --cream-bg: #F9F5F0;
 --border-color: #CBC3BB;
---font-dm-regular: "DM Sans Regular-30";
+/* --font-dm-regular: "DM Sans Regular-30"; */
 
 
 /* 150px → 60px at 390px, 150px at 1810px */
@@ -145,7 +145,7 @@ input:-webkit-autofill:active {
   --color-cream-bg: var(--cream-bg);
   --color-border-color: var(--border-color);
   --color-background: var(--background);
-  --font-dm-regular: var(--font-dm-regular);
+  /* --font-dm-regular: var(--font-dm-regular); */
   --text-150: var(--text-150);
   --text-70: var(--text-70);
   --text-60: var(--text-60);
@@ -181,7 +181,7 @@ body {
 }
  
 @utility text-heading {
-  @apply uppercase text-32 md:text-[32px] lg:text-[40px] xl:text-[45px] 3xl:text-60  leading-[1.36] md:leading-[1.166666];
+  @apply uppercase text-32 md:text-[32px] lg:text-[40px] xl:text-[45px] 3xl:text-60  leading-[1.36] xl:leading-[1.23] 3xl:leading-[1.166666];
 }
  
 @utility text-description {
@@ -189,7 +189,7 @@ body {
 }
 
 @utility text-subHeading {
-  @apply text-30 leading-[1.23333] font-dm-regular;
+  @apply text-30 leading-[1.23333];
 }
 
 @utility text-banner {

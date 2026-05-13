@@ -7,6 +7,8 @@ import type { Swiper as SwiperType } from "swiper";
 import "swiper/css";
 import { purposesData } from "../data";
 import { AnimatedHeading } from "@/app/components/client/animations/AnimateHeading";
+import Reveal from "../../animations/RevealItemsOneByOneAnimation";
+import { moveUpV2 } from "../../animations/motionVarinats";
 
 export default function Purposes() {
   const swiperRef = useRef<SwiperType | null>(null);
@@ -58,33 +60,35 @@ export default function Purposes() {
         >
           {purposesData.map((item, i) => (
             <SwiperSlide key={i}>
-              <div className="flex items-stretch">
-                {i > 0 && (
-                  <div
-                    className="w-px shrink-0 self-stretch mr-60 3xl:mr-[63px]"
-                    style={{
-                      background:
-                        "linear-gradient(180deg, rgba(81, 70, 62, 0.1) 0%, #51463E 100%)",
-                    }}
-                  />
-                )}
-                <div className="flex flex-col flex-1 max-w-[490px]">
-                  <div className="w-[70px] h-[70px] relative shrink-0 mb-50">
-                    <Image
-                      src={item.image}
-                      alt={item.title}
-                      fill
-                      className="object-contain"
+              <Reveal variants={moveUpV2} delayRange={i * 0.14}>
+                <div className="flex items-stretch">
+                  {i > 0 && (
+                    <div
+                      className="w-px shrink-0 self-stretch mr-60 3xl:mr-[63px]"
+                      style={{
+                        background:
+                          "linear-gradient(180deg, rgba(81, 70, 62, 0.1) 0%, #51463E 100%)",
+                      }}
                     />
+                  )}
+                  <div className="flex flex-col flex-1 max-w-[490px]">
+                    <div className="w-[70px] h-[70px] relative shrink-0 mb-50">
+                      <Image
+                        src={item.image}
+                        alt={item.title}
+                        fill
+                        className="object-contain"
+                      />
+                    </div>
+                    <h3 className="text-subHeading text-secondary mb-20">
+                      {item.title}
+                    </h3>
+                    <p className="text-description text-secondary tracking-[-0.03em] pr-20 3xl:pr-0">
+                      {item.description}
+                    </p>
                   </div>
-                  <h3 className="text-subHeading text-secondary mb-20">
-                    {item.title}
-                  </h3>
-                  <p className="text-description text-secondary tracking-[-0.03em] pr-20 3xl:pr-0">
-                    {item.description}
-                  </p>
                 </div>
-              </div>
+              </Reveal>
             </SwiperSlide>
           ))}
         </Swiper>
