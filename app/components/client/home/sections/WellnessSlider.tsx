@@ -177,7 +177,6 @@ export default function WellnessSlider({
         className="absolute inset-0 bg-cover bg-center"
         style={{
           backgroundImage: `url(${slides[baseIndex].image})`,
-          filter: "brightness(0.45)",
           willChange: "background-image",
         }}
       />
@@ -188,13 +187,14 @@ export default function WellnessSlider({
           className="absolute inset-0 bg-cover bg-center"
           style={{
             backgroundImage: `url(${slides[topIndex].image})`,
-            filter: "brightness(0.45)",
             opacity: topVisible ? 1 : 0,
             transition: `opacity ${TRANSITION_DURATION}ms ease-in-out`,
             willChange: "opacity",
           }}
         />
       )}
+
+      <div className="absolute inset-0 bg-black/70" />
 
       <div className="container relative z-10 h-full flex flex-col py-120 3xl:py-0 3xl:pt-120 3xl:pb-[112px]">
         <div className="flex items-start justify-between">
