@@ -1,72 +1,45 @@
-// "use client";
-
-// import { useState, useCallback, createContext, useContext } from "react";
-// import PageLoadAnimation from "../animations/PageLoadAnimation";
-// import { useLenis } from "./LenisProvider";
-
-// // Context so Header and HeroSection can read `animateIn`
-// type AppShellContextType = { animateIn: boolean };
-// const AppShellContext = createContext<AppShellContextType>({ animateIn: false });
-// export const useAppShell = () => useContext(AppShellContext);
-
-// interface AppShellProps {
-//   children: React.ReactNode;
-// }
-
-// export default function AppShell({ children }: AppShellProps) {
-//   const { unlockScroll } = useLenis();
-//   const [animationDone, setAnimationDone] = useState(false);
-//   const [animateIn, setAnimateIn] = useState(false);
-
-//   const handleAnimationComplete = useCallback(() => {
-//     setAnimationDone(true);
-//     // Small delay so the last stripe fully disappears before content animates in
-//     setTimeout(() => {
-//       setAnimateIn(true);
-//       unlockScroll();
-//     }, 10);
-//   }, [unlockScroll]);
-
-//   return (
-//     <AppShellContext.Provider value={{ animateIn }}>
-//       {/* Full-screen intro overlay */}
-//       {!animationDone && (
-//         <PageLoadAnimation onComplete={handleAnimationComplete} />
-//       )}
-
-//       {/* All layout children — Header, page, Footer */}
-//       {children}
-//     </AppShellContext.Provider>
-//   );
-// }
-
-
-
-
 "use client";
 
-import { useState, useCallback, createContext, useContext } from "react";
+import {
+  useState,
+  useCallback,
+  createContext,
+  useContext,
+  useEffect,
+} from "react";
+import { usePathname } from "next/navigation";
 import PageLoadAnimation from "../animations/PageLoadAnimation";
 import { useLenis } from "./LenisProvider";
 
 type AppShellContextType = { animateIn: boolean };
-const AppShellContext = createContext<AppShellContextType>({ animateIn: false });
+const AppShellContext = createContext<AppShellContextType>({
+  animateIn: false,
+});
 export const useAppShell = () => useContext(AppShellContext);
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
-  const { unlockScroll } = useLenis();
+  const { unlockScroll, ready } = useLenis();
+  const pathname = usePathname();
+  const isHome = pathname === "/";
+
   const [animationDone, setAnimationDone] = useState(false);
-  const [animateIn, setAnimateIn] = useState(false);
+  const [animateIn, setAnimateIn] = useState(!isHome);
+
+  useEffect(() => {
+    if (!isHome && ready) {
+      unlockScroll();
+    }
+  }, [isHome, ready, unlockScroll]);
 
   const handleAnimationComplete = useCallback(() => {
     setAnimationDone(true);
-    setAnimateIn(true);   // no setTimeout — fires immediately
+    setAnimateIn(true);
     unlockScroll();
   }, [unlockScroll]);
 
   return (
     <AppShellContext.Provider value={{ animateIn }}>
-      {!animationDone && (
+      {isHome && !animationDone && (
         <PageLoadAnimation onComplete={handleAnimationComplete} />
       )}
       {children}

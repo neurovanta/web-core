@@ -1,16 +1,11 @@
 "use client";
 
-import Image from "next/image";
 import { brandsData } from "../data";
 import { AnimatedHeading } from "../../animations/AnimateHeading";
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-type Brand = {
-  id: string;
-  logo: string;
-};
+import { BrandCard } from "../../common/BrandCard";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -19,28 +14,7 @@ type CardWithHandlers = HTMLElement & {
   _leave?: () => void;
 };
 
-function BrandCard({ brand }: { brand: Brand }) {
-  return (
-    <div
-      className="brand-card flex items-center justify-center border border-border-color 
-        w-full h-[136px]
-        sm:w-full sm:h-[160px]
-        lg:w-[270px] lg:h-[185px]
-        2xl:w-[280px] 2xl:h-[190px]
-        3xl:w-[366px] 3xl:h-[250px]
-        flex-shrink-0 sm:flex-shrink lg:flex-shrink-0
-      "
-    >
-      <Image
-        src={brand.logo}
-        alt={brand.id}
-        width={220}
-        height={91}
-        className="object-contain h-[50px] lg:h-[65px] xl:h-[80px] 3xl:h-[91px] w-auto pointer-events-none"
-      />
-    </div>
-  );
-}
+
 export default function WorldClassClients() {
   const { heading, rows } = brandsData;
   const sectionRef = useRef<HTMLDivElement | null>(null);

@@ -19,6 +19,14 @@
   font-display: swap;
 }
 
+@font-face {
+  font-family: "DM Sans Regular-30";
+  src: url("/assets/fonts/dm-sans-regular.ttf") format("truetype"),
+    url("/assets/fonts/dm-sans-regular.ttf") format("truetype");
+  font-style: normal;
+  font-display: swap;
+}
+
  
 /* scrollbar hide */
 ::-webkit-scrollbar {
@@ -52,6 +60,7 @@ input:-webkit-autofill:active {
 --secondary: #51463E;
 --cream-bg: #F9F5F0;
 --border-color: #CBC3BB;
+--font-dm-regular: "DM Sans Regular-30";
 
 
 /* 150px → 60px at 390px, 150px at 1810px */
@@ -78,21 +87,21 @@ input:-webkit-autofill:active {
  
  
  
-/* 20px → 12px at 390px, 20px at 1810px */
---space-20: clamp(17px, 0.56vw + 9.8px, 20px);
- 
-/* 25px → 14px at 390px, 25px at 1810px */
---space-25: clamp(15px, 0.77vw + 10px, 25px);
- 
-/* 30px → 18px at 390px, 30px at 1810px */
---space-30: clamp(20px, 0.84vw + 14.7px, 30px);
+/* 20px → 20px at 390px, 20px at 1810px */
+--space-20: clamp(20px, 0.56vw + 9.8px, 20px);
 
-/* 40px → 24px at 390px, 40px at 1810px */
---space-40: clamp(24px, 1.22vw + 19.6px, 40px);
- 
+/* 25px → 22px at 390px, 25px at 1810px */
+--space-25: clamp(22px, 0.77vw + 10px, 25px);
+
+/* 30px → 24px at 390px, 30px at 1810px */
+--space-30: clamp(24px, 0.84vw + 14.7px, 30px);
+
+/* 40px → 26px at 390px, 40px at 1810px */
+--space-40: clamp(26px, 1.22vw + 19.6px, 40px);
+
 /* 50px → 28px at 390px, 50px at 1810px */
 --space-50: clamp(28px, 1.55vw + 21.9px, 50px);
- 
+
 /* 60px → 32px at 390px, 60px at 1810px */
 --space-60: clamp(32px, 1.97vw + 24.3px, 60px);
  
@@ -136,6 +145,7 @@ input:-webkit-autofill:active {
   --color-cream-bg: var(--cream-bg);
   --color-border-color: var(--border-color);
   --color-background: var(--background);
+  --font-dm-regular: var(--font-dm-regular);
   --text-150: var(--text-150);
   --text-70: var(--text-70);
   --text-60: var(--text-60);
@@ -179,7 +189,11 @@ body {
 }
 
 @utility text-subHeading {
-  @apply text-30 leading-[1.23333];
+  @apply text-30 leading-[1.23333] font-dm-regular;
+}
+
+@utility text-banner {
+  @apply text-white text-center text-[28px] sm:text-[36px] md:text-70 leading-[1.142857] uppercase;
 }
  
 

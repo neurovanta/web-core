@@ -11,7 +11,7 @@ import Reveal from "../animations/RevealItemsOneByOneAnimation";
 /* ─── Social brand styles ─────────────────────────────────────────── */
 const socialStyles: Record<SocialType, React.CSSProperties> = {
   facebook: { color: "#416FF0" },
-  instagram: {}, // handled separately with gradient
+  instagram: {},
   linkedin: { color: "#2671AD" },
   youtube: { color: "#D92935" },
 };
@@ -96,7 +96,7 @@ export default function Footer() {
                   className="contact-link leading-[1.433]"
                   data-text="Info@neurovanta.com"
                 >
-                  Info@neurovanta.com
+                  mail@360-wellness.com
                 </Link>
               </motion.div>
               <motion.div
@@ -108,9 +108,9 @@ export default function Footer() {
                 <Link
                   href="tel:+97145821133"
                   className="contact-link leading-[1.433]"
-                  data-text="+971 4 582 1133"
+                  data-text="+97143332175"
                 >
-                  +971 4 582 1133
+                  +97143332175
                 </Link>
               </motion.div>
             </div>
