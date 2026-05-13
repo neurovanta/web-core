@@ -25,7 +25,7 @@ export default function SectionHeader({
           <div className="max-w-[88%]">
             <AnimatedHeading
               title={title}
-              className={`text-heading text-secondary tracking-[0%] font-dm-regular ${maxWTitle}`}
+              className={`text-heading text-secondary tracking-[0%] ${maxWTitle}`}
               mode="reveal"
             />
           </div>

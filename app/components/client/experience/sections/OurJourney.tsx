@@ -34,7 +34,7 @@ const OurJourney = ({ data }: OurJourneyProps) => {
           <div className="flex gap-100 3xl:gap-[104px]">
             {/* Col 1 — Title */}
             <div className="flex items-center pl-90 3xl:pl-[98px]">
-              <AnimatedHeading title={title} className="text-heading font-dm-regular text-white" />
+              <AnimatedHeading title={title} className="text-heading text-white" />
             </div>
             {/* Col 2 — Vertical Divider */}
             <div className="flex justify-center items-stretch">

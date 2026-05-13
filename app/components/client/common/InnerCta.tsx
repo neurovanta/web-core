@@ -33,7 +33,7 @@ export default function InnerCta({ data, maxW = "" }: InnerCtaProps) {
       <div className="relative z-10 flex flex-col items-center justify-center text-center h-full container">
         <AnimatedHeading
           title={data.title}
-          className={`text-white text-heading font-dm-regular mb-50 ${maxW}`}
+          className={`text-white text-heading mb-50 ${maxW}`}
         />
 
         <div>
