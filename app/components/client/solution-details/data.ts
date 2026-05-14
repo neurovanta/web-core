@@ -1,6 +1,6 @@
 export const bannerData = {
   title: "Bespoke \n Wellness & Longevity Solutions",
-  image: "/assets/images/solutions/banner.jpg",
+  image: "/assets/images/solution-details/banner.jpg",
 };
 
 export const sectionHeaderData = {

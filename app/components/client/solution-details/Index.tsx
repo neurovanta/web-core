@@ -10,16 +10,16 @@ import {
   keyBenefitsData,
   approachData
 } from "./data";
-import WhatWeProvideSlider from "./sections/WhatWeProvideSlider";
 import HowItFits from "./sections/HowFits";
 import TabsImage from "../common/TabsImage";
+import FourCardSlider from "../common/FourCardSlider";
 
 const Index = () => {
   return (
     <>
       <InnerBanner {...bannerData} />
       <SectionHeader {...sectionHeaderData} maxWDescription="max-w-[909px]" />
-      <WhatWeProvideSlider data={whatWeProvideData} />
+      <FourCardSlider data={whatWeProvideData} />
       <CommonSlider data={keyBenefitsData} />
       <HowItFits />
       <TabsImage data={approachData} />

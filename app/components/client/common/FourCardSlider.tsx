@@ -8,7 +8,7 @@ import type { Swiper as SwiperType } from "swiper";
 import "swiper/css";
 import { AnimatedHeading } from "@/app/components/client/animations/AnimateHeading";
 
-interface WhatWeProvideSliderProps {
+interface FourCardSliderProps {
   data: {
     title: string;
     slides: {
@@ -18,9 +18,9 @@ interface WhatWeProvideSliderProps {
   };
 }
 
-export default function WhatWeProvideSlider({
+export default function FourCardSlider({
   data,
-}: WhatWeProvideSliderProps) {
+}: FourCardSliderProps) {
   const { title, slides } = data;
   const swiperRef = useRef<SwiperType | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -48,7 +48,7 @@ export default function WhatWeProvideSlider({
         <AnimatedHeading
           title={title}
           mode="reveal"
-          className="text-secondary mb-60 3xl:mb-80"
+          className="text-secondary mb-20 lg:mb-60"
         />
 
         <Swiper
@@ -82,7 +82,7 @@ export default function WhatWeProvideSlider({
                   fill
                   className="object-cover"
                 />
-                <div className="absolute left-0 right-0 bottom-0 h-[306px] w-full z-30 bg-gradient-to-b from-transparent to-black" />
+                <div className="absolute left-0 right-0 bottom-0 h-[306px] w-full z-30 bg-gradient-to-b from-transparent to-black opacity-80" />
                 <p className="absolute bottom-0 left-0 right-0 z-40 text-white text-subHeading p-40 -tracking-[0.03em]">
                   {slide.title}
                 </p>
