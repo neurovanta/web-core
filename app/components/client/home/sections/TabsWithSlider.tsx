@@ -12,20 +12,20 @@ import Reveal from "../../animations/RevealItemsOneByOneAnimation";
 import { moveUpV2 } from "../../animations/motionVarinats";
 import gsap from "gsap";
 
-export type LongevitySlide = {
+export type TabsWithSliderSlide = {
   image: string;
   title: string;
   href: string;
 };
 
-export type LongevityCategory = {
+export type TabsWithSliderCategory = {
   label: string;
-  slides: LongevitySlide[];
+  slides: TabsWithSliderSlide[];
 };
 
-export type LongevitySystemsData = {
+export type TabsWithSliderData = {
   heading: string;
-  categories: LongevityCategory[];
+  categories: TabsWithSliderCategory[];
 };
 
 function splitColumns<T>(arr: T[]): [T[], T[]] {
@@ -40,14 +40,16 @@ function preloadImages(srcs: string[]): void {
   });
 }
 
-export default function LongevitySystems({
+export default function TabsWithSlider({
   data,
+  sectionBg,
 }: {
-  data: LongevitySystemsData;
+  data: TabsWithSliderData;
+  sectionBg?: string;
 }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [visibleIndex, setVisibleIndex] = useState(0);
-  const [pendingSlides, setPendingSlides] = useState<LongevitySlide[] | null>(
+  const [pendingSlides, setPendingSlides] = useState<TabsWithSliderSlide[] | null>(
     null,
   );
 
@@ -192,7 +194,7 @@ export default function LongevitySystems({
   }, [pendingSlides]);
 
   return (
-    <section className="py-120 3xl:py-150 overflow-hidden">
+    <section className={`${sectionBg} py-120 3xl:py-150 overflow-hidden`}>
       <div ref={containerRef} className="container">
         <div className="flex flex-wrap items-start justify-between gap-y-20 gap-x-8 mb-60">
           <AnimatedHeading
@@ -384,7 +386,7 @@ function SlideCard({
   index,
   titleRef,
 }: {
-  slide: LongevitySlide;
+  slide: TabsWithSliderSlide;
   index: number;
   titleRef?: (el: HTMLParagraphElement | null) => void;
 }) {

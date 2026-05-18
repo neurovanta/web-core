@@ -28,7 +28,7 @@ export default function ElevatingWellness() {
         <div className="grid xl:grid-cols-[320px_auto] 3xl:grid-cols-[364px_auto] gap-x-160 3xl:gap-x-225">
           <AnimatedHeading
             title={heading}
-            className="xl:col-span-1 xl:col-start-2 col-start-1 text-heading text-secondary max-w-[885px] mb-20 lg:mb-60"
+            className="xl:col-span-1 xl:col-start-2 col-start-1 text-heading text-secondary max-w-[20ch] mb-20 lg:mb-60"
             mode="reveal"
           />
 

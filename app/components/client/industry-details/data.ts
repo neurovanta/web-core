@@ -65,3 +65,10 @@ export const benefitsData = {
     },
   ],
 };
+
+export const howItFitsData = {
+  title: "How It Fits Into Your Space",
+  description:
+    "We design and configure each solution to align with your spatial layout, operational needs, and user flow, ensuring a seamless and premium experience.",
+  image: "/assets/images/industry-details/how-bg.jpg",
+};

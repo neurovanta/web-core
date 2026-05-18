@@ -75,7 +75,7 @@ export default function FourCardSlider({
         >
           {slides.map((slide, i) => (
             <SwiperSlide key={i}>
-              <div className="relative w-full h-[360px] md:h-[440px] lg:h-[520px] 3xl:h-[609px] overflow-hidden">
+              <div className="relative w-full h-[360px] md:h-[440px] lg:h-[500px] 3xl:h-[609px] overflow-hidden">
                 <Image
                   src={slide.image}
                   alt={slide.title}
@@ -83,7 +83,7 @@ export default function FourCardSlider({
                   className="object-cover"
                 />
                 <div className="absolute left-0 right-0 bottom-0 h-[306px] w-full z-30 bg-gradient-to-b from-transparent to-black opacity-80" />
-                <p className="absolute bottom-0 left-0 right-0 z-40 text-white text-subHeading p-40 -tracking-[0.03em]">
+                <p className="absolute bottom-0 left-0 right-0 z-40 text-white text-subHeading px-30 3xl:px-40 py-40 -tracking-[0.03em]">
                   {slide.title}
                 </p>
               </div>

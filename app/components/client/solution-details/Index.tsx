@@ -8,7 +8,8 @@ import {
   ctaBannerData,
   whatWeProvideData,
   keyBenefitsData,
-  approachData
+  approachData,
+  howItFitsData
 } from "./data";
 import HowItFits from "./sections/HowFits";
 import TabsImage from "../common/TabsImage";
@@ -21,7 +22,7 @@ const Index = () => {
       <SectionHeader {...sectionHeaderData} maxWDescription="max-w-[909px]" />
       <FourCardSlider data={whatWeProvideData} />
       <CommonSlider data={keyBenefitsData} />
-      <HowItFits />
+      <HowItFits  {...howItFitsData}/>
       <TabsImage data={approachData} />
       <InnerCta data={ctaBannerData} maxW="max-w-[18ch]" />
     </>

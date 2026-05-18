@@ -101,7 +101,7 @@ export default function HeroStats() {
           <div className="w-ful">
             <AnimatedHeading
               title={title}
-              className="text-secondary text-heading mb-20 md:mb-50 max-w-[1313px]"
+              className="text-secondary text-heading mb-20 md:mb-50 max-w-[31ch]"
               mode="reveal"
               delay={0.2}
             />

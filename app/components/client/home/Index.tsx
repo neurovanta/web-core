@@ -6,7 +6,7 @@ import {
   longevitySystemsData,
   whyNeuroVantaData,
 } from "./data";
-import LongevitySystems from "./sections/LongevitySystems";
+import TabsWithSlider from "./sections/TabsWithSlider";
 import HeroStats from "./sections/StatsRow";
 import WhyNeuroVanta from "./sections/WhyNeuroVanta";
 import ElevatingWellness from "./sections/ElevatingWellness";
@@ -35,7 +35,7 @@ const Index = () => {
           />
         </div>
       </div>
-      <LongevitySystems data={longevitySystemsData} />
+      <TabsWithSlider data={longevitySystemsData} sectionBg="bg-white" />
       <HeroStats />
       <WhyNeuroVanta data={whyNeuroVantaData} />
       <ElevatingWellness />
