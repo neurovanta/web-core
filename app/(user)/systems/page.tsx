@@ -1,4 +1,4 @@
-import Index from '@/app/components/client/longevity-systems/Index'
+import Index from '@/app/components/client/systems/Index'
 
 const page = () => {
   return (
