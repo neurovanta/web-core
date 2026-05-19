@@ -78,7 +78,7 @@ export const FloatingSelect: React.FC<FloatingSelectProps> = ({
         {...registration}
         className={`
     w-full bg-transparent border-0 border-b outline-none appearance-none
-    text-transparent  {/* ← was text-secondary, change to transparent */}
+    text-transparent
     text-19 cursor-pointer
     pt-4 md:pt-[26px] -tracking-[0.03em]
     transition-colors duration-300

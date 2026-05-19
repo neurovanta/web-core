@@ -29,7 +29,7 @@ export default function Breadcrumb() {
           const isClickable = !isLast && EXISTING_PAGES.includes(crumb.href);
 
           return (
-            <li key={index} className="flex items-center tracking-[-0.03em]">
+            <li key={index} className="flex items-center tracking-[-0.03em] capitalize">
               {index > 0 && (
                 <span className="inline-block rounded-full mx-[10px] bg-[#D9D9D9] w-[7px] h-[7px]" />
               )}

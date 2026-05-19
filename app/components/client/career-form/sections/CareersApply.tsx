@@ -10,7 +10,7 @@ export default function CareersApply() {
 
   return (
     <section className="mt-200 xl:mt-[230px] 3xl:mt-[290px] pb-120 3xl:pb-150 border-b border-border-color">
-      <div className="w-full flex flex-col lg:flex-row gap-100 3xl:gap-[85px] container justify-between">
+      <div className="w-full flex flex-col xl:flex-row gap-100 3xl:gap-[85px] container justify-between">
         {/* Left: Text content */}
         <div className="flex flex-col">
           <AnimatedHeading
