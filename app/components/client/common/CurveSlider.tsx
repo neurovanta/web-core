@@ -12,7 +12,9 @@ interface CurveSliderProps {
 }
 
 const GAP = 10;
-const SPEED = 0.4;
+const SPEED = 0.5;
+const SLIDE_W = 449;
+const SLIDE_H = 748;
 
 // ── Ellipse mask image ────────────────────────────────────────────────────────
 function EllipseMask({ flip = false }: { flip?: boolean }) {
@@ -35,12 +37,6 @@ export default function CurveSlider({
   const xRef = useRef(0);
   const rafRef = useRef<number>(0);
   const dragRef = useRef({ active: false, startX: 0, startScroll: 0 });
-
-  // Slide dimensions via Tailwind — tweak these classes for responsive
-  const slideClass = "w-[449px] h-[748px]";
-  const SLIDE_W = 449;
-  const SLIDE_H = 748;
-
   const totalWidth = (SLIDE_W + GAP) * images.length;
 
   const tick = useCallback(() => {
@@ -87,8 +83,7 @@ export default function CurveSlider({
 
   return (
     <section className="relative w-full overflow-hidden border-b pb-20 3xl:pb-150 border-border-color">
-      {/* Heading */}
-      <div className="absolute top-0 left-0 right-0 z-20 text-center">
+      <div className="absolute top-3 3xl:top-0 left-0 right-0 z-20 text-center">
         <AnimatedHeading title={title} className="mb-20" />
         <SectionDescription
           text={description}
@@ -96,7 +91,7 @@ export default function CurveSlider({
         />
       </div>
 
-      {/* Carousel viewport */}
+      {/* Carousel */}
       <div
         className="relative overflow-hidden cursor-grab active:cursor-grabbing select-none 3xl:mt-[13px]"
         style={{ height: SLIDE_H }}
@@ -105,17 +100,16 @@ export default function CurveSlider({
         onPointerUp={onPointerUp}
         onPointerLeave={onPointerUp}
       >
-        {/* Top ellipse mask — normal */}
+        {/* Top ellipse */}
         <div className="absolute top-0 left-0 right-0 h-[180px] 3xl:h-[165px] z-10 pointer-events-none">
           <EllipseMask />
         </div>
 
-        {/* Bottom ellipse mask — flipped vertically */}
+        {/* Bottom ellipse */}
         <div className="absolute bottom-0 left-0 right-0 h-[180px] 3xl:h-[165px] z-10 pointer-events-none">
           <EllipseMask flip />
         </div>
 
-        {/* Track */}
         <div
           ref={trackRef}
           className="absolute top-0 left-0 flex will-change-transform"
@@ -124,13 +118,13 @@ export default function CurveSlider({
           {slides.map((src, i) => (
             <div
               key={i}
-              className={`relative flex-shrink-0 overflow-hidden ${slideClass}`}
+              className={`relative shrink-0 overflow-hidden w-[449px] h-[748px]`}
             >
               <Image
                 src={src}
                 alt={`Slide ${(i % images.length) + 1}`}
                 fill
-                className="object-cover pointer-events-none"
+                className="object-cover object-top pointer-events-none"
                 draggable={false}
               />
             </div>

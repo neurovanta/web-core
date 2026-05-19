@@ -29,7 +29,7 @@ export const FloatingInput: React.FC<FloatingInputProps> = ({
       <label
         htmlFor={id}
         className={`
-          absolute left-0 transition-all duration-300 ease-in-out pointer-events-none
+          absolute left-0 transition-all duration-300 ease-in-out pointer-events-none -tracking-[0.03em]
           text-secondary leading-[1.42] select-none
           ${
             hasValue
@@ -48,8 +48,8 @@ export const FloatingInput: React.FC<FloatingInputProps> = ({
         {...registration}
         className={`
           w-full bg-transparent border-0 border-b outline-none
-          text-secondary text-19
-          pt-4 md:pt-[30px]
+          text-secondary text-19 -tracking-[0.03em]
+          pt-4 md:pt-[26px]
           transition-colors duration-200
           ${error ? "border-b-red-500" : "border-b-secondary"}
         `}
