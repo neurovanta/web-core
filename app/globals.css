@@ -314,6 +314,9 @@ body {
   pointer-events: none;
 }
 
-.contact-link:hover::after {
+/* self hover — existing usage everywhere */
+.contact-link:hover::after,
+/* parent group hover — SlideCard usage */
+.group:hover .contact-link::after {
   clip-path: inset(0 0 0 0);
 }

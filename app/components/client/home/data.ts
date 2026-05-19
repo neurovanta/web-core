@@ -62,23 +62,8 @@ export const wellnessSliderData2 = {
   ],
 };
 
-export type LongevitySlide = {
-  image: string;
-  title: string;
-  href: string;
-};
 
-export type LongevityCategory = {
-  label: string;
-  slides: LongevitySlide[];
-};
-
-export type LongevitySystemsData = {
-  heading: string;
-  categories: LongevityCategory[];
-};
-
-export const longevitySystemsData: LongevitySystemsData = {
+export const longevitySystemsData = {
   heading: "LONGEVITY SYSTEMS",
   categories: [
     {

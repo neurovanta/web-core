@@ -1,10 +1,10 @@
 export const bannerData = {
   title: "Industries We Serve",
-  image: "/assets/images/solutions/banner.jpg",
+  image: "/assets/images/industries/banner.jpg",
 };
 
 export const ctaBannerData = {
-  bgImage: "/assets/images/solutions/cta.jpg",
+  bgImage: "/assets/images/industries/cta.jpg",
   title: "Find the Right Fit for Your Industry",
   btn: {
     label: "CONTACT US",

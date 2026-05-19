@@ -2,12 +2,10 @@
 
 import Image from "next/image";
 import CircleAnimation from "@/app/components/client/common/CircleAnimation";
-import { howItFitsData } from "../data";
 import { AnimatedHeading } from "../../animations/AnimateHeading";
 import { SectionDescription } from "../../animations/SectionDescription";
 
-const HowItFits = () => {
-  const { title, description, image } = howItFitsData;
+const HowItFits = ({title, description, image}: {title: string, description: string, image: string}) => {
 
   return (
     <section className="relative w-full max-h-[503px] py-170 3xl:py-[180px] overflow-hidden">

@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import type { Swiper as SwiperType } from "swiper";
 import "swiper/css";
@@ -75,6 +75,18 @@ export default function CommonSlider({ data }: { data: CommonSectionData }) {
   const { heading, slides } = data;
   const swiperRef = useRef<SwiperType | null>(null);
 
+  const [showNav, setShowNav] = useState(false);
+  const [prevDisabled, setPrevDisabled] = useState(true);
+  const [nextDisabled, setNextDisabled] = useState(false);
+
+  const updateNavState = (swiper: SwiperType) => {
+    // Show nav only if not all slides are visible at once
+    const slidesPerView = swiper.params.slidesPerView as number;
+    setShowNav(slides.length > Math.floor(slidesPerView));
+    setPrevDisabled(swiper.isBeginning);
+    setNextDisabled(swiper.isEnd);
+  };
+
   return (
     <section className="relative w-full bg-primary pt-120 overflow-hidden">
       <div className="container flex justify-between items-start pt-[5px]">
@@ -83,16 +95,20 @@ export default function CommonSlider({ data }: { data: CommonSectionData }) {
           className="text-heading mb-20 lg:mb-60 text-secondary"
           mode="reveal"
         />
-        <div className="flex items-center gap-[10px]">
-          <SliderNavButton
-            direction="prev"
-            onClick={() => swiperRef.current?.slidePrev()}
-          />
-          <SliderNavButton
-            direction="next"
-            onClick={() => swiperRef.current?.slideNext()}
-          />
-        </div>
+        {showNav && (
+          <div className="flex items-center gap-[10px]">
+            <SliderNavButton
+              direction="prev"
+              disabled={prevDisabled}
+              onClick={() => swiperRef.current?.slidePrev()}
+            />
+            <SliderNavButton
+              direction="next"
+              disabled={nextDisabled}
+              onClick={() => swiperRef.current?.slideNext()}
+            />
+          </div>
+        )}
       </div>
 
       <div
@@ -107,13 +123,17 @@ export default function CommonSlider({ data }: { data: CommonSectionData }) {
         <Swiper
           onSwiper={(swiper) => {
             swiperRef.current = swiper;
+            updateNavState(swiper);
           }}
-          loop={true}
+          onSlideChange={(swiper) => updateNavState(swiper)}
+          onBreakpoint={(swiper) => updateNavState(swiper)}
+          loop={false}
           allowTouchMove={true}
           autoplay={{
             delay: AUTOPLAY_DELAY,
             disableOnInteraction: false,
           }}
+          speed={800}
           initialSlide={0}
           breakpoints={{
             0: { slidesPerView: 1 },

@@ -201,7 +201,7 @@ export default function WellnessSlider({
           <div className="flex flex-col gap-20">
             <AnimatedHeading
               title={data.heading}
-              className="text-white text-heading max-w-[900px] 2xl:max-w-[985px]"
+              className="text-white text-heading max-w-[25ch]"
             />
             <div className="mb-60 md:mb-0">
               <SectionDescription

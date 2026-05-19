@@ -1,6 +1,6 @@
 export const bannerData = {
   title: "The Neuro Vanta Experience",
-  image: "/assets/images/solutions/banner.jpg",
+  image: "/assets/images/experience/banner.jpg",
 };
 
 export const sectionHeaderData = {

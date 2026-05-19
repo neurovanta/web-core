@@ -1,15 +1,15 @@
 import Image from "next/image";
 import { AnimatedHeading } from "@/app/components/client/animations/AnimateHeading";
-import { SectionDescription } from "../../animations/SectionDescription";
+import { SectionDescription } from "../animations/SectionDescription";
 
-interface IntroProps {
+interface DescImageIntroProps {
   title: string;
   description: string;
   image: string;
   imageAlt: string;
 }
 
-export default function Intro({ data }: { data: IntroProps }) {
+export default function DescImageIntro({ data }: { data: DescImageIntroProps }) {
   const { title, description, image, imageAlt } = data;
   return (
     <section className="bg-white overflow-hidden">

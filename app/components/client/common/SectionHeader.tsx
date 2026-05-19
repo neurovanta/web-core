@@ -21,7 +21,7 @@ export default function SectionHeader({
   return (
     <div className="container py-120 3xl:py-150">
       <div className="flex justify-between  items-start w-full">
-        <div className={`w-[42.4%] shrink-0`}>
+        <div className={`w-[40%] 3xl:w-[42.4%] shrink-0`}>
           <div className="max-w-[88%]">
             <AnimatedHeading
               title={title}
@@ -34,7 +34,7 @@ export default function SectionHeader({
           {subtitle && (
             <SectionDescription
               text={subtitle}
-              className={`!text-subHeading text-secondary tracking-[-3%] ${maxWSubtitle}`}
+              className={`!text-subHeading text-secondary tracking-[-3%] whitespace-pre-line ${maxWSubtitle}`}
             />
           )}
           {description && (

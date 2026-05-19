@@ -58,12 +58,12 @@ const IndustryCard = ({
       animate={{
         background: isActive
           ? "linear-gradient(180deg, rgba(0,0,0,0.502) 0%, rgba(0,0,0,0.502) 100%)"
-          : "linear-gradient(180deg, rgba(0,0,0,0) 33.4%, rgba(0,0,0,0.4) 100%)",
+          : "",
       }}
       transition={{ duration: 0.45 }}
     />
 
-    <div className="absolute left-0 right-0 bottom-0 h-[306px] w-full bg-gradient-to-b from-transparent to-black" />
+    <div className="absolute left-0 right-0 bottom-0 h-[306px] w-full bg-gradient-to-b from-transparent to-black opacity-80" />
 
     <AnimatePresence>
       {!isActive && (

@@ -8,20 +8,21 @@ import {
   ctaBannerData,
   whatWeProvideData,
   keyBenefitsData,
-  approachData
+  approachData,
+  howItFitsData
 } from "./data";
-import WhatWeProvideSlider from "./sections/WhatWeProvideSlider";
 import HowItFits from "./sections/HowFits";
 import TabsImage from "../common/TabsImage";
+import FourCardSlider from "../common/FourCardSlider";
 
 const Index = () => {
   return (
     <>
       <InnerBanner {...bannerData} />
       <SectionHeader {...sectionHeaderData} maxWDescription="max-w-[909px]" />
-      <WhatWeProvideSlider data={whatWeProvideData} />
+      <FourCardSlider data={whatWeProvideData} />
       <CommonSlider data={keyBenefitsData} />
-      <HowItFits />
+      <HowItFits  {...howItFitsData}/>
       <TabsImage data={approachData} />
       <InnerCta data={ctaBannerData} maxW="max-w-[18ch]" />
     </>

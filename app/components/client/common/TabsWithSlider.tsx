@@ -7,25 +7,27 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import { useContainerInset } from "@/app/hooks/useContainerInset";
 import { motion, AnimatePresence } from "framer-motion";
-import { AnimatedHeading } from "../../animations/AnimateHeading";
-import Reveal from "../../animations/RevealItemsOneByOneAnimation";
-import { moveUpV2 } from "../../animations/motionVarinats";
+import { AnimatedHeading } from "../animations/AnimateHeading";
+import Reveal from "../animations/RevealItemsOneByOneAnimation";
+import { moveUpV2 } from "../animations/motionVarinats";
 import gsap from "gsap";
+import { SectionDescription } from "../animations/SectionDescription";
 
-export type LongevitySlide = {
+export type TabsWithSliderSlide = {
   image: string;
   title: string;
   href: string;
 };
 
-export type LongevityCategory = {
+export type TabsWithSliderCategory = {
   label: string;
-  slides: LongevitySlide[];
+  slides: TabsWithSliderSlide[];
 };
 
-export type LongevitySystemsData = {
+export type TabsWithSliderData = {
   heading: string;
-  categories: LongevityCategory[];
+  description?: string;
+  categories: TabsWithSliderCategory[];
 };
 
 function splitColumns<T>(arr: T[]): [T[], T[]] {
@@ -40,16 +42,18 @@ function preloadImages(srcs: string[]): void {
   });
 }
 
-export default function LongevitySystems({
+export default function TabsWithSlider({
   data,
+  className,
 }: {
-  data: LongevitySystemsData;
+  data: TabsWithSliderData;
+  className?: string;
 }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [visibleIndex, setVisibleIndex] = useState(0);
-  const [pendingSlides, setPendingSlides] = useState<LongevitySlide[] | null>(
-    null,
-  );
+  const [pendingSlides, setPendingSlides] = useState<
+    TabsWithSliderSlide[] | null
+  >(null);
 
   const tlRef = useRef<gsap.core.Timeline | null>(null);
   const pendingIndexRef = useRef<number>(0);
@@ -192,14 +196,22 @@ export default function LongevitySystems({
   }, [pendingSlides]);
 
   return (
-    <section className="py-120 3xl:py-150 overflow-hidden">
+    <section className={`${className} overflow-hidden`}>
       <div ref={containerRef} className="container">
-        <div className="flex flex-wrap items-start justify-between gap-y-20 gap-x-8 mb-60">
-          <AnimatedHeading
-            title={data.heading}
-            className="text-secondary text-heading"
-            mode="reveal"
-          />
+        <div className="flex flex-wrap xl:flex-nowrap items-start justify-between gap-y-20 gap-x-8 mb-60">
+          <div className="flex flex-col gap-20">
+            <AnimatedHeading
+              title={data.heading}
+              className="text-secondary text-heading"
+              mode="reveal"
+            />
+            {data.description && (
+              <SectionDescription
+                text={data.description}
+                className="max-w-[30ch] 3xl:max-w-[50ch]"
+              />
+            )}
+          </div>
 
           <div className="grid grid-cols-2 lg:flex gap-[10px] sm:gap-[30px] 3xl:gap-[34px] w-fit lg:ml-auto">
             {[leftCol, rightCol].map((col, colIdx) => (
@@ -384,7 +396,7 @@ function SlideCard({
   index,
   titleRef,
 }: {
-  slide: LongevitySlide;
+  slide: TabsWithSliderSlide;
   index: number;
   titleRef?: (el: HTMLParagraphElement | null) => void;
 }) {
@@ -408,7 +420,7 @@ function SlideCard({
           className={`absolute inset-0 transition-opacity duration-300 ${
             hovered ? "opacity-100" : "opacity-0"
           }`}
-          style={{ background: "#00000066" }}
+          style={{ background: "#000000B2" }}
         />
         <div
           className={`absolute top-30 right-30 3xl:top-[34px] 3xl:right-[34px] transition-all duration-300 ${
@@ -431,7 +443,8 @@ function SlideCard({
       <div className="overflow-hidden mt-30">
         <p
           ref={titleRef}
-          className="text-subHeading tracking-[-0.03em] text-secondary"
+          className={`text-subHeading tracking-[-0.03em] text-secondary contact-link ${hovered ? "contact-link" : ""}`}
+          data-text={slide.title}
         >
           {slide.title}
         </p>
