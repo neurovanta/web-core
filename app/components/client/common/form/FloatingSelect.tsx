@@ -27,7 +27,7 @@ export const FloatingSelect: React.FC<FloatingSelectProps> = ({
   const containerRef = useRef<HTMLDivElement>(null);
 
   const hasValue = value && value.trim().length > 0;
-  const isFloated = hasValue || open; // ✅ FIX
+  const isFloated = hasValue || open;
 
   // Close on outside click
   useEffect(() => {
@@ -50,16 +50,13 @@ export const FloatingSelect: React.FC<FloatingSelectProps> = ({
       <div
         className={`
           absolute left-0 flex w-full justify-between items-center
-          transition-all duration-300 ease-in-out
-         ${isFloated
-            ? "-top-[15px] text-15"
-            : "text-19"
-          }
+          transition-all duration-300 ease-in-out -tracking-[0.03em]
+         ${isFloated ? "-top-[15px] text-15" : "text-19"}
         `}
       >
         <label
           htmlFor={id}
-          className="pointer-events-none text-secondary leading-[1.42] select-none"
+          className="pointer-events-none text-secondary leading-[1.42] select-none -tracking-[0.03em]"
         >
           {label}
         </label>
@@ -69,8 +66,9 @@ export const FloatingSelect: React.FC<FloatingSelectProps> = ({
           alt="Chevron Down"
           width={13}
           height={13}
-          className={`h-[10px] w-auto 3xl:h-[11px] 3xl:w-[11px]  transition-transform duration-300 ${open ? "rotate-180" : "rotate-0"
-            }`}
+          className={`h-[10px] w-auto 3xl:h-[11px] 3xl:w-[11px]  transition-transform duration-300 ${
+            open ? "rotate-180" : "rotate-0"
+          }`}
         />
       </div>
 
@@ -79,12 +77,13 @@ export const FloatingSelect: React.FC<FloatingSelectProps> = ({
         id={id}
         {...registration}
         className={`
-          w-full bg-transparent border-0 border-b outline-none appearance-none
-          text-secondary text-19 cursor-pointer
-          pt-4 md:pt-[30px]
-          transition-colors duration-300
-          ${error ? "border-b-red-500" : "border-b-secondary"}
-        `}
+    w-full bg-transparent border-0 border-b outline-none appearance-none
+    text-transparent  {/* ← was text-secondary, change to transparent */}
+    text-19 cursor-pointer
+    pt-4 md:pt-[26px] -tracking-[0.03em]
+    transition-colors duration-300
+    ${error ? "border-b-red-500" : "border-b-secondary"}
+  `}
       >
         <option value="" disabled hidden />
         {options.map((opt) => (
@@ -99,7 +98,7 @@ export const FloatingSelect: React.FC<FloatingSelectProps> = ({
         className={`
           absolute left-0 pointer-events-none
           text-19 text-secondary
-          top-[30px]
+          top-[30px] -tracking-[0.03em]
           ${hasValue ? "opacity-100" : "opacity-0"}
         `}
       >
@@ -154,8 +153,9 @@ export const FloatingSelect: React.FC<FloatingSelectProps> = ({
       {/* Error */}
       <div className="h-[20px] mt-1">
         <div
-          className={`transition-opacity duration-150 ${error ? "opacity-100" : "opacity-0 pointer-events-none"
-            }`}
+          className={`transition-opacity duration-150 ${
+            error ? "opacity-100" : "opacity-0 pointer-events-none"
+          }`}
         >
           <ErrorMessage message={error ?? ""} />
         </div>

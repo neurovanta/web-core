@@ -42,7 +42,7 @@ export const FloatingTextarea: React.FC<FloatingTextareaProps> = ({
         htmlFor={id}
         className={`
           absolute left-0 transition-all duration-300 ease-in-out pointer-events-none
-          text-secondary leading-[1.42] select-none
+          text-secondary leading-[1.42] select-none -tracking-[0.03em]
           ${
             hasValue
               ? "-top-[15px] text-15"
@@ -64,8 +64,8 @@ export const FloatingTextarea: React.FC<FloatingTextareaProps> = ({
         {...restRegistration}
         className={`
           w-full bg-transparent border-0 border-b outline-none resize-none
-          text-secondary text-19
-          pt-[30px]
+          text-secondary text-19 -tracking-[0.03em]
+          pt-[26px]
           transition-colors duration-300
           overflow-hidden
           ${error ? "border-b-red-500" : "border-b-secondary"}

@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { AnimatedHeading } from "../../animations/AnimateHeading";
+import { SectionDescription } from "../../animations/SectionDescription";
 
 interface CareerIntroProps {
   title: string;
@@ -52,9 +53,7 @@ export default function CareerIntro({
 
           {/* Col 3 — Description */}
           <div className="py-40 3xl:py-[45px] flex items-center">
-            <p className="text-subHeading text-white max-w-[40ch]">
-              {description}
-            </p>
+            <SectionDescription text={description} className="text-subHeading text-white max-w-[40ch] tracking-[-0.03em]" />
           </div>
         </div>
       </div>

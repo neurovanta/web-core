@@ -83,7 +83,7 @@ export default function CurveSlider({
 
   return (
     <section className="relative w-full overflow-hidden border-b pb-20 3xl:pb-150 border-border-color">
-      <div className="absolute top-0 left-0 right-0 z-20 text-center">
+      <div className="absolute top-3 3xl:top-0 left-0 right-0 z-20 text-center">
         <AnimatedHeading title={title} className="mb-20" />
         <SectionDescription
           text={description}
