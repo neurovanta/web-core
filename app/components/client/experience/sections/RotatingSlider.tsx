@@ -4,7 +4,7 @@ import { useState, useCallback, useRef, useEffect } from "react";
 import { slides } from "../data";
 import SliderNavButton from "../../common/SliderButton";
 import { AnimatedHeading } from "../../animations/AnimateHeading";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, easeInOut } from "framer-motion";
 
 const TOTAL = slides.length;
 const TRANS_MS = 750;
@@ -219,12 +219,18 @@ export default function ExperienceJourneySlider() {
         </div>
 
         <div className="absolute top-100 left-0 right-0 z-10 flex flex-col items-center text-center">
-          <div
-            className="w-px h-[120px] 3xl:h-[135px] my-[8px]"
-            style={{
-              background: `linear-gradient(to bottom, transparent, ${COLOR} 30%, ${COLOR} 70%, transparent)`,
-            }}
-          />
+<div className="h-[120px] 3xl:h-[135px] my-[8px] flex items-start justify-center">
+  <motion.div
+    key={displayedSlide.title}
+    className="w-px"
+    style={{
+      background: `linear-gradient(to bottom, transparent, ${COLOR} 30%, ${COLOR} 70%, transparent)`,
+    }}
+    initial={{ height: 0 }}
+    animate={{ height: "100%" }}
+    transition={{ duration: 0.8, ease: easeInOut }}
+  />
+</div>
 
           <AnimatePresence mode="wait">
             <motion.div
@@ -234,10 +240,10 @@ export default function ExperienceJourneySlider() {
             >
               <motion.h3
                 className="text-subHeading tracking-[-0.03em] mb-20"
-                initial={{ opacity: 0, y: 12 }}
+                initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.35, ease: [0.25, 0, 0.2, 1] }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.35, ease: easeInOut }}
               >
                 {displayedSlide.title}
               </motion.h3>
@@ -246,10 +252,10 @@ export default function ExperienceJourneySlider() {
                 className="text-description max-w-[54ch]"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -6 }}
+                exit={{ opacity: 0, y: -10 }}
                 transition={{
                   duration: 0.35,
-                  ease: [0.25, 0, 0.2, 1],
+                  ease: easeInOut,
                   delay: 0.07,
                 }}
               >
