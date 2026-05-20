@@ -1,0 +1,661 @@
+// "use client";
+
+// /**
+//  * ExperienceJourneySlider — v5 FINAL
+//  *
+//  * Fixed:
+//  *  1. SVG arc uses real pixel coordinates (no calc() in path data — browsers ignore it).
+//  *  2. Section overflow:hidden is removed; arc-area clips only what's needed.
+//  *  3. Arc center sits exactly at the bottom boundary of the arc-area div.
+//  *  4. Content sits below arc-area, visually "inside" the curve.
+//  */
+
+// import { useState, useCallback, useRef, useEffect } from "react";
+// import { slides } from "../data";
+// import SliderNavButton from "../../common/SliderButton";
+
+// // ─── Constants ────────────────────────────────────────────────────────────────
+// const TOTAL    = slides.length;
+// const STEP_DEG = 360 / TOTAL;
+// const TRANS_MS = 750;
+// const FADE_MS  = 270;
+// const EASE     = "cubic-bezier(0.45, 0, 0.2, 1)";
+
+// const DOT   = 11;
+// const BADGE = 50;
+// const STEM  = 28;
+
+// const COLOR = "#51463E";
+// const BG    = "#F5F0EA";
+
+// // ─── Geometry ────────────────────────────────────────────────────────────────
+// function angleOffset(deg: number, R: number) {
+//   const rad = (deg * Math.PI) / 180;
+//   return { x: R * Math.sin(rad), y: -R * Math.cos(rad) };
+// }
+
+// // ─── Component ───────────────────────────────────────────────────────────────
+// export default function ExperienceJourneySlider() {
+//   const sectionRef = useRef<HTMLDivElement>(null);
+
+//   // Real pixel width of section — used for SVG arc coordinates
+//   const [sectionW, setSectionW] = useState(0);
+//   const [R, setR]               = useState(0);
+
+//   useEffect(() => {
+//     const el = sectionRef.current;
+//     if (!el) return;
+//     const update = () => {
+//       const w = el.offsetWidth;
+//       setSectionW(w);
+//       setR(Math.min(w / 2, 760));
+//     };
+//     update();
+//     const ro = new ResizeObserver(update);
+//     ro.observe(el);
+//     return () => ro.disconnect();
+//   }, []);
+
+//   // Heights
+//   // arcApexH: distance from arc apex (top of curve) down to arc center
+//   // = min(R, 480) so it doesn't grow too tall
+//   const arcApexH    = R > 0 ? Math.min(R, 880) : 580;
+//   // overhead: space above the arc apex needed for badge + stem
+//   const overhead    = BADGE + STEM + 6;
+//   // arcAreaH: total height of the arc container div
+//   const arcAreaH    = arcApexH + overhead;
+//   // arc center Y inside arcArea div = arcAreaH (its bottom edge)
+//   // arc center X inside arcArea div = sectionW / 2
+
+//   // ── Slider state ──
+//   const [activeIndex,    setActiveIndex]    = useState(0);
+//   const [displayedSlide, setDisplayedSlide] = useState(slides[0]);
+//   const [textVisible,    setTextVisible]    = useState(true);
+//   const [animating,      setAnimating]      = useState(false);
+//   const [ringAngle,      setRingAngle]      = useState(0);
+//   const animRef  = useRef(false);
+//   const swapRef  = useRef<ReturnType<typeof setTimeout> | null>(null);
+//   const lockRef  = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+//   const goTo = useCallback((target: number) => {
+//     if (animRef.current) return;
+//     const idx = Math.max(0, Math.min(TOTAL - 1, target));
+//     if (idx === activeIndex) return;
+
+//     animRef.current = true;
+//     setAnimating(true);
+//     setTextVisible(false);
+
+//     const steps = idx - activeIndex;
+//     setRingAngle(prev => prev - steps * STEP_DEG);
+
+//     swapRef.current = setTimeout(() => {
+//       setDisplayedSlide(slides[idx]);
+//       setActiveIndex(idx);
+//       setTextVisible(true);
+//     }, FADE_MS);
+
+//     lockRef.current = setTimeout(() => {
+//       animRef.current = false;
+//       setAnimating(false);
+//     }, TRANS_MS);
+//   }, [activeIndex]);
+
+//   useEffect(() => () => {
+//     if (swapRef.current) clearTimeout(swapRef.current);
+//     if (lockRef.current) clearTimeout(lockRef.current);
+//   }, []);
+
+//   const goPrev = useCallback(() => goTo(activeIndex - 1), [activeIndex, goTo]);
+//   const goNext = useCallback(() => goTo(activeIndex + 1), [activeIndex, goTo]);
+
+//   // ── Dot position within ring div ──
+//   // Ring div is 2R×2R. Its center = (R, R) inside it.
+//   // Dot i base angle = i * STEP_DEG
+//   function dotInRing(i: number) {
+//     const { x, y } = angleOffset(i * STEP_DEG, R);
+//     return {
+//       left: R + x - DOT / 2,
+//       top:  R + y - DOT / 2,
+//     };
+//   }
+
+//   // ── Three visible dots ──
+//   type Dot = { dataIdx: number; role: "prev" | "active" | "next" };
+//   const visibleDots: Dot[] = [];
+//   if (activeIndex > 0)         visibleDots.push({ dataIdx: activeIndex - 1, role: "prev" });
+//                                 visibleDots.push({ dataIdx: activeIndex,     role: "active" });
+//   if (activeIndex < TOTAL - 1) visibleDots.push({ dataIdx: activeIndex + 1, role: "next" });
+
+//   // Don't render until we have real dimensions
+//   if (R === 0 || sectionW === 0) {
+//     return (
+//       <section ref={sectionRef} className="w-full bg-[#F5F0EA]" style={{ minHeight: 600 }} />
+//     );
+//   }
+
+//   // ── SVG arc path (real px, no calc) ──
+//   // Arc center: (sectionW/2, arcAreaH) within the arcArea div
+//   const cx = sectionW / 2;
+//   const cy = arcAreaH;
+//   // Left endpoint:  (cx - R, cy)
+//   // Right endpoint: (cx + R, cy)
+//   // Sweep: counter-clockwise from left to right going through top = flag 0,1
+//   const arcPath = `M ${cx - R} ${cy} A ${R} ${R} 0 0 1 ${cx + R} ${cy}`;
+
+//   return (
+//     <section
+//       ref={sectionRef}
+//       className="relative w-full select-none max-h-[779px]"
+//       style={{ backgroundColor: BG }}
+//     >
+//       {/* ── Header ── */}
+//       <div className="relative z-10 flex items-start justify-between px-8 md:px-12 lg:px-16 xl:px-20 pt-10">
+//         <h2
+//           className="font-light tracking-[-0.01em] leading-[1.15] uppercase"
+//           style={{ fontSize: "clamp(24px, 2.5vw, 40px)", color: COLOR }}
+//         >
+//           The Experience
+//           <br />
+//           Journey
+//         </h2>
+//         <span
+//           className="font-light tracking-[0.05em] pt-1 tabular-nums text-[13px]"
+//           style={{ color: COLOR }}
+//         >
+//           {String(activeIndex + 1).padStart(2, "0")}/{String(TOTAL).padStart(2, "0")}
+//         </span>
+//       </div>
+
+//       {/*
+//         ── Arc area ──
+//         overflow: hidden clips the bottom half of the ring (below arc center).
+//         The arc center sits exactly at the bottom edge → only top semicircle shows.
+//         overflow-x: hidden ensures side edges are clean.
+//       */}
+//       <div
+//         className="relative w-full mt-4"
+//         style={{
+//           height:   arcAreaH,
+//           overflow: "hidden",
+//         }}
+//       >
+//         {/* SVG arc line — real pixel coordinates */}
+//         <svg
+//           className="absolute inset-0 pointer-events-none"
+//           width={sectionW}
+//           height={arcAreaH}
+//           aria-hidden="true"
+//         >
+//           <path
+//             d={arcPath}
+//             fill="none"
+//             stroke={COLOR}
+//             strokeWidth="1"
+//           />
+//         </svg>
+
+//         {/*
+//           Ring div: 2R × 2R
+//           Center at (sectionW/2, arcAreaH):
+//             left = sectionW/2 - R
+//             top  = arcAreaH - R
+//         */}
+//         <div
+//           className="absolute"
+//           style={{
+//             width:     R * 2,
+//             height:    R * 2,
+//             left:      cx - R,
+//             top:       arcAreaH - R,
+//             transform: `rotate(${ringAngle}deg)`,
+//             transformOrigin: `${R}px ${R}px`,  // rotate around ring center
+//             transition: `transform ${TRANS_MS}ms ${EASE}`,
+//             willChange: "transform",
+//           }}
+//         >
+//           {visibleDots.map(({ dataIdx, role }) => {
+//             const pos      = dotInRing(dataIdx);
+//             const isActive = role === "active";
+
+//             return (
+//               <button
+//                 key={`dot-${dataIdx}`}
+//                 onClick={() => !isActive && goTo(dataIdx)}
+//                 aria-label={slides[dataIdx].title}
+//                 className="absolute focus-visible:outline-none"
+//                 style={{
+//                   width:         DOT,
+//                   height:        DOT,
+//                   left:          pos.left,
+//                   top:           pos.top,
+//                   zIndex:        isActive ? 20 : 10,
+//                   cursor:        isActive ? "default" : "pointer",
+//                   pointerEvents: isActive ? "none" : "auto",
+//                 }}
+//               >
+//                 {/* Dot */}
+//                 <span
+//                   style={{
+//                     display:         "block",
+//                     width:           DOT,
+//                     height:          DOT,
+//                     borderRadius:    "50%",
+//                     backgroundColor: COLOR,
+//                   }}
+//                 />
+
+//                 {/* Active: badge + stem above the dot, counter-rotated */}
+//                 {isActive && (
+//                   <div
+//                     style={{
+//                       position:      "absolute",
+//                       left:          DOT / 2,
+//                       bottom:        DOT,
+//                       transform:     `translateX(-50%) rotate(${-ringAngle}deg)`,
+//                       transformOrigin: "50% 100%",
+//                       transition:    `transform ${TRANS_MS}ms ${EASE}`,
+//                       display:       "flex",
+//                       flexDirection: "column",
+//                       alignItems:    "center",
+//                       pointerEvents: "none",
+//                     }}
+//                   >
+//                     {/* Number badge */}
+//                     <div
+//                       style={{
+//                         width:           BADGE,
+//                         height:          BADGE,
+//                         borderRadius:    "50%",
+//                         backgroundColor: COLOR,
+//                         color:           BG,
+//                         display:         "flex",
+//                         alignItems:      "center",
+//                         justifyContent:  "center",
+//                         fontSize:        14,
+//                         fontWeight:      400,
+//                         letterSpacing:   "-0.03em",
+//                         flexShrink:      0,
+//                       }}
+//                     >
+//                       {activeIndex + 1}
+//                     </div>
+//                     {/* Stem line */}
+//                     <div
+//                       style={{
+//                         width:           1,
+//                         height:          STEM,
+//                         backgroundColor: COLOR,
+//                         flexShrink:      0,
+//                       }}
+//                     />
+//                   </div>
+//                 )}
+//               </button>
+//             );
+//           })}
+//         </div>
+//       </div>
+
+//       {/* ── Content + nav (below arc, visually inside the curve) ── */}
+//       <div
+//         className="absolute bottom-0 left-0 right-0 z-10 flex flex-col items-center text-center px-6 pb-10 pt-6"
+//       >
+//         <div
+//           style={{
+//             opacity:    textVisible ? 1 : 0,
+//             transform:  textVisible ? "translateY(0)" : "translateY(5px)",
+//             transition: `opacity ${FADE_MS}ms ease, transform ${FADE_MS}ms ease`,
+//             minHeight:  80,
+//           }}
+//           className="flex flex-col items-center"
+//         >
+//           <h3
+//             className="font-normal mb-2 tracking-[-0.01em]"
+//             style={{
+//               fontFamily: "'Georgia', 'Times New Roman', serif",
+//               fontSize:   "clamp(16px, 1.4vw, 21px)",
+//               color:      COLOR,
+//             }}
+//           >
+//             {displayedSlide.title}
+//           </h3>
+//           <p
+//             className="font-light leading-[1.7] max-w-[340px] md:max-w-[420px]"
+//             style={{ fontSize: "clamp(11px, 0.85vw, 14px)", color: "#8A7F74" }}
+//           >
+//             {displayedSlide.description}
+//           </p>
+//         </div>
+
+//         <div className="flex items-center gap-3 mt-6">
+//           <SliderNavButton
+//             direction="prev"
+//             disabled={activeIndex === 0 || animating}
+//             onClick={goPrev}
+//           />
+//           <SliderNavButton
+//             direction="next"
+//             disabled={activeIndex === TOTAL - 1 || animating}
+//             onClick={goNext}
+//           />
+//         </div>
+//       </div>
+//     </section>
+//   );
+// }
+
+
+
+
+
+
+
+// "use client";
+
+// import { useState, useCallback, useRef, useEffect } from "react";
+// import { slides } from "../data";
+// import SliderNavButton from "../../common/SliderButton";
+
+// const TOTAL = slides.length;
+// const STEP_DEG = 360 / TOTAL;
+// const TRANS_MS = 750;
+// const FADE_MS = 270;
+// const EASE = "cubic-bezier(0.45, 0, 0.2, 1)";
+// const COLOR = "#51463E";
+// const BG = "#F5F0EA";
+// const DOT = 11;
+// const BADGE = 50;
+// const STEM = 28;
+
+// // SVG circle intrinsic size
+// const SVG_SIZE = 1780;
+// const SVG_R = 889.5;
+
+// function angleOffset(deg: number, r: number) {
+//   const rad = (deg * Math.PI) / 180;
+//   return { x: r * Math.sin(rad), y: -r * Math.cos(rad) };
+// }
+
+// export default function ExperienceJourneySlider() {
+//   const sectionRef = useRef<HTMLDivElement>(null);
+//   const [sectionW, setSectionW] = useState(0);
+
+//   useEffect(() => {
+//     const el = sectionRef.current;
+//     if (!el) return;
+//     const update = () => setSectionW(el.offsetWidth);
+//     update();
+//     const ro = new ResizeObserver(update);
+//     ro.observe(el);
+//     return () => ro.disconnect();
+//   }, []);
+
+//   // Scale the SVG so its diameter = sectionW (circle touches both edges)
+//   // SVG natural diameter = 1780, so scale = sectionW / 1780
+//   const scale = sectionW / SVG_SIZE;
+//   // Scaled radius
+//   const R = SVG_R * scale;
+//   // We show top 480px of the circle (from apex down to clip line)
+//   // But we scale this too: visibleH / R = how much of the circle we show
+//   // Target: 480px visible at full 3xl width (sectionW≈1780 → R≈890 → visibleH=480)
+//   // At smaller screens, we scale proportionally but cap at R (can't show more than R)
+//   const visibleH = Math.min(R, 1280 * scale);
+//   // Space above apex for badge + stem
+//   const overhead = BADGE + STEM + 8;
+//   // Arc area total height
+//   const arcAreaH = visibleH + overhead;
+//   // Circle center Y within arc area = arcAreaH (bottom edge)
+//   const centerY = arcAreaH;
+//   // Circle center X = sectionW / 2
+//   const centerX = sectionW / 2;
+
+//   const [activeIndex, setActiveIndex] = useState(0);
+//   const [displayedSlide, setDisplayedSlide] = useState(slides[0]);
+//   const [textVisible, setTextVisible] = useState(true);
+//   const [animating, setAnimating] = useState(false);
+//   const [ringAngle, setRingAngle] = useState(0);
+//   const animRef = useRef(false);
+//   const swapRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+//   const lockRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+//   const goTo = useCallback(
+//     (target: number) => {
+//       if (animRef.current) return;
+//       const idx = Math.max(0, Math.min(TOTAL - 1, target));
+//       if (idx === activeIndex) return;
+//       animRef.current = true;
+//       setAnimating(true);
+//       setTextVisible(false);
+//       setRingAngle((prev) => prev - (idx - activeIndex) * STEP_DEG);
+//       swapRef.current = setTimeout(() => {
+//         setDisplayedSlide(slides[idx]);
+//         setActiveIndex(idx);
+//         setTextVisible(true);
+//       }, FADE_MS);
+//       lockRef.current = setTimeout(() => {
+//         animRef.current = false;
+//         setAnimating(false);
+//       }, TRANS_MS);
+//     },
+//     [activeIndex],
+//   );
+
+//   useEffect(
+//     () => () => {
+//       if (swapRef.current) clearTimeout(swapRef.current);
+//       if (lockRef.current) clearTimeout(lockRef.current);
+//     },
+//     [],
+//   );
+
+//   const goPrev = useCallback(() => goTo(activeIndex - 1), [activeIndex, goTo]);
+//   const goNext = useCallback(() => goTo(activeIndex + 1), [activeIndex, goTo]);
+
+//   // Dot position in the arc-area coordinate space
+//   // Base angle of dot i on the ring = i * STEP_DEG
+//   // Ring is rotated by ringAngle, so screen angle = i * STEP_DEG + ringAngle
+//   // But we render dots as children of the rotating ring div,
+//   // so we place them at their base angle within the ring div.
+//   // Ring div: same size as SVG (sectionW × sectionW), centered at (centerX, centerY)
+//   // Ring div top-left: (centerX - R, centerY - R) = (0, arcAreaH - R) [since centerX = R]
+//   function dotInRing(i: number) {
+//     const { x, y } = angleOffset(i * STEP_DEG, R);
+//     return {
+//       left: R + x - DOT / 2,
+//       top: R + y - DOT / 2,
+//     };
+//   }
+
+//   type DotEntry = { dataIdx: number; role: "prev" | "active" | "next" };
+//   const visibleDots: DotEntry[] = [];
+//   if (activeIndex > 0)
+//     visibleDots.push({ dataIdx: activeIndex - 1, role: "prev" });
+//   visibleDots.push({ dataIdx: activeIndex, role: "active" });
+//   if (activeIndex < TOTAL - 1)
+//     visibleDots.push({ dataIdx: activeIndex + 1, role: "next" });
+
+//   if (!sectionW)
+//     return (
+//       <section
+//         ref={sectionRef}
+//         className="w-full min-h-[600px]"
+//         style={{ backgroundColor: BG }}
+//       />
+//     );
+
+//   return (
+//     <section
+//       ref={sectionRef}
+//       className="relative w-full select-none max-h-[799px]"
+//       style={{ backgroundColor: BG }}
+//     >
+//       {/* Header */}
+//       <div className="relative z-10 flex items-start justify-between px-8 md:px-12 lg:px-16 xl:px-20 pt-10">
+//         <h2
+//           className="font-light tracking-[-0.01em] leading-[1.15] uppercase text-[clamp(24px,2.5vw,40px)]"
+//           style={{ color: COLOR }}
+//         >
+//           The Experience
+//           <br />
+//           Journey
+//         </h2>
+//         <span
+//           className="font-light tracking-[0.05em] pt-1 tabular-nums text-[13px]"
+//           style={{ color: COLOR }}
+//         >
+//           {String(activeIndex + 1).padStart(2, "0")}/
+//           {String(TOTAL).padStart(2, "0")}
+//         </span>
+//       </div>
+
+//       {/* Arc area — clips to show only top `arcAreaH` px */}
+//       <div
+//         className="relative w-full mt-14"
+//         style={{ height: arcAreaH, overflow: "hidden" }}
+//       >
+//         <svg
+//           xmlns="http://www.w3.org/2000/svg"
+//           viewBox="0 0 1780 1780"
+//           fill="none"
+//           className="absolute pointer-events-none"
+//           style={{
+//             width: sectionW,
+//             height: sectionW,
+//             left: 0,
+//             top: arcAreaH - R, // center of SVG lands at arcAreaH (bottom of clip)
+//           }}
+//           aria-hidden="true"
+//         >
+//           <circle
+//             cx="890"
+//             cy="890"
+//             r="889.5"
+//             stroke={COLOR}
+//             strokeWidth={1 / scale}
+//           />
+//         </svg>
+
+//         {/*
+//           Ring div — same square as the SVG, sits at the same position.
+//           Rotates around its center to drive dot animation.
+//         */}
+//         <div
+//           className="absolute"
+//           style={{
+//             width: R * 2,
+//             height: R * 2,
+//             left: centerX - R,
+//             top: arcAreaH - R,
+//             transform: `rotate(${ringAngle}deg)`,
+//             transformOrigin: `${R}px ${R}px`,
+//             transition: `transform ${TRANS_MS}ms ${EASE}`,
+//             willChange: "transform",
+//           }}
+//         >
+//           {visibleDots.map(({ dataIdx, role }) => {
+//             const pos = dotInRing(dataIdx);
+//             const isActive = role === "active";
+//             return (
+//               <button
+//                 key={`dot-${dataIdx}`}
+//                 onClick={() => !isActive && goTo(dataIdx)}
+//                 aria-label={slides[dataIdx].title}
+//                 className="absolute focus-visible:outline-none"
+//                 style={{
+//                   width: DOT,
+//                   height: DOT,
+//                   left: pos.left,
+//                   top: pos.top,
+//                   zIndex: isActive ? 20 : 10,
+//                   cursor: isActive ? "default" : "pointer",
+//                   pointerEvents: isActive ? "none" : "auto",
+//                 }}
+//               >
+//                 <span
+//                   className="block rounded-full"
+//                   style={{ width: DOT, height: DOT, backgroundColor: COLOR }}
+//                 />
+
+//                 {/* Badge + stem — counter-rotates to stay upright */}
+//                 {isActive && (
+//                   <div
+//                     className="absolute flex flex-col items-center pointer-events-none"
+//                     style={{
+//                       left: DOT / 2,
+//                       bottom: DOT,
+//                       transform: `translateX(-50%) rotate(${-ringAngle}deg)`,
+//                       transformOrigin: "50% 100%",
+//                       transition: `transform ${TRANS_MS}ms ${EASE}`,
+//                     }}
+//                   >
+//                     <div
+//                       className="flex items-center justify-center rounded-full shrink-0"
+//                       style={{
+//                         width: BADGE,
+//                         height: BADGE,
+//                         backgroundColor: COLOR,
+//                         color: BG,
+//                         fontSize: 14,
+//                         fontWeight: 400,
+//                         letterSpacing: "-0.03em",
+//                       }}
+//                     >
+//                       {activeIndex + 1}
+//                     </div>
+//                     <div
+//                       className="shrink-0"
+//                       style={{ width: 1, height: STEM, backgroundColor: COLOR }}
+//                     />
+//                   </div>
+//                 )}
+//               </button>
+//             );
+//           })}
+//         </div>
+//       </div>
+
+//       {/* Content + nav */}
+//       <div className="absolute bottom-0 left-0 right-0 z-10 flex flex-col items-center text-center px-6 pb-10 pt-6">
+//         <div
+//           className="flex flex-col items-center"
+//           style={{
+//             opacity: textVisible ? 1 : 0,
+//             transform: textVisible ? "translateY(0)" : "translateY(5px)",
+//             transition: `opacity ${FADE_MS}ms ease, transform ${FADE_MS}ms ease`,
+//             minHeight: 80,
+//           }}
+//         >
+//           <h3
+//             className="font-normal mb-2 tracking-[-0.01em] text-[clamp(16px,1.4vw,21px)]"
+//             style={{
+//               fontFamily: "'Georgia','Times New Roman',serif",
+//               color: COLOR,
+//             }}
+//           >
+//             {displayedSlide.title}
+//           </h3>
+//           <p
+//             className="font-light leading-[1.7] max-w-[340px] md:max-w-[420px] text-[clamp(11px,0.85vw,14px)]"
+//             style={{ color: "#8A7F74" }}
+//           >
+//             {displayedSlide.description}
+//           </p>
+//         </div>
+
+//         <div className="flex items-center gap-3 mt-6">
+//           <SliderNavButton
+//             direction="prev"
+//             disabled={activeIndex === 0 || animating}
+//             onClick={goPrev}
+//           />
+//           <SliderNavButton
+//             direction="next"
+//             disabled={activeIndex === TOTAL - 1 || animating}
+//             onClick={goNext}
+//           />
+//         </div>
+//       </div>
+//     </section>
+//   );
+// }
