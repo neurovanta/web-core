@@ -162,7 +162,7 @@ export default function MoreThanSolutions() {
       className="relative w-full overflow-hidden bg-white pt-120 pb-120 3xl:pt-150 3xl:pb-150"
     >
       {/* Circle Animation — full bleed behind content */}
-      <div className="absolute inset-0 z-20 flex items-center justify-center max-w-[969px] mx-auto">
+      <div className="absolute inset-0 z-20 flex items-center justify-center max-w-[700px] 3xl:max-w-[969px] mx-auto">
         <CircleAnimation variant={1} />
       </div>
       <div className="container mx-auto">
@@ -202,7 +202,7 @@ export default function MoreThanSolutions() {
         {/* ── Grid: invisible slots + centered text overlay ── */}
         <div className="relative">
           {/* Row 1 — 2 images with padding, justify-between */}
-          <div className="flex justify-between px-225 3xl:px-[300px] mb-120">
+          <div className="flex justify-between px-225 2xl:px-[300px] mb-120 3xl:mb-[102px]">
             {([0, 1] as const).map((i) => (
               <div
                 key={i}
@@ -228,7 +228,7 @@ export default function MoreThanSolutions() {
           </div>
 
           {/* Row 3 — centered pair with fixed gap */}
-          <div className="flex justify-center" style={{ gap: 286 }}>
+          <div className="flex justify-center gap-200 2xl:gap-[286px]">
             {([4, 5] as const).map((i) => (
               <div
                 key={i}

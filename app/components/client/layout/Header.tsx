@@ -194,6 +194,26 @@ export default function Header() {
   const dropdownRef = useRef<NavDropdownHandle>(null);
 
   const [menuOpen, setMenuOpen] = useState(false);
+  const menuOpenRef = useRef(false);
+
+    useEffect(() => {
+    menuOpenRef.current = menuOpen;
+ 
+    // when dropdown opens, immediately clear glass style and ensure header is visible
+    const el = headerRef.current;
+    if (!el) return;
+    if (menuOpen) {
+      el.style.background = "transparent";
+      el.style.backdropFilter = "blur(0px)";
+      // make sure header is visible if it was hidden
+      if (isHidden.current) {
+        isHidden.current = false;
+        el.style.transform = "translateY(0%)";
+        el.style.opacity = "1";
+        el.style.pointerEvents = "auto";
+      }
+    }
+  }, [menuOpen]);
 
   // ── Scroll-based header show/hide + glass style (original behaviour) ──────
   useEffect(() => {
@@ -217,7 +237,7 @@ export default function Header() {
           el.style.pointerEvents = "auto";
         }
       } else if (diff > 0) {
-        if (!isHidden.current) {
+        if (!menuOpenRef.current && !isHidden.current) {
           isHidden.current = true;
           el.style.transform = "translateY(-130%)";
           el.style.opacity = "0";
@@ -230,9 +250,11 @@ export default function Header() {
           el.style.opacity = "1";
           el.style.pointerEvents = "auto";
         }
-        el.style.background =
-          "linear-gradient(90deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.03) 52.69%, rgba(0,0,0,0.3) 100%)";
-        el.style.backdropFilter = "blur(30px)";
+        if (!menuOpenRef.current) {
+          el.style.background =
+            "linear-gradient(90deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.03) 52.69%, rgba(0,0,0,0.3) 100%)";
+          el.style.backdropFilter = "blur(30px)";
+        }
         el.style.paddingTop = "50px";
         el.style.paddingBottom = "50px";
       }
@@ -308,9 +330,11 @@ export default function Header() {
             animate={animateIn ? "visible" : "hidden"}
             variants={dropDown(0.18)}
           >
-            <button className="hidden md:flex bg-primary text-secondary leading-[1.7333] rounded-[50px] text-15 uppercase px-20 py-[3px] cursor-pointer 3xl:w-[109px] 3xl:h-[32px]">
-              Contact
-            </button>
+            <Link href="/contact-us">
+              <button className="hidden md:flex bg-primary text-secondary leading-[1.7333] rounded-[50px] text-15 uppercase px-20 py-[3px] cursor-pointer 3xl:w-[109px] 3xl:h-[32px]">
+                Contact
+              </button>
+            </Link>
             <button className="flex md:hidden items-center justify-center w-8 h-8 rounded-full border border-primary cursor-pointer">
               <MdLocalPhone className="w-auto h-[20px] text-primary" />
             </button>

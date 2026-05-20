@@ -80,7 +80,7 @@ export default function FourCardSlider({
                   src={slide.image}
                   alt={slide.title}
                   fill
-                  className="object-cover"
+                  className="object-cover pointer-events-none"
                 />
                 <div className="absolute left-0 right-0 bottom-0 h-[306px] w-full z-30 bg-gradient-to-b from-transparent to-black opacity-80" />
                 <p className="absolute bottom-0 left-0 right-0 z-40 text-white text-subHeading px-30 3xl:px-40 py-40 -tracking-[0.03em]">

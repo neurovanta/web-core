@@ -50,7 +50,7 @@ const IndustryCard = ({
       src={item.image}
       alt={item.title}
       fill
-      className="object-cover object-center"
+      className="object-cover object-left"
     />
 
     <motion.div

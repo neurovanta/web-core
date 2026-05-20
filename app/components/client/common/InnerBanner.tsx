@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Breadcrumb from "./BreadCrumb";
+import { AnimatedHeading } from "../animations/AnimateHeading";
 
 export default function InnerBanner({
   image,
@@ -19,16 +20,14 @@ export default function InnerBanner({
           src={image}
           alt="banner-image"
           fill
-          className="w-full h-full object-cover object-center"
+          className="w-full h-full object-cover object-center pointer-events-none"
         />
         <div className="absolute inset-0 bg-black/70" />
       </div>
 
       <div className="absolute bottom-20 left-0 right-0 z-10 flex flex-col items-center gap-50">
         <div className={maxWTitle}>
-          <h1 className="text-white text-center text-banner whitespace-pre-line">
-            {title}
-          </h1>
+          <AnimatedHeading title={title} className="text-white text-center text-banner whitespace-pre-line" mode="blade" />
         </div>
 
         <Breadcrumb />

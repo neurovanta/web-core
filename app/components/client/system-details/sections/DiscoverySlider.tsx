@@ -1,20 +1,25 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { discoverGalleryData } from "../data";
+
+const AUTOPLAY_MS = 4000;
 
 function DiscoverySlider() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [prevIndex, setPrevIndex] = useState<number | null>(null);
   const [animKey, setAnimKey] = useState(0);
+  const [direction, setDirection] = useState<1 | -1>(1);
 
   const slides = discoverGalleryData.slides;
 
   const goTo = useCallback(
-    (i: number) => {
+    (i: number, dir?: 1 | -1) => {
       if (i === activeIndex) return;
+      const resolvedDir = dir ?? (i > activeIndex ? 1 : -1);
+      setDirection(resolvedDir);
       setPrevIndex(activeIndex);
       setActiveIndex(i);
       setAnimKey((k) => k + 1);
@@ -24,10 +29,25 @@ function DiscoverySlider() {
 
   useEffect(() => {
     const timer = setInterval(() => {
-      goTo((activeIndex + 1) % slides.length);
-    }, 4000);
+      goTo((activeIndex + 1) % slides.length, 1);
+    }, AUTOPLAY_MS);
     return () => clearInterval(timer);
   }, [activeIndex, goTo, slides.length]);
+
+  const handleDragEnd = useCallback(
+    (_: unknown, info: { offset: { x: number } }) => {
+      if (info.offset.x < -50) {
+        goTo((activeIndex + 1) % slides.length, 1);
+      } else if (info.offset.x > 50) {
+        goTo((activeIndex - 1 + slides.length) % slides.length, -1);
+      }
+    },
+    [activeIndex, goTo, slides.length],
+  );
+
+  // clip-path: slide in from right (forward) or from left (backward)
+  const clipInitial =
+    direction === 1 ? "inset(0 100% 0 0)" : "inset(0 0 0 100%)";
 
   return (
     <div className="flex flex-col h-full">
@@ -46,22 +66,27 @@ function DiscoverySlider() {
         <AnimatePresence mode="sync">
           <motion.div
             key={animKey}
-            className="absolute inset-0 z-10"
-            initial={{ clipPath: "inset(0 100% 0 0)" }}
+            className="absolute inset-0 z-10 cursor-grab active:cursor-grabbing"
+            initial={{ clipPath: clipInitial }}
             animate={{ clipPath: "inset(0 0% 0 0)" }}
             transition={{ duration: 0.75, ease: [0.76, 0, 0.24, 1] }}
+            drag="x"
+            dragConstraints={{ left: 0, right: 0 }}
+            dragElastic={0}
+            dragMomentum={false}
+            onDragEnd={handleDragEnd}
           >
             <Image
               src={slides[activeIndex].image}
               alt={`Gallery ${activeIndex + 1}`}
               fill
-              className="object-cover"
+              className="object-cover pointer-events-none"
               priority={activeIndex === 0}
             />
           </motion.div>
         </AnimatePresence>
 
-        {/* Gradient overlay — above image (z-10), below pagination (z-20) */}
+        {/* Gradient overlay */}
         <div
           className="absolute inset-0 z-15 pointer-events-none"
           style={{
@@ -70,6 +95,7 @@ function DiscoverySlider() {
           }}
         />
 
+        {/* Thumbnails */}
         <div className="absolute bottom-30 left-30 3xl:bottom-40 3xl:left-40 z-20 flex items-center gap-[15.6px]">
           {slides.map((slide, i) => (
             <button
@@ -81,23 +107,35 @@ function DiscoverySlider() {
                 src={slide.image}
                 alt={`Thumbnail ${i + 1}`}
                 fill
-                className="object-cover transition-opacity duration-300"
+                className="object-cover"
               />
 
-              {/* Active thumbnail dark overlay */}
-              {i !== activeIndex && (
-                <div className="absolute inset-0 z-10 bg-black/40" />
-              )}
+              {/* Dim overlay for inactive */}
+              <motion.div
+                className="absolute inset-0 z-10 bg-black"
+                animate={{ opacity: i === activeIndex ? 0 : 0.4 }}
+                transition={{ duration: 0.4, ease: "easeInOut" }}
+              />
 
-              {/* Active thumbnail border */}
-              {i === activeIndex && (
-                <Image
-                  src="/assets/images/system-details/discovery/slider/border.svg"
-                  alt=""
-                  fill
-                  className="object-fill pointer-events-none z-20"
-                />
-              )}
+              {/* Active border SVG */}
+              <AnimatePresence>
+                {i === activeIndex && (
+                  <motion.div
+                    className="absolute inset-0 z-20 pointer-events-none"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <Image
+                      src="/assets/images/system-details/discovery/slider/border.svg"
+                      alt=""
+                      fill
+                      className="object-fill"
+                    />
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </button>
           ))}
         </div>

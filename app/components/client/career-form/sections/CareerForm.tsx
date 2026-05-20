@@ -162,6 +162,7 @@ export default function CareersForm() {
                 alt="Attachment"
                 width={20}
                 height={22}
+                className="pointer-events-none"
               />
             </span>
             <div className="text-left gap-[2px]">
