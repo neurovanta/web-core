@@ -134,7 +134,7 @@ export default function ExperienceJourneySlider() {
       </div>
 
       <div
-        className="relative w-full mt-[175px] 3xl:mt-[210px]"
+        className="relative w-full mt-[160px] 3xl:mt-[210px]"
         style={{ height: arcAreaH }}
       >
         <div
