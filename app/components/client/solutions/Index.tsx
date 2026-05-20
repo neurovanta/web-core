@@ -4,6 +4,7 @@ import InnerCta from "../common/InnerCta";
 import Intro from "./sections/Intro";
 import Services from "./sections/Services";
 import WellnessRequirements from "./sections/WellnessRequirements";
+import MoreThanSolutions from "./sections/SolutionsAnimated";
 
 const Index = () => {
   return (
@@ -12,6 +13,7 @@ const Index = () => {
       <Intro />
       <Services />
       <WellnessRequirements data={wellnessData} />
+      <MoreThanSolutions />
       <InnerCta data={ctaBannerData} maxW="max-w-[22ch]" />
     </>
   );

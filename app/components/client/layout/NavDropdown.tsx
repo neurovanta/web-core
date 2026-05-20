@@ -254,7 +254,7 @@ export const NavDropdown = forwardRef<NavDropdownHandle>((_, ref) => {
                           href={s.href}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-19 leading-[1.42] tracking-[-0.03em] contact-link"
+                          className="text-19 leading-[1.42] tracking-[-0.03em] contact-link hover:scale-105 transition-all duration-300"
                           style={
                             s.label === "Instagram"
                               ? {
