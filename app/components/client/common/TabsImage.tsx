@@ -124,7 +124,7 @@ export default function TabsImage({data}: TabsImageProps) {
               }
               alt="previous"
               fill
-              className="object-cover"
+              className="object-cover pointer-events-none"
             />
 
             {/* Wipe-in layer — new image slides over the base */}
@@ -143,7 +143,7 @@ export default function TabsImage({data}: TabsImageProps) {
                   src={tabs[activeIndex].image}
                   alt={tabs[activeIndex].title}
                   fill
-                  className="object-cover"
+                  className="object-cover pointer-events-none"
                   priority
                 />
               </motion.div>

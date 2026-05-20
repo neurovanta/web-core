@@ -52,7 +52,7 @@ function CommonSlideCard({
             alt="icon"
             width={100}
             height={100}
-            className="h-[70px] w-auto"
+            className="h-[70px] w-auto pointer-events-none"
           />
         </div>
         <div>

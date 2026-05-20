@@ -31,7 +31,7 @@ export default function DescImageIntro({ data }: { data: DescImageIntroProps }) 
 
         {/* Right — image */}
         <div className="w-full lg:w-1/2 aspect-[4/3] lg:aspect-auto lg:h-[460px] 3xl:h-[524px] relative">
-          <Image src={image} alt={imageAlt} fill className="object-cover" />
+          <Image src={image} alt={imageAlt} fill className="object-cover pointer-events-none" />
         </div>
       </div>
     </section>

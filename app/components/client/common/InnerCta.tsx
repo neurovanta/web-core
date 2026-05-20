@@ -23,7 +23,7 @@ export default function InnerCta({ data, maxW = "" }: InnerCtaProps) {
         alt={data.title}
         fill
         priority
-        className="object-cover"
+        className="object-cover pointer-events-none"
       />
 
       {/* Overlay */}

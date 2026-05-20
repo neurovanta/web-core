@@ -7,29 +7,29 @@ export const footerMenus: FooterMenu[] = [
   {
     heading: "Solutions",
     items: [
-      { label: "Bespoke Wellness & Longevity Solutions", href: "/" },
-      { label: "Well Space Design", href: "/" },
+      { label: "Bespoke Wellness & Longevity Solutions", href: "/solutions/bespoke-wellness" },
+      { label: "Well Space Design", href: "/solutions/well-space-design" },
     ],
   },
   {
     heading: "Longevity Systems",
     items: [
-      { label: "Recovery & Regeneration Systems", href: "/" },
-      { label: "Oxygen & Cellular Enhancement", href: "/" },
-      { label: "Thermal Detoxification", href: "/" },
-      { label: "Light & Photo Biomodulation", href: "/" },
-      { label: "Neuro & Cognitive Optimization", href: "/" },
-      { label: "Metabolic & Performance Optimization", href: "/" },
-      { label: "Diagnostics & Bio-Monitoring", href: "/" },
-      { label: "Mind-Body Immersion Experiences", href: "/" },
+      { label: "Recovery & Regeneration Systems", href: "/systems/recovery" },
+      { label: "Oxygen & Cellular Enhancement", href: "/systems/oxygen" },
+      { label: "Thermal Detoxification", href: "/systems/thermal" },
+      { label: "Light & Photo Biomodulation", href: "/systems/light" },
+      { label: "Neuro & Cognitive Optimization", href: "/systems/neuro" },
+      { label: "Metabolic & Performance Optimization", href: "/systems/metabolic" },
+      { label: "Diagnostics & Bio-Monitoring", href: "/systems/diagnostics" },
+      { label: "Mind-Body Immersion Experiences", href: "/systems/mind-body" },
     ],
   },
   {
     heading: "Quick links",
     items: [
-      { label: "About Neuro Vanta", href: "/" },
-      { label: "Careers", href: "/" },
-      { label: "The Neuro Vanta Journey", href: "/" },
+      { label: "About Neuro Vanta", href: "/about-us" },
+      { label: "Careers", href: "/careers" },
+      { label: "The Neuro Vanta Journey", href: "/experience" },
     ],
   },
 ];
@@ -54,7 +54,7 @@ export type NavItem = {
 export const NAV_ITEMS: NavItem[] = [
   {
     label: "About Us",
-    href: "/about",
+    href: "/about-us",
   },
   {
     label: "Solutions",
@@ -72,16 +72,16 @@ export const NAV_ITEMS: NavItem[] = [
   },
   {
     label: "Longevity Systems",
-    href: "/longevity",
+    href: "/systems",
     subItems: [
-      { label: "Recovery & Regeneration Systems", href: "/longevity/recovery" },
-      { label: "Oxygen & Cellular Enhancement", href: "/longevity/oxygen" },
-      { label: "Thermal Detoxification", href: "/longevity/thermal" },
-      { label: "Light & Photobiomodulation", href: "/longevity/light" },
-      { label: "Neuro & Cognitive Optimization", href: "/longevity/neuro" },
-      { label: "Metabolic & Performance Optimization", href: "/longevity/metabolic" },
-      { label: "Diagnostics & Bio-Monitoring", href: "/longevity/diagnostics" },
-      { label: "Mind–Body Immersion Experiences", href: "/longevity/mindbody" },
+      { label: "Recovery & Regeneration Systems", href: "/systems/recovery" },
+      { label: "Oxygen & Cellular Enhancement", href: "/systems/oxygen" },
+      { label: "Thermal Detoxification", href: "/systems/thermal" },
+      { label: "Light & Photobiomodulation", href: "/systems/light" },
+      { label: "Neuro & Cognitive Optimization", href: "/systems/neuro" },
+      { label: "Metabolic & Performance Optimization", href: "/systems/metabolic" },
+      { label: "Diagnostics & Bio-Monitoring", href: "/systems/diagnostics" },
+      { label: "Mind–Body Immersion Experiences", href: "/systems/mindbody" },
     ],
   },
   {

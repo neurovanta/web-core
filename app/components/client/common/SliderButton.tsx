@@ -40,7 +40,7 @@ export default function SliderNavButton({
           src="/assets/icons/slider-arrow.svg"
           alt={direction}
           fill
-          className="object-contain"
+          className="object-contain pointer-events-none"
         />
       </div>
     </button>

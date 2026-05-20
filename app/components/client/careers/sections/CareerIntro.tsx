@@ -23,7 +23,7 @@ export default function CareerIntro({
           src={bgImage}
           alt="Why work with us background"
           fill
-          className="object-cover"
+          className="object-cover pointer-events-none"
           priority
         />
         <div className="absolute inset-0 bg-black/70" />

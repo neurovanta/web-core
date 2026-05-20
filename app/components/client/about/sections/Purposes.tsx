@@ -77,7 +77,7 @@ export default function Purposes() {
                         src={item.image}
                         alt={item.title}
                         fill
-                        className="object-contain"
+                        className="object-contain pointer-events-none"
                       />
                     </div>
                     <h3 className="text-subHeading text-secondary mb-20">

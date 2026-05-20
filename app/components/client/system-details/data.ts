@@ -178,8 +178,8 @@ export const discoverData: DiscoverData = {
 export const discoverGalleryData: DiscoverGalleryData = {
   slides: [
     { image: "/assets/images/system-details/discovery/slider/1.jpg" },
-    { image: "/assets/images/system-details/highlight/1.jpg" },
-    { image: "/assets/images/system-details/highlight/3.jpg" },
+    { image: "/assets/images/system-details/discovery/slider/2.jpg" },
+    { image: "/assets/images/system-details/discovery/slider/3.jpg" },
   ],
 };
 
