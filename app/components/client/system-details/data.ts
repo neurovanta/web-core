@@ -152,7 +152,7 @@ export const discoverData: DiscoverData = {
       highlights: [
         {
           icon: "/assets/images/system-details/discovery/1.svg",
-          title: "Limbic Activation & Emotional Balance",
+          title: "Limbic Activation & Balance",
         },
         {
           icon: "/assets/images/system-details/discovery/2.svg",
