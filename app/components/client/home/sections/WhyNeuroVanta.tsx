@@ -50,7 +50,7 @@ function SlideCard({
 }) {
   return (
     <div
-      className="relative h-full cursor-pointer select-none pt-60 3xl:pt-80 px-50 3xl:px-70 pb-70 3xl:pb-[74px]"
+      className="relative h-full select-none pt-60 3xl:pt-80 px-50 3xl:px-70 pb-70 3xl:pb-[74px]"
       onMouseEnter={() => onHover(index)}
     >
       {!isLast && <SlideDivider />}

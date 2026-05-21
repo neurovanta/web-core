@@ -12,7 +12,7 @@ export const careersFormData = {
   ],
   attachment: {
     label: "Add an attachment*",
-    hint: "Max. 20Mb.(pdf, png, jpeg, docx)",
+    hint: "Max. 20Mb. (pdf, png, jpeg, docx)",
     accept: ".pdf,.png,.jpeg,.jpg,.docx",
   },
 };

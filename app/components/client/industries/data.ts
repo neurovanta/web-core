@@ -16,7 +16,7 @@ export const introData = {
   title: "We create tailored wellness environments across multiple industries",
   description:
     "We ensure every solution is optimized for performance, usability,and long-term value.",
-  image: "/assets/images/solutions/intro.jpg",
+  image: "/assets/images/industries/intro.jpg",
   imageAlt: "Integrated Solutions",
 };
 
@@ -30,7 +30,7 @@ export const industriesData = {
       description:
         "A longevity clinic provides preventive, personalized healthcare designed to slow biological aging and improve overall well-being.",
       btnTitle: "Explore",
-      href: "#",
+      href: "/industries/longevity-clinics",
     },
     {
       id: 2,
@@ -39,7 +39,7 @@ export const industriesData = {
       description:
         "World-class wellness destinations integrating cutting-edge therapies with restorative environments for complete mind-body renewal.",
       btnTitle: "Explore",
-      href: "#",
+      href: "/industries/wellness-medical-resorts",
     },
     {
       id: 3,
@@ -48,7 +48,7 @@ export const industriesData = {
       description:
         "Elite athletic facilities built around performance, recovery, and member experience at every touchpoint.",
       btnTitle: "Explore",
-      href: "#",
+      href: "/industries/premium-gyms-sports-clubs",
     },
     {
       id: 4,
@@ -57,7 +57,7 @@ export const industriesData = {
       description:
         "Redefining hospitality wellness with immersive spa experiences and integrated recovery solutions for discerning guests.",
       btnTitle: "Explore",
-      href: "#",
+      href: "/industries/luxury-hotels-spas",
     },
     {
       id: 5,
@@ -66,7 +66,7 @@ export const industriesData = {
       description:
         "Transforming the modern workplace with evidence-based wellness infrastructure that drives performance and retention.",
       btnTitle: "Explore",
-      href: "#",
+      href: "/industries/corporate-wellness-spaces",
     },
     {
       id: 6,
@@ -75,7 +75,7 @@ export const industriesData = {
       description:
         "Bespoke wellness environments for private estates and ultra-high-net-worth individuals seeking the pinnacle of personal care.",
       btnTitle: "Explore",
-      href: "#",
+      href: "/industries/private-clients-residences",
     },
     {
       id: 7,
@@ -84,7 +84,7 @@ export const industriesData = {
       description:
         "Clinical-grade wellness technology integrated into medical facilities to accelerate recovery and elevate patient outcomes.",
       btnTitle: "Explore",
-      href: "#",
+      href: "/industries/hospitals-rehabilitation-centres",
     },
   ],
 };

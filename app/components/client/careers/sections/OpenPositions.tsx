@@ -32,17 +32,17 @@ export default function OpenPositions() {
             <a
               data-text={mail}
               href={`mailto:${mail}`}
-              className="text-subHeading text-secondary underline decoration-2 underline-offset-3"
+              className="text-subHeading text-secondary underline decoration-2 underline-offset-3 hover:scale-[1.03] transition-all duration-600 inline-block"
             >
               {mail}
             </a>
           </motion.div>
         </div>
         {/* Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 border-l border-border-color">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 border-l border-[#D7D7D7]">
           {positions.map((pos, i) => (
             <Reveal key={i} variants={moveUpV2} delayRange={i * 0.12}>
-              <div className="border-r border-border-color pl-50 3xl:pl-[72px] pr-20 flex flex-col pt-[36px]">
+              <div className="border-r border-[#D7D7D7] pl-50 3xl:pl-[72px] pr-20 flex flex-col pt-[36px]">
                 {/* Role label */}
                 <span className="text-19 leading-[2.63] -tracking-[0.03em] text-secondary mb-[10px]">
                   {pos.role}

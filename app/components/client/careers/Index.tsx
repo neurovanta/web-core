@@ -10,7 +10,7 @@ const Index = () => {
       <InnerBanner {...bannerData} />
       <CareerIntro {...careerIntro} />
       <OpenPositions />
-      <CurveSlider {...careerCulture} />
+      <CurveSlider {...careerCulture} button={true} />
     </>
   );
 };

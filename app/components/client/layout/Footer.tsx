@@ -93,7 +93,7 @@ export default function Footer() {
               >
                 <Link
                   href="mailto:mail@360-wellness.com"
-                  className="contact-link leading-[1.433]"
+                  className="contact-link leading-[1.433] w-fit"
                   data-text="mail@360-wellness.com"
                 >
                   mail@360-wellness.com
@@ -107,7 +107,7 @@ export default function Footer() {
               >
                 <Link
                   href="tel:+97143332175"
-                  className="contact-link leading-[1.433]"
+                  className="contact-link leading-[1.433] w-fit"
                   data-text="+97143332175"
                 >
                   +97143332175
@@ -178,7 +178,7 @@ export default function Footer() {
                           <Link
                             href={href}
                             data-text={label}
-                            className="contact-link text-secondary text-19 leading-[1.789] tracking-[-0.03em] hover:opacity-70 transition-opacity"
+                            className="contact-link text-secondary text-19 leading-[1.789] tracking-[-0.03em] hover:opacity-70 transition-opacity w-fit"
                           >
                             {label}
                           </Link>
@@ -194,7 +194,7 @@ export default function Footer() {
                             <Link
                               href={href}
                               data-text={label}
-                              className="contact-link text-secondary text-19 leading-[1.789] tracking-[-0.03em] hover:opacity-70 transition-opacity"
+                              className="contact-link text-secondary text-19 leading-[1.789] tracking-[-0.03em] hover:opacity-70 transition-opacity w-fit"
                             >
                               {label}
                             </Link>

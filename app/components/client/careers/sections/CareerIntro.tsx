@@ -16,7 +16,7 @@ export default function CareerIntro({
   bgImage,
 }: CareerIntroProps) {
   return (
-    <section className="relative w-full h-screen overflow-hidden">
+    <section className="relative w-full h-screen 3xl:max-h-[888px] overflow-hidden">
       {/* Background Image */}
       <div className="absolute inset-0 -z-10">
         <Image

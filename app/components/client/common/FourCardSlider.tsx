@@ -7,6 +7,8 @@ import { Autoplay } from "swiper/modules";
 import type { Swiper as SwiperType } from "swiper";
 import "swiper/css";
 import { AnimatedHeading } from "@/app/components/client/animations/AnimateHeading";
+import Reveal from "../animations/RevealItemsOneByOneAnimation";
+import { moveUpV2 } from "../animations/motionVarinats";
 
 interface FourCardSliderProps {
   data: {
@@ -18,9 +20,7 @@ interface FourCardSliderProps {
   };
 }
 
-export default function FourCardSlider({
-  data,
-}: FourCardSliderProps) {
+export default function FourCardSlider({ data }: FourCardSliderProps) {
   const { title, slides } = data;
   const swiperRef = useRef<SwiperType | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -44,7 +44,7 @@ export default function FourCardSlider({
 
   return (
     <section className="bg-cream-bg overflow-hidden">
-      <div className="container py-120 3xl:py-150">
+      <div className="container py-120">
         <AnimatedHeading
           title={title}
           mode="reveal"
@@ -75,19 +75,21 @@ export default function FourCardSlider({
         >
           {slides.map((slide, i) => (
             <SwiperSlide key={i}>
-              <div className="relative w-full h-[360px] md:h-[440px] lg:h-[500px] 3xl:h-[609px] overflow-hidden">
-                <Image
-                  src={slide.image}
-                  alt={slide.title}
-                  fill
-                  className="object-cover pointer-events-none"
-                />
-                <div className="absolute left-0 right-0 bottom-0 h-[306px] w-full z-30 bg-gradient-to-b from-transparent to-black opacity-80" />
-                <p className="absolute bottom-0 left-0 right-0 z-40 text-white text-subHeading px-30 3xl:px-40 py-40 -tracking-[0.03em]">
-                  {slide.title}
-                </p>
-              </div>
-            </SwiperSlide>
+                <Reveal variants={moveUpV2} delayRange={i * 0.15}>
+                <div className="relative w-full group h-[360px] md:h-[440px] lg:h-[500px] 3xl:h-[609px] overflow-hidden">
+                  <Image
+                    src={slide.image}
+                    alt={slide.title}
+                    fill
+                    className="object-cover pointer-events-none group-hover:scale-105 transition-all duration-700"
+                  />
+                  <div className="absolute left-0 right-0 bottom-0 h-[306px] w-full z-30 bg-linear-to-b from-transparent to-black opacity-80" />
+                  <p className="absolute bottom-0 left-0 right-0 z-40 text-white text-subHeading px-30 3xl:px-40 py-40 -tracking-[0.03em]">
+                    {slide.title}
+                  </p>
+                </div>
+            </Reveal>
+              </SwiperSlide>
           ))}
         </Swiper>
 

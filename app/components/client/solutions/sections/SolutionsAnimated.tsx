@@ -165,7 +165,7 @@ export default function MoreThanSolutions() {
       <div className="absolute inset-0 z-20 flex items-center justify-center max-w-[700px] 3xl:max-w-[969px] mx-auto">
         <CircleAnimation variant={1} />
       </div>
-      <div className="container mx-auto">
+      <div className="container mx-auto z-30 relative">
         {/* ── Stacked images — zero flow height, overflow visible so GSAP can measure ── */}
         <div
           className="flex justify-center"

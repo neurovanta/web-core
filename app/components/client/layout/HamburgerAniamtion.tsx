@@ -1,22 +1,23 @@
 const EASE = "cubic-bezier(0.77,0,0.175,1)";
 const DUR = "0.52s";
 
-// cx, cy = centre of the SVG canvas — all rotations pivot here
 const CX = 22;
 const CY = 16;
 
-// Colours
-const C_DARK = "#51463E"; // open state (secondary)
+const C_DARK = "#51463E";
 const C_TOP = "#F9F5F0";
 const C_MID = "#E2D3C3";
 
-// Half-length of each line (x goes 0→44, so half = 22)
 const HL = 22;
 
-export default function MenuIcon({ open }: { open: boolean }) {
+export default function MenuIcon({ open, dark = false }: { open: boolean; dark?: boolean }) {
   const tOpen = `stroke 0s 0s`;
   const tClose = `stroke 0s ${DUR}`;
   const tXform = `transform ${DUR} ${EASE} 60ms`;
+
+  // When dark=true (career pages), resting color is C_DARK instead of light colors
+  const lineColor = open ? C_DARK : dark ? C_DARK : C_TOP;
+  const midColor  = open ? C_DARK : dark ? C_DARK : C_MID;
 
   return (
     <svg
@@ -28,33 +29,22 @@ export default function MenuIcon({ open }: { open: boolean }) {
       className="w-auto h-[20px] 2xl:w-[44px] 2xl:h-[30px]"
       aria-hidden="true"
     >
-      {/* Top line: rests at y=1, slides to centre + rotates 45° */}
       <line
-        x1={CX - HL}
-        y1={CY}
-        x2={CX + HL}
-        y2={CY}
-        strokeWidth="2"
-        strokeLinecap="round"
+        x1={CX - HL} y1={CY} x2={CX + HL} y2={CY}
+        strokeWidth="2" strokeLinecap="round"
         style={{
           transformOrigin: `${CX}px ${CY}px`,
-          stroke: open ? C_DARK : C_TOP,
+          stroke: lineColor,
           transform: open ? "rotate(45deg)" : `translateY(${1 - CY}px)`,
           transition: open ? `${tOpen}, ${tXform}` : `${tClose}, ${tXform}`,
         }}
       />
-
-      {/* Mid line: fades + collapses to nothing */}
       <line
-        x1={CX - HL}
-        y1={CY}
-        x2={CX + HL}
-        y2={CY}
-        strokeWidth="2"
-        strokeLinecap="round"
+        x1={CX - HL} y1={CY} x2={CX + HL} y2={CY}
+        strokeWidth="2" strokeLinecap="round"
         style={{
           transformOrigin: `${CX}px ${CY}px`,
-          stroke: open ? C_DARK : C_MID,
+          stroke: midColor,
           opacity: open ? 0 : 1,
           transform: open ? "scaleX(0)" : "scaleX(1)",
           transition: open
@@ -62,18 +52,12 @@ export default function MenuIcon({ open }: { open: boolean }) {
             : `stroke 0s ${DUR}, opacity 0.18s ease ${DUR}, transform 0.22s ${EASE} ${DUR}`,
         }}
       />
-
-      {/* Bottom line: rests at y=31, slides to centre + rotates -45° */}
       <line
-        x1={CX - HL}
-        y1={CY}
-        x2={CX + HL}
-        y2={CY}
-        strokeWidth="2"
-        strokeLinecap="round"
+        x1={CX - HL} y1={CY} x2={CX + HL} y2={CY}
+        strokeWidth="2" strokeLinecap="round"
         style={{
           transformOrigin: `${CX}px ${CY}px`,
-          stroke: open ? C_DARK : C_TOP,
+          stroke: lineColor,
           transform: open ? "rotate(-45deg)" : `translateY(${31 - CY}px)`,
           transition: open ? `${tOpen}, ${tXform}` : `${tClose}, ${tXform}`,
         }}

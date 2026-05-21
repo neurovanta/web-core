@@ -43,7 +43,7 @@ function CommonSlideCard({
   index: number;
 }) {
   return (
-    <div className="relative h-full cursor-pointer select-none pt-60 3xl:pt-80 px-50 3xl:px-70 pb-70 3xl:pb-[74px]">
+    <div className="relative h-full select-none pt-60 3xl:pt-80 px-50 3xl:px-70 pb-70 3xl:pb-[74px]">
       {<CommonSlideDivider />}
       <div className="flex flex-col justify-between h-full">
         <div>
@@ -61,7 +61,7 @@ function CommonSlideCard({
             initial="hidden"
             animate="show"
             variants={moveUp(0)}
-            className={`text-subHeading tracking-[-0.03em] text-secondary`}
+            className={`text-subHeading tracking-[-0.03em] text-secondary max-w-[15ch] whitespace-pre-line`}
           >
             {slide.title}
           </motion.p>
@@ -89,14 +89,14 @@ export default function CommonSlider({ data }: { data: CommonSectionData }) {
 
   return (
     <section className="relative w-full bg-primary pt-120 overflow-hidden">
-      <div className="container flex justify-between items-start pt-[5px]">
+      <div className="container flex justify-between items-start">
         <AnimatedHeading
           title={heading}
           className="text-heading mb-20 lg:mb-60 text-secondary"
           mode="reveal"
         />
         {showNav && (
-          <div className="flex items-center gap-[10px]">
+          <div className="flex items-center gap-[10px] pt-[5px]">
             <SliderNavButton
               direction="prev"
               disabled={prevDisabled}
