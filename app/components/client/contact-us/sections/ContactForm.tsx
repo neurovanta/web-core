@@ -83,7 +83,7 @@ export default function ContactForm() {
           <FloatingInput
             id="phoneNumber"
             label="Phone Number *"
-            type="tel"
+            type="number"
             registration={register("phoneNumber", {
               required: "Phone number is required",
               pattern: {
