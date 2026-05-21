@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-const EXISTING_PAGES = ["/", "/about-us", "/solutions"];
+const EXISTING_PAGES = ["/", "/about-us", "/solutions", "/industries", "/systems", "/careers"];
 
 export default function Breadcrumb() {
   const pathname = usePathname();
@@ -41,7 +41,7 @@ export default function Breadcrumb() {
               ) : isClickable ? (
                 <Link
                   href={crumb.href}
-                  className="font-normal cursor-pointer opacity-70 text-[#D9D9D9] text-description"
+                  className="font-normal cursor-pointer opacity-70 text-[#D9D9D9] text-description hover:text-white transition-colors duration-300"
                 >
                   {crumb.label}
                 </Link>
