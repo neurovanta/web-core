@@ -20,12 +20,12 @@ export const wellnessSliderData = {
     {
       number: "03",
       title: "Measurable, Outcome-Focused Results",
-      image: "/assets/images/home/hero/hero-poster.jpg",
+      image: "/assets/images/home/second-section/3.jpg",
     },
     {
       number: "04",
       title: "Adaptive & Evolutive Systems",
-      image: "/assets/images/home/second-section/3.jpg",
+      image: "/assets/images/home/second-section/4.jpg",
     },
   ],
 };
@@ -42,22 +42,22 @@ export const wellnessSliderData2 = {
     {
       number: "01",
       title: "Human-Centric Spatial Design",
-      image: "/assets/images/home/second-section/3.jpg",
+      image: "/assets/images/home/third-section/1.jpg",
     },
     {
       number: "02",
       title: "Scalable & Future-Ready",
-      image: "/assets/images/home/second-section/1.jpg",
+      image: "/assets/images/home/third-section/2.jpg",
     },
     {
       number: "03",
       title: "Evidence-Based Layoutsed Results",
-      image: "/assets/images/home/second-section/2.jpg",
+      image: "/assets/images/home/third-section/3.jpg",
     },
     {
       number: "04",
       title: "Seamless Technology Integration",
-      image: "/assets/images/home/hero/hero-poster.jpg",
+      image: "/assets/images/home/third-section/4.jpg",
     },
   ],
 };

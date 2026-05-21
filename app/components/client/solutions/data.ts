@@ -80,22 +80,22 @@ export const wellnessData: WellnessData = {
     {
       number: "01",
       title: "Personalized Wellness Concepts",
-      image: "/assets/images/home/second-section/1.jpg",
+      image: "/assets/images/solutions/wellness/1.jpg",
     },
     {
       number: "02",
       title: "Unique Combinations of Technologies",
-      image: "/assets/images/solutions/wellness/1.jpg",
+      image: "/assets/images/solutions/wellness/2.jpg",
     },
     {
       number: "03",
       title: "Space-Specific Design Solutions",
-      image: "/assets/images/home/hero/hero-poster.jpg",
+      image: "/assets/images/solutions/wellness/3.jpg",
     },
     {
       number: "04",
       title: "Brand-Aligned User Experiences",
-      image: "/assets/images/home/second-section/3.jpg",
+      image: "/assets/images/solutions/wellness/4.jpg",
     },
   ],
 };

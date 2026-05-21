@@ -35,7 +35,10 @@ const Index = () => {
           />
         </div>
       </div>
-      <TabsWithSlider data={longevitySystemsData} className="bg-white py-120 3xl:py-150" />
+      <TabsWithSlider
+        data={longevitySystemsData}
+        className="bg-white py-120 3xl:py-150"
+      />
       <HeroStats />
       <WhyNeuroVanta data={whyNeuroVantaData} />
       <ElevatingWellness />

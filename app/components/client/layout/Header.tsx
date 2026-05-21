@@ -177,7 +177,7 @@ export default function Header() {
             variants={dropDown(0.18)}
           >
             <Link href="/contact-us">
-              <button className="hidden md:flex bg-primary text-secondary leading-[1.7333] rounded-[50px] text-15 uppercase px-20 py-[3px] cursor-pointer 3xl:w-[109px] 3xl:h-[32px]">
+              <button className="hidden md:flex justify-center items-center bg-primary text-secondary text-center leading-1 rounded-[50px] text-15 uppercase px-20 py-[3px] cursor-pointer 3xl:w-[109px] 3xl:h-[32px]">
                 Contact
               </button>
             </Link>
