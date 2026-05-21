@@ -8,7 +8,8 @@ import CustomButton from "../../common/CustomButton";
 import { AnimatedHeading } from "../../animations/AnimateHeading";
 import { SectionDescription } from "../../animations/SectionDescription";
 import Reveal from "../../animations/RevealItemsOneByOneAnimation";
-import { moveUpV2 } from "../../animations/motionVarinats";
+import { moveUp, moveUpV2 } from "../../animations/motionVarinats";
+import { motion } from "framer-motion";
 
 export type Slide = {
   number: string;
@@ -205,11 +206,18 @@ export default function WellnessRequirements({
             text={data.description}
             className={`text-white text-19 leading-[1.52] mb-50 ${descriptionMaxWidth}`}
           />
+          <motion.div
+            variants={moveUp(0.4)}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true }}
+          >
             <CustomButton
               label={data.button.label}
               href={data.button.href}
               variant={1}
             />
+          </motion.div>
         </div>
 
         <div className="[&_.swiper-wrapper]:items-end">

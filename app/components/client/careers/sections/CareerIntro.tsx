@@ -3,6 +3,12 @@
 import Image from "next/image";
 import { AnimatedHeading } from "../../animations/AnimateHeading";
 import { SectionDescription } from "../../animations/SectionDescription";
+import { useRef } from "react";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 interface CareerIntroProps {
   title: string;
@@ -15,10 +21,35 @@ export default function CareerIntro({
   description,
   bgImage,
 }: CareerIntroProps) {
+  const sectionRef = useRef<HTMLElement>(null);
+  const imageRef = useRef<HTMLDivElement>(null);
+
+  useGSAP(() => {
+    if (!sectionRef.current || !imageRef.current) return;
+
+    gsap.fromTo(
+      imageRef.current,
+      { yPercent: -15, scale: 1 },
+      {
+        yPercent: 15,
+        scale: 1.1,
+        ease: "none",
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: true,
+        },
+      },
+    );
+  }, []);
   return (
-    <section className="relative w-full h-screen 3xl:max-h-[888px] overflow-hidden">
+    <section
+      ref={sectionRef}
+      className="relative w-full h-screen 3xl:max-h-[888px] overflow-hidden"
+    >
       {/* Background Image */}
-      <div className="absolute inset-0 -z-10">
+      <div className="absolute inset-0 -z-10" ref={imageRef}>
         <Image
           src={bgImage}
           alt="Why work with us background"
@@ -53,7 +84,10 @@ export default function CareerIntro({
 
           {/* Col 3 — Description */}
           <div className="py-40 3xl:py-[45px] flex items-center">
-            <SectionDescription text={description} className="text-subHeading text-white max-w-[40ch] tracking-[-0.03em]" />
+            <SectionDescription
+              text={description}
+              className="text-subHeading text-white max-w-[40ch] tracking-[-0.03em]"
+            />
           </div>
         </div>
       </div>

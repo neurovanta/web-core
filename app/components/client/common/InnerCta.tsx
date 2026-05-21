@@ -1,6 +1,14 @@
+"use client";
+
+import { useRef } from "react";
 import Image from "next/image";
 import CustomButton from "@/app/components/client/common/CustomButton";
 import { AnimatedHeading } from "../animations/AnimateHeading";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 interface InnerCtaProps {
   data: {
@@ -15,16 +23,44 @@ interface InnerCtaProps {
 }
 
 export default function InnerCta({ data, maxW = "" }: InnerCtaProps) {
+  const sectionRef = useRef<HTMLElement>(null);
+  const imageRef = useRef<HTMLDivElement>(null);
+
+  useGSAP(() => {
+    if (!sectionRef.current || !imageRef.current) return;
+
+    gsap.fromTo(
+      imageRef.current,
+      { yPercent: -15, scale: 1 },
+      {
+        yPercent: 15,
+        scale: 1.1,
+        ease: "none",
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: true,
+        },
+      }
+    );
+  }, []);
+
   return (
-    <section className="relative w-full h-[420px] md:h-[520px] xl:h-[580px] 3xl:h-[757px] overflow-hidden">
+    <section
+      ref={sectionRef}
+      className="relative w-full h-[420px] md:h-[520px] xl:h-[590px] 3xl:h-[757px] overflow-hidden"
+    >
       {/* Background Image */}
-      <Image
-        src={data.bgImage}
-        alt={data.title}
-        fill
-        priority
-        className="object-cover pointer-events-none"
-      />
+      <div ref={imageRef} className="absolute inset-0 will-change-transform">
+        <Image
+          src={data.bgImage}
+          alt={data.title}
+          fill
+          priority
+          className="object-cover pointer-events-none"
+        />
+      </div>
 
       {/* Overlay */}
       <div className="absolute inset-0 bg-black/70" />

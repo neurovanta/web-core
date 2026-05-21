@@ -168,7 +168,7 @@ export default function WorldClassClients() {
     <section
       ref={sectionRef}
       className="container pt-90 3xl:pt-[94px] pb-120 3xl:pb-150 overflow-hidden"
-    >
+  >
       <div className="mb-20 md:mb-50">
         <AnimatedHeading
           title={heading}

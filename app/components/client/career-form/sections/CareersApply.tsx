@@ -4,6 +4,8 @@ import CareersForm from "../sections/CareerForm";
 import { careersFormData } from "../data";
 import { AnimatedHeading } from "../../animations/AnimateHeading";
 import { SectionDescription } from "../../animations/SectionDescription";
+import { motion } from "framer-motion";
+import { moveUp } from "../../animations/motionVarinats";
 
 export default function CareersApply() {
   const { title, subtitle, description } = careersFormData;
@@ -28,9 +30,15 @@ export default function CareersApply() {
         </div>
 
         {/* Right: Form */}
-        <div className="flex-1 max-w-[1021px]">
+        <motion.div
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true }}
+          variants={moveUp(0.2)}
+          className="flex-1 max-w-[1021px]"
+        >
           <CareersForm />
-        </div>
+        </motion.div>
       </div>
     </section>
   );

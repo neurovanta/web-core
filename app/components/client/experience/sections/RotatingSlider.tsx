@@ -5,6 +5,7 @@ import { slides } from "../data";
 import SliderNavButton from "../../common/SliderButton";
 import { AnimatedHeading } from "../../animations/AnimateHeading";
 import { motion, AnimatePresence, easeInOut } from "framer-motion";
+import { moveLeft } from "../../animations/motionVarinats";
 
 const TOTAL = slides.length;
 const TRANS_MS = 750;
@@ -122,14 +123,19 @@ export default function ExperienceJourneySlider() {
             title={"The Experience Journey"}
             className="text-heading max-w-[15ch]"
           />
-          <span className="text-subHeading tracking-[-0.03em]">
+          <motion.span 
+          variants={moveLeft(0.2)}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true }}
+          className="text-subHeading tracking-[-0.03em]">
             <span className="text-secondary">
               {String(activeIndex + 1).padStart(2, "0")}/
             </span>
             <span className="text-secondary/50">
               {String(TOTAL).padStart(2, "0")}
             </span>
-          </span>
+          </motion.span>
         </div>
       </div>
 

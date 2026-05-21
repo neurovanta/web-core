@@ -12,6 +12,7 @@ import { AnimatedHeading } from "../../animations/AnimateHeading";
 import { AnimatePresence, motion } from "framer-motion";
 import { SectionDescription } from "../../animations/SectionDescription";
 import { moveUp } from "../../animations/motionVarinats";
+import { ElasticEffect } from "../../animations/ElasticEffect";
 
 // ── Pill border via gradient image ───────────────────────────────────────────
 function HighlightPill() {
@@ -44,18 +45,18 @@ function Pagination({
   return (
     <div className="flex items-center gap-[10px]">
       {Array.from({ length: total }).map((_, i) => (
-<button
-  key={i}
-  onClick={() => onBulletClick(i)}
-  aria-label={`Go to slide ${i + 1}`}
-  className={`
+        <button
+          key={i}
+          onClick={() => onBulletClick(i)}
+          aria-label={`Go to slide ${i + 1}`}
+          className={`
     h-[3px] border-none p-0 cursor-pointer shrink-0 relative
     before:absolute before:inset-x-0 before:-top-[30px] before:h-[30px]
     after:absolute after:inset-x-0 after:-bottom-[30px] after:h-[30px]
     transition-[width,background-color] duration-400 ease-in-out
     ${i === active ? "w-[50px] bg-white" : "w-[13px] bg-white/60"}
   `}
-/>
+        />
       ))}
     </div>
   );
@@ -72,6 +73,7 @@ export default function HighlightSlider() {
 
   return (
     <section className="relative w-full max-h-[888px] 3xl:h-[888px] overflow-hidden cursor-grab">
+      <ElasticEffect />
       <Swiper
         modules={[Autoplay, EffectFade]}
         autoplay={{ delay: 5000, disableOnInteraction: false }}
@@ -126,33 +128,37 @@ export default function HighlightSlider() {
 
         {/* Bottom: content + pagination */}
         <div className="flex items-end justify-between">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activeIndex}
-              className="flex flex-col"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.25 }}
-            >
-              <div className="pointer-events-none mb-50">
-                <HighlightPill />
-              </div>
+          <div className="relative">
+            {/* Pill — static, never fades */}
+            <div className="absolute bottom-full mb-50 pointer-events-none">
+              <HighlightPill />
+            </div>
 
-              <motion.h2
-              initial="hidden"
-              animate="show"
-              variants={moveUp(0.1)}
-               className="h2 text-white mb-20 text-heading whitespace-pre-line">
-                {highlightSlides[activeIndex].title}
-              </motion.h2>
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeIndex}
+                className="flex flex-col"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.25 }}
+              >
+                <motion.h2
+                  initial="hidden"
+                  animate="show"
+                  variants={moveUp(0.1)}
+                  className="h2 text-white mb-20 text-heading whitespace-pre-line"
+                >
+                  {highlightSlides[activeIndex].title}
+                </motion.h2>
 
-              <SectionDescription
-                text={highlightSlides[activeIndex].description}
-                className="text-description text-white -tracking-[0.03em] max-w-[30ch]"
-              />
-            </motion.div>
-          </AnimatePresence>
+                <SectionDescription
+                  text={highlightSlides[activeIndex].description}
+                  className="text-description text-white -tracking-[0.03em] max-w-[30ch]"
+                />
+              </motion.div>
+            </AnimatePresence>
+          </div>
 
           <div className="pointer-events-auto">
             <Pagination

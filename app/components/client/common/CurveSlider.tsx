@@ -5,6 +5,9 @@ import Image from "next/image";
 import { AnimatedHeading } from "../animations/AnimateHeading";
 import { SectionDescription } from "../animations/SectionDescription";
 import CustomButton from "./CustomButton";
+import { ElasticEffect } from "../animations/ElasticEffect";
+import { moveUp } from "../animations/motionVarinats";
+import { motion } from "framer-motion";
 
 interface CurveSliderProps {
   button?: boolean;
@@ -31,7 +34,7 @@ function EllipseMask({ flip = false }: { flip?: boolean }) {
 }
 
 export default function CurveSlider({
-  button=false,
+  button = false,
   title,
   description,
   images,
@@ -87,9 +90,15 @@ export default function CurveSlider({
   return (
     <section className="relative w-full overflow-hidden border-b pb-20 3xl:pb-150 border-border-color">
       {button && (
-        <div className="absolute left-0 bottom-100 3xl:bottom-[205px] right-0 z-20 w-full flex justify-center">
+        <motion.div
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true }}
+          variants={moveUp(0.2)}
+          className="absolute left-0 bottom-100 3xl:bottom-[205px] right-0 z-20 w-full flex justify-center"
+        >
           <CustomButton label="Apply Now" href="/careers/form" variant={2} />
-        </div>
+        </motion.div>
       )}
       <div className="absolute top-3 3xl:top-0 left-0 right-0 z-20 text-center">
         <AnimatedHeading title={title} className="mb-20" />
@@ -108,6 +117,7 @@ export default function CurveSlider({
         onPointerUp={onPointerUp}
         onPointerLeave={onPointerUp}
       >
+        <ElasticEffect />
         {/* Top ellipse */}
         <div className="absolute top-0 left-0 right-0 h-[180px] 3xl:h-[165px] z-10 pointer-events-none">
           <EllipseMask />

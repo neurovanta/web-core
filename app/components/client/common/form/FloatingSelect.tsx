@@ -66,7 +66,7 @@ export const FloatingSelect: React.FC<FloatingSelectProps> = ({
           alt="Chevron Down"
           width={13}
           height={13}
-          className={`h-[10px] w-auto 3xl:h-[11px] 3xl:w-[11px]  transition-transform duration-300 ${
+          className={`h-[8px] xl:h-[9px] 3xl:h-[10px] w-auto object-fill transition-transform duration-300 ${
             open ? "rotate-180" : "rotate-0"
           }`}
         />

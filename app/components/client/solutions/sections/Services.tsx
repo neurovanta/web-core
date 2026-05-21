@@ -8,6 +8,8 @@ import { AnimatedHeading } from "../../animations/AnimateHeading";
 import { SectionDescription } from "../../animations/SectionDescription";
 import { useContainerInset } from "@/app/hooks/useContainerInset";
 import ContainerAnchor from "../../layout/ContainerAnchor";
+import Reveal from "../../animations/RevealItemsOneByOneAnimation";
+import { moveUpV2 } from "../../animations/motionVarinats";
 
 export interface ServiceCard {
   title: string;
@@ -56,8 +58,10 @@ function ServiceCard({
         />
 
         <div className="flex flex-col gap-20">
-          {card.buttons.map((btn) => (
-            <CustomButton key={btn.label} label={btn.label} href={btn.href} />
+          {card.buttons.map((btn, index) => (
+            <Reveal key={btn.label} variants={moveUpV2} delayRange={index * 0.12}>
+            <CustomButton label={btn.label} href={btn.href} />
+            </Reveal>
           ))}
         </div>
       </div>

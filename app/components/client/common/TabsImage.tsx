@@ -7,6 +7,7 @@ import { AnimatedHeading } from "@/app/components/client/animations/AnimateHeadi
 import Reveal from "@/app/components/client/animations/RevealItemsOneByOneAnimation";
 import { moveUpV2 } from "@/app/components/client/animations/motionVarinats";
 import { SectionDescription } from "@/app/components/client/animations/SectionDescription";
+import { ElasticEffect } from "../animations/ElasticEffect";
 
 interface TabsImageProps {
   data: {
@@ -19,7 +20,7 @@ interface TabsImageProps {
   };
 }
 
-export default function TabsImage({data}: TabsImageProps) {
+export default function TabsImage({ data }: TabsImageProps) {
   const { title, subtitle, tabs } = data;
   const [activeIndex, setActiveIndex] = useState(0);
 
@@ -55,7 +56,7 @@ export default function TabsImage({data}: TabsImageProps) {
                     const globalIdx =
                       colIdx === 0 ? itemIndex : leftCol.length + itemIndex;
                     const isActive = globalIdx === activeIndex;
-                    const isLastInCol = itemIndex === col.length - 1;
+                    // const isLastInCol = itemIndex === col.length - 1;
 
                     return (
                       <Reveal
@@ -101,9 +102,9 @@ export default function TabsImage({data}: TabsImageProps) {
                               </span>
                             </div>
 
-                            {!isLastInCol && (
-                              <div className="h-px w-full bg-border-color" />
-                            )}
+                            {/* {!isLastInCol && ( */}
+                            <div className="h-px w-full bg-border-color" />
+                            {/* )} */}
                           </button>
                         </li>
                       </Reveal>
@@ -116,6 +117,7 @@ export default function TabsImage({data}: TabsImageProps) {
 
           {/* Right Side */}
           <div className="relative w-full lg:flex-1 aspect-4/3 lg:aspect-auto lg:h-[480px] 3xl:h-[578px] overflow-hidden">
+            <ElasticEffect />
             {/* Base layer — previous image, always visible underneath */}
             <Image
               src={

@@ -10,6 +10,7 @@ import Reveal from "../animations/RevealItemsOneByOneAnimation";
 import { moveUp, moveUpV2 } from "../animations/motionVarinats";
 import { motion } from "framer-motion";
 import SliderNavButton from "../common/SliderButton";
+import { ElasticEffect } from "../animations/ElasticEffect";
 
 export type CommonSlide = {
   icon: string;
@@ -89,6 +90,7 @@ export default function CommonSlider({ data }: { data: CommonSectionData }) {
 
   return (
     <section className="relative w-full bg-primary pt-120 overflow-hidden">
+      <ElasticEffect />
       <div className="container flex justify-between items-start">
         <AnimatedHeading
           title={heading}
