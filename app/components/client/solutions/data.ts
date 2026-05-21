@@ -74,7 +74,7 @@ export const wellnessData: WellnessData = {
     "We specialize in developing fully customized wellness environments based on your specific goals, space, and user needs.",
   button: {
     label: "CONTACT US",
-    href: "/contact",
+    href: "/contact-us",
   },
   slides: [
     {
