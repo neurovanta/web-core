@@ -7,7 +7,7 @@ type Brand = {
 
 export function BrandCard({ brand }: { brand: Brand }) {
   return (
-    <div
+    <div data-brand-card
       className="brand-card flex items-center justify-center border border-border-color 
         w-full h-[136px]
         sm:w-full sm:h-[160px]
