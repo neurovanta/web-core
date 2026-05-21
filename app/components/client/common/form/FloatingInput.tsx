@@ -51,6 +51,7 @@ export const FloatingInput: React.FC<FloatingInputProps> = ({
           text-secondary text-19 -tracking-[0.03em]
           pt-4 md:pt-[26px]
           transition-colors duration-200
+          [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none
           ${error ? "border-b-red-500" : "border-b-secondary"}
         `}
       />

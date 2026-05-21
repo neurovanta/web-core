@@ -86,7 +86,7 @@ export default function CareersForm() {
           <FloatingInput
             id="phone"
             label="Phone Number *"
-            type="tel"
+            type="number"
             registration={register("phone", {
               required: "Phone is required",
               pattern: {

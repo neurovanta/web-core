@@ -219,7 +219,7 @@ export default function ExperienceJourneySlider() {
         </div>
 
         <div className="absolute top-100 left-0 right-0 z-10 flex flex-col items-center text-center">
-          <div className="h-[120px] 3xl:h-[135px] my-[8px] flex items-start justify-center">
+          <div className="h-[120px] 3xl:h-[135px] my-[7px] flex items-start justify-center">
             <motion.div
               key={displayedSlide.title}
               className="w-px"
@@ -240,9 +240,9 @@ export default function ExperienceJourneySlider() {
             >
               <motion.h3
                 className="text-subHeading tracking-[-0.03em] mb-20"
-                initial={{ opacity: 0, y: -10 }}
+                initial={{ opacity: 0, y: -12 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 10 }}
+                exit={{ opacity: 0, y: 12 }}
                 transition={{ duration: 0.35, ease: easeInOut }}
               >
                 {displayedSlide.title}
@@ -250,9 +250,9 @@ export default function ExperienceJourneySlider() {
 
               <motion.p
                 className="text-description max-w-[54ch]"
-                initial={{ opacity: 0, y: -10 }}
+                initial={{ opacity: 0, y: -12 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 10 }}
+                exit={{ opacity: 0, y: 12 }}
                 transition={{
                   duration: 0.35,
                   ease: easeInOut,
