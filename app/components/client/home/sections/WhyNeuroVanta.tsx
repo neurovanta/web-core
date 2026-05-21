@@ -9,6 +9,7 @@ import { AnimatedHeading } from "../../animations/AnimateHeading";
 import Reveal from "../../animations/RevealItemsOneByOneAnimation";
 import { moveUp, moveUpV2 } from "../../animations/motionVarinats";
 import { motion } from "framer-motion";
+import { ElasticEffect } from "../../animations/ElasticEffect";
 
 export type WhySlide = {
   icon: string;
@@ -234,6 +235,7 @@ export default function WhySection({ data }: { data: WhySectionData }) {
             <SwiperSlide key={index}>
               <Reveal variants={moveUpV2} delayRange={index * 0.14}>
                 <div className="!h-[270px] sm:!h-[400px] xl:!h-[520px] 3xl:!h-[571px]">
+                        <ElasticEffect />
                   <SlideCard
                     slide={slide}
                     index={index}

@@ -4,6 +4,7 @@ import { useState, useCallback, useEffect, useRef } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { discoverGalleryData } from "../data";
+import { ElasticEffect } from "../../animations/ElasticEffect";
 
 const AUTOPLAY_MS = 4000;
 
@@ -76,6 +77,7 @@ function DiscoverySlider() {
             dragMomentum={false}
             onDragEnd={handleDragEnd}
           >
+            <ElasticEffect />
             <Image
               src={slides[activeIndex].image}
               alt={`Gallery ${activeIndex + 1}`}

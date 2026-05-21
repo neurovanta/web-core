@@ -5,6 +5,8 @@ import ContactForm from "./ContactForm";
 import { contactUsData } from "../data";
 import { AnimatedHeading } from "../../animations/AnimateHeading";
 import { SectionDescription } from "../../animations/SectionDescription";
+import { moveUp } from "../../animations/motionVarinats";
+import { motion } from "framer-motion";
 
 export default function Main() {
   const { title, description, office } = contactUsData;
@@ -12,19 +14,25 @@ export default function Main() {
   return (
     <section className="w-full container py-120 3xl:py-150">
       <div className="flex flex-col xl:flex-row gap-100 3xl:gap-[105px]">
-
         {/* ── Left ── */}
         <div className="flex flex-col">
-
           {/* Title */}
           <AnimatedHeading title={title} className="text-heading mb-20" />
 
           {/* Description */}
-          <SectionDescription text={description} className="text-description -tracking-[0.03em] text-secondary mb-60 max-w-[624px]" />
+          <SectionDescription
+            text={description}
+            className="text-description -tracking-[0.03em] text-secondary mb-60 max-w-[624px]"
+          />
 
           {/* Office Card */}
-          <div className="bg-cream-bg p-40 flex flex-col w-fit 3xl:min-w-[529px]">
-
+          <motion.div
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true }}
+            variants={moveUp(0.1)}
+            className="bg-cream-bg p-40 flex flex-col w-fit 3xl:min-w-[529px]"
+          >
             <p className="text-subHeading -tracking-[0.03em] text-secondary mb-20">
               {office.title}
             </p>
@@ -50,7 +58,14 @@ export default function Main() {
             </a>
 
             {/* Divider */}
-            <div className="border-t border-border-color my-30" />
+            <motion.div
+              className="border-t border-border-color my-30"
+              initial={{ scaleX: 0 }}
+              whileInView={{ scaleX: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.7, ease: [0.77, 0, 0.175, 1] }}
+              style={{ transformOrigin: "center" }}
+            />
 
             {/* Mail + Phone */}
             <div className="flex items-center gap-[18px]">
@@ -72,15 +87,19 @@ export default function Main() {
                 {office.phone}
               </a>
             </div>
-
-          </div>
+          </motion.div>
         </div>
 
         {/* ── Right: Form ── */}
-        <div className="flex-1">
+        <motion.div
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true }}
+          variants={moveUp(0.2)}
+          className="flex-1"
+        >
           <ContactForm />
-        </div>
-
+        </motion.div>
       </div>
     </section>
   );

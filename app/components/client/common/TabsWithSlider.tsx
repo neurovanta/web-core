@@ -333,6 +333,7 @@ export default function TabsWithSlider({
 
               return (
                 <SwiperSlide key={`${visibleIndex}-${i}`}>
+                  <Reveal variants={moveUpV2} delayRange={0.3 * i}>
                   <div className="relative overflow-hidden">
                     {/* BASE layer */}
                     {baseSlide && (
@@ -379,6 +380,7 @@ export default function TabsWithSlider({
                       </div>
                     )}
                   </div>
+                  </Reveal>
                 </SwiperSlide>
               );
             },

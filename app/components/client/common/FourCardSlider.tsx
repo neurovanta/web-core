@@ -9,6 +9,7 @@ import "swiper/css";
 import { AnimatedHeading } from "@/app/components/client/animations/AnimateHeading";
 import Reveal from "../animations/RevealItemsOneByOneAnimation";
 import { moveUpV2 } from "../animations/motionVarinats";
+import { ElasticEffect } from "../animations/ElasticEffect";
 
 interface FourCardSliderProps {
   data: {
@@ -77,6 +78,7 @@ export default function FourCardSlider({ data }: FourCardSliderProps) {
             <SwiperSlide key={i}>
                 <Reveal variants={moveUpV2} delayRange={i * 0.15}>
                 <div className="relative w-full group h-[360px] md:h-[440px] lg:h-[500px] 3xl:h-[609px] overflow-hidden">
+                  <ElasticEffect />
                   <Image
                     src={slide.image}
                     alt={slide.title}

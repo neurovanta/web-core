@@ -8,7 +8,7 @@ import { SectionDescription } from "../../animations/SectionDescription";
 const HowItFits = ({title, description, image}: {title: string, description: string, image: string}) => {
 
   return (
-    <section className="relative w-full max-h-[503px] py-170 3xl:py-[180px] overflow-hidden">
+    <section className="relative w-full max-h-[503px] 3xl:h-[503px] py-170 3xl:py-[180px] overflow-hidden">
       {/* Background Image */}
       <div className="absolute inset-0 -z-10">
         <Image

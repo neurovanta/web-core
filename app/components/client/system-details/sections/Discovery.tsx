@@ -7,6 +7,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { discoverData } from "../data";
 import { AnimatedHeading } from "../../animations/AnimateHeading";
 import DiscoverySlider from "./DiscoverySlider";
+import Reveal from "../../animations/RevealItemsOneByOneAnimation";
+import { moveUp, moveUpV2 } from "../../animations/motionVarinats";
 
 // ── Tab pill ──────────────────────────────────────────────────────────────────
 function TabPill({
@@ -66,12 +68,13 @@ function DiscoverLeft() {
       {/* Tabs */}
       <div className="flex flex-wrap gap-[16px] 3xl:gap-20 mb-40 3xl:mb-50">
         {discoverData.tabs.map((t, i) => (
-          <TabPill
-            key={t.label}
-            label={t.label}
-            active={i === activeTab}
-            onClick={() => setActiveTab(i)}
-          />
+          <Reveal key={t.label} variants={moveUpV2} delayRange={i * 0.11}>
+            <TabPill
+              label={t.label}
+              active={i === activeTab}
+              onClick={() => setActiveTab(i)}
+            />
+          </Reveal>
         ))}
       </div>
 
@@ -80,21 +83,49 @@ function DiscoverLeft() {
         <motion.div className="flex flex-col">
           {/* Tab title + description */}
           <div className="flex flex-col gap-20">
-            <h3 className="text-subHeading tracking-[-0.03em]">{tab.title}</h3>
-            <p className="text-description tracking-[-0.03em] max-w-[50ch]">
+            <motion.h3
+              key={activeTab + "-title"}
+              variants={moveUp(0.1)}
+              initial="hidden"
+              animate="show"
+              className="text-subHeading tracking-[-0.03em]"
+            >
+              {tab.title}
+            </motion.h3>
+            <motion.p
+              key={activeTab + "-desc"}
+              variants={moveUp(0.18)}
+              initial="hidden"
+              animate="show"
+              className="text-description tracking-[-0.03em] max-w-[50ch]"
+            >
               {tab.description}
-            </p>
+            </motion.p>
           </div>
 
-          <div className="w-full h-px bg-[#D7D7D7] my-40" />
-          {/* Highlights grid */}
+          <motion.div
+            className="w-full h-px bg-[#D7D7D7] my-40"
+            variants={moveUp(0.2)}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true }}
+          />
+
           <div className="flex flex-col">
-            <p className="text-subHeading tracking-[-0.03em] mb-20">
+            <motion.h3
+              variants={moveUp(0.2)}
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true }}
+              className="text-subHeading tracking-[-0.03em] mb-20"
+            >
               Highlights
-            </p>
+            </motion.h3>
             <div className="grid grid-cols-3 gap-x-50 3xl:gap-x-80 gap-y-20">
-              {tab.highlights.map((h) => (
-                <HighlightItem key={h.title} icon={h.icon} title={h.title} />
+              {tab.highlights.map((h, i) => (
+                <Reveal key={h.title} variants={moveUpV2} delayRange={i * 0.11}>
+                  <HighlightItem icon={h.icon} title={h.title} />
+                </Reveal>
               ))}
             </div>
           </div>

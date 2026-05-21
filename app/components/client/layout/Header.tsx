@@ -112,7 +112,6 @@ export default function Header() {
 
   const handleToggle = () => {
     dropdownRef.current?.toggle();
-    setMenuOpen((prev) => !prev);
   };
 
   return (
@@ -177,7 +176,7 @@ export default function Header() {
             variants={dropDown(0.18)}
           >
             <Link href="/contact-us">
-              <button className="hidden md:flex justify-center items-center bg-primary text-secondary text-center leading-1 rounded-[50px] text-15 uppercase px-20 py-[3px] cursor-pointer 3xl:w-[109px] 3xl:h-[32px]">
+              <button className="hidden md:flex justify-center items-center bg-primary text-secondary text-center leading-1 rounded-[50px] text-15 uppercase px-20 py-[3px] cursor-pointer 3xl:w-[109px] h-8">
                 Contact
               </button>
             </Link>
@@ -186,11 +185,17 @@ export default function Header() {
             </button>
             <button
               className={`flex items-center justify-center w-8 h-8 rounded-full border ${
-      menuOpen || (!isScrolled && isCareerPage) ? "border-secondary" : "border-primary"} cursor-pointer transition-all duration-500 ease-in-out`}
+                menuOpen || (!isScrolled && isCareerPage)
+                  ? "border-secondary"
+                  : "border-primary"
+              } cursor-pointer transition-all duration-500 ease-in-out`}
             >
               <IoSearch
                 className={`w-auto h-[20px] ${
-      menuOpen || (!isScrolled && isCareerPage) ? "text-secondary" : "text-primary"} transition-all duration-500 ease-in-out`}
+                  menuOpen || (!isScrolled && isCareerPage)
+                    ? "text-secondary"
+                    : "text-primary"
+                } transition-all duration-500 ease-in-out`}
               />
             </button>
           </motion.div>
@@ -198,7 +203,7 @@ export default function Header() {
       </header>
 
       {/* Dropdown Menu */}
-      <NavDropdown ref={dropdownRef} />
+      <NavDropdown ref={dropdownRef} onOpenChange={setMenuOpen} />
     </>
   );
 }

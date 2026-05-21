@@ -1,6 +1,14 @@
+"use client";
+
 import Image from "next/image";
 import { AnimatedHeading } from "@/app/components/client/animations/AnimateHeading";
 import { SectionDescription } from "../animations/SectionDescription";
+import { useRef } from "react";
+import { useGSAP } from "@gsap/react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+gsap.registerPlugin(ScrollTrigger);
 
 interface DescImageIntroProps {
   title: string;
@@ -9,10 +17,37 @@ interface DescImageIntroProps {
   imageAlt: string;
 }
 
-export default function DescImageIntro({ data }: { data: DescImageIntroProps }) {
+export default function DescImageIntro({
+  data,
+}: {
+  data: DescImageIntroProps;
+}) {
   const { title, description, image, imageAlt } = data;
+  const sectionRef = useRef<HTMLElement>(null);
+  const imageRef = useRef<HTMLDivElement>(null);
+
+  useGSAP(() => {
+    if (!sectionRef.current || !imageRef.current) return;
+
+    gsap.fromTo(
+      imageRef.current,
+      { yPercent: -15, scale: 1 },
+      {
+        yPercent: 15,
+        scale: 1.12,
+        ease: "none",
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: true,
+        },
+      },
+    );
+  }, []);
+
   return (
-    <section className="bg-white overflow-hidden">
+    <section ref={sectionRef} className="bg-white overflow-hidden">
       <div className="container flex flex-col lg:flex-row py-120 3xl:py-150">
         {/* Left — text */}
         <div className="w-full lg:w-[67.485%] flex items-center">
@@ -30,8 +65,15 @@ export default function DescImageIntro({ data }: { data: DescImageIntroProps }) 
         </div>
 
         {/* Right — image */}
-        <div className="w-full lg:w-1/2 aspect-[4/3] lg:aspect-auto lg:h-[460px] 3xl:h-[524px] relative">
-          <Image src={image} alt={imageAlt} fill className="object-cover pointer-events-none" />
+        <div className="w-full lg:w-1/2 aspect-[4/3] lg:aspect-auto lg:h-[460px] 3xl:h-[524px] relative overflow-hidden">
+          <div ref={imageRef} className="relative w-full h-full">
+            <Image
+              src={image}
+              alt={imageAlt}
+              fill
+              className="object-cover pointer-events-none"
+            />
+          </div>
         </div>
       </div>
     </section>

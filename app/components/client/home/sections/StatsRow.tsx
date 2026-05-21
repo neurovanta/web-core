@@ -10,6 +10,7 @@ import { AnimatedHeading } from "../../animations/AnimateHeading";
 import { SectionDescription } from "../../animations/SectionDescription";
 import Reveal from "../../animations/RevealItemsOneByOneAnimation";
 import { moveRight, moveUp, moveUpV2 } from "../../animations/motionVarinats";
+import { ElasticEffect } from "../../animations/ElasticEffect";
 
 interface StatRowProps {
   number: string;
@@ -31,6 +32,7 @@ export function StatRow({
 }: StatRowProps) {
   return (
     <div className="relative" onMouseEnter={onHover} onClick={onClick}>
+      <ElasticEffect />
       {/* Top border */}
       <div className="h-px w-full bg-border-color z-0" />
 
