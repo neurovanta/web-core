@@ -4,7 +4,7 @@ export const bannerData = {
 };
 
 export const ctaBannerData = {
-  bgImage: "/assets/images/industry-details/cta.jpg",
+  bgImage: "/assets/images/systems/cta.jpg",
   title: "Integrate This Solution Into Your Space",
   btn: {
     label: "CONTACT US",

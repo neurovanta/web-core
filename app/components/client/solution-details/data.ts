@@ -12,7 +12,7 @@ export const sectionHeaderData = {
 };
 
 export const ctaBannerData = {
-  bgImage: "/assets/images/solutions/cta.jpg",
+  bgImage: "/assets/images/solution-details/cta.jpg",
   title: "Integrate This Solution Into Your Space",
   btn: {
     label: "CONTACT US",

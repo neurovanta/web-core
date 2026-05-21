@@ -41,12 +41,12 @@ export const FloatingTextarea: React.FC<FloatingTextareaProps> = ({
       <label
         htmlFor={id}
         className={`
-          absolute left-0 transition-all duration-300 ease-in-out pointer-events-none
+          absolute left-0 transition-all duration-500 ease-in-out pointer-events-none
           text-secondary leading-[1.42] select-none -tracking-[0.03em]
           ${
             hasValue
               ? "-top-[15px] text-15"
-              : "text-19 group-focus-within:-top-[15px] group-focus-within:text-15"
+              : "top-0 text-19 group-focus-within:-top-[15px] group-focus-within:text-15"
           }
         `}
       >

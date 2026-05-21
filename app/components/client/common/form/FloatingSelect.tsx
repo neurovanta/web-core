@@ -50,8 +50,8 @@ export const FloatingSelect: React.FC<FloatingSelectProps> = ({
       <div
         className={`
           absolute left-0 flex w-full justify-between items-center
-          transition-all duration-300 ease-in-out -tracking-[0.03em]
-         ${isFloated ? "-top-[15px] text-15" : "text-19"}
+          transition-all duration-500 ease-in-out -tracking-[0.03em]
+         ${isFloated ? "-top-[15px] text-15" : "top-0 text-19"}
         `}
       >
         <label

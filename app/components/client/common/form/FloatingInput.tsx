@@ -29,14 +29,14 @@ export const FloatingInput: React.FC<FloatingInputProps> = ({
       <label
         htmlFor={id}
         className={`
-          absolute left-0 transition-all duration-300 ease-in-out pointer-events-none -tracking-[0.03em]
-          text-secondary leading-[1.42] select-none
-          ${
-            hasValue
-              ? "-top-[15px] text-15"
-              : "text-19 group-focus-within:-top-[15px] group-focus-within:text-15"
-          }
-        `}
+    absolute left-0 transition-all duration-500 ease-in-out pointer-events-none -tracking-[0.03em]
+    text-secondary leading-[1.42] select-none
+    ${
+      hasValue
+        ? "-top-[15px] text-15"
+        : "top-0 text-19 group-focus-within:-top-[15px] group-focus-within:text-15"
+    }
+  `}
       >
         {label}
       </label>
