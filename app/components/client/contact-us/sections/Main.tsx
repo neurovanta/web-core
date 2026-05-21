@@ -20,7 +20,7 @@ export default function Main() {
           <AnimatedHeading title={title} className="text-heading mb-20" />
 
           {/* Description */}
-          <SectionDescription text={description} className="text-description -tracking-[0.03em] text-secondary mb-60 max-w-[48ch]" />
+          <SectionDescription text={description} className="text-description -tracking-[0.03em] text-secondary mb-60 max-w-[624px]" />
 
           {/* Office Card */}
           <div className="bg-cream-bg p-40 flex flex-col w-fit 3xl:min-w-[529px]">

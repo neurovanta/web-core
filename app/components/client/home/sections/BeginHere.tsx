@@ -118,7 +118,7 @@ export default function BeginHerePage() {
             <FloatingInput
               id="phone"
               label="Phone*"
-              type="tel"
+              type="number"
               registration={register("phone", {
                 required: "Phone is required",
                 pattern: {

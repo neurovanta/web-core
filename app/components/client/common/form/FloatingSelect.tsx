@@ -98,7 +98,7 @@ export const FloatingSelect: React.FC<FloatingSelectProps> = ({
         className={`
           absolute left-0 pointer-events-none
           text-19 text-secondary
-          top-[30px] -tracking-[0.03em]
+          top-[26px] -tracking-[0.03em]
           ${hasValue ? "opacity-100" : "opacity-0"}
         `}
       >
