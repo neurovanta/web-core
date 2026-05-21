@@ -75,24 +75,25 @@ export default function InfiniteClients() {
       </div>
 
       {/* Full-width marquee — no container constraint */}
-      <div
-        ref={viewportRef}
-        style={{ marginLeft: paddingInset }}
-        className="relative w-full overflow-hidden"
-        onMouseEnter={() => {
-          if (isDesktopRef.current) tweenRef.current?.pause();
-        }}
-        onMouseLeave={() => {
-          if (isDesktopRef.current) tweenRef.current?.resume();
-        }}
-      >
+      <div style={{ marginLeft: paddingInset }} className="overflow-hidden">
         <div
-          ref={trackRef}
-          className="flex w-max items-center gap-[10px] lg:gap-[20px] 3xl:gap-[24px]"
+          ref={viewportRef}
+          className="relative w-full"
+          onMouseEnter={() => {
+            if (isDesktopRef.current) tweenRef.current?.pause();
+          }}
+          onMouseLeave={() => {
+            if (isDesktopRef.current) tweenRef.current?.resume();
+          }}
         >
-          {brands.map((brand) => (
-            <BrandCard key={brand.id} brand={brand} />
-          ))}
+          <div
+            ref={trackRef}
+            className="flex w-max items-center gap-[10px] lg:gap-[20px] 3xl:gap-[24px]"
+          >
+            {brands.map((brand) => (
+              <BrandCard key={brand.id} brand={brand} />
+            ))}
+          </div>
         </div>
       </div>
     </section>
