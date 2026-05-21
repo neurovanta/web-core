@@ -86,9 +86,11 @@ export default function CurveSlider({
 
   return (
     <section className="relative w-full overflow-hidden border-b pb-20 3xl:pb-150 border-border-color">
-      <div className="absolute left-0 bottom-100 3xl:bottom-[205px] right-0 z-20 w-full flex justify-center">
-        <CustomButton label="Apply Now" href="/careers/form" variant={2} />
-      </div>
+      {button && (
+        <div className="absolute left-0 bottom-100 3xl:bottom-[205px] right-0 z-20 w-full flex justify-center">
+          <CustomButton label="Apply Now" href="/careers/form" variant={2} />
+        </div>
+      )}
       <div className="absolute top-3 3xl:top-0 left-0 right-0 z-20 text-center">
         <AnimatedHeading title={title} className="mb-20" />
         <SectionDescription

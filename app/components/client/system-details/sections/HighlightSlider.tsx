@@ -42,20 +42,22 @@ function Pagination({
   onBulletClick: (i: number) => void;
 }) {
   return (
-<div className="flex items-center gap-[10px]">
-  {Array.from({ length: total }).map((_, i) => (
-    <button
-      key={i}
-      onClick={() => onBulletClick(i)}
-      aria-label={`Go to slide ${i + 1}`}
-      className={`
-        h-[3px] border-none p-0 cursor-pointer shrink-0
-        transition-[width,background-color] duration-400 ease-in-out
-        ${i === active ? "w-[50px] bg-white" : "w-[13px] bg-white/60"}
-      `}
-    />
-  ))}
-</div>
+    <div className="flex items-center gap-[10px]">
+      {Array.from({ length: total }).map((_, i) => (
+<button
+  key={i}
+  onClick={() => onBulletClick(i)}
+  aria-label={`Go to slide ${i + 1}`}
+  className={`
+    h-[3px] border-none p-0 cursor-pointer shrink-0 relative
+    before:absolute before:inset-x-0 before:-top-[30px] before:h-[30px]
+    after:absolute after:inset-x-0 after:-bottom-[30px] after:h-[30px]
+    transition-[width,background-color] duration-400 ease-in-out
+    ${i === active ? "w-[50px] bg-white" : "w-[13px] bg-white/60"}
+  `}
+/>
+      ))}
+    </div>
   );
 }
 
