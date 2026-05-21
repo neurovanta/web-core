@@ -19,7 +19,7 @@ const Index = () => {
   return (
     <>
       <InnerBanner {...bannerData} />
-      <SectionHeader {...sectionHeaderData} maxWDescription="max-w-[909px]" />
+      <SectionHeader {...sectionHeaderData} maxWSubtitle="max-w-[45ch]" maxWDescription="max-w-[909px]" />
       <FourCardSlider data={whatWeProvideData} />
       <CommonSlider data={keyBenefitsData} />
       <HowItFits  {...howItFitsData}/>

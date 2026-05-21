@@ -14,7 +14,7 @@ export default function InnerBanner({
   breadcrumbs?: any[];
 }) {
   return (
-    <section className="relative w-full xl:min-h-[560px] 3xl:h-[639px]">
+    <section className="relative w-full xl:min-h-[540px] 3xl:h-[639px]">
       <div className="absolute inset-0 w-full h-full">
         <Image
           src={image}
@@ -27,7 +27,7 @@ export default function InnerBanner({
 
       <div className="absolute bottom-20 left-0 right-0 z-10 flex flex-col items-center gap-50">
         <div className={maxWTitle}>
-          <AnimatedHeading title={title} className="text-white text-center text-banner whitespace-pre-line" mode="blade" />
+          <AnimatedHeading title={title} className="text-white text-center text-60 3xl:text-70 leading-[1.142] whitespace-pre-line" mode="blade" />
         </div>
 
         <Breadcrumb />

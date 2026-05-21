@@ -461,9 +461,7 @@ export const NavDropdown = forwardRef<NavDropdownHandle>((_, ref) => {
       {/* overlay — click closes menu */}
       <div
         ref={overlayRef}
-        className="absolute bg-black/71 cursor-pointer inset-0 z-1"
-        onClick={closeMenu}
-        aria-label="Close menu"
+        className="absolute bg-black/71 inset-0 z-1"
       />
     </div>
   );

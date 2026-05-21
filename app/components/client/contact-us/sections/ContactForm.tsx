@@ -33,7 +33,7 @@ export default function ContactForm() {
   };
 
   return (
-    <div className="bg-primary p-60 w-full">
+    <div className="bg-primary p-50 w-full">
       <div className="flex flex-col">
         {/* Form Title */}
         <AnimatedHeading

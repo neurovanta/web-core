@@ -41,7 +41,7 @@ export const whySetsUsApartData = {
     },
     {
       icon: "/assets/images/about/what-sets/2.svg",
-      title: "Design-Led Approach",
+      title: "Design-Led \n Approach",
     },
     {
       icon: "/assets/images/about/what-sets/3.svg",
@@ -49,7 +49,7 @@ export const whySetsUsApartData = {
     },
     {
       icon: "/assets/images/about/what-sets/4.svg",
-      title: "Custom-Built Solutions",
+      title: "Custom-Built \n Solutions",
     },
     {
       icon: "/assets/images/about/what-sets/1.svg",
@@ -57,7 +57,7 @@ export const whySetsUsApartData = {
     },
     {
       icon: "/assets/images/about/what-sets/2.svg",
-      title: "Design-Led Approach",
+      title: "Design-Led \n Approach",
     },
   ],
 };

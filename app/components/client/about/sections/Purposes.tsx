@@ -37,7 +37,7 @@ export default function Purposes() {
         <AnimatedHeading
           title="OUR PURPOSES"
           mode="reveal"
-          className="text-secondary mb-60 3xl:mb-80"
+          className="text-secondary mb-20 lg:mb-60"
         />
 
         <Swiper

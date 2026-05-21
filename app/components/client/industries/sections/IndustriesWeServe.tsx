@@ -40,8 +40,8 @@ const IndustryCard = ({
 }) => (
   <motion.div
     animate={{ width: isActive ? EXPANDED_W : COLLAPSED_W }}
-    transition={{ duration: 0.65, ease: [0.32, 0.72, 0, 1] }}
-    className="relative flex-shrink-0 cursor-pointer overflow-hidden"
+    transition={{ duration: 1, ease: [0.32, 0.72, 0, 1] }}
+    className="relative shrink-0 cursor-pointer overflow-hidden"
     style={{ height: CARD_HEIGHT }}
     onMouseEnter={onActivate}
     onClick={onActivate}
@@ -50,20 +50,31 @@ const IndustryCard = ({
       src={item.image}
       alt={item.title}
       fill
-      className="object-cover object-left"
+      className="object-cover object-center"
     />
 
     <motion.div
       className="absolute inset-0"
+      initial={{ backgroundColor: "rgba(0,0,0,0)" }}
       animate={{
-        background: isActive
-          ? "linear-gradient(180deg, rgba(0,0,0,0.502) 0%, rgba(0,0,0,0.502) 100%)"
-          : "",
+        backgroundColor: isActive ? "rgba(0,0,0,0.5)" : "rgba(0,0,0,0)",
       }}
-      transition={{ duration: 0.45 }}
+      transition={{ duration: 0.2, ease: "easeInOut" }}
     />
 
-    <div className="absolute left-0 right-0 bottom-0 h-[306px] w-full bg-gradient-to-b from-transparent to-black opacity-80" />
+    {/* Collapsed gradient — fades out smoothly when expanding */}
+    <AnimatePresence>
+      {!isActive && (
+        <motion.div
+          key="collapsed-gradient"
+          className="absolute left-0 right-0 bottom-0 h-[306px] w-full bg-gradient-to-b from-transparent to-black"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 0.8 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.6, ease: "easeInOut" }}
+        />
+      )}
+    </AnimatePresence>
 
     <AnimatePresence>
       {!isActive && (
@@ -219,11 +230,6 @@ const IndustriesWeServe = ({ data }: { data: IndustriesWeServeProps }) => {
           )}
         </div>
 
-        {/*
-          Key fix: viewportRef is on a wrapper div that is ALWAYS in the DOM,
-          regardless of desktop/mobile. This means the ResizeObserver always
-          has a valid element and evaluate() can always read its width.
-        */}
         <div ref={viewportRef}>
           {isDesktop ? (
             <div className="overflow-hidden" style={{ height: CARD_HEIGHT }}>
@@ -266,7 +272,7 @@ const IndustriesWeServe = ({ data }: { data: IndustriesWeServeProps }) => {
                       fill
                       className="object-cover object-center"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
+                    <div className="absolute inset-0 bg-linear-to-t from-black/85 via-black/30 to-transparent" />
                     <div className="absolute bottom-0 left-0 right-0 p-40 flex flex-col">
                       <h3 className="text-white font-light text-subHeading mb-20">
                         {item.title}
