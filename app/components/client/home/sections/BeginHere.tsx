@@ -120,7 +120,7 @@ export default function BeginHerePage() {
               label="Phone*"
               type="number"
               registration={register("phone", {
-                required: "Phone is required",
+                required: "Phone number is required",
                 pattern: {
                   value: /^[+\d\s\-().]{7,20}$/,
                   message: "Enter a valid phone number",
