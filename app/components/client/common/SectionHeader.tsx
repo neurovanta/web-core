@@ -1,5 +1,9 @@
+"use client";
+
 import { AnimatedHeading } from "../animations/AnimateHeading";
 import { SectionDescription } from "../animations/SectionDescription";
+import { motion } from "framer-motion";
+import { moveUp } from "../animations/motionVarinats";
 
 interface SectionHeaderProps {
   title: string;
@@ -32,14 +36,24 @@ export default function SectionHeader({
         </div>
         <div className={`flex flex-col gap-20 w-full`}>
           {subtitle && (
-            <SectionDescription
-              text={subtitle}
-              className={`!text-subHeading text-secondary tracking-[-3%] whitespace-pre-line ${maxWSubtitle}`}
-            />
+            // <SectionDescription
+            //   text={subtitle}
+            //   className={`!text-subHeading text-secondary tracking-[-3%] ${maxWSubtitle}`}
+            // />
+            <motion.p
+              variants={moveUp(0.2)}
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true }}
+              className={`!text-subHeading text-secondary tracking-[-3%] ${maxWSubtitle}`}
+            >
+              {subtitle}
+            </motion.p>
           )}
           {description && (
             <SectionDescription
-              text={description} delay={0.8}
+              text={description}
+              delay={0.8}
               className={`text-description text-secondary tracking-[-0.03em] ${maxWDescription}`}
             />
           )}

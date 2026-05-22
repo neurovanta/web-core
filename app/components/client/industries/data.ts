@@ -15,7 +15,7 @@ export const ctaBannerData = {
 export const introData = {
   title: "We create tailored wellness environments across multiple industries",
   description:
-    "We ensure every solution is optimized for performance, usability,and long-term value.",
+    "We ensure every solution is optimized for performance, usability, and long-term value.",
   image: "/assets/images/industries/intro.jpg",
   imageAlt: "Integrated Solutions",
 };
