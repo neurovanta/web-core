@@ -7,6 +7,7 @@ import { AnimatedHeading } from "../animations/AnimateHeading";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { ElasticEffect } from "../animations/ElasticEffect";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -51,6 +52,7 @@ export default function InnerCta({ data, maxW = "" }: InnerCtaProps) {
       ref={sectionRef}
       className="relative w-full h-[420px] md:h-[520px] xl:h-[590px] 3xl:h-[757px] overflow-hidden"
     >
+      <ElasticEffect />
       {/* Background Image */}
       <div ref={imageRef} className="absolute inset-0 will-change-transform">
         <Image
