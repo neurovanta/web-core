@@ -17,7 +17,7 @@ interface FormData {
   phone: string;
   applyingFor: string;
   yearsOfExperience: string;
-  additionalInfo: string;
+  additionalInfo?: string;
   attachment?: FileList;
 }
 
@@ -88,7 +88,7 @@ export default function CareersForm() {
             label="Phone Number *"
             type="number"
             registration={register("phone", {
-              required: "Phone is required",
+              required: "Phone number is required",
               pattern: {
                 value: /^[+\d\s\-().]{7,20}$/,
                 message: "Enter a valid phone number",
@@ -127,7 +127,7 @@ export default function CareersForm() {
           <FloatingTextarea
             id="additionalInfo"
             rows={4}
-            label="Additional information *"
+            label="Additional information"
             registration={register("additionalInfo")}
             error={errors.additionalInfo?.message}
             value={watchedValues.additionalInfo}
