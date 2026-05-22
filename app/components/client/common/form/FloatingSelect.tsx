@@ -45,7 +45,11 @@ export const FloatingSelect: React.FC<FloatingSelectProps> = ({
   }, [registration]);
 
   return (
-    <div ref={containerRef} className="relative w-full group">
+    <div
+      ref={containerRef}
+      className="relative w-full group cursor-pointer"
+      onClick={() => setOpen((p) => !p)}
+    >
       {/* Label + Icon */}
       <div
         className={`
@@ -79,7 +83,7 @@ export const FloatingSelect: React.FC<FloatingSelectProps> = ({
         className={`
     w-full bg-transparent border-0 border-b outline-none appearance-none
     text-transparent
-    text-19 cursor-pointer
+text-19 pointer-events-none
     pt-4 md:pt-[26px] -tracking-[0.03em]
     transition-colors duration-300
     ${error ? "border-b-red-500" : "border-b-secondary"}
@@ -104,12 +108,6 @@ export const FloatingSelect: React.FC<FloatingSelectProps> = ({
       >
         {options.find((o) => o.value === value)?.label || "\u00A0"}
       </span>
-
-      {/* Overlay */}
-      <div
-        className="absolute inset-0 cursor-pointer"
-        onClick={() => setOpen((p) => !p)}
-      />
 
       {/* Dropdown */}
       <AnimatePresence>
