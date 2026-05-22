@@ -140,7 +140,9 @@ export default function CareersForm() {
             type="file"
             accept={attachment.accept}
             className="hidden"
-            {...register("attachment")}
+            {...register("attachment", {
+              required: "Attachment is required",
+            })}
             ref={(e) => {
               register("attachment").ref(e);
               fileInputRef.current = e;
