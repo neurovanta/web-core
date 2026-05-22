@@ -140,11 +140,33 @@ export function ElasticEffect() {
       trail.forEach(p => { p.born = now - (POINT_LIFE - DRAIN_LIFE * 0.5); });
       if (!raf) raf = requestAnimationFrame(loop);
     };
-    const onMove = (e: MouseEvent) => {
-      const r = canvas.getBoundingClientRect();
-      mouse = { x: e.clientX - r.left, y: e.clientY - r.top };
-      if (!raf) raf = requestAnimationFrame(loop);
-    };
+const onMove = (e: MouseEvent) => {
+  const r = canvas.getBoundingClientRect();
+
+  // Check if hovering over an excluded element
+  const target = document.elementFromPoint(e.clientX, e.clientY);
+  const isExcluded = target?.closest("[data-no-elastic]") !== null;
+
+  if (isExcluded) {
+    active = false;
+    mouse = null;
+    tip = null;
+    draining = true;
+    const now = performance.now();
+    trail.forEach(p => { p.born = now - (POINT_LIFE - DRAIN_LIFE * 0.5); });
+    if (!raf) raf = requestAnimationFrame(loop);
+    return;
+  }
+
+  mouse = { x: e.clientX - r.left, y: e.clientY - r.top };
+  if (!active) {
+    // Re-enter after excluded zone
+    tip = { x: mouse.x, y: mouse.y };
+    trail = []; vtx = 0; vty = 0;
+    active = true; draining = false;
+  }
+  if (!raf) raf = requestAnimationFrame(loop);
+};
 
     parent.addEventListener("mouseenter", onEnter);
     parent.addEventListener("mouseleave", onLeave);

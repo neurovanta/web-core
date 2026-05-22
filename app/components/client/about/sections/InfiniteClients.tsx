@@ -6,6 +6,7 @@ import { brandsData } from "../data";
 import { BrandCard } from "@/app/components/client/common/BrandCard";
 import { AnimatedHeading } from "@/app/components/client/animations/AnimateHeading";
 import { useContainerInset } from "@/app/hooks/useContainerInset";
+import { ElasticEffect } from "../../animations/ElasticEffect";
 
 export default function InfiniteClients() {
   const { title, brands } = brandsData;
@@ -65,7 +66,8 @@ export default function InfiniteClients() {
   }, []);
 
   return (
-    <section className="overflow-hidden py-120 3xl:py-150">
+    <section className="overflow-hidden py-120 3xl:py-150 relative">
+      <ElasticEffect />
       <div ref={containerRef} className="container">
         <AnimatedHeading
           title={title}

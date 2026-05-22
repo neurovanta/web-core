@@ -17,6 +17,7 @@ export default function SliderNavButton({
 }: SliderNavButtonProps) {
   return (
     <button
+    data-no-elastic
       onClick={onClick}
       disabled={disabled}
       aria-label={direction === "prev" ? "Previous slide" : "Next slide"}

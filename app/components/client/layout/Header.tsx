@@ -43,19 +43,25 @@ export default function Header() {
   useEffect(() => {
     menuOpenRef.current = menuOpen;
 
-    // when dropdown opens, immediately clear glass style and ensure header is visible
     const el = headerRef.current;
     if (!el) return;
     if (menuOpen) {
       el.style.background = "transparent";
       el.style.backdropFilter = "blur(0px)";
-      // make sure header is visible if it was hidden
       if (isHidden.current) {
         isHidden.current = false;
         el.style.transform = "translateY(0%)";
         el.style.opacity = "1";
         el.style.pointerEvents = "auto";
       }
+    } else {
+      setTimeout(() => {
+        if (window.scrollY > 10) {
+          el.style.background =
+            "linear-gradient(90deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.03) 52.69%, rgba(0,0,0,0.3) 100%)";
+          el.style.backdropFilter = "blur(30px)";
+        }
+      }, 400); // adjust delay to match your close animation duration
     }
   }, [menuOpen]);
 

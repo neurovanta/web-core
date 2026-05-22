@@ -181,7 +181,7 @@ body {
 }
  
 @utility text-heading {
-  @apply uppercase text-32 md:text-[32px] lg:text-[40px] xl:text-[45px] 3xl:text-60  leading-[1.36] xl:leading-[1.23] 3xl:leading-[1.166666];
+  @apply uppercase text-32 md:text-[32px] lg:text-[40px] xl:text-[43px] 3xl:text-60 leading-[1.36] xl:leading-[1.23] 3xl:leading-[1.166666];
 }
  
 @utility text-description {

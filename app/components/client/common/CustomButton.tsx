@@ -136,6 +136,7 @@ export default function CustomButton({
 
   const content = (
     <span
+    data-no-elastic
       ref={pillRef}
       onPointerEnter={handlePointerEnter}
       onPointerLeave={handlePointerLeave}
