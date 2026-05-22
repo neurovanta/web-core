@@ -33,7 +33,7 @@ export default function ContactForm() {
   };
 
   return (
-    <div className="bg-primary p-50 w-full">
+    <div className="bg-primary p-50 w-full max-w-[971px]">
       <div className="flex flex-col">
         {/* Form Title */}
         <AnimatedHeading
@@ -42,7 +42,7 @@ export default function ContactForm() {
         />
 
         {/* Row 1: Name + Email */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-80 3xl:gap-[85px] mb-60">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-70 3xl:gap-[71px] mb-60">
           <FloatingInput
             id="name"
             label="Name *"
@@ -70,7 +70,7 @@ export default function ContactForm() {
         </div>
 
         {/* Row 2: Service Required + Phone Number */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-80 3xl:gap-[85px] mb-60">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-70 3xl:gap-[71px] mb-60">
           <FloatingSelect
             id="serviceRequired"
             label="Service Required *"
