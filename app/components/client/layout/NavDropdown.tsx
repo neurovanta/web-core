@@ -217,7 +217,7 @@ export const NavDropdown = forwardRef<NavDropdownHandle, NavDropdownProps>(
         aria-hidden={!menuOpen}
       >
         {/* Curtain */}
-        <div className="absolute left-0 right-0 top-0 h-[calc(88vh+2px)] overflow-hidden z-2">
+        <div className="absolute left-0 right-0 top-0 overflow-hidden z-2">
           <div
             ref={(el) => {
               layerRefs.current[2] = el;
@@ -229,17 +229,17 @@ export const NavDropdown = forwardRef<NavDropdownHandle, NavDropdownProps>(
             ref={(el) => {
               layerRefs.current[1] = el;
             }}
-            className="absolute inset-0 overflow-hidden"
+            className="absolute inset-0"
             style={{ background: LAYER_BG[1], willChange: "transform" }}
           />
           <div
             ref={(el) => {
               layerRefs.current[0] = el;
             }}
-            className="absolute inset-0 flex flex-col overflow-hidden"
+            className="relative flex flex-col overflow-hidden"
             style={{ background: LAYER_BG[0], willChange: "transform" }}
           >
-            <div ref={contentRef} className="flex flex-col w-full min-h-[88vh]">
+            <div ref={contentRef} className="flex flex-col w-full">
               {/* Header spacer */}
               <div className="h-[160px] shrink-0" />
 
@@ -253,7 +253,7 @@ export const NavDropdown = forwardRef<NavDropdownHandle, NavDropdownProps>(
               >
                 <div className="flex h-full border-t border-black/20">
                   {/* ── Col 1: Social ── */}
-                  <div className="hidden lg:flex flex-col shrink-0 pb-50">
+                  <div className="hidden lg:flex flex-col shrink-0 pb-40 3xl:pb-50">
                     <div className="mt-auto flex flex-col gap-20">
                       {SOCIAL_LINKS.map((s, i) => (
                         <motion.div
@@ -294,7 +294,7 @@ export const NavDropdown = forwardRef<NavDropdownHandle, NavDropdownProps>(
                   </div>
 
                   {/* ── Col 2: Nav items ── */}
-                  <div className="flex flex-col flex-1 min-w-0 pb-50 pl-225 3xl:pl-[264px]">
+                  <div className="flex flex-col justify-end flex-1 min-w-0 pb-40 3xl:pb-50 pl-225 3xl:pl-[264px]">
                     <nav className="pt-50">
                       <ul className="flex flex-col gap-30 3xl:gap-40">
                         {NAV_ITEMS.map((item, i) => {
@@ -416,7 +416,7 @@ export const NavDropdown = forwardRef<NavDropdownHandle, NavDropdownProps>(
                     </div>
 
                     {/* Contact — bottom-right */}
-                    <div className="mt-auto flex flex-col items-end pb-50">
+                    <div className="mt-auto flex flex-col items-end pb-40 3xl:pb-50">
                       <a
                         href={`mailto:${CONTACT_INFO.email}`}
                         className="text-subHeading tracking-[-0.03em]"
