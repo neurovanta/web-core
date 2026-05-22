@@ -192,6 +192,7 @@ export default function WhySection({ data }: { data: WhySectionData }) {
 
   return (
     <section className="relative w-full bg-primary pt-120 overflow-hidden">
+      <ElasticEffect />
       <div className="container">
         <AnimatedHeading
           title={heading}
@@ -235,7 +236,6 @@ export default function WhySection({ data }: { data: WhySectionData }) {
             <SwiperSlide key={index}>
               <Reveal variants={moveUpV2} delayRange={index * 0.14}>
                 <div className="!h-[270px] sm:!h-[400px] xl:!h-[520px] 3xl:!h-[571px]">
-                        <ElasticEffect />
                   <SlideCard
                     slide={slide}
                     index={index}

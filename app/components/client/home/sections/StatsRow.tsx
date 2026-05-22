@@ -32,7 +32,6 @@ export function StatRow({
 }: StatRowProps) {
   return (
     <div className="relative" onMouseEnter={onHover} onClick={onClick}>
-      <ElasticEffect />
       {/* Top border */}
       <div className="h-px w-full bg-border-color z-0" />
 
@@ -130,7 +129,8 @@ export default function HeroStats() {
               <CustomButton label="About Neuro Vanta" href="#" variant={2} />
             </motion.div>
           </div>
-          <div className="flex flex-col lg:flex-1 w-full max-w-[1136px]">
+          <div className="flex flex-col lg:flex-1 w-full max-w-[1136px] relative">
+            <ElasticEffect />
             {stats.map((stat, idx) => (
               <Reveal key={stat.id} variants={moveUpV2} delayRange={idx * 0.15}>
                 <StatRow
