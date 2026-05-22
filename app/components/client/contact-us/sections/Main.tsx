@@ -46,7 +46,7 @@ export default function Main() {
               target="_blank"
               rel="noopener noreferrer"
               data-text={office.directionLabel}
-              className="text-15 text-secondary uppercase underline font-semibold inline-flex items-center gap-[10px] w-fit"
+              className="text-15 text-secondary uppercase underline font-semibold inline-flex items-center gap-[10px] w-fit hover:scale-[1.03] transition-all duration-300"
             >
               {office.directionLabel}
               <Image
@@ -72,7 +72,7 @@ export default function Main() {
               <a
                 href={`mailto:${office.mail}`}
                 data-text={office.mail}
-                className="text-description -tracking-[0.03em] text-secondary underline"
+                className="text-description -tracking-[0.03em] text-secondary underline hover:scale-[1.03] transition-all duration-300"
               >
                 {office.mail}
               </a>
@@ -82,7 +82,7 @@ export default function Main() {
               <a
                 href={`tel:${office.phone}`}
                 data-text={office.phone}
-                className="text-description -tracking-[0.03em] text-secondary underline"
+                className="text-description -tracking-[0.03em] text-secondary underline hover:scale-[1.03] transition-all duration-300"
               >
                 {office.phone}
               </a>
