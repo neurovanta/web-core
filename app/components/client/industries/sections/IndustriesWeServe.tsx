@@ -62,7 +62,6 @@ const IndustryCard = ({
       transition={{ duration: 0.2, ease: "easeInOut" }}
     />
 
-    {/* Collapsed gradient — fades out smoothly when expanding */}
     <AnimatePresence>
       {!isActive && (
         <motion.div
@@ -122,17 +121,16 @@ const IndustriesWeServe = ({ data }: { data: IndustriesWeServeProps }) => {
   const [offset, setOffset] = useState(0);
   const [showNav, setShowNav] = useState(false);
   const [isDesktop, setIsDesktop] = useState<boolean | null>(null);
-  const [swiperIndex, setSwiperIndex] = useState(0);
   const [maxOffset, setMaxOffset] = useState(0);
 
-  // viewportRef is ALWAYS rendered (both branches use it) so it's never null
+  // ── Bug 2 fix: track Swiper edge state via its own flags ──────────────────
+  const [swiperAtStart, setSwiperAtStart] = useState(true);
+  const [swiperAtEnd, setSwiperAtEnd] = useState(false);
+  // ─────────────────────────────────────────────────────────────────────────
+
   const viewportRef = useRef<HTMLDivElement>(null);
   const mobileSwiperRef = useRef<SwiperType | null>(null);
 
-  // All-expanded width: the true measure of whether all cards fit
-  const allExpandedWidth = EXPANDED_W * items.length + GAP * (items.length - 1);
-
-  // Accordion track width: one expanded + rest collapsed + gaps
   const trackWidth =
     EXPANDED_W + COLLAPSED_W * (items.length - 1) + GAP * (items.length - 1);
 
@@ -151,7 +149,6 @@ const IndustriesWeServe = ({ data }: { data: IndustriesWeServeProps }) => {
       const desktop = mq.matches;
       setIsDesktop(desktop);
 
-      // viewportRef is always mounted — safe to read immediately
       const viewW =
         viewportRef.current?.getBoundingClientRect().width ?? window.innerWidth;
 
@@ -179,7 +176,45 @@ const IndustriesWeServe = ({ data }: { data: IndustriesWeServeProps }) => {
       mq.removeEventListener("change", evaluate);
       ro.disconnect();
     };
-  }, [allExpandedWidth, trackWidth, items.length]);
+  }, [trackWidth, items.length]);
+
+  // ── Bug 1 fix: ensure the newly expanded card is fully visible ────────────
+  const activateCard = useCallback(
+    (id: number) => {
+      setActiveId(id);
+
+      if (!viewportRef.current) return;
+
+      const viewW = viewportRef.current.getBoundingClientRect().width;
+      const index = items.findIndex((item) => item.id === id);
+      if (index === -1) return;
+
+      // Left edge of this card inside the track (all cards collapsed for
+      // the purpose of measuring pre-expansion positions)
+      const cardTrackLeft =
+        index * (COLLAPSED_W + GAP);
+
+      // After expansion the card is EXPANDED_W wide; measure its right edge
+      // relative to the viewport, accounting for the current offset
+      const cardRightInView = cardTrackLeft + EXPANDED_W + offset;
+
+      const overshoot = cardRightInView - viewW;
+
+      if (overshoot > 0) {
+        // Nudge left just enough so the right edge sits flush with the viewport
+        const currentMax = getMaxOffset();
+        setOffset((prev) => -Math.min(Math.abs(prev) + overshoot, currentMax));
+      }
+
+      // Also ensure the card's left edge isn't scrolled off to the left
+      const cardLeftInView = cardTrackLeft + offset;
+      if (cardLeftInView < 0) {
+        setOffset(-cardTrackLeft);
+      }
+    },
+    [items, offset, getMaxOffset],
+  );
+  // ─────────────────────────────────────────────────────────────────────────
 
   const slideBy = (direction: "prev" | "next") => {
     if (!isDesktop && mobileSwiperRef.current) {
@@ -197,10 +232,10 @@ const IndustriesWeServe = ({ data }: { data: IndustriesWeServeProps }) => {
     );
   };
 
-  const prevDisabled = isDesktop ? offset >= 0 : swiperIndex === 0;
-  const nextDisabled = isDesktop
-    ? offset <= -maxOffset
-    : swiperIndex >= items.length - 1;
+  // ── Bug 2 fix: use Swiper's own edge flags, not a derived index ───────────
+  const prevDisabled = isDesktop ? offset >= 0 : swiperAtStart;
+  const nextDisabled = isDesktop ? offset <= -maxOffset : swiperAtEnd;
+  // ─────────────────────────────────────────────────────────────────────────
 
   if (isDesktop === null) return null;
 
@@ -244,7 +279,8 @@ const IndustriesWeServe = ({ data }: { data: IndustriesWeServeProps }) => {
                     key={item.id}
                     item={item}
                     isActive={activeId === item.id}
-                    onActivate={() => setActiveId(item.id)}
+                    // ── Bug 1 fix: use activateCard instead of bare setActiveId
+                    onActivate={() => activateCard(item.id)}
                   />
                 ))}
               </motion.div>
@@ -253,8 +289,15 @@ const IndustriesWeServe = ({ data }: { data: IndustriesWeServeProps }) => {
             <Swiper
               onSwiper={(s) => {
                 mobileSwiperRef.current = s;
+                // ── Bug 2 fix: seed edge state from initial Swiper instance
+                setSwiperAtStart(s.isBeginning);
+                setSwiperAtEnd(s.isEnd);
               }}
-              onSlideChange={(s) => setSwiperIndex(s.activeIndex)}
+              onSlideChange={(s) => {
+                // ── Bug 2 fix: update on every slide change
+                setSwiperAtStart(s.isBeginning);
+                setSwiperAtEnd(s.isEnd);
+              }}
               slidesPerView={1}
               breakpoints={{ 640: { slidesPerView: 2 } }}
               spaceBetween={GAP}
