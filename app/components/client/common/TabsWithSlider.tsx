@@ -12,6 +12,7 @@ import Reveal from "../animations/RevealItemsOneByOneAnimation";
 import { moveUpV2 } from "../animations/motionVarinats";
 import gsap from "gsap";
 import { SectionDescription } from "../animations/SectionDescription";
+import { ElasticEffect } from "../animations/ElasticEffect";
 
 export type TabsWithSliderSlide = {
   image: string;
@@ -406,6 +407,7 @@ function SlideCard({
 
   return (
     <Link href={slide.href} className="block group">
+      <ElasticEffect />
       {/* ── IMAGE — completely untouched ── */}
       <div
         className="relative overflow-hidden h-[250px] lg:h-[420px] 3xl:h-[550px]"

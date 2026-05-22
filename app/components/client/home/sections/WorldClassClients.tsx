@@ -6,6 +6,7 @@ import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { BrandCard } from "../../common/BrandCard";
+import { ElasticEffect } from "../../animations/ElasticEffect";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -167,8 +168,9 @@ export default function WorldClassClients() {
   return (
     <section
       ref={sectionRef}
-      className="container pt-90 3xl:pt-[94px] pb-120 3xl:pb-150 overflow-hidden"
+      className="container pt-90 3xl:pt-[94px] pb-120 3xl:pb-150 overflow-hidden relative"
   >
+    <ElasticEffect />
       <div className="mb-20 md:mb-50">
         <AnimatedHeading
           title={heading}

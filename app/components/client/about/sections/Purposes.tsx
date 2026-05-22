@@ -9,6 +9,7 @@ import { purposesData } from "../data";
 import { AnimatedHeading } from "@/app/components/client/animations/AnimateHeading";
 import Reveal from "../../animations/RevealItemsOneByOneAnimation";
 import { moveUpV2 } from "../../animations/motionVarinats";
+import { ElasticEffect } from "../../animations/ElasticEffect";
 
 export default function Purposes() {
   const swiperRef = useRef<SwiperType | null>(null);
@@ -32,14 +33,14 @@ export default function Purposes() {
   };
 
   return (
-    <section className="bg-cream-bg overflow-hidden">
+    <section className="bg-cream-bg overflow-hidden relative">
+      <ElasticEffect />
       <div className="container py-120 3xl:py-150">
         <AnimatedHeading
           title="OUR PURPOSES"
           mode="reveal"
           className="text-secondary mb-20 lg:mb-60"
         />
-
         <Swiper
           onSwiper={(swiper) => {
             swiperRef.current = swiper;

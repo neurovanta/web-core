@@ -10,6 +10,7 @@ import { useContainerInset } from "@/app/hooks/useContainerInset";
 import ContainerAnchor from "../../layout/ContainerAnchor";
 import Reveal from "../../animations/RevealItemsOneByOneAnimation";
 import { moveUpV2 } from "../../animations/motionVarinats";
+import { ElasticEffect } from "../../animations/ElasticEffect";
 
 export interface ServiceCard {
   title: string;
@@ -75,6 +76,7 @@ export default function Services() {
 
   return (
     <section className="overflow-hidden relative">
+      <ElasticEffect />
       <ContainerAnchor ref={containerRef} />
 
       <div className="flex flex-col lg:flex-row">

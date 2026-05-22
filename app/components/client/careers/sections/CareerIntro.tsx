@@ -7,6 +7,7 @@ import { useRef } from "react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { ElasticEffect } from "../../animations/ElasticEffect";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -48,6 +49,7 @@ export default function CareerIntro({
       ref={sectionRef}
       className="relative w-full h-screen 3xl:max-h-[888px] overflow-hidden"
     >
+      <ElasticEffect />
       {/* Background Image */}
       <div className="absolute inset-0 -z-10" ref={imageRef}>
         <Image

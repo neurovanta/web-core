@@ -8,6 +8,7 @@ import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useRef } from "react";
+import { ElasticEffect } from "../../animations/ElasticEffect";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -59,6 +60,7 @@ export default function Intro() {
           className="w-full lg:w-1/2 aspect-[4/3] lg:aspect-auto lg:h-[500px] 3xl:h-[575px] relative overflow-hidden"
         >
           <div ref={imageRef} className="relative w-full h-full">
+            <ElasticEffect />
             <Image src={image} alt={imageAlt} fill className="object-cover" />
           </div>
         </div>
