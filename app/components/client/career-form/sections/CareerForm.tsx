@@ -18,7 +18,7 @@ interface FormData {
   applyingFor: string;
   yearsOfExperience: string;
   additionalInfo?: string;
-  attachment?: FileList;
+  attachment: FileList;
 }
 
 export default function CareersForm() {
