@@ -73,7 +73,7 @@ input:-webkit-autofill:active {
 --text-60: clamp(28px, 2.25vw + 19.2px, 60px);
 
 /* 32px → 25px at 390px, 32px at 1810px */
---text-32: clamp(25px, 0.81vw + 17.3px, 32px);
+--text-32: clamp(26px, 0.81vw + 17.3px, 32px);
 
 /* 30px → 18px at 390px, 30px at 1810px */
 --text-30: clamp(18px, 0.85vw + 14.7px, 30px);
@@ -82,7 +82,7 @@ input:-webkit-autofill:active {
 --text-19: clamp(13px, 0.42vw + 11.4px, 19px);
 
 /* 15px → 11px at 390px, 15px at 1810px */
---text-15: clamp(11px, 0.28vw + 9.9px, 15px);
+--text-15: clamp(12px, 0.28vw + 9.9px, 15px);
  
  
  
@@ -103,7 +103,7 @@ input:-webkit-autofill:active {
 --space-50: clamp(28px, 1.55vw + 21.9px, 50px);
 
 /* 60px → 32px at 390px, 60px at 1810px */
---space-60: clamp(32px, 1.97vw + 24.3px, 60px);
+--space-60: clamp(30px, 1.97vw + 24.3px, 60px);
  
 /* 70px → 36px at 390px, 70px at 1810px */
 --space-70: clamp(36px, 2.39vw + 26.7px, 70px);
@@ -118,7 +118,7 @@ input:-webkit-autofill:active {
 --space-100: clamp(44px, 3.94vw + 28.6px, 100px);
  
 /* 120px → 50px at 390px, 120px at 1810px */
---space-120: clamp(50px, 4.93vw + 30.8px, 120px);
+--space-120: clamp(60px, 4.93vw + 30.8px, 120px);
 
 /* 130px → 55px at 390px, 130px at 1810px */
 --space-130: clamp(55px, 5.63vw + 33.1px, 130px);
@@ -181,7 +181,7 @@ body {
 }
  
 @utility text-heading {
-  @apply uppercase text-32 md:text-[32px] lg:text-[40px] xl:text-[43px] 3xl:text-60 leading-[1.36] xl:leading-[1.23] 3xl:leading-[1.166666];
+  @apply uppercase text-32 md:text-[32px] lg:text-[40px] xl:text-[43px] 3xl:text-60 leading-[1.308] md:leading-[1.36] xl:leading-[1.23] 3xl:leading-[1.166666];
 }
  
 @utility text-description {

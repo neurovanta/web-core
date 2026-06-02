@@ -198,12 +198,12 @@ export default function WellnessSlider({
 
       <div className="container relative z-10 h-full flex flex-col py-120 3xl:py-0 3xl:pt-120 3xl:pb-[112px]">
         <div className="flex items-start justify-between">
-          <div className="flex flex-col gap-20">
+          <div className="flex flex-col gap-[15px] md:gap-20">
             <AnimatedHeading
               title={data.heading}
               className="text-white text-heading max-w-[25ch]"
             />
-            <div className="mb-60 md:mb-0">
+            <div className="mb-7.5 md:mb-0">
               <SectionDescription
                 text={data.description}
                 className={`text-white text-19 leading-[1.52] ${descriptionMaxWidth}`}

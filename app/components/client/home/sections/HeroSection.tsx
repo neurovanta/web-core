@@ -65,7 +65,7 @@ export default function HeroSection() {
   const { animateIn } = useAppShell();
 
   return (
-    <section className="relative w-full h-dvh flex flex-col items-center justify-end pb-[150px]">
+    <section className="relative w-full h-dvh flex flex-col items-center justify-end pb-[60px] lg:pb-[150px]">
       <video
         autoPlay
         muted
@@ -92,7 +92,7 @@ export default function HeroSection() {
         </motion.h1>
 
         {/* Buttons — one by one after title */}
-        <div className="flex items-center gap-20 flex-wrap justify-center">
+        <div className="flex items-center gap-2.5 md:gap-20 flex-wrap justify-center">
           <motion.div
             initial="hidden"
             animate={animateIn ? "visible" : "hidden"}

@@ -26,7 +26,7 @@ export default function MenuIcon({ open, dark = false }: { open: boolean; dark?:
       height="32"
       viewBox="0 0 44 32"
       fill="none"
-      className="w-auto h-[20px] 2xl:w-[44px] 2xl:h-[30px]"
+      className="w-[22px] md:w-auto h-[15px] md:h-[20px] 2xl:w-[44px] 2xl:h-[30px]"
       aria-hidden="true"
     >
       <line

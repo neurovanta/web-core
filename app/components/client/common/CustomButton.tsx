@@ -155,7 +155,7 @@ export default function CustomButton({
       {/* Circle */}
       <span
         ref={circleRef}
-        className={`relative flex items-center justify-center w-[40px] h-[40px] sm:w-[50px] sm:h-[50px] rounded-full shrink-0 -m-px z-[3] ${
+        className={`relative flex items-center justify-center w-[34px] h-[34px] sm:w-[50px] sm:h-[50px] rounded-full shrink-0 -m-px z-[3] ${
           hovered ? v.circleBgActive : v.circleBgDefault
         }`}
         style={{
