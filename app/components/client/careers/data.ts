@@ -35,7 +35,7 @@ export const openPositionsData = {
       time: "Full Time",
       location: "Location",
       btn: {
-        label: "APPLY JOB",
+        label: "APPLY NOW",
         href: "/careers/apply",
       },
     },
@@ -45,7 +45,7 @@ export const openPositionsData = {
       time: "Full Time",
       location: "Location",
       btn: {
-        label: "APPLY JOB",
+        label: "APPLY NOW",
         href: "/careers/apply",
       },
     },
@@ -55,7 +55,7 @@ export const openPositionsData = {
       time: "Full Time",
       location: "Location",
       btn: {
-        label: "APPLY JOB",
+        label: "APPLY NOW",
         href: "/careers/apply",
       },
     },
@@ -65,7 +65,7 @@ export const openPositionsData = {
       time: "Full Time",
       location: "Location",
       btn: {
-        label: "APPLY JOB",
+        label: "APPLY NOW",
         href: "/careers/apply",
       },
     },

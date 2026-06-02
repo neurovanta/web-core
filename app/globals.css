@@ -70,7 +70,7 @@ input:-webkit-autofill:active {
 --text-70: clamp(30px, 2.82vw + 19px, 70px);
 
 /* 60px → 28px at 390px, 60px at 1810px */
---text-60: clamp(28px, 2.25vw + 19.2px, 60px);
+--text-60: clamp(30px, 3.571vw + 14.29px, 60px);
 
 /* 32px → 25px at 390px, 32px at 1810px */
 --text-32: clamp(25px, 0.81vw + 17.3px, 32px);
@@ -82,7 +82,7 @@ input:-webkit-autofill:active {
 --text-19: clamp(13px, 0.42vw + 11.4px, 19px);
 
 /* 15px → 11px at 390px, 15px at 1810px */
---text-15: clamp(11px, 0.28vw + 9.9px, 15px);
+--text-15: clamp(12px, 0.28vw + 9.9px, 15px);
  
  
  
@@ -181,15 +181,15 @@ body {
 }
  
 @utility text-heading {
-  @apply uppercase text-32 md:text-[32px] lg:text-[40px] xl:text-[43px] 3xl:text-60 leading-[1.36] xl:leading-[1.23] 3xl:leading-[1.166666];
+  @apply uppercase text-[26px] md:text-[32px] lg:text-[40px] xl:text-[43px] 3xl:text-60 leading-[1.307] sm:leading-[1.36] xl:leading-[1.23] 3xl:leading-[1.166666];
 }
  
 @utility text-description {
-  @apply text-19 leading-[1.5263];
+  @apply text-[13px] sm:text-19 leading-[1.5384] sm:leading-[1.5263];
 }
 
 @utility text-subHeading {
-  @apply text-30 leading-[1.23333];
+  @apply text-[20px] sm:text-30 leading-[1.3] sm:leading-[1.23333];
 }
 
 @utility text-banner {
@@ -206,7 +206,7 @@ body {
 }
  
 .container {
-  @apply mx-auto w-full px-[15px];
+  @apply mx-auto w-full px-[16px];
 }
  
 @media (min-width: 640px) {
@@ -317,6 +317,18 @@ body {
 /* self hover — existing usage everywhere */
 .contact-link:hover::after,
 /* parent group hover — SlideCard usage */
-.group:hover .contact-link::after {
+.group:hover .contact-link::after,
+/* Active state on mobile — NEW */
+.contact-link.active::after {
   clip-path: inset(0 0 0 0);
+}
+
+/* Hide all divider lines by default */
+.purposes-swiper .swiper-slide .divider-line {
+  display: none;
+}
+
+/* Show only on slides that are visible AND not the first visible one */
+.purposes-swiper .swiper-slide-visible + .swiper-slide-visible .divider-line {
+  display: block;
 }

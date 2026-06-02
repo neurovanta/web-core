@@ -40,6 +40,10 @@ export default function Header() {
   const pathname = usePathname();
   const isCareerPage = pathname.startsWith("/careers/");
 
+  const getHeaderPadding = () => {
+  return window.innerWidth < 1024 ? "30px" : "50px";
+};
+
   useEffect(() => {
     menuOpenRef.current = menuOpen;
 
@@ -79,8 +83,9 @@ export default function Header() {
         setIsScrolled(false);
         el.style.background = "transparent";
         el.style.backdropFilter = "blur(0px)";
-        el.style.paddingTop = "50px";
-        el.style.paddingBottom = "50px";
+        const padding = getHeaderPadding();
+        el.style.paddingTop = padding;
+        el.style.paddingBottom = padding;
         if (isHidden.current) {
           isHidden.current = false;
           el.style.transform = "translateY(0%)";
@@ -107,8 +112,9 @@ export default function Header() {
             "linear-gradient(90deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.03) 52.69%, rgba(0,0,0,0.3) 100%)";
           el.style.backdropFilter = "blur(30px)";
         }
-        el.style.paddingTop = "50px";
-        el.style.paddingBottom = "50px";
+        const padding = getHeaderPadding();
+        el.style.paddingTop = padding;
+        el.style.paddingBottom = padding;
       }
     };
 
@@ -125,7 +131,7 @@ export default function Header() {
       {/* ── Fixed header bar — z-index sits above the dropdown (1000 > 999) ── */}
       <header
         ref={headerRef}
-        className="pt-[20px] lg:pt-[40px] 3xl:pt-[50px] max-h-[130px]"
+        className="pt-[30px] lg:pt-[40px] 3xl:pt-[50px] max-h-[130px]"
         style={{
           position: "fixed",
           top: 0,
@@ -141,7 +147,7 @@ export default function Header() {
         <div className="flex items-center justify-between w-full container">
           {/* ── Left — Hamburger / Close ───────────────────────────────────── */}
           <motion.div
-            className="w-1/5 md:w-1/3 flex items-center"
+            className="w-[25%] flex items-center"
             initial="hidden"
             animate={animateIn ? "visible" : "hidden"}
             variants={dropDown(0.18)}
@@ -158,7 +164,7 @@ export default function Header() {
 
           {/* ── Centre — Logo ──────────────────────────────────────────────── */}
           <motion.div
-            className="w-1/3 flex justify-center items-center cursor-pointer"
+            className="w-[50%] flex justify-center items-center cursor-pointer"
             initial="hidden"
             animate={animateIn ? "visible" : "hidden"}
             variants={dropDown(0)}
@@ -169,35 +175,35 @@ export default function Header() {
                 alt="Logo"
                 width={500}
                 height={150}
-                className="w-auto h-[40px]"
+                className="max-w-[158px] sm:w-auto h-[40px]"
               />
             </Link>
           </motion.div>
 
           {/* ── Right — Contact + Search ───────────────────────────────────── */}
           <motion.div
-            className="w-1/3 flex items-center justify-end gap-[6px]"
+            className="w-[25%] flex items-center justify-end gap-[11px] md:gap-[6px]"
             initial="hidden"
             animate={animateIn ? "visible" : "hidden"}
             variants={dropDown(0.18)}
           >
             <Link href="/contact-us">
-              <button className="hidden md:flex justify-center items-center bg-primary text-secondary text-center leading-1 rounded-[50px] text-15 uppercase px-20 py-[3px] cursor-pointer 3xl:w-[109px] h-8">
+              <button className="hidden md:flex justify-center items-center bg-primary text-secondary text-center leading-1 rounded-[50px] text-15 uppercase px-20 py-[3px] cursor-pointer 3xl:w-[109px] h-[30px] sm:h-8">
                 Contact
               </button>
             </Link>
-            <button className="flex md:hidden items-center justify-center w-8 h-8 rounded-full border border-primary cursor-pointer">
-              <MdLocalPhone className="w-auto h-[20px] text-primary" />
+            <button className="flex md:hidden items-center justify-center w-[30px] h-[30px] sm:w-8 sm:h-8 rounded-full border border-primary cursor-pointer">
+              <MdLocalPhone className="w-auto h-[15px] sm:h-[20px] text-primary" />
             </button>
             <button
-              className={`flex items-center justify-center w-8 h-8 rounded-full border ${
+              className={`flex items-center justify-center w-[30px] h-[30px] sm:w-8 sm:h-8 rounded-full border ${
                 menuOpen || (!isScrolled && isCareerPage)
                   ? "border-secondary"
                   : "border-primary"
               } cursor-pointer transition-all duration-500 ease-in-out`}
             >
               <IoSearch
-                className={`w-auto h-[20px] ${
+                className={`w-auto h-[15px] sm:h-[20px] ${
                   menuOpen || (!isScrolled && isCareerPage)
                     ? "text-secondary"
                     : "text-primary"

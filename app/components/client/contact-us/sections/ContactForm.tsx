@@ -7,6 +7,7 @@ import { FloatingTextarea } from "@/app/components/client/common/form/FloatingTe
 import CustomButton from "@/app/components/client/common/CustomButton";
 import { contactUsData } from "../data";
 import { AnimatedHeading } from "../../animations/AnimateHeading";
+import { useEffect, useState } from "react";
 
 interface FormData {
   name: string;
@@ -27,22 +28,32 @@ export default function ContactForm() {
   } = useForm<FormData>();
 
   const watchedValues = watch();
+    const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 640);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   const onSubmit = (data: FormData) => {
     console.log("Form submitted:", data);
   };
 
   return (
-    <div className="bg-primary p-50 w-full max-w-[971px]">
+    <div className="bg-primary px-[16px] py-[60px] sm:p-50 w-full max-w-[971px]">
       <div className="flex flex-col">
         {/* Form Title */}
         <AnimatedHeading
           title={form.title}
-          className="text-subHeading capitalize tracking-[-0.03em] mb-60"
+          className="text-subHeading capitalize tracking-[-0.03em] mb-[30px] sm:mb-60"
         />
 
         {/* Row 1: Name + Email */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-70 3xl:gap-[71px] mb-60">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-[40px] sm:gap-70 3xl:gap-[71px] mb-[40px] sm:mb-60">
           <FloatingInput
             id="name"
             label="Name *"
@@ -70,7 +81,7 @@ export default function ContactForm() {
         </div>
 
         {/* Row 2: Service Required + Phone Number */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-70 3xl:gap-[71px] mb-60">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-[40px] sm:gap-70 3xl:gap-[71px] mb-[40px] sm:mb-60">
           <FloatingSelect
             id="serviceRequired"
             label="Service Required *"
@@ -97,10 +108,10 @@ export default function ContactForm() {
         </div>
 
         {/* Row 3: Message */}
-        <div className="mb-20">
+        <div className="mb-[10px] sm:mb-20">
           <FloatingTextarea
             id="message"
-            rows={4}
+            rows={isMobile ? 3 : 4}
             label="Message *"
             registration={register("message", {
               required: "Message is required",

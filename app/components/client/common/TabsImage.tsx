@@ -35,21 +35,57 @@ export default function TabsImage({ data }: TabsImageProps) {
 
   return (
     <section className="bg-cream-bg overflow-hidden">
-      <div className="container py-120">
+      <div className="container py-[60px] lg:py-120">
         <div className="flex flex-col lg:flex-row lg:items-center gap-60 3xl:gap-[112px]">
           {/* Left Side */}
           <div className="flex flex-col">
             <AnimatedHeading
               title={title}
               mode="reveal"
-              className="text-secondary mb-20 max-w-[12ch]"
+              className="text-secondary mb-[15px] sm:mb-20 lg:max-w-[12ch]"
             />
             <SectionDescription
               text={subtitle}
-              className="text-description text-secondary tracking-[-0.03em] mb-60"
+              className="text-description text-secondary tracking-[-0.03em] mb-[30px] lg:mb-60"
             />
 
-            <div className="grid grid-cols-2 gap-x-30 3xl:gap-x-[33px]">
+            <div className="relative w-full aspect-4/3 lg:hidden overflow-hidden mb-[15px] max-[430px]:max-h-[224px] min-[431px]:max-h-[420px]">
+              <ElasticEffect />
+              {/* Base layer — previous image, always visible underneath */}
+              <Image
+                src={
+                  tabs[activeIndex === 0 ? tabs.length - 1 : activeIndex - 1]
+                    ?.image ?? tabs[0].image
+                }
+                alt="previous"
+                fill
+                className="object-cover pointer-events-none"
+              />
+
+              {/* Wipe-in layer — new image slides over the base */}
+              <AnimatePresence initial={false}>
+                <motion.div
+                  key={activeIndex}
+                  className="absolute inset-0"
+                  initial={{ clipPath: "inset(0 100% 0 0)" }}
+                  animate={{ clipPath: "inset(0 0% 0 0)" }}
+                  transition={{
+                    duration: 0.7,
+                    ease: [0.76, 0, 0.24, 1],
+                  }}
+                >
+                  <Image
+                    src={tabs[activeIndex].image}
+                    alt={tabs[activeIndex].title}
+                    fill
+                    className="object-cover pointer-events-none"
+                    priority
+                  />
+                </motion.div>
+              </AnimatePresence>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-30 3xl:gap-x-[33px]">
               {[leftCol, rightCol].map((col, colIdx) => (
                 <ul key={colIdx} className="flex flex-col">
                   {col.map((tab, itemIndex) => {
@@ -68,8 +104,9 @@ export default function TabsImage({ data }: TabsImageProps) {
                           <button
                             onClick={() => triggerTransition(globalIdx)}
                             onMouseEnter={() => triggerTransition(globalIdx)}
-                            className="group w-full text-left bg-none border-none cursor-pointer min-w-[310px] 3xl:min-w-[350px]"
+                            className="group w-full text-left bg-none border-none cursor-pointer xl:min-w-[310px] 3xl:min-w-[350px]"
                           >
+                            {colIdx === 0 && itemIndex === 0 && <div className="h-px w-full bg-border-color lg:hidden" />}
                             <div className="flex items-center gap-[6px] justify-between relative overflow-hidden max-h-[49px]">
                               <AnimatePresence>
                                 {isActive && (
@@ -92,7 +129,7 @@ export default function TabsImage({ data }: TabsImageProps) {
                               </AnimatePresence>
 
                               <span
-                                className={`relative z-10 text-[12px] md:text-19 leading-[1.2] 2xl:leading-[2.631578947368421] tracking-[-0.03em] transition-colors duration-300 ${
+                                className={`relative z-10 text-19 leading-[2.3] h-[40px] flex items-center lg:h-auto xl:leading-[2.631578947368421] lg:tracking-[-0.03em] transition-colors duration-300 ${
                                   isActive
                                     ? "text-secondary font-semibold"
                                     : "text-secondary hover:text-secondary/80"
@@ -116,7 +153,7 @@ export default function TabsImage({ data }: TabsImageProps) {
           </div>
 
           {/* Right Side */}
-          <div className="relative w-full lg:flex-1 aspect-4/3 lg:aspect-auto lg:h-[480px] 3xl:h-[578px] overflow-hidden">
+          <div className="hidden lg:block relative w-full lg:flex-1 aspect-4/3 lg:aspect-auto lg:h-[420px] xl:h-[480px] 3xl:h-[578px] overflow-hidden">
             <ElasticEffect />
             {/* Base layer — previous image, always visible underneath */}
             <Image

@@ -35,7 +35,7 @@ export default function InnerCta({ data, maxW = "" }: InnerCtaProps) {
       { yPercent: -15, scale: 1 },
       {
         yPercent: 15,
-        scale: 1.1,
+        scale: 1.28,
         ease: "none",
         scrollTrigger: {
           trigger: sectionRef.current,
@@ -50,7 +50,7 @@ export default function InnerCta({ data, maxW = "" }: InnerCtaProps) {
   return (
     <section
       ref={sectionRef}
-      className="relative w-full h-[420px] md:h-[520px] xl:h-[590px] 3xl:h-[757px] overflow-hidden"
+      className="relative w-full h-[302px] sm:h-[420px] md:h-[520px] xl:h-[590px] 3xl:h-[757px] overflow-hidden"
     >
       <ElasticEffect />
       {/* Background Image */}
@@ -71,7 +71,7 @@ export default function InnerCta({ data, maxW = "" }: InnerCtaProps) {
       <div className="relative z-10 flex flex-col items-center justify-center text-center h-full container">
         <AnimatedHeading
           title={data.title}
-          className={`text-white text-heading mb-50 ${maxW}`}
+          className={`text-white text-heading mb-20 sm:mb-50 ${maxW}`}
         />
 
         <div>

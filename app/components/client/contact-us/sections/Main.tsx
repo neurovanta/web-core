@@ -7,22 +7,34 @@ import { AnimatedHeading } from "../../animations/AnimateHeading";
 import { SectionDescription } from "../../animations/SectionDescription";
 import { moveUp } from "../../animations/motionVarinats";
 import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
 
 export default function Main() {
   const { title, description, office } = contactUsData;
 
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 640);
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   return (
-    <section className="w-full container py-120 3xl:py-150">
-      <div className="flex flex-col xl:flex-row gap-100 3xl:gap-[105px]">
+    <section className={`w-full py-[65px] lg:py-120 3xl:py-150 ${isMobile ? "" : "container"}`}>
+      <div className="flex flex-col xl:flex-row gap-[30px] sm:gap-100 3xl:gap-[105px]">
         {/* ── Left ── */}
-        <div className="flex flex-col">
+        <div className={`flex flex-col ${isMobile ? "px-[16px]" : ""}`}>
           {/* Title */}
           <AnimatedHeading title={title} className="text-heading mb-20" />
 
           {/* Description */}
           <SectionDescription
             text={description}
-            className="text-description -tracking-[0.03em] text-secondary mb-60 max-w-[624px]"
+            className="text-description md:-tracking-[0.03em] text-secondary mb-[30px] sm:mb-60 max-w-[624px]"
           />
 
           {/* Office Card */}
@@ -31,13 +43,13 @@ export default function Main() {
             whileInView="show"
             viewport={{ once: true }}
             variants={moveUp(0.1)}
-            className="bg-cream-bg p-40 flex flex-col w-fit 3xl:min-w-[529px]"
+            className="bg-cream-bg p-20 sm:p-40 flex flex-col w-full sm:w-fit 3xl:min-w-[529px]"
           >
-            <p className="text-subHeading -tracking-[0.03em] text-secondary mb-20">
+            <p className="text-subHeading -tracking-[0.03em] text-secondary mb-[10px] sm:mb-20">
               {office.title}
             </p>
 
-            <p className="text-description -tracking-[0.03em] text-secondary whitespace-pre-line mb-20">
+            <p className="text-description -tracking-[0.03em] text-secondary whitespace-pre-line mb-[15px] sm:mb-20">
               {office.address}
             </p>
 
@@ -59,7 +71,7 @@ export default function Main() {
 
             {/* Divider */}
             <motion.div
-              className="border-t border-border-color my-30"
+              className="border-t border-border-color my-20 sm:my-30"
               initial={{ scaleX: 0 }}
               whileInView={{ scaleX: 1 }}
               viewport={{ once: true }}
@@ -68,7 +80,7 @@ export default function Main() {
             />
 
             {/* Mail + Phone */}
-            <div className="flex items-center gap-[18px]">
+            <div className="flex items-center gap-[15px] sm:gap-[18px]">
               <a
                 href={`mailto:${office.mail}`}
                 data-text={office.mail}

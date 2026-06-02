@@ -41,12 +41,16 @@ export default function InnerBanner({
     });
 
     // Breadcrumb comes up during the zoom-out
-    tl.to(crumb, {
-      y: 0,
-      opacity: 1,
-      duration: 0.7,
-      ease: "power2.out",
-    }, "-=0.9");
+    tl.to(
+      crumb,
+      {
+        y: 0,
+        opacity: 1,
+        duration: 0.7,
+        ease: "power2.out",
+      },
+      "-=0.9",
+    );
 
     // After zoom-out completes, begin infinite slow breathe
     tl.to(img, {
@@ -56,11 +60,10 @@ export default function InnerBanner({
       repeat: -1,
       yoyo: true,
     });
-
   }, [loaded]);
 
   return (
-    <section className="relative w-full xl:min-h-[540px] 3xl:h-[639px] overflow-hidden">
+    <section className="relative w-full min-h-[494px] xl:min-h-[540px] 3xl:h-[639px] overflow-hidden">
       <div className="absolute inset-0 w-full h-full">
         <div ref={imageRef} className="absolute inset-0 w-full h-full">
           <Image
@@ -75,11 +78,11 @@ export default function InnerBanner({
         <div className="absolute inset-0 bg-black/70" />
       </div>
 
-      <div className="absolute bottom-20 left-0 right-0 z-10 flex flex-col items-center gap-50">
+      <div className="absolute bottom-[60px] md:bottom-20 left-0 right-0 z-10 flex flex-col items-center gap-[15px] sm:gap-20 md:gap-50 container">
         <div className={maxWTitle}>
           <AnimatedHeading
             title={title}
-            className="text-white text-center text-60 3xl:text-70 leading-[1.142] whitespace-pre-line"
+            className="text-white text-center text-60 3xl:text-70 leading-[1.26666] md:leading-[1.142] whitespace-pre-line"
             mode="blade"
           />
         </div>

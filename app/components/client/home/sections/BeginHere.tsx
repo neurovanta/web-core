@@ -8,6 +8,7 @@ import { FloatingTextarea } from "../../common/form/FloatingTextarea";
 import { AnimatedHeading } from "../../animations/AnimateHeading";
 import { motion } from "framer-motion";
 import { moveUp } from "../../animations/motionVarinats";
+import { useState, useEffect } from "react";
 
 interface FormData {
   firstName: string;
@@ -41,6 +42,17 @@ export default function BeginHerePage() {
     },
   });
 
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 640);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
   // Watch values to power floating-label state
   const watchedValues = watch();
 
@@ -50,14 +62,13 @@ export default function BeginHerePage() {
   };
 
   return (
-    <section className="bg-primary py-120 overflow-hidden">
+    <section className="bg-primary py-[60px] lg:py-120 overflow-hidden">
       {/* Headings */}
       <div className="container">
-        <div className="mb-100">
-
+        <div className="mb-[30px] sm:mb-60 md:mb-100">
           <AnimatedHeading
             title="Where Intelligence Meets Longevity"
-            className="text-heading text-secondary mb-20"
+            className="text-heading text-secondary mb-[5px] sm:mb-20"
           />
           <AnimatedHeading
             title="BEGIN HERE."
@@ -73,10 +84,11 @@ export default function BeginHerePage() {
         >
           {/* Row 1 — First Name + For Company */}
           <motion.div
-          initial="hidden"
-          whileInView="show"
-          variants={moveUp(0)}
-           className="grid grid-cols-1 md:grid-cols-2 gap-y-30 gap-x-30 mb-60">
+            initial="hidden"
+            whileInView="show"
+            variants={moveUp(0)}
+            className="grid grid-cols-1 md:grid-cols-2 gap-y-[40px] sm:gap-y-30 gap-x-30 mb-[40px] sm:mb-60"
+          >
             <FloatingInput
               id="firstName"
               label="First Name*"
@@ -97,10 +109,11 @@ export default function BeginHerePage() {
           </motion.div>
           {/* Row 2 — Email + Phone */}
           <motion.div
-          initial="hidden"
-          whileInView="show"
-          variants={moveUp(0.1)}
-           className="grid grid-cols-1 md:grid-cols-2 gap-y-30 gap-x-30 mb-60">
+            initial="hidden"
+            whileInView="show"
+            variants={moveUp(0.1)}
+            className="grid grid-cols-1 md:grid-cols-2 gap-y-[40px] sm:gap-y-30 gap-x-30 mb-[40px] sm:mb-60"
+          >
             <FloatingInput
               id="email"
               label="Email*"
@@ -132,13 +145,14 @@ export default function BeginHerePage() {
           </motion.div>
           {/* Textarea — no floating label */}
           <motion.div
-          initial="hidden"
-          whileInView="show"
-          variants={moveUp(0.15)}
-           className="mb-30">
+            initial="hidden"
+            whileInView="show"
+            variants={moveUp(0.15)}
+            className="mb-[10px] sm:mb-30"
+          >
             <FloatingTextarea
               id="details"
-              rows={4}
+              rows={isMobile ? 3 : 4}
               label="Details about your description"
               registration={register("details")}
               error={errors.details?.message}
@@ -147,10 +161,10 @@ export default function BeginHerePage() {
           </motion.div>
           {/* Submit */}
           <motion.div
-          initial="hidden"
-          whileInView="show"
-          variants={moveUp(0.22)}
-           >
+            initial="hidden"
+            whileInView="show"
+            variants={moveUp(0.22)}
+          >
             <CustomButton label="Send" variant={3} />
           </motion.div>
         </form>

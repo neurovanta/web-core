@@ -10,6 +10,7 @@ import Reveal from "../../animations/RevealItemsOneByOneAnimation";
 import { moveUp, moveUpV2 } from "../../animations/motionVarinats";
 import { motion } from "framer-motion";
 import { ElasticEffect } from "../../animations/ElasticEffect";
+import SliderNavButton from "../../common/SliderButton";
 
 export type WhySlide = {
   icon: string;
@@ -51,18 +52,31 @@ function SlideCard({
 }) {
   return (
     <div
-      className="relative h-full select-none pt-60 3xl:pt-80 px-50 3xl:px-70 pb-70 3xl:pb-[74px]"
+      className="relative h-full select-none pt-20 sm:pt-60 3xl:pt-80 px-20 sm:px-50 3xl:px-70 pb-20 sm:pb-70 3xl:pb-[74px] bg-[#FBF7F433] border-x border-x-[#FBF7F4]/10 sm:bg-transparent mx-[16px] sm:mx-0"
       onMouseEnter={() => onHover(index)}
     >
-      {!isLast && <SlideDivider />}
+        {/* gradient top & bottom borders */}
+  <span
+    className="absolute inset-x-0 top-0 h-px pointer-events-none sm:hidden"
+    style={{
+      background: "linear-gradient(270deg, rgba(251, 247, 244, 0.1) 0%, #FBF7F4 48.08%, rgba(251, 247, 244, 0.1) 100%)",
+    }}
+  />
+  <span
+    className="absolute inset-x-0 bottom-0 h-px pointer-events-none sm:hidden"
+    style={{
+      background: "linear-gradient(270deg, rgba(251, 247, 244, 0.1) 0%, #FBF7F4 48.08%, rgba(251, 247, 244, 0.1) 100%)",
+    }}
+  />
+      <div className="hidden sm:block">{!isLast && <SlideDivider />}</div>
       <div className="flex flex-col justify-between h-full">
-        <div>
+        <div className="mb-[30px] sm:mb-0">
           <Image
             src={slide.icon}
             alt="icon"
             width={100}
             height={100}
-            className="h-[70px] w-auto"
+            className="h-[40px] w-[40px] sm:h-[50px] md:h-[70px] sm:w-auto"
           />
         </div>
         <div>
@@ -72,16 +86,18 @@ function SlideCard({
             animate="show"
             variants={moveUp(0)}
             className={`text-subHeading tracking-[-0.03em] text-secondary ${
-              isActive ? "mb-30" : "mb-0"
+              isActive ? "mb-[10px] sm:mb-30" : "mb-0"
             }`}
           >
             {slide.title}
           </motion.p>
-          <div
-            className={`overflow-hidden transition-all duration-500 ${
-              isActive ? "opacity-100" : "opacity-0 max-h-0"
-            }`}
-          >
+<div
+  className={`overflow-hidden transition-all duration-500 ${
+    isActive
+      ? "opacity-100 max-h-[300px]"
+      : "opacity-0 max-h-0"
+  }`}
+>
             <motion.p
               key={`${index}-${isActive}-desc`}
               initial="hidden"
@@ -105,7 +121,19 @@ export default function WhySection({ data }: { data: WhySectionData }) {
   const isHoveringRef = useRef(false);
   // ↓ NEW: flag to suppress onSlideChange during programmatic scrolls
   const isProgrammaticScrollRef = useRef(false);
+  const [showNav, setShowNav] = useState(false);
+  const [prevDisabled, setPrevDisabled] = useState(true);
+  const [nextDisabled, setNextDisabled] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
+
+    const updateNavState = (swiper: SwiperType) => {
+    // Show nav only if not all slides are visible at once
+    const slidesPerView = swiper.params.slidesPerView as number;
+    setShowNav(slides.length > Math.floor(slidesPerView));
+    setPrevDisabled(swiper.isBeginning);
+    setNextDisabled(swiper.isEnd);
+setActiveIndex(swiper.activeIndex);
+  };
 
   const getSlidesPerView = useCallback((): number => {
     const swiper = swiperRef.current;
@@ -191,27 +219,52 @@ export default function WhySection({ data }: { data: WhySectionData }) {
   };
 
   return (
-    <section className="relative w-full bg-primary pt-120 overflow-hidden">
+    <section className="relative w-full bg-primary py-[60px] sm:py-0 sm:pt-120 overflow-hidden">
       <ElasticEffect />
-      <div className="container">
+      <div className="container flex flex-col sm:flex-row justify-between items-start">
         <AnimatedHeading
           title={heading}
-          className="text-heading mb-20 lg:mb-60 text-secondary"
+          className="text-heading mb-[15px] sm:mb-20 lg:mb-60 text-secondary"
           mode="reveal"
         />
+        <div className="sm:hidden w-full bg-[#FBF7F4] h-px mb-[15px] sm:mb-0" />
+        {showNav && (
+          <div className="flex items-center w-full justify-between sm:justify-end mb-[30px] sm:mb-0">
+            <div className="sm:hidden bg-secondary h-[22px] w-[50px] flex items-center justify-center text-[12px] text-semibold rounded-[51px]">
+              <span className="text-primary">
+                {String(activeIndex + 1).padStart(2, "0")}/
+              </span>
+              <span className="text-primary/40">0{slides.length}</span>
+            </div>
+            <div className="flex items-center gap-[10px] pt-[5px]">
+              <SliderNavButton
+                direction="prev"
+                disabled={prevDisabled}
+                onClick={() => swiperRef.current?.slidePrev()}
+              />
+              <SliderNavButton
+                direction="next"
+                disabled={nextDisabled}
+                onClick={() => swiperRef.current?.slideNext()}
+              />
+            </div>
+          </div>
+        )}
       </div>
+
       <div
         style={{
           background:
             "linear-gradient(270deg, rgba(251, 247, 244, 0.1) 0%, #FBF7F4 48.08%, rgba(251, 247, 244, 0.1) 100%)",
         }}
-        className="w-full h-[1px]"
+        className="w-full h-px hidden sm:block"
       />
 
       <div onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
         <Swiper
           onSwiper={(swiper) => {
             swiperRef.current = swiper;
+            updateNavState(swiper);
           }}
           onSlideChange={(swiper) => {
             // ↓ If we triggered this slide programmatically, ignore it
@@ -221,7 +274,9 @@ export default function WhySection({ data }: { data: WhySectionData }) {
             }
             // User swiped manually → follow the leftmost visible slide
             setActiveIndex(swiper.activeIndex);
+            updateNavState(swiper);
           }}
+          onBreakpoint={(swiper) => updateNavState(swiper)}
           loop={false}
           allowTouchMove={true}
           initialSlide={0}
@@ -235,7 +290,7 @@ export default function WhySection({ data }: { data: WhySectionData }) {
           {slides.map((slide, index) => (
             <SwiperSlide key={index}>
               <Reveal variants={moveUpV2} delayRange={index * 0.14}>
-                <div className="!h-[270px] sm:!h-[400px] xl:!h-[520px] 3xl:!h-[571px]">
+                <div className="!min-h-[230px] sm:!h-[400px] xl:!h-[520px] 3xl:!h-[571px]">
                   <SlideCard
                     slide={slide}
                     index={index}

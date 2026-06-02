@@ -8,7 +8,7 @@ import { SectionDescription } from "../../animations/SectionDescription";
 const HowItFits = ({title, description, image}: {title: string, description: string, image: string}) => {
 
   return (
-    <section className="relative w-full max-h-[503px] 3xl:h-[503px] py-170 3xl:py-[180px] overflow-hidden">
+    <section className="relative w-full max-h-[503px] 3xl:h-[503px] py-[90px] lg:py-170 3xl:py-[180px] overflow-hidden">
       {/* Background Image */}
       <div className="absolute inset-0 -z-10">
         <Image
@@ -22,7 +22,7 @@ const HowItFits = ({title, description, image}: {title: string, description: str
       </div>
 
       {/* Circle Animation — full bleed behind content */}
-      <div className="absolute inset-0 -z-10 flex items-center justify-center max-w-[925px] mx-auto">
+      <div className="absolute inset-0 -z-10 flex items-center justify-center max-w-[320px] sm:max-w-[600px] lg:max-w-[750px] 2xl:max-w-[925px] mx-auto">
         <CircleAnimation variant={2} />
       </div>
 
@@ -30,7 +30,7 @@ const HowItFits = ({title, description, image}: {title: string, description: str
       <div className="container mx-auto flex flex-col items-center justify-center text-center h-full">
         <AnimatedHeading
           title={title}
-          className="text-heading mb-20 text-white"
+          className="text-heading mb-[15px] sm:mb-20 text-white"
           mode="reveal"
         />
         <SectionDescription

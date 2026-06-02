@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { FloatingInput } from "@/app/components/client/common/form/FloatingInput";
 import { FloatingSelect } from "@/app/components/client/common/form/FloatingSelect";
@@ -34,6 +34,17 @@ export default function CareersForm() {
 
   const watchedValues = watch();
 
+    const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 640);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
   const onSubmit = (data: FormData) => {
     console.log("Form submitted:", data);
   };
@@ -41,10 +52,10 @@ export default function CareersForm() {
   const { applyingForOptions, attachment } = careersFormData;
 
   return (
-    <div className="bg-primary p-50 w-full">
+    <div className="bg-primary px-[16px] py-[60px] sm:p-50 w-full">
       <div className="flex flex-col">
         {/* Row 1: First Name + Last Name */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-80 3xl:gap-[85px] mb-60">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-[40px] sm:gap-80 3xl:gap-[85px] mb-[40px] sm:mb-60">
           <FloatingInput
             id="firstName"
             label="First Name *"
@@ -68,7 +79,7 @@ export default function CareersForm() {
         </div>
 
         {/* Row 2: Email + Phone */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-80 3xl:gap-[85px] mb-60">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-[40px] sm:gap-80 3xl:gap-[85px] mb-[40px] sm:mb-60">
           <FloatingInput
             id="email"
             label="Email *"
@@ -100,7 +111,7 @@ export default function CareersForm() {
         </div>
 
         {/* Row 3: Applying For + Years of Experience */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-80 3xl:gap-[85px] mb-60">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-[40px] sm:gap-80 3xl:gap-[85px] mb-[40px] sm:mb-60">
           <FloatingSelect
             id="applyingFor"
             label="Applying For *"
@@ -126,7 +137,7 @@ export default function CareersForm() {
         <div>
           <FloatingTextarea
             id="additionalInfo"
-            rows={4}
+            rows={isMobile ? 3 : 4}
             label="Additional information"
             registration={register("additionalInfo")}
             error={errors.additionalInfo?.message}
@@ -135,7 +146,7 @@ export default function CareersForm() {
         </div>
 
         {/* Row 5: Attachment */}
-        <div className="mb-30 pl-[9px]">
+        <div className="mb-[10px] sm:mb-30 sm:pl-[9px]">
           <input
             type="file"
             accept={attachment.accept}

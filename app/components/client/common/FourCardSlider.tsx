@@ -8,8 +8,10 @@ import type { Swiper as SwiperType } from "swiper";
 import "swiper/css";
 import { AnimatedHeading } from "@/app/components/client/animations/AnimateHeading";
 import Reveal from "../animations/RevealItemsOneByOneAnimation";
-import { moveUpV2 } from "../animations/motionVarinats";
+import { moveUp, moveUpV2 } from "../animations/motionVarinats";
 import { ElasticEffect } from "../animations/ElasticEffect";
+import SliderNavButton from "./SliderButton";
+import { motion } from "framer-motion";
 
 interface FourCardSliderProps {
   data: {
@@ -26,6 +28,8 @@ export default function FourCardSlider({ data }: FourCardSliderProps) {
   const swiperRef = useRef<SwiperType | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [slidesPerView, setSlidesPerView] = useState(4);
+  const [prevDisabled, setPrevDisabled] = useState(true);
+  const [nextDisabled, setNextDisabled] = useState(false);
 
   const totalSlides = slides.length;
   const isSliding = slidesPerView < totalSlides;
@@ -43,24 +47,50 @@ export default function FourCardSlider({ data }: FourCardSliderProps) {
     swiperRef.current?.slideTo(Math.min(targetIndex, maxIndex));
   };
 
+  const updateNavState = (swiper: SwiperType) => {
+    setPrevDisabled(swiper.isBeginning);
+    setNextDisabled(swiper.isEnd);
+  };
+
   return (
     <section className="bg-cream-bg overflow-hidden">
-      <div className="container py-120">
-        <AnimatedHeading
-          title={title}
-          mode="reveal"
-          className="text-secondary mb-20 lg:mb-60"
-        />
+      <div className="container py-[60px] lg:py-120">
+        <div className="flex justify-between items-start mb-[30px] lg:mb-60">
+          <AnimatedHeading
+            title={title}
+            mode="reveal"
+            className="text-secondary"
+          />
+          {isSliding && (
+            <div className="hidden sm:flex justify-center items-center gap-[10px]">
+              <SliderNavButton
+                direction="prev"
+                disabled={prevDisabled}
+                onClick={() => swiperRef.current?.slidePrev()}
+              />
+              <SliderNavButton
+                direction="next"
+                disabled={nextDisabled}
+                onClick={() => swiperRef.current?.slideNext()}
+              />
+            </div>
+          )}
+        </div>
 
         <Swiper
           modules={[Autoplay]}
           onSwiper={(swiper) => {
             swiperRef.current = swiper;
             setSlidesPerView(getSlidesPerView(swiper));
+            updateNavState(swiper);
           }}
-          onSlideChange={(swiper) => setActiveIndex(swiper.activeIndex)}
+          onSlideChange={(swiper) => {
+            setActiveIndex(swiper.activeIndex);
+            updateNavState(swiper);
+          }}
           onBreakpoint={(swiper) => {
             setSlidesPerView(getSlidesPerView(swiper));
+            updateNavState(swiper);
           }}
           spaceBetween={15}
           loop={false}
@@ -68,16 +98,19 @@ export default function FourCardSlider({ data }: FourCardSliderProps) {
             isSliding ? { delay: 3000, disableOnInteraction: false } : false
           }
           breakpoints={{
-            0: { slidesPerView: 1 },
-            480: { slidesPerView: 2 },
+            0: { slidesPerView: 1.158 },
+            460: { slidesPerView: 2 },
             768: { slidesPerView: 3 },
             1300: { slidesPerView: 4 },
           }}
+          centeredSlides={true}
+          centeredSlidesBounds={true}
+          className="!overflow-visible min-[460px]:!overflow-hidden"
         >
           {slides.map((slide, i) => (
             <SwiperSlide key={i}>
-                <Reveal variants={moveUpV2} delayRange={i * 0.15}>
-                <div className="relative w-full group h-[360px] md:h-[440px] lg:h-[500px] 3xl:h-[609px] overflow-hidden">
+              <Reveal variants={moveUpV2} delayRange={i * 0.15}>
+                <div className="relative w-full group h-[359px] md:h-[440px] lg:h-[500px] 3xl:h-[609px] overflow-hidden">
                   <ElasticEffect />
                   <Image
                     src={slide.image}
@@ -90,14 +123,14 @@ export default function FourCardSlider({ data }: FourCardSliderProps) {
                     {slide.title}
                   </p>
                 </div>
-            </Reveal>
-              </SwiperSlide>
+              </Reveal>
+            </SwiperSlide>
           ))}
         </Swiper>
 
         {/* Pagination dots */}
         {isSliding && totalDots > 1 && (
-          <div className="flex items-center justify-center gap-2 mt-[50px]">
+          <div className="items-center justify-center gap-2 mt-[50px] hidden sm:flex">
             {Array.from({ length: totalDots }).map((_, i) => (
               <button
                 key={i}
@@ -115,6 +148,27 @@ export default function FourCardSlider({ data }: FourCardSliderProps) {
               </button>
             ))}
           </div>
+        )}
+
+        {isSliding && (
+          <motion.div
+            variants={moveUp(0.2)}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true }}
+            className="flex sm:hidden justify-center items-center gap-[10px] pt-[30px]"
+          >
+            <SliderNavButton
+              direction="prev"
+              disabled={prevDisabled}
+              onClick={() => swiperRef.current?.slidePrev()}
+            />
+            <SliderNavButton
+              direction="next"
+              disabled={nextDisabled}
+              onClick={() => swiperRef.current?.slideNext()}
+            />
+          </motion.div>
         )}
       </div>
     </section>

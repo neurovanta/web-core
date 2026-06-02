@@ -23,7 +23,7 @@ export default function ElevatingWellness() {
     }));
   };
   return (
-    <section className="bg-cream-bg py-120 3xl:py-0 3xl:pt-150 3xl:pb-170 min-[1700px]:py-[177px] overflow-hidden">
+    <section className="bg-cream-bg py-[60px] lg:py-120 3xl:py-0 3xl:pt-150 3xl:pb-170 min-[1700px]:py-[177px] overflow-hidden">
       <div className="container">
         <div className="grid xl:grid-cols-[320px_auto] 3xl:grid-cols-[364px_auto] gap-x-160 3xl:gap-x-225">
           <AnimatedHeading
@@ -46,13 +46,53 @@ export default function ElevatingWellness() {
               width={500}
               height={500}
               className="object-contain xl:h-[290px] 3xl:h-[366px] w-auto"
-              unoptimized
             />
           </motion.div>
 
-          <ul className="list-none border-t border-[#c9b8a8]">
+          {/* Mobile / Tablet */}
+          <ul className="xl:hidden list-none border-t border-border-color">
+            {items.map((item, index) => (
+              <Reveal
+                key={item.id}
+                variants={moveUpV2}
+                delayRange={index * 0.13}
+              >
+                <li className="border-b border-border-color">
+                  <div className="flex items-center justify-between py-[31px] h-[96px] sm:h-auto">
+                    <div className="flex items-center gap-[30px] sm:gap-80">
+                      <Image
+                        src={item.image}
+                        alt={item.label}
+                        width={60}
+                        height={60}
+                        className="w-[32px] h-[32px] sm:w-[45px] sm:h-[45px] md:w-[55px] md:h-[55px] object-contain shrink-0"
+                      />
+
+                      <span className="text-subHeading text-secondary tracking-[-0.03em] max-w-[222px]">
+                        {item.label}
+                      </span>
+                    </div>
+
+                    <div className="w-[34px] h-[34px] sm:w-[45px] sm:h-[45px] md:w-[50px] md:h-[50px]  rounded-full bg-primary flex items-center justify-center shrink-0">
+                      <Image
+                        src="/assets/icons/down-arrow-tip.svg"
+                        alt="arrow"
+                        width={14}
+                        height={14}
+                        className="w-[14px] sm:w-[16px] md:w-[18px] h-auto -rotate-90"
+                      />
+                    </div>
+                  </div>
+                </li>
+              </Reveal>
+            ))}
+          </ul>
+
+          {/* Desktop - Existing Accordion */}
+          <ul className="hidden xl:block list-none border-t border-[#c9b8a8]">
             {items.map((item, index) => {
               const isActive = index === activeIndex;
+
               return (
                 <Reveal
                   key={item.id}
@@ -68,54 +108,24 @@ export default function ElevatingWellness() {
                   >
                     <div className="flex items-center justify-between py-25">
                       <span
-                        className={`text-subHeading text-secondary tracking-[-0.03em] transition-all duration-300 ${isActive ? "font-semibold" : ""}`}
+                        className={`text-subHeading text-secondary tracking-[-0.03em] transition-all duration-300 ${
+                          isActive ? "font-semibold" : ""
+                        }`}
                       >
                         {item.label}
                       </span>
-                      <div className="flex items-center gap-10">
-                        <Image
-                          src="/assets/icons/down-arrow-tip.svg"
-                          alt="Expand item"
-                          width={13}
-                          height={13}
-                          className={`h-[10px] 3xl:h-[12px] w-auto transition-transform duration-300 xl:hidden ${isActive ? "rotate-180" : "rotate-0"}`}
-                        />
-                        <div className="hidden xl:block">
-                          <Image
-                            src="/assets/icons/top-right-arrow-secondary-50.svg"
-                            alt="arrow"
-                            width={50}
-                            height={50}
-                            className={`shrink-0 transition-all duration-300 w-auto h-[50px] ${
-                              isActive
-                                ? "opacity-100 translate-x-0 translate-y-0"
-                                : "opacity-0 -translate-x-4 translate-y-4"
-                            }`}
-                          />
-                        </div>
-                      </div>
-                    </div>
 
-                    <div
-                      className={`overflow-hidden transition-[max-height] duration-400 xl:hidden ${isActive ? "max-h-[600px] pb-25" : "max-h-0"}`}
-                    >
-                      <motion.div
-                        key={activeIndex}
-                        initial={{ y: 30 }}
-                        animate={{ y: 0 }}
-                        transition={{ duration: 0.6 }}
-                        className="px-30 py-20"
-                      >
-                        <Image
-                          key={`mobile-${index}-${reloadKeys[index] ?? 0}`}
-                          src={`${item.image}?v=${reloadKeys[index] ?? 0}`}
-                          alt={item.label}
-                          width={500}
-                          height={500}
-                          className="object-contain h-[170px] md:h-[220px] w-full"
-                          unoptimized
-                        />
-                      </motion.div>
+                      <Image
+                        src="/assets/icons/top-right-arrow-secondary-50.svg"
+                        alt="arrow"
+                        width={50}
+                        height={50}
+                        className={`shrink-0 transition-all duration-300 w-auto h-[50px] ${
+                          isActive
+                            ? "opacity-100 translate-x-0 translate-y-0"
+                            : "opacity-0 -translate-x-4 translate-y-4"
+                        }`}
+                      />
                     </div>
                   </li>
                 </Reveal>

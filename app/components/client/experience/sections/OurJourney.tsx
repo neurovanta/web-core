@@ -47,7 +47,7 @@ const OurJourney = ({ data }: OurJourneyProps) => {
   return (
     <section
       ref={sectionRef}
-      className="relative w-full overflow-hidden py-120"
+      className="relative w-full overflow-hidden py-[90px] lg:py-120"
     >
       {/* Background Image */}
       <div ref={imageRef} className="absolute inset-0 -z-10">
@@ -62,15 +62,25 @@ const OurJourney = ({ data }: OurJourneyProps) => {
 
       {/* Grid */}
       <div className="container">
-        <div className="flex gap-100 3xl:gap-[104px] justify-center">
-          {/* Col 1 — Title */}
+        <div className="flex md:flex-row flex-col md:gap-100 3xl:gap-[104px] justify-center">
+          {/* Title */}
           <div className="flex items-center">
             <AnimatedHeading
               title={title}
-              className="text-heading text-white"
+              className="text-heading text-white mb-[15px] sm:mb-20 md:mb-0"
             />
           </div>
-          {/* Col 2 — Vertical Divider */}
+
+          <div className="flex justify-center items-stretch md:hidden mb-[15px] sm:mb-20 md:mb-0">
+            <div
+              className="h-px w-full"
+              style={{
+                background:
+                  "linear-gradient(90deg, rgba(215,215,215,0) 0%, #D7D7D7 50%, rgba(215,215,215,0) 100%)",
+              }}
+            />
+          </div>
+          {/* Vertical Divider */}
           <div className="flex justify-center items-stretch">
             <div
               className="w-px h-full"
@@ -80,10 +90,10 @@ const OurJourney = ({ data }: OurJourneyProps) => {
               }}
             />
           </div>
-          {/* Col 3 — Subtitle + Description */}
-          <div className="py-80 flex flex-col gap-6">
+          {/* Subtitle + Description */}
+          <div className="md:py-80 flex flex-col md:gap-6 gap-[10px]">
             <SectionDescription
-              className="!text-subHeading text-white max-w-[45ch] whitespace-pre-line"
+              className="!text-subHeading text-white max-w-[45ch] whitespace-pre-line tracking-[-0.03em]"
               text={subtitle}
             />
             <SectionDescription

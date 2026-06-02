@@ -98,12 +98,12 @@ function DiscoverySlider() {
         />
 
         {/* Thumbnails */}
-        <div className="absolute bottom-30 left-30 3xl:bottom-40 3xl:left-40 z-20 flex items-center gap-[15.6px]">
+        <div className="absolute bottom-20 left-20 sm:bottom-30 sm:left-30 3xl:bottom-40 3xl:left-40 z-20 flex items-center gap-[7.5px] md:gap-[15.6px]">
           {slides.map((slide, i) => (
             <button
               key={i}
               onClick={() => goTo(i)}
-              className="relative shrink-0 overflow-hidden cursor-pointer p-0 border-0 bg-transparent w-[100px] h-[60px] 2xl:w-[125px] 2xl:h-[75px] 3xl:w-[137.27px] 3xl:h-[86.57px]"
+              className="relative shrink-0 overflow-hidden cursor-pointer p-0 border-0 bg-transparent w-[66.45px] h-[42px] md:w-[100px] md:h-[60px] 2xl:w-[125px] 2xl:h-[75px] 3xl:w-[137.27px] 3xl:h-[86.57px]"
             >
               <Image
                 src={slide.image}

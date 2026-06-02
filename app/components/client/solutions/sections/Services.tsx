@@ -45,20 +45,20 @@ function ServiceCard({
       <div className="absolute inset-0 bg-black/70" />
 
       <div
-        className="relative z-10 flex flex-col py-120 pr-40 3xl:pr-60"
+        className="relative z-10 flex flex-col py-[60px] lg:py-120 pr-40 3xl:pr-60"
         style={{ paddingLeft }}
       >
         <AnimatedHeading
           title={card.title}
-          className={`text-heading text-white mb-20 ${tileMaxWidth ?? ""}`}
+          className={`text-heading text-white mb-[15px] sm:mb-20 ${tileMaxWidth ?? ""}`}
         />
 
         <SectionDescription
           text={card.description}
-          className={`text-description text-white tracking-[-0.03em] mb-150 3xl:mb-[197px] ${descriptionMaxWidth ?? ""}`}
+          className={`text-description text-white sm:tracking-[-0.03em] mb-[145px] 3xl:mb-[197px] ${descriptionMaxWidth ?? ""}`}
         />
 
-        <div className="flex flex-col gap-20">
+        <div className="flex lg:flex-col gap-[10px] lg:gap-20">
           {card.buttons.map((btn, index) => (
             <Reveal key={btn.label} variants={moveUpV2} delayRange={index * 0.12}>
             <CustomButton label={btn.label} href={btn.href} />

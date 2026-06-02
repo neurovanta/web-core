@@ -66,13 +66,13 @@ export default function InfiniteClients() {
   }, []);
 
   return (
-    <section className="overflow-hidden py-120 3xl:py-150 relative">
+    <section className="overflow-hidden py-[65px] lg:py-120 3xl:py-150 relative">
       <ElasticEffect />
       <div ref={containerRef} className="container">
         <AnimatedHeading
           title={title}
           mode="reveal"
-          className="text-secondary mb-60 max-w-[20ch]"
+          className="text-secondary mb-[15px] sm:mb-60 max-w-[20ch]"
         />
       </div>
 
@@ -90,7 +90,7 @@ export default function InfiniteClients() {
         >
           <div
             ref={trackRef}
-            className="flex w-max items-center gap-[10px] lg:gap-[20px] 3xl:gap-[24px]"
+            className="flex w-max items-center gap-[10px] sm:gap-[20px] 3xl:gap-[24px]"
           >
             {brands.map((brand) => (
               <BrandCard key={brand.id} brand={brand} />

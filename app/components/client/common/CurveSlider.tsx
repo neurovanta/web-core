@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect, useCallback } from "react";
+import { useRef, useEffect, useCallback, useState } from "react";
 import Image from "next/image";
 import { AnimatedHeading } from "../animations/AnimateHeading";
 import { SectionDescription } from "../animations/SectionDescription";
@@ -16,10 +16,7 @@ interface CurveSliderProps {
   images: string[];
 }
 
-const GAP = 10;
 const SPEED = 0.5;
-const SLIDE_W = 449;
-const SLIDE_H = 748;
 
 // ── Ellipse mask image ────────────────────────────────────────────────────────
 function EllipseMask({ flip = false }: { flip?: boolean }) {
@@ -43,7 +40,32 @@ export default function CurveSlider({
   const xRef = useRef(0);
   const rafRef = useRef<number>(0);
   const dragRef = useRef({ active: false, startX: 0, startScroll: 0 });
-  const totalWidth = (SLIDE_W + GAP) * images.length;
+  const slideRef = useRef<HTMLDivElement>(null);
+  const [slideWidth, setSlideWidth] = useState(0);
+  const gap = slideWidth < 300 ? 3.26 : 10;
+  const totalWidth = slideWidth > 0 ? (slideWidth + gap) * images.length : 1;
+
+  useEffect(() => {
+    const el = slideRef.current;
+    if (!el) return;
+
+    const update = () => {
+      setSlideWidth(el.offsetWidth);
+    };
+
+    update();
+
+    const observer = new ResizeObserver(update);
+    observer.observe(el);
+
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (totalWidth > 0) {
+      xRef.current = xRef.current % totalWidth;
+    }
+  }, [totalWidth]);
 
   const tick = useCallback(() => {
     xRef.current += SPEED;
@@ -82,26 +104,28 @@ export default function CurveSlider({
 
   const onPointerUp = () => {
     dragRef.current.active = false;
+
+    cancelAnimationFrame(rafRef.current);
     rafRef.current = requestAnimationFrame(tick);
   };
 
   const slides = [...images, ...images, ...images];
 
   return (
-    <section className="relative w-full overflow-hidden border-b pb-20 3xl:pb-150 border-border-color">
+    <section className="relative w-full overflow-hidden border-b md:pb-20 3xl:pb-150 border-border-color">
       {button && (
         <motion.div
           initial="hidden"
           whileInView="show"
           viewport={{ once: true }}
           variants={moveUp(0.2)}
-          className="absolute left-0 bottom-100 3xl:bottom-[205px] right-0 z-20 w-full flex justify-center"
+          className="hidden xl:flex absolute left-0 bottom-100 3xl:bottom-[205px] right-0 z-20 w-full justify-center"
         >
           <CustomButton label="Apply Now" href="/careers/form" variant={2} />
         </motion.div>
       )}
-      <div className="absolute top-3 3xl:top-0 left-0 right-0 z-20 text-center">
-        <AnimatedHeading title={title} className="mb-20" />
+      <div className="absolute md:top-3 3xl:top-0 left-0 right-0 z-20 text-center">
+        <AnimatedHeading title={title} className="mb-[15px] md:mb-20" />
         <SectionDescription
           text={description}
           className="text-description tracking-[-0.03em]"
@@ -110,8 +134,17 @@ export default function CurveSlider({
 
       {/* Carousel */}
       <div
-        className="relative overflow-hidden cursor-grab active:cursor-grabbing select-none 3xl:mt-[13px]"
-        style={{ height: SLIDE_H }}
+        className="
+relative
+overflow-hidden
+cursor-grab
+active:cursor-grabbing
+select-none
+h-[244px] sm:h-[380px] md:h-[500px] lg:h-[620px]
+xl:h-[748px]
+mt-[30px] md:mt-0
+3xl:mt-[13px]
+"
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
@@ -119,24 +152,25 @@ export default function CurveSlider({
       >
         <ElasticEffect />
         {/* Top ellipse */}
-        <div className="absolute top-0 left-0 right-0 h-[180px] 3xl:h-[165px] z-10 pointer-events-none">
+        <div className="absolute top-0 left-0 right-0 h-[65px] sm:h-[100px] md:h-[160px] lg:h-[180px] xl:h-[200px] 3xl:h-[165px] z-10 pointer-events-none">
           <EllipseMask />
         </div>
 
         {/* Bottom ellipse */}
-        <div className="absolute bottom-0 left-0 right-0 h-[180px] 3xl:h-[165px] z-10 pointer-events-none">
+        <div className="absolute bottom-0 left-0 right-0 h-[65px] sm:h-[100px] md:h-[160px] lg:h-[180px] xl:h-[200px] 3xl:h-[165px] z-10 pointer-events-none">
           <EllipseMask flip />
         </div>
 
         <div
           ref={trackRef}
           className="absolute top-0 left-0 flex will-change-transform"
-          style={{ gap: GAP }}
+          style={{ gap: gap }}
         >
           {slides.map((src, i) => (
             <div
+              ref={i === 0 ? slideRef : undefined}
               key={i}
-              className={`relative shrink-0 overflow-hidden w-[449px] h-[748px]`}
+              className={`relative shrink-0 overflow-hidden w-[146.47px] h-[244px] sm:h-[380px] md:h-[500px] lg:h-[620px] sm:w-[200px] md:w-[230px] lg:w-[300px] xl:w-[449px] xl:h-[748px]`}
             >
               <Image
                 src={src}

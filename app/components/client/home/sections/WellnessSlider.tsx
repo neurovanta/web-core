@@ -196,14 +196,14 @@ export default function WellnessSlider({
 
       <div className="absolute inset-0 bg-black/70" />
 
-      <div className="container relative z-10 h-full flex flex-col py-120 3xl:py-0 3xl:pt-120 3xl:pb-[112px]">
+      <div className="container relative z-10 h-full flex flex-col py-[60px] lg:py-120 3xl:py-0 3xl:pt-120 3xl:pb-[112px]">
         <div className="flex items-start justify-between">
-          <div className="flex flex-col gap-20">
+          <div className="flex flex-col gap-[15px] sm:gap-20">
             <AnimatedHeading
               title={data.heading}
               className="text-white text-heading max-w-[25ch]"
             />
-            <div className="mb-60 md:mb-0">
+            <div className="mb-[30px]">
               <SectionDescription
                 text={data.description}
                 className={`text-white text-19 leading-[1.52] ${descriptionMaxWidth}`}
@@ -220,7 +220,7 @@ export default function WellnessSlider({
           </div>
         </div>
 
-        <div className="flex min-[870px]:hidden flex-col items-end gap-20 shrink-0 sm:mt-20">
+        <div className="flex min-[870px]:hidden items-start gap-[10px] sm:gap-20 shrink-0 sm:mt-20">
           {data.buttons.map((btn) => (
             <Reveal key={btn.label} variants={moveUpV2} delayRange={0.2}>
               <CustomButton label={btn.label} href={btn.href} variant={1} />
@@ -230,7 +230,11 @@ export default function WellnessSlider({
 
         <div className="flex-1" />
 
-        <div className="[&_.swiper-wrapper]:items-end">
+        <div className="[&_.swiper-wrapper]:items-end relative">
+                    <div className="sm:hidden absolute right-0 top-1/2 -translate-y-1/2 z-50 flex items-center justify-center bg-primary h-[22px] w-[50px] text-[12px] font-semibold rounded-full">
+            <span className="text-secondary">0{activeIndex + 1}/</span>
+            <span className="text-secondary/40">0{slides.length}</span>
+          </div>
           <Swiper
             onSwiper={(swiper) => {
               swiperRef.current = swiper;
@@ -251,7 +255,8 @@ export default function WellnessSlider({
             allowTouchMove={true}
             initialSlide={0}
             breakpoints={{
-              0: { slidesPerView: 2 },
+              0: { slidesPerView: 1 },
+              640: { slidesPerView: 2 },
               768: { slidesPerView: 3 },
               1024: { slidesPerView: 3, spaceBetween: 20 },
               1500: { slidesPerView: 4, spaceBetween: 30 },
@@ -267,11 +272,11 @@ export default function WellnessSlider({
                         onClick={() => handleSlideClick(index)}
                         className="w-full text-left focus:outline-none cursor-pointer"
                       >
-                        <span className="block text-15 leading-[1.73] mb-[14px] transition-colors duration-300 text-white/40">
+                        <span className={`block not-odd:text-15 leading-[1.666] sm:leading-[1.73] mb-[5px] sm:mb-[14px] transition-colors duration-300 ${isActive ? "text-white" : "text-white/40"}`}>
                           {slide.number}
                         </span>
                         <span
-                          className={`block text-19 leading-[1.5263] mb-25 min-h-[45px] 2xl:min-h-0 transition-colors duration-300 ${
+                          className={`block text-19 leading-[1.5263] mb-20 sm:mb-25 sm:min-h-[45px] 2xl:min-h-0 transition-colors duration-300 ${
                             isActive
                               ? "text-white font-semibold"
                               : "text-white/60"

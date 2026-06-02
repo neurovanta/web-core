@@ -48,24 +48,24 @@ export default function DescImageIntro({
 
   return (
     <section ref={sectionRef} className="bg-white overflow-hidden">
-      <div className="container flex flex-col lg:flex-row py-120 3xl:py-150">
+      <div className="container flex flex-col lg:flex-row py-[65px] lg:py-120 3xl:py-150">
         {/* Left — text */}
         <div className="w-full lg:w-[67.485%] flex items-center">
           <div className="lg:pr-60 3xl:pr-80">
             <AnimatedHeading
               title={title}
               mode="reveal"
-              className="text-heading text-secondary mb-20 max-w-[22ch]"
+              className="text-heading text-secondary mb-[15px] sm:mb-20 max-w-[27ch] lg:max-w-[22ch]"
             />
             <SectionDescription
               text={description}
-              className="!text-subHeading text-secondary tracking-[-0.03em] max-w-[40ch]"
+              className="!text-subHeading text-secondary tracking-[-0.03em] max-w-[45ch] lg:max-w-[40ch] mb-[30px] lg:mb-0"
             />
           </div>
         </div>
 
         {/* Right — image */}
-        <div className="w-full lg:w-1/2 aspect-[4/3] lg:aspect-auto lg:h-[460px] 3xl:h-[524px] relative overflow-hidden">
+        <div className="w-full lg:w-1/2 aspect-[4/3] max-[430px]:max-h-[201px] min-[431px]:h-[400px] sm:max-h-auto lg:aspect-auto lg:h-[460px] 3xl:h-[524px] relative overflow-hidden">
           <div ref={imageRef} className="relative w-full h-full">
             <Image
               src={image}

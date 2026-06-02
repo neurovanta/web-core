@@ -21,7 +21,7 @@ export default function Breadcrumb() {
   return (
     <nav
       aria-label="Breadcrumb"
-      className="h-[50px] flex justify-center items-center"
+      className="xl:h-[50px] flex justify-center items-center"
     >
       <ol className="flex items-center">
         {crumbs.map((crumb, index) => {

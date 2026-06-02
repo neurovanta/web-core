@@ -36,7 +36,7 @@ export function StatRow({
       <div className="h-px w-full bg-border-color z-0" />
 
       <div
-        className={`relative py-40 ${isActive ? "px-60" : ""} transition-all duration-300 ease-in-out`}
+        className={`relative py-[24px] sm:py-40 ${isActive ? "px-20 sm:px-60" : ""} transition-all duration-300 ease-in-out`}
       >
         {/* Active bg */}
         <AnimatePresence>
@@ -51,12 +51,12 @@ export function StatRow({
           )}
         </AnimatePresence>
 
-        <div className="relative z-10 flex items-center gap-30 md:gap-50 2xl:gap-0 min-h-[60px] md:min-h-[70px]">
+        <div className={`relative z-10 flex items-center sm:min-h-[60px] md:min-h-[70px] md:gap-50 2xl:gap-0 ${isActive ? "gap-[30px]" : "gap-[40px]"}`}>
           {/* Number */}
-          <span className="text-heading text-secondary shrink-0 min-w-[94px] 3xl:min-w-[104px]">{number}</span>
+          <span className="text-heading text-secondary shrink-0 sm:min-w-[94px] 3xl:min-w-[104px]">{number}</span>
 
           {/* Label */}
-          <span className="flex-1 text-subHeading tracking-[-0.03em] text-secondary lg:pl-[300px] 3xl:pl-[347px]">
+          <span className="flex-1 text-subHeading tracking-[-0.03em] text-secondary lg:pl-80 xl:pl-160 2xl:pl-[300px] 3xl:pl-[347px]">
             {label}
           </span>
 
@@ -75,7 +75,7 @@ export function StatRow({
                     alt={label}
                     width={100}
                     height={100}
-                    className="object-contain w-auto h-[50px] 2xl:w-[73px] 2xl:h-[70px] pointer-events-none"
+                    className="object-contain w-auto h-[40px] sm:h-[50px] 2xl:w-[73px] 2xl:h-[70px] pointer-events-none"
                   />
                 </motion.div>
               )}
@@ -95,14 +95,14 @@ export default function HeroStats() {
   const [activeIndex, setActiveIndex] = useState(1);
 
   return (
-    <section className="w-full bg-cream-bg py-120 overflow-hidden">
+    <section className="w-full bg-cream-bg py-[60px] lg:py-120 overflow-hidden">
       <div className="container flex flex-col">
         {/* Left col */}
         <div className="flex flex-col md:mb-120">
-          <div className="w-ful">
+          <div className="w-full">
             <AnimatedHeading
               title={title}
-              className="text-secondary text-heading mb-20 md:mb-50 max-w-[31ch]"
+              className="text-secondary text-heading mb-[15px] sm:mb-20 md:mb-50 max-w-[31ch]"
               mode="reveal"
               delay={0.2}
             />
@@ -116,9 +116,9 @@ export default function HeroStats() {
           </div>
         </div>
 
-        <div className="flex flex-wrap w-full justify-between lg:gap-x-170 gap-y-80 items-end">
+        <div className="flex flex-wrap w-full justify-between lg:gap-x-170 gap-y-[30px] sm:gap-y-80 items-end">
           {/* Custom button */}
-          <div className="overflow-hidden mt-40 lg:mt-0">
+          <div className="overflow-hidden mt-[30px] sm:mt-40 lg:mt-0">
             <motion.div
               initial="hidden"
               whileInView="show"
@@ -129,6 +129,7 @@ export default function HeroStats() {
               <CustomButton label="About Neuro Vanta" href="#" variant={2} />
             </motion.div>
           </div>
+
           <div className="flex flex-col lg:flex-1 w-full max-w-[1136px] relative">
             <ElasticEffect />
             {stats.map((stat, idx) => (

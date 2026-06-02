@@ -8,8 +8,8 @@ const Index = () => {
   return (
     <>
       <InnerBanner {...bannerData} />
-      <SectionHeader {...sectionHeaderData} maxWTitle="max-w-[12ch]" maxWSubtitle="max-w-[43ch]" maxWDescription="max-w-[75ch]" />
-      <TabsWithSlider data={ourProductsData} className="bg-cream-bg py-120" />
+      <SectionHeader {...sectionHeaderData} maxWTitle="sm:max-w-[12ch]" maxWSubtitle="max-w-[43ch]" maxWDescription="max-w-[75ch]" />
+      <TabsWithSlider data={ourProductsData} className="bg-cream-bg py-[60px] lg:py-120" />
       <InnerCta data={ctaBannerData} maxW="max-w-[18ch]" />
     </>
   );

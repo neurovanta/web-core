@@ -13,7 +13,7 @@ const Index = () => {
   return (
     <>
       <InnerBanner {...bannerData} maxWTitle="max-w-[54ch]" />
-      <SectionHeader {...sectionHeaderData} maxWTitle="max-w-[15ch]" maxWSubtitle="max-w-[55ch]" maxWDescription="max-w-[65ch] 3xl:max-w-[80ch]" />
+      <SectionHeader {...sectionHeaderData} maxWTitle="sm:max-w-[15ch]" maxWSubtitle="max-w-[55ch]" maxWDescription="max-w-[65ch] 3xl:max-w-[80ch]" />
       <HighlightSlider />
       <Discovery />
       <CurveSlider {...longevityInnovationData} />

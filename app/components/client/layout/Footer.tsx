@@ -3,10 +3,11 @@
 import Image from "next/image";
 import Link from "next/link";
 import { footerMenus, socialLinks, SocialType } from "./data";
-import { motion } from "framer-motion";
 import { SectionDescription } from "../animations/SectionDescription";
 import { moveUp, moveUpV2 } from "../animations/motionVarinats";
 import Reveal from "../animations/RevealItemsOneByOneAnimation";
+import { AnimatePresence, motion } from "framer-motion";
+import { useState } from "react";
 
 /* ─── Social brand styles ─────────────────────────────────────────── */
 const socialStyles: Record<SocialType, React.CSSProperties> = {
@@ -34,12 +35,13 @@ function splitItems<T>(items: T[]): [T[], T[]] {
 
 /* ─── Component ───────────────────────────────────────────────────── */
 export default function Footer() {
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
   return (
     <footer className="bg-white overflow-hidden">
       {/* ── Main content container ── */}
-      <div className="container pb-80 3xl:pb-[84px]">
+      <div className="container pb-[30px] sm:pb-80 3xl:pb-[84px]">
         {/* Logo */}
-        <div className="w-full relative h-full max-h-[218px] mt-20 overflow-hidden">
+        <div className="w-full relative h-full max-h-[218px] mt-[40px] overflow-hidden">
           <Image
             src="/assets/logos/footer-logo.svg"
             alt="Neuro Vanta"
@@ -68,7 +70,7 @@ export default function Footer() {
         </div>
 
         {/* ── Top section: address + contact ── */}
-        <div className="flex flex-wrap mt-60 md:mt-80 gap-y-20 3xl:mt-[136px]">
+        <div className="flex flex-wrap mt-[60px] md:mt-80 gap-y-20 3xl:mt-[136px]">
           {/* Left – address */}
           <div className="sm:w-[51%] 3xl:pt-[16px]">
             <SectionDescription
@@ -78,13 +80,13 @@ export default function Footer() {
                 "Dubai Silicon Oasis",
                 "Dubai, UAE",
               ].join("\n")}
-              className="text-secondary text-19 leading-[1.42] whitespace-pre-line tracking-[-0.03em]"
+              className="text-secondary text-19 leading-[1.54] sm:leading-[1.42] whitespace-pre-line md:tracking-[-0.03em]"
             />
           </div>
 
           {/* Right – email, phone, then gap, then socials */}
           <div className="sm:w-[49%]">
-            <div className="text-secondary text-30 lg:text-60 flex flex-col mb-20 sm:mb-50">
+            <div className="text-secondary text-subHeading lg:text-60 flex flex-col mb-20 sm:mb-50">
               <motion.div
                 variants={moveUp(0)}
                 initial="hidden"
@@ -93,7 +95,7 @@ export default function Footer() {
               >
                 <Link
                   href="mailto:mail@360-wellness.com"
-                  className="contact-link leading-[1.433] w-fit"
+                  className="contact-link leading-[1.3] sm:leading-[1.433] w-fit"
                   data-text="mail@360-wellness.com"
                 >
                   mail@360-wellness.com
@@ -107,7 +109,7 @@ export default function Footer() {
               >
                 <Link
                   href="tel:+97143332175"
-                  className="contact-link leading-[1.433] w-fit"
+                  className="contact-link leading-[1.3] sm:leading-[1.433] w-fit"
                   data-text="+97143332175"
                 >
                   +97143332175
@@ -141,18 +143,93 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="relative h-px w-full mt-20 mb-20 md:mt-80 md:mb-80 3xl:mt-120 3xl:mb-100">
+        <div className="relative h-px w-full mt-[60px] lg:mb-80 3xl:mt-120 3xl:mb-100">
           <motion.div
             initial={{ scaleX: 0 }}
             whileInView={{ scaleX: 1 }}
             transition={{ duration: 1.2, ease: [0.77, 0, 0.175, 1] }}
             viewport={{ once: true }}
-            className="absolute inset-0 bg-primary origin-center"
+            className="absolute inset-0 bg-[#CBC3BB] origin-center"
           />
         </div>
 
-        {/* ── Menus ── */}
-        <div className="flex flex-wrap gap-y-20 gap-x-50 3xl:gap-x-[150px]">
+        {/* ── Mobile Menu ── */}
+        <div className="lg:hidden">
+          {footerMenus.map((menu, index) => (
+            <div key={menu.heading} className="border-b border-[#CBC3BB]">
+              <button
+                type="button"
+                onClick={() => setOpenIndex(openIndex === index ? null : index)}
+                className="w-full flex items-center justify-between py-20"
+              >
+                <span className="text-secondary text-subHeading tracking-[-0.03em]">
+                  {menu.heading}
+                </span>
+
+                <motion.span
+                  animate={{
+                    rotate: openIndex === index ? 180 : 0,
+                  }}
+                  transition={{
+                    duration: 0.6,
+                    ease: [0.22, 1, 0.36, 1],
+                  }}
+                  className="text-secondary"
+                >
+                  <Image
+                    src="/assets/icons/down-arrow-tip.svg"
+                    alt="Chevron Down"
+                    width={13}
+                    height={13}
+                    className={`h-[8px] xl:h-[9px] 3xl:h-[10px] w-auto object-fill transition-transform duration-300 ${
+                      openIndex === index ? "rotate-0" : ""
+                    }`}
+                  />
+                </motion.span>
+              </button>
+
+              <AnimatePresence initial={false}>
+                {openIndex === index && (
+                  <motion.div
+                    initial={{ height: 0 }}
+                    animate={{ height: "auto" }}
+                    exit={{ height: 0 }}
+                    transition={{
+                      duration: 0.65,
+                      ease: [0.22, 1, 0.36, 1],
+                    }}
+                    className="overflow-hidden"
+                  >
+                    <motion.ul
+                      initial={{ opacity: 0, y: -8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -8 }}
+                      transition={{
+                        duration: 0.4,
+                        ease: [0.22, 1, 0.36, 1],
+                      }}
+                      className="pb-20 flex flex-col"
+                    >
+                      {menu.items.map(({ label, href }) => (
+                        <li key={label}>
+                          <Link
+                            href={href}
+                            className="contact-link text-secondary text-19 leading-[2.3] tracking-[-0.03em]"
+                          >
+                            {label}
+                          </Link>
+                        </li>
+                      ))}
+                    </motion.ul>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          ))}
+        </div>
+
+        {/* ── Desk Menu ── */}
+        <div className="hidden lg:flex flex-wrap gap-y-20 gap-x-50 3xl:gap-x-[150px]">
           {footerMenus.map((menu, i) => {
             const [col1, col2] = splitItems(menu.items);
             const isWide = col2.length > 0;
@@ -170,7 +247,11 @@ export default function Footer() {
                   </h3>
 
                   {/* Items: single or double column */}
-                  <div className={isWide ? "flex flex-col sm:flex-row sm:gap-50" : ""}>
+                  <div
+                    className={
+                      isWide ? "flex flex-col sm:flex-row sm:gap-50" : ""
+                    }
+                  >
                     {/* Column 1 (always present) */}
                     <ul className="flex flex-col">
                       {col1.map(({ label, href }) => (
@@ -211,11 +292,9 @@ export default function Footer() {
       </div>
 
       {/* ── Copyright bar ── */}
-      <div className="w-full py-[10px] bg-[#FFF8F0]">
+      <div className="w-full py-[19px] md:py-[10px] bg-[#FFF8F0]">
         <div className="container">
-          <p
-            className="text-secondary text-15 leading-[2.666] tracking-[-0.03em]"
-          >
+          <p className="text-secondary text-19 md:text-15 leading-[1.54] md:leading-[2.666] md:tracking-[-0.03em]">
             Copyright {new Date().getFullYear()}© Neuro Vanta All Rights
           </p>
         </div>

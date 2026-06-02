@@ -23,23 +23,20 @@ export default function SectionHeader({
   maxWDescription = "",
 }: SectionHeaderProps) {
   return (
-    <div className="container py-120 3xl:py-150">
-      <div className="flex justify-between  items-start w-full">
-        <div className={`w-[40%] 3xl:w-[42.4%] shrink-0`}>
-          <div className="max-w-[88%]">
+    <div className="container py-[65px] lg:py-120 3xl:py-150">
+      <div className="flex flex-col sm:flex-row justify-between items-start w-full">
+        <div className={`w-full sm:w-[40%] 3xl:w-[42.4%] shrink-0 mb-[15px] sm:mb-0`}>
+          <div className="sm:max-w-[88%]">
             <AnimatedHeading
               title={title}
-              className={`text-heading text-secondary tracking-[0%] ${maxWTitle}`}
+              className={`text-heading text-secondary ${maxWTitle}`}
               mode="reveal"
             />
           </div>
         </div>
-        <div className={`flex flex-col gap-20 w-full`}>
+        <div className="w-full h-px bg-border-color sm:hidden mb-[15px] sm:mb-0" />
+        <div className={`flex flex-col gap-[10px] sm:gap-20 w-full`}>
           {subtitle && (
-            // <SectionDescription
-            //   text={subtitle}
-            //   className={`!text-subHeading text-secondary tracking-[-3%] ${maxWSubtitle}`}
-            // />
             <motion.p
               variants={moveUp(0.2)}
               initial="hidden"
@@ -54,7 +51,7 @@ export default function SectionHeader({
             <SectionDescription
               text={description}
               delay={0.8}
-              className={`text-description text-secondary tracking-[-0.03em] ${maxWDescription}`}
+              className={`text-description text-secondary lg:tracking-[-0.03em] ${maxWDescription}`}
             />
           )}
         </div>

@@ -23,15 +23,19 @@ const DOT_COLORS = [
 
 export function ElasticEffect() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  
 
   useEffect(() => {
+      if (window.innerWidth < 1400) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d")!;
-    let W = 0, H = 0;
+    let W = 0,
+      H = 0;
     let mouse: { x: number; y: number } | null = null;
     let tip: { x: number; y: number } | null = null;
-    let vtx = 0, vty = 0;
+    let vtx = 0,
+      vty = 0;
     let trail: { x: number; y: number; born: number }[] = [];
     let raf: number | null = null;
     let active = false;
@@ -58,9 +62,12 @@ export function ElasticEffect() {
       }
     }
 
-    function sampleTrailAtDistance(dist: number): { x: number; y: number } | null {
+    function sampleTrailAtDistance(
+      dist: number,
+    ): { x: number; y: number } | null {
       if (trail.length < 1) return null;
-      if (dist <= 0) return { x: trail[trail.length - 1].x, y: trail[trail.length - 1].y };
+      if (dist <= 0)
+        return { x: trail[trail.length - 1].x, y: trail[trail.length - 1].y };
 
       let accumulated = 0;
       for (let i = trail.length - 1; i > 0; i--) {
@@ -129,44 +136,56 @@ export function ElasticEffect() {
       const r = canvas.getBoundingClientRect();
       mouse = { x: e.clientX - r.left, y: e.clientY - r.top };
       tip = { x: mouse.x, y: mouse.y };
-      trail = []; vtx = 0; vty = 0;
-      active = true; draining = false;
+      trail = [];
+      vtx = 0;
+      vty = 0;
+      active = true;
+      draining = false;
       if (!raf) raf = requestAnimationFrame(loop);
     };
     const onLeave = () => {
-      active = false; mouse = null; tip = null;
+      active = false;
+      mouse = null;
+      tip = null;
       draining = true;
       const now = performance.now();
-      trail.forEach(p => { p.born = now - (POINT_LIFE - DRAIN_LIFE * 0.5); });
+      trail.forEach((p) => {
+        p.born = now - (POINT_LIFE - DRAIN_LIFE * 0.5);
+      });
       if (!raf) raf = requestAnimationFrame(loop);
     };
-const onMove = (e: MouseEvent) => {
-  const r = canvas.getBoundingClientRect();
+    const onMove = (e: MouseEvent) => {
+      const r = canvas.getBoundingClientRect();
 
-  // Check if hovering over an excluded element
-  const target = document.elementFromPoint(e.clientX, e.clientY);
-  const isExcluded = target?.closest("[data-no-elastic]") !== null;
+      // Check if hovering over an excluded element
+      const target = document.elementFromPoint(e.clientX, e.clientY);
+      const isExcluded = target?.closest("[data-no-elastic]") !== null;
 
-  if (isExcluded) {
-    active = false;
-    mouse = null;
-    tip = null;
-    draining = true;
-    const now = performance.now();
-    trail.forEach(p => { p.born = now - (POINT_LIFE - DRAIN_LIFE * 0.5); });
-    if (!raf) raf = requestAnimationFrame(loop);
-    return;
-  }
+      if (isExcluded) {
+        active = false;
+        mouse = null;
+        tip = null;
+        draining = true;
+        const now = performance.now();
+        trail.forEach((p) => {
+          p.born = now - (POINT_LIFE - DRAIN_LIFE * 0.5);
+        });
+        if (!raf) raf = requestAnimationFrame(loop);
+        return;
+      }
 
-  mouse = { x: e.clientX - r.left, y: e.clientY - r.top };
-  if (!active) {
-    // Re-enter after excluded zone
-    tip = { x: mouse.x, y: mouse.y };
-    trail = []; vtx = 0; vty = 0;
-    active = true; draining = false;
-  }
-  if (!raf) raf = requestAnimationFrame(loop);
-};
+      mouse = { x: e.clientX - r.left, y: e.clientY - r.top };
+      if (!active) {
+        // Re-enter after excluded zone
+        tip = { x: mouse.x, y: mouse.y };
+        trail = [];
+        vtx = 0;
+        vty = 0;
+        active = true;
+        draining = false;
+      }
+      if (!raf) raf = requestAnimationFrame(loop);
+    };
 
     parent.addEventListener("mouseenter", onEnter);
     parent.addEventListener("mouseleave", onLeave);

@@ -22,15 +22,6 @@ export const FloatingTextarea: React.FC<FloatingTextareaProps> = ({
   rows = 4,
 }) => {
   const hasValue = value && value.trim().length > 0;
-  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
-
-  // Auto-grow height as user types
-  useEffect(() => {
-    const el = textareaRef.current;
-    if (!el) return;
-    el.style.height = "auto";
-    el.style.height = `${el.scrollHeight}px`;
-  }, [value]);
 
   // Merge react-hook-form ref with our local ref
   const { ref: rhfRef, ...restRegistration } = registration;
@@ -57,10 +48,7 @@ export const FloatingTextarea: React.FC<FloatingTextareaProps> = ({
       <textarea
         id={id}
         rows={rows}
-        ref={(el) => {
-          textareaRef.current = el;
-          rhfRef(el);
-        }}
+        ref={rhfRef}
         {...restRegistration}
         className={`
           w-full bg-transparent border-0 border-b outline-none resize-none

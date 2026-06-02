@@ -44,31 +44,47 @@ function CommonSlideCard({
   index: number;
 }) {
   return (
-    <div className="relative h-full select-none pt-60 3xl:pt-80 px-50 3xl:px-70 pb-70 3xl:pb-[74px]">
-      {<CommonSlideDivider />}
-      <div className="flex flex-col justify-between h-full">
-        <div>
-          <Image
-            src={slide.icon}
-            alt="icon"
-            width={100}
-            height={100}
-            className="h-[70px] w-auto pointer-events-none"
-          />
-        </div>
-        <div>
-          <motion.p
-            key={`${index}`}
-            initial="hidden"
-            animate="show"
-            variants={moveUp(0)}
-            className={`text-subHeading tracking-[-0.03em] text-secondary max-w-[15ch] whitespace-pre-line`}
-          >
-            {slide.title}
-          </motion.p>
-        </div>
-      </div>
+<div className="relative h-full select-none pt-20 sm:pt-60 3xl:pt-80 px-20 sm:px-50 3xl:px-70 pb-20 sm:pb-70 3xl:pb-[74px] bg-[#FBF7F433] border-x border-x-[#FBF7F4]/10 sm:bg-transparent mx-[16px] sm:mx-0">
+  {/* gradient top & bottom borders */}
+  <span
+    className="absolute inset-x-0 top-0 h-px pointer-events-none sm:hidden"
+    style={{
+      background: "linear-gradient(270deg, rgba(251, 247, 244, 0.1) 0%, #FBF7F4 48.08%, rgba(251, 247, 244, 0.1) 100%)",
+    }}
+  />
+  <span
+    className="absolute inset-x-0 bottom-0 h-px pointer-events-none sm:hidden"
+    style={{
+      background: "linear-gradient(270deg, rgba(251, 247, 244, 0.1) 0%, #FBF7F4 48.08%, rgba(251, 247, 244, 0.1) 100%)",
+    }}
+  />
+
+  <div className="hidden sm:block">
+    <CommonSlideDivider />
+  </div>
+  <div className="flex flex-col justify-between h-full">
+    <div>
+      <Image
+        src={slide.icon}
+        alt="icon"
+        width={100}
+        height={100}
+        className="h-[40px] w-[40px] sm:h-[70px] sm:w-auto pointer-events-none mb-20 sm:mb-0"
+      />
     </div>
+    <div>
+      <motion.p
+        key={`${index}`}
+        initial="hidden"
+        animate="show"
+        variants={moveUp(0)}
+        className={`text-subHeading tracking-[-0.03em] text-secondary max-w-[256px] sm:max-w-[15ch] sm:whitespace-pre-line`}
+      >
+        {slide.title}
+      </motion.p>
+    </div>
+  </div>
+</div>
   );
 }
 
@@ -79,6 +95,7 @@ export default function CommonSlider({ data }: { data: CommonSectionData }) {
   const [showNav, setShowNav] = useState(false);
   const [prevDisabled, setPrevDisabled] = useState(true);
   const [nextDisabled, setNextDisabled] = useState(false);
+  const [activeIndex, setActiveIndex] = useState(0);
 
   const updateNavState = (swiper: SwiperType) => {
     // Show nav only if not all slides are visible at once
@@ -86,29 +103,37 @@ export default function CommonSlider({ data }: { data: CommonSectionData }) {
     setShowNav(slides.length > Math.floor(slidesPerView));
     setPrevDisabled(swiper.isBeginning);
     setNextDisabled(swiper.isEnd);
+    setActiveIndex(swiper.activeIndex + 1);
   };
 
   return (
-    <section className="relative w-full bg-primary pt-120 overflow-hidden">
+    <section className="relative w-full bg-primary py-[60px] sm:py-0 sm:pt-120 overflow-hidden">
       <ElasticEffect />
-      <div className="container flex justify-between items-start">
+      <div className="container flex flex-col sm:flex-row justify-between items-start">
         <AnimatedHeading
           title={heading}
-          className="text-heading mb-20 lg:mb-60 text-secondary"
+          className="text-heading mb-[15px] sm:mb-20 lg:mb-60 text-secondary"
           mode="reveal"
         />
+        <div className="sm:hidden w-full bg-[#FBF7F4] h-px mb-[15px] sm:mb-0" />
         {showNav && (
-          <div className="flex items-center gap-[10px] pt-[5px]">
-            <SliderNavButton
-              direction="prev"
-              disabled={prevDisabled}
-              onClick={() => swiperRef.current?.slidePrev()}
-            />
-            <SliderNavButton
-              direction="next"
-              disabled={nextDisabled}
-              onClick={() => swiperRef.current?.slideNext()}
-            />
+          <div className="flex items-center w-full justify-between sm:justify-end mb-[30px] sm:mb-0">
+            <div className="sm:hidden bg-secondary h-[22px] w-[50px] flex items-center justify-center text-[12px] text-semibold rounded-[51px]">
+              <span className="text-primary">0{activeIndex}/</span>
+              <span className="text-primary/40">0{slides.length}</span>
+            </div>
+            <div className="flex items-center gap-[10px] pt-[5px]">
+              <SliderNavButton
+                direction="prev"
+                disabled={prevDisabled}
+                onClick={() => swiperRef.current?.slidePrev()}
+              />
+              <SliderNavButton
+                direction="next"
+                disabled={nextDisabled}
+                onClick={() => swiperRef.current?.slideNext()}
+              />
+            </div>
           </div>
         )}
       </div>
@@ -118,7 +143,7 @@ export default function CommonSlider({ data }: { data: CommonSectionData }) {
           background:
             "linear-gradient(270deg, rgba(251, 247, 244, 0.1) 0%, #FBF7F4 48.08%, rgba(251, 247, 244, 0.1) 100%)",
         }}
-        className="w-full h-[1px]"
+        className="w-full h-px hidden sm:block"
       />
 
       <div>
@@ -147,7 +172,7 @@ export default function CommonSlider({ data }: { data: CommonSectionData }) {
           {slides.map((slide, index) => (
             <SwiperSlide key={index}>
               <Reveal variants={moveUpV2} delayRange={index * 0.14}>
-                <div className="!h-[270px] sm:!h-[320px] xl:!h-[420px] 3xl:!h-[471px]">
+                <div className="!min-h-[126px] sm:!h-[320px] xl:!h-[420px] 3xl:!h-[471px]">
                   <CommonSlideCard slide={slide} index={index} />
                 </div>
               </Reveal>

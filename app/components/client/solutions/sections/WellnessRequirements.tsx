@@ -49,7 +49,6 @@ export default function WellnessRequirements({
   const swiperRef = useRef<SwiperType | null>(null);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const settleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  // ↓ NEW: prevents onSlideChange from hijacking activeIndex on programmatic scrolls
   const isProgrammaticScrollRef = useRef(false);
 
   useEffect(() => {
@@ -90,8 +89,6 @@ export default function WellnessRequirements({
     transitionTo(activeIndex);
   }, [activeIndex, transitionTo]);
 
-  // ── Swiper helpers ────────────────────────────────────────────────────────
-
   const getSlidesPerView = useCallback((): number => {
     const swiper = swiperRef.current;
     if (!swiper) return 1;
@@ -129,8 +126,6 @@ export default function WellnessRequirements({
     },
     [isIndexVisible, getSlidesPerView],
   );
-
-  // ── Autoplay ──────────────────────────────────────────────────────────────
 
   const startAutoplay = useCallback(() => {
     if (timerRef.current) clearTimeout(timerRef.current);
@@ -171,7 +166,7 @@ export default function WellnessRequirements({
   };
 
   return (
-    <section className="relative w-full overflow-hidden">
+    <section className="relative w-full overflow-hidden min-h-[600px] sm:min-h-0">
       {/* Base layer */}
       <div
         className="absolute inset-0 bg-cover bg-center"
@@ -196,15 +191,15 @@ export default function WellnessRequirements({
 
       <div className="absolute inset-0 bg-black/70" />
 
-      <div className="container relative z-10 flex flex-col py-120">
-        <div className="flex flex-col mb-120">
+      <div className="container relative z-10 flex flex-col justify-between py-[60px] lg:py-120 min-h-[600px] sm:min-h-0 sm:h-auto">
+        <div className="flex flex-col">
           <AnimatedHeading
             title={data.heading}
-            className="text-white text-heading max-w-[23ch] mb-20"
+            className="text-white text-heading max-w-[23ch] mb-[15px] sm:mb-20"
           />
           <SectionDescription
             text={data.description}
-            className={`text-white text-19 leading-[1.52] mb-50 ${descriptionMaxWidth}`}
+            className={`text-white text-19 leading-[1.52] mb-[30px] sm:mb-50 ${descriptionMaxWidth}`}
           />
           <motion.div
             variants={moveUp(0.4)}
@@ -220,7 +215,11 @@ export default function WellnessRequirements({
           </motion.div>
         </div>
 
-        <div className="[&_.swiper-wrapper]:items-end">
+        <div className="[&_.swiper-wrapper]:items-end mt-120 relative">
+          <div className="sm:hidden absolute right-0 top-1/2 -translate-y-1/2 z-50 flex items-center justify-center bg-primary h-[22px] w-[50px] text-[12px] font-semibold rounded-full">
+            <span className="text-secondary">0{activeIndex + 1}/</span>
+            <span className="text-secondary/40">0{slides.length}</span>
+          </div>
           <Swiper
             onSwiper={(swiper) => {
               swiperRef.current = swiper;
@@ -239,7 +238,8 @@ export default function WellnessRequirements({
             allowTouchMove={true}
             initialSlide={0}
             breakpoints={{
-              0: { slidesPerView: 2 },
+              0: { slidesPerView: 1 },
+              640: { slidesPerView: 2 },
               768: { slidesPerView: 3 },
               1024: { slidesPerView: 3, spaceBetween: 20 },
               1500: { slidesPerView: 4, spaceBetween: 30 },
@@ -255,11 +255,11 @@ export default function WellnessRequirements({
                         onClick={() => handleSlideClick(index)}
                         className="w-full text-left focus:outline-none cursor-pointer"
                       >
-                        <span className="block text-15 leading-[1.73] mb-[14px] transition-colors duration-300 text-white/40">
+                        <span className={`block not-odd:text-15 leading-[1.666] sm:leading-[1.73] mb-[5px] sm:mb-[14px] transition-colors duration-300 ${isActive ? "text-white" : "text-white/40"}`}>
                           {slide.number}
                         </span>
                         <span
-                          className={`block text-19 leading-[1.5263] mb-25 min-h-[45px] 2xl:min-h-0 transition-colors duration-300 ${
+                          className={`block text-19 leading-[1.5263] mb-20 sm:mb-25 sm:min-h-[45px] 2xl:min-h-0 transition-colors duration-300 ${
                             isActive
                               ? "text-white font-semibold"
                               : "text-white/60"

@@ -102,7 +102,7 @@ text-19 pointer-events-none
         className={`
           absolute left-0 pointer-events-none
           text-19 text-secondary
-          top-[26px] -tracking-[0.03em]
+          top-[15px] md:top-[26px] -tracking-[0.03em]
           ${hasValue ? "opacity-100" : "opacity-0"}
         `}
       >
