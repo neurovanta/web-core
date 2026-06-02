@@ -79,11 +79,11 @@ export default function HeroSection() {
       </video>
       <div className="absolute inset-0 bg-black/65" />
 
-      <div className="container relative z-10 flex flex-col items-center text-center gap-50">
+      <div className="container relative z-10 flex flex-col items-center text-center gap-5 md:gap-50">
 
         {/* Title — clips up from bottom */}
         <motion.h1
-          className="text-70 text-white text-center uppercase leading-[1.142] max-w-[1135px]"
+          className="text-70 text-white text-center uppercase leading-[1.267] md:leading-[1.142] max-w-[1135px]"
           initial="hidden"
           animate={animateIn ? "visible" : "hidden"}
           variants={titleVariant}
