@@ -12,8 +12,12 @@ gsap.registerPlugin(ScrollTrigger, useGSAP);
 // ─── Config ──────────────────────────────────────────────────────────────────
 
 const IMG_SIZES = {
-  sm: { w: 136, h: 172 },
-  lg: { w: 200, h: 250 },
+  xs: { w: 56, h: 71 },
+  sm: { w: 80, h: 100 },
+  md: { w: 95, h: 120 },
+  lg: { w: 120, h: 152 },
+  "2xl": { w: 136, h: 172 },
+  "3xl": { w: 200, h: 250 },
 } as const;
 
 interface StackItem {
@@ -70,13 +74,22 @@ export default function MoreThanSolutions() {
   const stackRef = useRef<HTMLDivElement>(null);
   const imgRefs = useRef<(HTMLDivElement | null)[]>([]);
   const slotRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const mobileSlotRefs = useRef<(HTMLDivElement | null)[]>([]);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const descRef = useRef<HTMLParagraphElement>(null);
 
-  const [{ w: IMG_W, h: IMG_H }, setImgSize] = useState<typeof IMG_SIZES.sm | typeof IMG_SIZES.lg>(IMG_SIZES.sm);
- 
+  const [{ w: IMG_W, h: IMG_H }, setImgSize] = useState<{
+    w: number;
+    h: number;
+  }>(IMG_SIZES.xs);
+
   useEffect(() => {
-    if (window.innerWidth >= 1600) setImgSize(IMG_SIZES.lg);
+    const w = window.innerWidth;
+    if (w >= 1600) setImgSize(IMG_SIZES["3xl"]);
+    else if (w >= 1536) setImgSize(IMG_SIZES["2xl"]);
+    else if (w >= 1024) setImgSize(IMG_SIZES.lg);
+    else if (w >= 768) setImgSize(IMG_SIZES.md);
+    else if (w >= 640) setImgSize(IMG_SIZES.sm);
   }, []);
 
   useGSAP(
@@ -86,7 +99,8 @@ export default function MoreThanSolutions() {
       const imgs = imgRefs.current.filter(
         (el): el is HTMLDivElement => el !== null,
       );
-      const slots = slotRefs.current.filter(
+      const isMobile = window.innerWidth < 640;
+      const slots = (isMobile ? mobileSlotRefs : slotRefs).current.filter(
         (el): el is HTMLDivElement => el !== null,
       );
 
@@ -162,7 +176,7 @@ export default function MoreThanSolutions() {
       className="relative w-full overflow-hidden bg-white pt-120 pb-120 3xl:pt-150 3xl:pb-150"
     >
       {/* Circle Animation — full bleed behind content */}
-      <div className="absolute inset-0 z-20 flex items-center justify-center max-w-[700px] 3xl:max-w-[969px] mx-auto">
+      <div className="absolute inset-0 z-20 flex items-center justify-center max-w-[320px] sm:max-w-[600px] lg:max-w-[700px] 3xl:max-w-[969px] mx-auto">
         <CircleAnimation variant={1} />
       </div>
       <div className="container mx-auto z-30 relative">
@@ -201,8 +215,68 @@ export default function MoreThanSolutions() {
 
         {/* ── Grid: invisible slots + centered text overlay ── */}
         <div className="relative">
-          {/* Row 1 — 2 images with padding, justify-between */}
-          <div className="flex justify-between px-225 2xl:px-[300px] mb-120 3xl:mb-[102px]">
+          {/* ── MOBILE ROWS (below sm only) ── */}
+
+          {/* Mobile Row 1 */}
+          <div className="sm:hidden relative w-full mb-[180px] h-[131px]">
+            {/* top-center */}
+            <div
+              ref={(el) => {
+                mobileSlotRefs.current[0] = el;
+              }}
+              className="absolute top-0 left-1/2 -translate-x-1/2"
+              style={{ width: IMG_W, height: IMG_H }}
+            />
+            {/* bottom-left */}
+            <div
+              ref={(el) => {
+                mobileSlotRefs.current[1] = el;
+              }}
+              className="absolute bottom-0 left-0"
+              style={{ width: IMG_W, height: IMG_H }}
+            />
+            {/* bottom-right */}
+            <div
+              ref={(el) => {
+                mobileSlotRefs.current[2] = el;
+              }}
+              className="absolute bottom-0 right-0"
+              style={{ width: IMG_W, height: IMG_H }}
+            />
+          </div>
+
+          {/* Mobile Row 2 */}
+          <div className="sm:hidden relative w-full h-[131px]">
+            {/* top-left */}
+            <div
+              ref={(el) => {
+                mobileSlotRefs.current[3] = el;
+              }}
+              className="absolute top-0 left-0"
+              style={{ width: IMG_W, height: IMG_H }}
+            />
+            {/* top-right */}
+            <div
+              ref={(el) => {
+                mobileSlotRefs.current[4] = el;
+              }}
+              className="absolute top-0 right-0"
+              style={{ width: IMG_W, height: IMG_H }}
+            />
+            {/* bottom-center */}
+            <div
+              ref={(el) => {
+                mobileSlotRefs.current[5] = el;
+              }}
+              className="absolute bottom-0 left-1/2 -translate-x-1/2"
+              style={{ width: IMG_W, height: IMG_H }}
+            />
+          </div>
+
+          {/* ── DESKTOP ROWS (sm and above) ── */}
+
+          {/* Row 1 */}
+          <div className="hidden sm:flex justify-between px-225 2xl:px-[300px] mb-200 md:mb-[100px] 2xl:mb-120 3xl:mb-[102px]">
             {([0, 1] as const).map((i) => (
               <div
                 key={i}
@@ -214,8 +288,8 @@ export default function MoreThanSolutions() {
             ))}
           </div>
 
-          {/* Row 2 — 2 images, full width, justify-between */}
-          <div className="flex justify-between">
+          {/* Row 2 */}
+          <div className="hidden sm:flex justify-between mb-200 md:mb-[100px] 2xl:mb-0">
             {([2, 3] as const).map((i) => (
               <div
                 key={i}
@@ -227,8 +301,8 @@ export default function MoreThanSolutions() {
             ))}
           </div>
 
-          {/* Row 3 — centered pair with fixed gap */}
-          <div className="flex justify-center gap-200 2xl:gap-[286px]">
+          {/* Row 3 */}
+          <div className="hidden sm:flex justify-center gap-200 2xl:gap-[286px]">
             {([4, 5] as const).map((i) => (
               <div
                 key={i}
@@ -242,12 +316,15 @@ export default function MoreThanSolutions() {
 
           {/* Centered text overlay */}
           <div className="pointer-events-none absolute inset-0 z-10 flex flex-col items-center justify-center">
-            <h2 ref={titleRef} className="text-heading mb-20">
+            <h2
+              ref={titleRef}
+              className="text-heading mb-[10px] md:mb-20 max-w-[12ch] lg:max-w-none text-center"
+            >
               More Than Just Solutions
             </h2>
             <p
               ref={descRef}
-              className="max-w-[68ch] 3xl:max-w-[75ch] text-center text-description"
+              className="max-w-[40ch] md:max-w-[47ch] lg:max-w-[55ch] xl:max-w-[68ch] 3xl:max-w-[75ch] text-center text-description"
             >
               We don't offer standalone products. Each solution is carefully
               designed, planned, and implemented within your space to create a

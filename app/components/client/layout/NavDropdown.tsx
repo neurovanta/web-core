@@ -36,7 +36,9 @@ export const NavDropdown = forwardRef<NavDropdownHandle, NavDropdownProps>(
     const [activeItem, setActiveItem] = useState<NavItem | null>(null);
     const [hoveredItem, setHoveredItem] = useState<string | null>(null);
     const [mobileSubOpen, setMobileSubOpen] = useState(false);
-const [mobileActiveItem, setMobileActiveItem] = useState<NavItem | null>(null);
+    const [mobileActiveItem, setMobileActiveItem] = useState<NavItem | null>(
+      null,
+    );
 
     const wrapperRef = useRef<HTMLDivElement>(null);
     const overlayRef = useRef<HTMLDivElement>(null);
@@ -64,9 +66,9 @@ const [mobileActiveItem, setMobileActiveItem] = useState<NavItem | null>(null);
     }));
 
     useEffect(() => {
-      layerRefs.current.forEach((el) => {
-        if (el) gsap.set(el, { yPercent: -100, y: 0 });
-      });
+  layerRefs.current.forEach((el) => {
+    if (el) gsap.set(el, { yPercent: -100, y: 0 });
+  });
       gsap.set(contentRef.current, { opacity: 0 });
       gsap.set(navItemRefs.current.filter(Boolean), { opacity: 0, y: 24 });
       gsap.set(overlayRef.current, { opacity: 0 });
@@ -240,23 +242,39 @@ const [mobileActiveItem, setMobileActiveItem] = useState<NavItem | null>(null);
               layerRefs.current[2] = el;
             }}
             className="absolute inset-0"
-            style={{ background: LAYER_BG[2], willChange: "transform" }}
+            style={{
+              background: LAYER_BG[2],
+              willChange: "transform",
+              transform: "translateY(-100%)",
+            }}
           />
           <div
             ref={(el) => {
               layerRefs.current[1] = el;
             }}
             className="absolute inset-0"
-            style={{ background: LAYER_BG[1], willChange: "transform" }}
+            style={{
+              background: LAYER_BG[1],
+              willChange: "transform",
+              transform: "translateY(-100%)",
+            }}
           />
           <div
             ref={(el) => {
               layerRefs.current[0] = el;
             }}
             className="relative flex flex-col overflow-hidden"
-            style={{ background: LAYER_BG[0], willChange: "transform" }}
+            style={{
+              background: LAYER_BG[0],
+              willChange: "transform",
+              transform: "translateY(-100%)",
+            }}
           >
-            <div ref={contentRef} className="flex flex-col w-full">
+            <div
+              ref={contentRef}
+              className="flex flex-col w-full"
+              style={{ opacity: 0 }}
+            >
               {/* Header spacer */}
               <div className="h-[100px] sm:h-[110px] lg:h-[160px] shrink-0" />
 
@@ -311,32 +329,32 @@ const [mobileActiveItem, setMobileActiveItem] = useState<NavItem | null>(null);
                   </div>
 
                   {/* ── Col 2: Nav items ── */}
-                  <div className="flex flex-col justify-end md:justify-start lg:justify-end flex-1 min-w-0 pb-[30px] md:pb-50 xl:pl-225 3xl:pl-[264px]">
-                    <nav className="pt-[30px] sm:pt-60 3xl:pt-50">
+                  <div className="flex flex-col justify-end md:justify-start 2xl:justify-end flex-1 min-w-0 pb-[30px] md:pb-50 xl:pl-225 3xl:pl-[264px]">
+                    <nav className="pt-[30px] sm:pt-60 3xl:pt-50 md:pr-20">
                       <ul className="flex flex-col gap-[30px] 3xl:gap-40">
                         {NAV_ITEMS.map((item, i) => {
                           const hasSubs = !!item.subItems?.length;
                           const isHovered = hoveredItem === item.label;
 
-const NavLabel = (
-  <span className="inline-flex flex-col relative w-fit">
-    <span
-      className={`text-heading uppercase transition-colors duration-300 ${
-        anySubHovered && !isHovered
-          ? "text-secondary/40"
-          : "text-secondary"
-      }`}
-    >
-      {item.label}
-    </span>
+                          const NavLabel = (
+                            <span className="inline-flex flex-col relative w-fit">
+                              <span
+                                className={`text-heading uppercase transition-colors duration-300 ${
+                                  anySubHovered && !isHovered
+                                    ? "text-secondary/40"
+                                    : "text-secondary"
+                                }`}
+                              >
+                                {item.label}
+                              </span>
 
-    <span
-      className={`hidden lg:block absolute bottom-[2px] md:bottom-[5px] left-0 h-[3px] bg-secondary transition-all duration-500 ease-out ${
-        isHovered ? "w-full" : "w-0"
-      }`}
-    />
-  </span>
-);
+                              <span
+                                className={`hidden lg:block absolute bottom-[2px] md:bottom-[5px] left-0 h-[3px] bg-secondary transition-all duration-500 ease-out ${
+                                  isHovered ? "w-full" : "w-0"
+                                }`}
+                              />
+                            </span>
+                          );
 
                           return (
                             <li
@@ -348,103 +366,162 @@ const NavLabel = (
                                 setHoveredItem(item.label);
                                 setActiveItem(hasSubs ? item : null);
                               }}
-                              onClick={() => {
-                                if (hasSubs) {
-                                  setMobileSubOpen(true);
-                                  setMobileActiveItem(item);
-                                }
-                              }}
+                              // onClick={() => {
+                              //   if (hasSubs) {
+                              //     setMobileSubOpen(true);
+                              //     setMobileActiveItem(item);
+                              //   }
+                              // }}
                             >
-{hasSubs ? (
-  <button className="flex items-center justify-between w-full text-left">
-    {NavLabel}
-    <Image
-      src="/assets/icons/down-arrow-tip.svg"
-      alt="Chevron"
-      width={13}
-      height={13}
-      className="md:hidden h-[8px] w-auto object-fill -rotate-90 opacity-40"
-    />
-  </button>
-) : (
-  <Link
-    href={item.href ?? "#"}
-    onClick={closeMenu}
-    className="flex flex-col items-start w-full"
-  >
-    {NavLabel}
-  </Link>
-)}
+                              {hasSubs ? (
+                                <>
+                                  {/* Below 2xl: button triggers mobile slide */}
+                                  <button
+                                    className="2xl:hidden flex items-center justify-between w-full text-left"
+                                    onClick={() => {
+                                      setMobileSubOpen(true);
+                                      setMobileActiveItem(item);
+                                    }}
+                                  >
+                                    {NavLabel}
+                                    <Image
+                                      src="/assets/icons/down-arrow-tip.svg"
+                                      alt="Chevron"
+                                      width={13}
+                                      height={13}
+                                      className="lg:hidden h-[8px] md:h-[10px] w-auto object-fill -rotate-90 opacity-40"
+                                    />
+                                  </button>
+
+                                  {/* 2xl+: clickable link that navigates, hover shows sub-nav */}
+                                  <Link
+                                    href={item.href ?? "#"}
+                                    onClick={closeMenu}
+                                    className="hidden 2xl:flex flex-col items-start w-full cursor-pointer"
+                                  >
+                                    {NavLabel}
+                                  </Link>
+                                </>
+                              ) : (
+                                <Link
+                                  href={item.href ?? "#"}
+                                  onClick={closeMenu}
+                                  className="flex flex-col items-start w-full"
+                                >
+                                  {NavLabel}
+                                </Link>
+                              )}
                             </li>
                           );
                         })}
                       </ul>
 
                       {/* ── Mobile sub-nav slide (below lg only) ── */}
-<AnimatePresence>
-  {mobileSubOpen && mobileActiveItem?.subItems && (
-    <motion.div
-      key="mobile-subnav"
-      initial={{ x: "100%" }}
-      animate={{ x: 0 }}
-      exit={{ x: "100%" }}
-      transition={{ ease: [0.77, 0, 0.175, 1], duration: 0.55 }}
-      className="md:hidden absolute inset-0 flex flex-col"
-      style={{ background: LAYER_BG[0], zIndex: 10 }}
-    >
-      {/* Back / title header */}
-      <div className="h-[100px] sm:h-[110px] shrink-0" />
-      <div className="container">
-        <div className="w-full h-px bg-black/20 mb-[30px]" />
-        <div className="flex items-center gap-20 mb-[10px]"
-          onClick={() => {
-            setMobileSubOpen(false);
-            setMobileActiveItem(null);
-          }}
-        >
-          <span className="">
-                <Image
-      src="/assets/icons/down-arrow-tip.svg"
-      alt="Chevron"
-      width={13}
-      height={13}
-      className="md:hidden h-[8px] w-auto object-fill rotate-90 opacity-40"
-    />
-          </span>
-          <span className="text-subHeading text-secondary uppercase">
-            {mobileActiveItem.label}
-          </span>
-        </div>
+                      <AnimatePresence>
+                        {mobileSubOpen && mobileActiveItem?.subItems && (
+                          <motion.div
+                            key="mobile-subnav"
+                            initial={{ x: "100%" }}
+                            animate={{ x: 0 }}
+                            exit={{ x: "100%" }}
+                            transition={{
+                              ease: [0.77, 0, 0.175, 1],
+                              duration: 0.55,
+                            }}
+                            className="md:hidden absolute inset-0 flex flex-col"
+                            style={{ background: LAYER_BG[0], zIndex: 10 }}
+                          >
+                            {/* Back / title header */}
+                            <div className="h-[100px] sm:h-[110px] shrink-0" />
+                            <div className="container">
+                              <div className="w-full h-px bg-black/20 mb-[30px]" />
+                              <div
+                                className="flex items-center gap-20 mb-[10px]"
+                                onClick={() => {
+                                  setMobileSubOpen(false);
+                                  setMobileActiveItem(null);
+                                }}
+                              >
+                                <span className="">
+                                  <Image
+                                    src="/assets/icons/down-arrow-tip.svg"
+                                    alt="Chevron"
+                                    width={13}
+                                    height={13}
+                                    className="md:hidden h-[8px] w-auto object-fill rotate-90 opacity-40"
+                                  />
+                                </span>
+                                <span className="text-subHeading text-secondary uppercase">
+                                  {mobileActiveItem.label}
+                                </span>
+                              </div>
 
-        {/* Sub items */}
-        <div className="flex flex-col pl-[36px]">
-          {mobileActiveItem.subItems.map((sub, i) => (
-            <motion.div
-              key={sub.label}
-              initial={{ opacity: 0, y: 14 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.18 + i * 0.05, duration: 0.35, ease: "easeOut" }}
-            >
-              <Link
-                href={sub.href}
-                onClick={() => {
-                  setMobileSubOpen(false);
-                  setMobileActiveItem(null);
-                  closeMenu();
-                }}
-                className="group flex items-center py-[8px] relative"
-              >
-                <span className="text-description text-secondary/80">
-                  {sub.label}
-                </span>
-              </Link>
-            </motion.div>
-          ))}
-        </div>
-      </div>
-    </motion.div>
-  )}
-</AnimatePresence>
+                              {/* Sub items */}
+                              <div className="flex flex-col pl-[36px]">
+                                <motion.div
+                                  initial={{ opacity: 0, y: 14 }}
+                                  animate={{ opacity: 1, y: 0 }}
+                                  transition={{
+                                    delay: 0.18,
+                                    duration: 0.35,
+                                    ease: "easeOut",
+                                  }}
+                                >
+                                  <Link
+                                    href={mobileActiveItem.href ?? "#"}
+                                    onClick={() => {
+                                      setMobileSubOpen(false);
+                                      setMobileActiveItem(null);
+                                      closeMenu();
+                                    }}
+                                    className="group flex items-center py-[8px] relative"
+                                  >
+                                    <span className="text-description text-secondary/80">
+                                      Overview
+                                    </span>
+                                  </Link>
+                                </motion.div>
+
+                                {mobileActiveItem.subItems.map((sub, i) => (
+                                  <motion.div
+                                    key={sub.label}
+                                    initial={{ opacity: 0, y: 14 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{
+                                      delay: 0.23 + i * 0.05,
+                                      duration: 0.35,
+                                      ease: "easeOut",
+                                    }}
+                                  >
+                                    <Link
+                                      href={sub.href}
+                                      onClick={() => {
+                                        setMobileSubOpen(false);
+                                        setMobileActiveItem(null);
+                                        closeMenu();
+                                      }}
+                                      className="group flex items-center py-[8px] relative"
+                                    >
+                                      <div className="flex gap-[10px] sm:gap-20 items-center">
+                                        <Image
+                                          src="/assets/icons/down-arrow-tip.svg"
+                                          alt="Chevron"
+                                          width={13}
+                                          height={13}
+                                          className="md:hidden h-[6px] w-auto object-fill -rotate-90 opacity-40"
+                                        />
+                                        <span className="text-description text-secondary/80">
+                                          {sub.label}
+                                        </span>
+                                      </div>
+                                    </Link>
+                                  </motion.div>
+                                ))}
+                              </div>
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
                     </nav>
                   </div>
 
@@ -452,7 +529,8 @@ const NavLabel = (
                   <div className="hidden md:block w-px shrink-0 self-stretch border-l border-black/20" />
 
                   {/* ── Col 3: Sub-nav + Contact ── */}
-                  <div className="hidden md:flex flex-col min-w-[380px] 3xl:w-[674px] shrink-0 pl-50 3xl:pl-80">
+                  <div className="hidden md:flex flex-col lg:min-w-[380px] 3xl:w-[674px] shrink-0 pl-50 3xl:pl-80">
+                    {/* Sub-nav */}
                     {/* Sub-nav */}
                     <div
                       className="pt-10 flex flex-col gap-20 3xl:gap-30"
@@ -465,6 +543,20 @@ const NavLabel = (
                         pointerEvents: activeItem?.subItems ? "auto" : "none",
                       }}
                     >
+                      {/* Overview — only md to 2xl, no hover on these devices so need direct page link */}
+                      {activeItem?.href && (
+                        <Link
+                          href={activeItem.href}
+                          onClick={closeMenu}
+                          className="group inline-flex flex-col w-fit relative md:block 2xl:hidden"
+                        >
+                          <span className="text-description tracking-[-0.03em] text-secondary/50 group-hover:text-secondary transition-colors duration-300">
+                            Overview
+                          </span>
+                          <span className="absolute bottom-[2px] left-0 h-px w-0 bg-secondary transition-all duration-500 ease-out group-hover:w-full" />
+                        </Link>
+                      )}
+
                       {activeItem?.subItems?.map((sub, i) => (
                         <motion.div
                           initial="hidden"
@@ -487,7 +579,7 @@ const NavLabel = (
                     </div>
 
                     {/* Contact — bottom-right */}
-                    <div className="mt-auto flex flex-col items-end pb-20 xl:pb-50 md:pt-80 lg:pt-0">
+                    <div className="mt-auto flex flex-col items-end pb-20 xl:pb-50 md:pt-80 2xl:pt-0">
                       <a
                         href={`mailto:${CONTACT_INFO.email}`}
                         className="text-subHeading tracking-[-0.03em]"
@@ -606,6 +698,7 @@ const NavLabel = (
         {/* overlay */}
         <div
           ref={overlayRef}
+          style={{ opacity: 0 }}
           className="absolute bg-black/71 inset-0 z-1 cursor-pointer"
           onClick={closeMenu}
         />
