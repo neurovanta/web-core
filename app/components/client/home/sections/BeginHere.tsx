@@ -87,6 +87,7 @@ export default function BeginHerePage() {
             initial="hidden"
             whileInView="show"
             variants={moveUp(0)}
+            viewport={{ once: true }}
             className="grid grid-cols-1 md:grid-cols-2 gap-y-[40px] sm:gap-y-30 gap-x-30 mb-[40px] sm:mb-60"
           >
             <FloatingInput
@@ -112,6 +113,7 @@ export default function BeginHerePage() {
             initial="hidden"
             whileInView="show"
             variants={moveUp(0.1)}
+            viewport={{ once: true }}
             className="grid grid-cols-1 md:grid-cols-2 gap-y-[40px] sm:gap-y-30 gap-x-30 mb-[40px] sm:mb-60"
           >
             <FloatingInput
@@ -148,6 +150,7 @@ export default function BeginHerePage() {
             initial="hidden"
             whileInView="show"
             variants={moveUp(0.15)}
+            viewport={{ once: true }}
             className="mb-[10px] sm:mb-30"
           >
             <FloatingTextarea
@@ -163,6 +166,7 @@ export default function BeginHerePage() {
           <motion.div
             initial="hidden"
             whileInView="show"
+            viewport={{ once: true }}
             variants={moveUp(0.22)}
           >
             <CustomButton label="Send" variant={3} />

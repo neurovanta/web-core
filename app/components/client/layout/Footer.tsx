@@ -156,75 +156,83 @@ export default function Footer() {
         {/* ── Mobile Menu ── */}
         <div className="lg:hidden">
           {footerMenus.map((menu, index) => (
-            <div key={menu.heading} className="border-b border-[#CBC3BB]">
-              <button
-                type="button"
-                onClick={() => setOpenIndex(openIndex === index ? null : index)}
-                className="w-full flex items-center justify-between py-20"
-              >
-                <span className="text-secondary text-subHeading tracking-[-0.03em]">
-                  {menu.heading}
-                </span>
-
-                <motion.span
-                  animate={{
-                    rotate: openIndex === index ? 180 : 0,
-                  }}
-                  transition={{
-                    duration: 0.6,
-                    ease: [0.22, 1, 0.36, 1],
-                  }}
-                  className="text-secondary"
+            <Reveal
+              key={menu.heading}
+              delayRange={index * 0.13}
+              variants={moveUpV2}
+            >
+              <div className="border-b border-[#CBC3BB]">
+                <button
+                  type="button"
+                  onClick={() =>
+                    setOpenIndex(openIndex === index ? null : index)
+                  }
+                  className="w-full flex items-center justify-between py-20"
                 >
-                  <Image
-                    src="/assets/icons/down-arrow-tip.svg"
-                    alt="Chevron Down"
-                    width={13}
-                    height={13}
-                    className={`h-[8px] xl:h-[9px] 3xl:h-[10px] w-auto object-fill transition-transform duration-300 ${
-                      openIndex === index ? "rotate-0" : ""
-                    }`}
-                  />
-                </motion.span>
-              </button>
+                  <span className="text-secondary text-subHeading tracking-[-0.03em]">
+                    {menu.heading}
+                  </span>
 
-              <AnimatePresence initial={false}>
-                {openIndex === index && (
-                  <motion.div
-                    initial={{ height: 0 }}
-                    animate={{ height: "auto" }}
-                    exit={{ height: 0 }}
+                  <motion.span
+                    animate={{
+                      rotate: openIndex === index ? 180 : 0,
+                    }}
                     transition={{
-                      duration: 0.65,
+                      duration: 0.6,
                       ease: [0.22, 1, 0.36, 1],
                     }}
-                    className="overflow-hidden"
+                    className="text-secondary"
                   >
-                    <motion.ul
-                      initial={{ opacity: 0, y: -8 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -8 }}
+                    <Image
+                      src="/assets/icons/down-arrow-tip.svg"
+                      alt="Chevron Down"
+                      width={13}
+                      height={13}
+                      className={`h-[8px] xl:h-[9px] 3xl:h-[10px] w-auto object-fill transition-transform duration-300 ${
+                        openIndex === index ? "rotate-0" : ""
+                      }`}
+                    />
+                  </motion.span>
+                </button>
+
+                <AnimatePresence initial={false}>
+                  {openIndex === index && (
+                    <motion.div
+                      initial={{ height: 0 }}
+                      animate={{ height: "auto" }}
+                      exit={{ height: 0 }}
                       transition={{
-                        duration: 0.4,
+                        duration: 0.65,
                         ease: [0.22, 1, 0.36, 1],
                       }}
-                      className="pb-20 flex flex-col"
+                      className="overflow-hidden"
                     >
-                      {menu.items.map(({ label, href }) => (
-                        <li key={label}>
-                          <Link
-                            href={href}
-                            className="contact-link text-secondary text-19 leading-[2.3] tracking-[-0.03em]"
-                          >
-                            {label}
-                          </Link>
-                        </li>
-                      ))}
-                    </motion.ul>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
+                      <motion.ul
+                        initial={{ opacity: 0, y: -8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -8 }}
+                        transition={{
+                          duration: 0.4,
+                          ease: [0.22, 1, 0.36, 1],
+                        }}
+                        className="pb-20 flex flex-col"
+                      >
+                        {menu.items.map(({ label, href }) => (
+                          <li key={label}>
+                            <Link
+                              href={href}
+                              className="contact-link text-secondary text-19 leading-[2.3] tracking-[-0.03em]"
+                            >
+                              {label}
+                            </Link>
+                          </li>
+                        ))}
+                      </motion.ul>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            </Reveal>
           ))}
         </div>
 
@@ -292,13 +300,21 @@ export default function Footer() {
       </div>
 
       {/* ── Copyright bar ── */}
-      <div className="w-full py-[19px] md:py-[10px] bg-[#FFF8F0]">
+      <motion.div
+        initial="hidden"
+        whileInView="show"
+        viewport={{
+          once: true,
+        }}
+        variants={moveUp(0.2)}
+        className="w-full py-[19px] md:py-[10px] bg-[#FFF8F0]"
+      >
         <div className="container">
           <p className="text-secondary text-19 md:text-15 leading-[1.54] md:leading-[2.666] md:tracking-[-0.03em]">
             Copyright {new Date().getFullYear()}© Neuro Vanta All Rights
           </p>
         </div>
-      </div>
+      </motion.div>
     </footer>
   );
 }

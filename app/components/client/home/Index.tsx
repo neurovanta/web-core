@@ -18,17 +18,17 @@ const Index = () => {
     <>
       <div style={{ position: "relative" }}>
         {/* Section 1 — Hero */}
-        <div style={{ position: "sticky", top: 0, height: "100vh", zIndex: 1 }}>
+        <div style={{ position: "sticky", top: 0, height: "100dvh", zIndex: 1 }}>
           <HeroSection />
         </div>
 
         {/* Section 2 — Wellness Slider 1 */}
-        <div style={{ position: "sticky", top: 0, height: "100vh", zIndex: 2 }}>
+        <div style={{ position: "sticky", top: 0, height: "100dvh", zIndex: 2 }}>
           <WellnessSlider data={wellnessSliderData} />
         </div>
 
         {/* Section 3 — Wellness Slider 2 */}
-        <div style={{ position: "sticky", top: 0, height: "100vh", zIndex: 3 }}>
+        <div style={{ position: "sticky", top: 0, height: "100dvh", zIndex: 3 }}>
           <WellnessSlider
             data={wellnessSliderData2}
             descriptionMaxWidth="max-w-[60ch] 2xl:max-w-[65ch]"
