@@ -11,8 +11,9 @@ import {
 import Link from "next/link";
 import gsap from "gsap";
 import { NAV_ITEMS, SOCIAL_LINKS, CONTACT_INFO, NavItem } from "./data";
-import { motion } from "framer-motion";
 import { moveLeft, moveUp } from "../animations/motionVarinats";
+import { AnimatePresence, motion } from "framer-motion";
+import Image from "next/image";
 
 const LAYER_BG = ["#F9F5F0", "#E2D3C3", "#51463E"] as const;
 const STAGGER = 0.12;
@@ -34,6 +35,8 @@ export const NavDropdown = forwardRef<NavDropdownHandle, NavDropdownProps>(
     const [menuOpen, setMenuOpen] = useState(false);
     const [activeItem, setActiveItem] = useState<NavItem | null>(null);
     const [hoveredItem, setHoveredItem] = useState<string | null>(null);
+    const [mobileSubOpen, setMobileSubOpen] = useState(false);
+const [mobileActiveItem, setMobileActiveItem] = useState<NavItem | null>(null);
 
     const wrapperRef = useRef<HTMLDivElement>(null);
     const overlayRef = useRef<HTMLDivElement>(null);
@@ -70,8 +73,22 @@ export const NavDropdown = forwardRef<NavDropdownHandle, NavDropdownProps>(
       if (wrapperRef.current) wrapperRef.current.style.pointerEvents = "none";
     }, []);
 
+    const isMobileRef = useRef(false);
+
+    useEffect(() => {
+      isMobileRef.current = window.innerWidth < 768;
+
+      const mq = window.matchMedia("(max-width: 767px)");
+      const handler = (e: MediaQueryListEvent) => {
+        isMobileRef.current = e.matches;
+      };
+      mq.addEventListener("change", handler);
+      return () => mq.removeEventListener("change", handler);
+    }, []);
+
     const buildOpenTl = useCallback((fromProgress: number) => {
       tlRef.current?.kill();
+      const mobile = isMobileRef.current;
 
       const tl = gsap.timeline({
         onUpdate: () => {
@@ -86,7 +103,16 @@ export const NavDropdown = forwardRef<NavDropdownHandle, NavDropdownProps>(
       [2, 1, 0].forEach((idx, i) => {
         const el = layerRefs.current[idx];
         if (!el) return;
-        const yStop = idx === 0 ? -20 : idx === 1 ? -10 : 0;
+        const yStop =
+          idx === 0
+            ? mobile
+              ? -10
+              : -20
+            : idx === 1
+              ? mobile
+                ? -5
+                : -10
+              : 0;
         tl.to(
           el,
           { yPercent: 0, y: yStop, duration: DURATION, ease: "power4.inOut" },
@@ -142,15 +168,6 @@ export const NavDropdown = forwardRef<NavDropdownHandle, NavDropdownProps>(
           gsap.set(contentRef.current, { opacity: 0 });
         },
       });
-
-      // tl.to(navItemRefs.current.filter(Boolean), {
-      //   opacity: 0,
-      //   y: -8,
-      //   duration: 0.16,
-      //   ease: "power2.in",
-      //   stagger: 0.025,
-      // });
-      // tl.set(contentRef.current, { opacity: 0 }, "<+=0.16");
 
       let frontLayerStart = 0;
       [0, 1, 2].forEach((idx, i) => {
@@ -241,7 +258,7 @@ export const NavDropdown = forwardRef<NavDropdownHandle, NavDropdownProps>(
           >
             <div ref={contentRef} className="flex flex-col w-full">
               {/* Header spacer */}
-              <div className="h-[160px] shrink-0" />
+              <div className="h-[100px] sm:h-[110px] lg:h-[160px] shrink-0" />
 
               {/* Body */}
               <div
@@ -253,7 +270,7 @@ export const NavDropdown = forwardRef<NavDropdownHandle, NavDropdownProps>(
               >
                 <div className="flex h-full border-t border-black/20">
                   {/* ── Col 1: Social ── */}
-                  <div className="hidden lg:flex flex-col shrink-0 pb-40 3xl:pb-50">
+                  <div className="hidden xl:flex flex-col shrink-0 pb-60">
                     <div className="mt-auto flex flex-col gap-20">
                       {SOCIAL_LINKS.map((s, i) => (
                         <motion.div
@@ -294,32 +311,32 @@ export const NavDropdown = forwardRef<NavDropdownHandle, NavDropdownProps>(
                   </div>
 
                   {/* ── Col 2: Nav items ── */}
-                  <div className="flex flex-col justify-end flex-1 min-w-0 pb-40 3xl:pb-50 pl-225 3xl:pl-[264px]">
-                    <nav className="pt-50">
-                      <ul className="flex flex-col gap-30 3xl:gap-40">
+                  <div className="flex flex-col justify-end md:justify-start lg:justify-end flex-1 min-w-0 pb-[30px] md:pb-50 xl:pl-225 3xl:pl-[264px]">
+                    <nav className="pt-[30px] sm:pt-60 3xl:pt-50">
+                      <ul className="flex flex-col gap-[30px] 3xl:gap-40">
                         {NAV_ITEMS.map((item, i) => {
                           const hasSubs = !!item.subItems?.length;
                           const isHovered = hoveredItem === item.label;
 
-                          const NavLabel = (
-                            <span className="inline-flex flex-col relative w-fit">
-                              <span
-                                className={`text-heading uppercase transition-colors duration-300 ${
-                                  anySubHovered && !isHovered
-                                    ? "text-secondary/40"
-                                    : "text-secondary"
-                                }`}
-                              >
-                                {item.label}
-                              </span>
+const NavLabel = (
+  <span className="inline-flex flex-col relative w-fit">
+    <span
+      className={`text-heading uppercase transition-colors duration-300 ${
+        anySubHovered && !isHovered
+          ? "text-secondary/40"
+          : "text-secondary"
+      }`}
+    >
+      {item.label}
+    </span>
 
-                              <span
-                                className={`absolute bottom-[5px] left-0 h-[3px] bg-secondary transition-all duration-500 ease-out ${
-                                  isHovered ? "w-full" : "w-0"
-                                }`}
-                              />
-                            </span>
-                          );
+    <span
+      className={`hidden lg:block absolute bottom-[2px] md:bottom-[5px] left-0 h-[3px] bg-secondary transition-all duration-500 ease-out ${
+        isHovered ? "w-full" : "w-0"
+      }`}
+    />
+  </span>
+);
 
                           return (
                             <li
@@ -331,57 +348,111 @@ export const NavDropdown = forwardRef<NavDropdownHandle, NavDropdownProps>(
                                 setHoveredItem(item.label);
                                 setActiveItem(hasSubs ? item : null);
                               }}
+                              onClick={() => {
+                                if (hasSubs) {
+                                  setMobileSubOpen(true);
+                                  setMobileActiveItem(item);
+                                }
+                              }}
                             >
-                              {hasSubs ? (
-                                <button className="flex flex-col items-start w-full text-left">
-                                  {NavLabel}
-                                </button>
-                              ) : (
-                                <Link
-                                  href={item.href ?? "#"}
-                                  onClick={closeMenu}
-                                  className="flex flex-col items-start w-full"
-                                >
-                                  {NavLabel}
-                                </Link>
-                              )}
-
-                              {/* Mobile: inline sub-item expand */}
-                              <div
-                                className="lg:hidden overflow-hidden transition-all duration-500"
-                                style={{
-                                  maxHeight:
-                                    isHovered && hasSubs ? "400px" : "0px",
-                                  opacity: isHovered ? 1 : 0,
-                                }}
-                              >
-                                <ul className="pl-4 pt-2 pb-4 flex flex-col gap-30">
-                                  {item.subItems?.map((sub) => (
-                                    <li key={sub.label}>
-                                      <Link
-                                        href={sub.href}
-                                        onClick={closeMenu}
-                                        className="text-description tracking-[-0.02em] font-medium block"
-                                        style={{ color: "rgba(81,70,62,0.55)" }}
-                                      >
-                                        {sub.label}
-                                      </Link>
-                                    </li>
-                                  ))}
-                                </ul>
-                              </div>
+{hasSubs ? (
+  <button className="flex items-center justify-between w-full text-left">
+    {NavLabel}
+    <Image
+      src="/assets/icons/down-arrow-tip.svg"
+      alt="Chevron"
+      width={13}
+      height={13}
+      className="md:hidden h-[8px] w-auto object-fill -rotate-90 opacity-40"
+    />
+  </button>
+) : (
+  <Link
+    href={item.href ?? "#"}
+    onClick={closeMenu}
+    className="flex flex-col items-start w-full"
+  >
+    {NavLabel}
+  </Link>
+)}
                             </li>
                           );
                         })}
                       </ul>
+
+                      {/* ── Mobile sub-nav slide (below lg only) ── */}
+<AnimatePresence>
+  {mobileSubOpen && mobileActiveItem?.subItems && (
+    <motion.div
+      key="mobile-subnav"
+      initial={{ x: "100%" }}
+      animate={{ x: 0 }}
+      exit={{ x: "100%" }}
+      transition={{ ease: [0.77, 0, 0.175, 1], duration: 0.55 }}
+      className="md:hidden absolute inset-0 flex flex-col"
+      style={{ background: LAYER_BG[0], zIndex: 10 }}
+    >
+      {/* Back / title header */}
+      <div className="h-[100px] sm:h-[110px] shrink-0" />
+      <div className="container">
+        <div className="w-full h-px bg-black/20 mb-[30px]" />
+        <div className="flex items-center gap-20 mb-[10px]"
+          onClick={() => {
+            setMobileSubOpen(false);
+            setMobileActiveItem(null);
+          }}
+        >
+          <span className="">
+                <Image
+      src="/assets/icons/down-arrow-tip.svg"
+      alt="Chevron"
+      width={13}
+      height={13}
+      className="md:hidden h-[8px] w-auto object-fill rotate-90 opacity-40"
+    />
+          </span>
+          <span className="text-subHeading text-secondary uppercase">
+            {mobileActiveItem.label}
+          </span>
+        </div>
+
+        {/* Sub items */}
+        <div className="flex flex-col pl-[36px]">
+          {mobileActiveItem.subItems.map((sub, i) => (
+            <motion.div
+              key={sub.label}
+              initial={{ opacity: 0, y: 14 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.18 + i * 0.05, duration: 0.35, ease: "easeOut" }}
+            >
+              <Link
+                href={sub.href}
+                onClick={() => {
+                  setMobileSubOpen(false);
+                  setMobileActiveItem(null);
+                  closeMenu();
+                }}
+                className="group flex items-center py-[8px] relative"
+              >
+                <span className="text-description text-secondary/80">
+                  {sub.label}
+                </span>
+              </Link>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </motion.div>
+  )}
+</AnimatePresence>
                     </nav>
                   </div>
 
                   {/* ── Vertical divider ── */}
-                  <div className="hidden lg:block w-px shrink-0 self-stretch border-l border-black/20" />
+                  <div className="hidden md:block w-px shrink-0 self-stretch border-l border-black/20" />
 
                   {/* ── Col 3: Sub-nav + Contact ── */}
-                  <div className="hidden lg:flex flex-col min-w-[380px] 3xl:w-[674px] shrink-0 pl-50 3xl:pl-80">
+                  <div className="hidden md:flex flex-col min-w-[380px] 3xl:w-[674px] shrink-0 pl-50 3xl:pl-80">
                     {/* Sub-nav */}
                     <div
                       className="pt-10 flex flex-col gap-20 3xl:gap-30"
@@ -416,7 +487,7 @@ export const NavDropdown = forwardRef<NavDropdownHandle, NavDropdownProps>(
                     </div>
 
                     {/* Contact — bottom-right */}
-                    <div className="mt-auto flex flex-col items-end pb-40 3xl:pb-50">
+                    <div className="mt-auto flex flex-col items-end pb-20 xl:pb-50 md:pt-80 lg:pt-0">
                       <a
                         href={`mailto:${CONTACT_INFO.email}`}
                         className="text-subHeading tracking-[-0.03em]"
@@ -430,40 +501,101 @@ export const NavDropdown = forwardRef<NavDropdownHandle, NavDropdownProps>(
                         {CONTACT_INFO.phone}
                       </a>
                     </div>
+
+                    <div className="flex xl:hidden gap-20 pb-50 justify-end">
+                      {SOCIAL_LINKS.map((s, i) => (
+                        <motion.div
+                          initial="hidden"
+                          whileInView="show"
+                          variants={moveLeft((i + 1) * 0.2)}
+                          key={i}
+                        >
+                          <a
+                            data-text={s.label}
+                            href={s.href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-19 leading-[1.42] tracking-[-0.03em] contact-link hover:scale-105 transition-all duration-300"
+                            style={
+                              s.label === "Instagram"
+                                ? {
+                                    background:
+                                      "linear-gradient(90deg, #4C66C7 0%, #F04D5A 35.1%, #FAD85C 66.83%, #C92AAA 100%)",
+                                    WebkitBackgroundClip: "text",
+                                    WebkitTextFillColor: "transparent",
+                                    backgroundClip: "text",
+                                  }
+                                : s.label === "LinkedIn"
+                                  ? { color: "#2671AD" }
+                                  : s.label === "Youtube"
+                                    ? { color: "#D92935" }
+                                    : s.label === "Facebook"
+                                      ? { color: "#416FF0" }
+                                      : { color: "rgba(81,70,62,0.5)" }
+                            }
+                          >
+                            {s.label}
+                          </a>
+                        </motion.div>
+                      ))}
+                    </div>
                   </div>
                 </div>
               </div>
 
               {/* Mobile footer: contact + social */}
-              <div
-                className="lg:hidden container flex items-center justify-between py-6"
-                style={{ borderTop: "1px solid rgba(81,70,62,0.1)" }}
-              >
-                <div className="flex flex-col gap-1">
+              <div className="md:hidden container flex flex-col">
+                <div className="w-full h-px bg-black/20 mb-[30px]" />
+                <div className="flex flex-col gap-[2px] mb-[9px] sm:mb-20">
                   <a
                     href={`mailto:${CONTACT_INFO.email}`}
-                    className="text-description tracking-[-0.03em]"
+                    className="text-subHeading tracking-[-0.03em]"
                   >
                     {CONTACT_INFO.email}
                   </a>
                   <a
                     href={`tel:${CONTACT_INFO.phone}`}
-                    className="text-description tracking-[-0.03em]"
+                    className="text-subHeading tracking-[-0.03em]"
                   >
                     {CONTACT_INFO.phone}
                   </a>
                 </div>
-                <div className="flex gap-4">
-                  {SOCIAL_LINKS.map((s) => (
-                    <a
-                      key={s.label}
-                      href={s.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-description"
+
+                <div className="flex gap-[30px] mb-[30px] sm:pb-50">
+                  {SOCIAL_LINKS.map((s, i) => (
+                    <motion.div
+                      initial="hidden"
+                      whileInView="show"
+                      variants={moveLeft((i + 1) * 0.2)}
+                      key={i}
                     >
-                      {s.label}
-                    </a>
+                      <a
+                        data-text={s.label}
+                        href={s.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-19 leading-[1.42] tracking-[-0.03em] contact-link hover:scale-105 transition-all duration-300"
+                        style={
+                          s.label === "Instagram"
+                            ? {
+                                background:
+                                  "linear-gradient(90deg, #4C66C7 0%, #F04D5A 35.1%, #FAD85C 66.83%, #C92AAA 100%)",
+                                WebkitBackgroundClip: "text",
+                                WebkitTextFillColor: "transparent",
+                                backgroundClip: "text",
+                              }
+                            : s.label === "LinkedIn"
+                              ? { color: "#2671AD" }
+                              : s.label === "Youtube"
+                                ? { color: "#D92935" }
+                                : s.label === "Facebook"
+                                  ? { color: "#416FF0" }
+                                  : { color: "rgba(81,70,62,0.5)" }
+                        }
+                      >
+                        {s.label}
+                      </a>
+                    </motion.div>
                   ))}
                 </div>
               </div>

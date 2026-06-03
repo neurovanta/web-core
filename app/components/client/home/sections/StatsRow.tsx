@@ -36,13 +36,13 @@ export function StatRow({
       <div className="h-px w-full bg-border-color z-0" />
 
       <div
-        className={`relative py-[24px] sm:py-40 ${isActive ? "px-20 sm:px-60" : ""} transition-all duration-300 ease-in-out`}
+        className={`relative py-[24px] sm:py-40 ${isActive ? "px-20 sm:px-60" : ""} transition-all duration-300 ease-in-out h-[81px] sm:h-auto flex`}
       >
         {/* Active bg */}
         <AnimatePresence>
           {isActive && (
             <motion.div
-              className="absolute inset-[-1px] z-10 bg-primary"
+              className="absolute -inset-px z-10 bg-primary"
               initial={{ width: "0%" }}
               animate={{ width: "100%" }}
               exit={{ width: "0%" }}
@@ -51,7 +51,7 @@ export function StatRow({
           )}
         </AnimatePresence>
 
-        <div className={`relative z-10 flex items-center sm:min-h-[60px] md:min-h-[70px] md:gap-50 2xl:gap-0 ${isActive ? "gap-[30px]" : "gap-[40px]"}`}>
+        <div className={`relative z-10 flex items-center sm:min-h-[60px] md:min-h-[70px] md:gap-50 2xl:gap-0 ${isActive ? "gap-[30px]" : "gap-[36px]"} w-full`}>
           {/* Number */}
           <span className="text-heading text-secondary shrink-0 sm:min-w-[94px] 3xl:min-w-[104px]">{number}</span>
 

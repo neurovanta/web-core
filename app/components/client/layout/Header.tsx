@@ -41,8 +41,8 @@ export default function Header() {
   const isCareerPage = pathname.startsWith("/careers/");
 
   const getHeaderPadding = () => {
-  return window.innerWidth < 1024 ? "30px" : "50px";
-};
+    return window.innerWidth < 1024 ? "30px" : "50px";
+  };
 
   useEffect(() => {
     menuOpenRef.current = menuOpen;
@@ -131,7 +131,7 @@ export default function Header() {
       {/* ── Fixed header bar — z-index sits above the dropdown (1000 > 999) ── */}
       <header
         ref={headerRef}
-        className="pt-[30px] lg:pt-[40px] 3xl:pt-[50px] max-h-[130px]"
+        className="pt-[30px] lg:pt-[50px] max-h-[130px]"
         style={{
           position: "fixed",
           top: 0,
@@ -175,7 +175,7 @@ export default function Header() {
                 alt="Logo"
                 width={500}
                 height={150}
-                className="max-w-[158px] sm:w-auto h-[40px]"
+                className="max-w-[158px] sm:max-w-[200px] md:max-w-[220px] lg:max-w-none h-[20px] sm:h-[40px]"
               />
             </Link>
           </motion.div>
@@ -192,8 +192,20 @@ export default function Header() {
                 Contact
               </button>
             </Link>
-            <button className="flex md:hidden items-center justify-center w-[30px] h-[30px] sm:w-8 sm:h-8 rounded-full border border-primary cursor-pointer">
-              <MdLocalPhone className="w-auto h-[15px] sm:h-[20px] text-primary" />
+            <button
+              className={`flex md:hidden items-center justify-center w-[30px] h-[30px] sm:w-8 sm:h-8 rounded-full border ${
+                menuOpen || (!isScrolled && isCareerPage)
+                  ? "border-secondary"
+                  : "border-primary"
+              } cursor-pointer transition-all duration-500 ease-in-out`}
+            >
+              <MdLocalPhone
+                className={`w-auto h-[15px] sm:h-[20px] ${
+                  menuOpen || (!isScrolled && isCareerPage)
+                    ? "text-secondary"
+                    : "text-primary"
+                } transition-all duration-500 ease-in-out`}
+              />
             </button>
             <button
               className={`flex items-center justify-center w-[30px] h-[30px] sm:w-8 sm:h-8 rounded-full border ${
