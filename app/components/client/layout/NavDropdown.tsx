@@ -66,9 +66,9 @@ export const NavDropdown = forwardRef<NavDropdownHandle, NavDropdownProps>(
     }));
 
     useEffect(() => {
-  layerRefs.current.forEach((el) => {
-    if (el) gsap.set(el, { yPercent: -100, y: 0 });
-  });
+      layerRefs.current.forEach((el) => {
+        if (el) gsap.set(el, { yPercent: -100, y: 0 });
+      });
       gsap.set(contentRef.current, { opacity: 0 });
       gsap.set(navItemRefs.current.filter(Boolean), { opacity: 0, y: 24 });
       gsap.set(overlayRef.current, { opacity: 0 });
