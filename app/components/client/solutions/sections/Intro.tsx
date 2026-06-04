@@ -46,11 +46,11 @@ export default function Intro() {
             <AnimatedHeading
               title={title}
               mode="reveal"
-              className="text-heading text-secondary mb-[15px] sm:mb-20 max-w-[629px]"
+              className="text-heading text-secondary mb-[15px] sm:mb-20 max-w-[450px] lg:max-w-[629px]"
             />
             <SectionDescription
               text={description}
-              className="!text-subHeading text-secondary tracking-[-0.03em] md:max-w-[629px] sm:whitespace-pre-line"
+              className="!text-subHeading text-secondary tracking-[-0.03em] md:max-w-[600px] lg:max-w-[629px] lg:whitespace-pre-line"
             />
           </div>
         </div>
