@@ -224,7 +224,7 @@ setActiveIndex(swiper.activeIndex);
       <div className="container flex flex-col sm:flex-row justify-between items-start">
         <AnimatedHeading
           title={heading}
-          className="text-heading mb-[15px] sm:mb-20 lg:mb-60 text-secondary"
+          className="text-heading mb-[15px] sm:mb-20 lg:mb-60 text-secondary w-full"
           mode="reveal"
         />
         <div className="sm:hidden w-full bg-[#FBF7F4] h-px mb-[15px] sm:mb-0" />
