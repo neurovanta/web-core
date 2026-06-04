@@ -129,7 +129,8 @@ text-19 pointer-events-none
                 initial={{ opacity: 0, y: -5 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.04 }}
-                onClick={() => {
+                onClick={(e) => {
+                  e.stopPropagation();
                   registration.onChange({
                     target: { value: opt.value, name: registration.name },
                   });
