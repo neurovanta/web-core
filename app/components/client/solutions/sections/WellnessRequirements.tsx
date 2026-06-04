@@ -50,6 +50,8 @@ export default function WellnessRequirements({
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const settleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isProgrammaticScrollRef = useRef(false);
+  const touchStartXRef = useRef<number>(0);
+  const touchStartYRef = useRef<number>(0);
 
   useEffect(() => {
     const next = (activeIndex + 1) % slides.length;
@@ -165,8 +167,37 @@ export default function WellnessRequirements({
     startAutoplay();
   };
 
+  const handleSectionTouchStart = (e: React.TouchEvent) => {
+    touchStartXRef.current = e.touches[0].clientX;
+    touchStartYRef.current = e.touches[0].clientY;
+  };
+
+  const handleSectionTouchEnd = (e: React.TouchEvent) => {
+    const deltaX = touchStartXRef.current - e.changedTouches[0].clientX;
+    const deltaY = Math.abs(
+      touchStartYRef.current - e.changedTouches[0].clientY,
+    );
+
+    // Only treat as horizontal swipe (ignore scrolls)
+    if (Math.abs(deltaX) < 50 || deltaY > Math.abs(deltaX)) return;
+
+    if (deltaX > 0) {
+      // Swipe left → next
+      const next = activeIndex + 1 >= slides.length ? 0 : activeIndex + 1;
+      handleSlideClick(next);
+    } else {
+      // Swipe right → prev
+      const prev = activeIndex - 1 < 0 ? slides.length - 1 : activeIndex - 1;
+      handleSlideClick(prev);
+    }
+  };
+
   return (
-    <section className="relative w-full overflow-hidden min-h-[600px] sm:min-h-0">
+    <section
+      onTouchStart={handleSectionTouchStart}
+      onTouchEnd={handleSectionTouchEnd}
+      className="relative w-full overflow-hidden min-h-[600px] sm:min-h-0"
+    >
       {/* Base layer */}
       <div
         className="absolute inset-0 bg-cover bg-center"
@@ -255,7 +286,9 @@ export default function WellnessRequirements({
                         onClick={() => handleSlideClick(index)}
                         className="w-full text-left focus:outline-none cursor-pointer"
                       >
-                        <span className={`block not-odd:text-15 leading-[1.666] sm:leading-[1.73] mb-[5px] sm:mb-[14px] transition-colors duration-300 ${isActive ? "text-white" : "text-white/40"}`}>
+                        <span
+                          className={`block not-odd:text-15 leading-[1.666] sm:leading-[1.73] mb-[5px] sm:mb-[14px] transition-colors duration-300 ${isActive ? "text-white" : "text-white/40"}`}
+                        >
                           {slide.number}
                         </span>
                         <span

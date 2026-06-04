@@ -22,7 +22,7 @@ export default function CareersApply() {
   }, []);
 
   return (
-    <section className="mt-[125px] xl:mt-[230px] 3xl:mt-[290px] pb-120 3xl:pb-150 border-b border-border-color">
+    <section className="mt-[125px] xl:mt-[230px] 3xl:mt-[290px] sm:pb-[65px] lg:pb-120 3xl:pb-150 sm:border-b sm:border-border-color">
       <div className={`w-full flex flex-col xl:flex-row gap-[30px] sm:gap-60 md:gap-100 3xl:gap-[85px] justify-between ${isMobile ? "" : "container"}`}>
         {/* Left: Text content */}
         <div className={`flex flex-col ${isMobile ? "px-[16px]" : ""}`}>
@@ -37,7 +37,7 @@ export default function CareersApply() {
           />
           <SectionDescription
             text={description}
-            className="text-description text-secondary tracking-[-0.03em] max-w-[43ch]"
+            className="text-description text-secondary md:tracking-[-0.03em] max-w-[43ch]"
           />
         </div>
 

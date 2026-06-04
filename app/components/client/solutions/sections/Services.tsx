@@ -45,7 +45,7 @@ function ServiceCard({
       <div className="absolute inset-0 bg-black/70" />
 
       <div
-        className="relative z-10 flex flex-col py-[60px] lg:py-120 pr-40 3xl:pr-60"
+        className="relative z-10 flex flex-col py-[60px] lg:py-120 md:pr-40 3xl:pr-60"
         style={{ paddingLeft }}
       >
         <AnimatedHeading

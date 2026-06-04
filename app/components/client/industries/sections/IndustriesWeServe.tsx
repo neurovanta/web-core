@@ -668,7 +668,7 @@ const IndustriesWeServe = ({ data }: { data: IndustriesWeServeProps }) => {
   if (isDesktop === null || isMobile === null) return null;
 
   return (
-    <section className="w-full py-120 bg-cream-bg">
+    <section className="w-full py-[60px] lg:py-120 bg-cream-bg">
       <div className="container mx-auto">
         <div className="flex items-center justify-between">
           <AnimatedHeading
@@ -745,7 +745,7 @@ const IndustriesWeServe = ({ data }: { data: IndustriesWeServeProps }) => {
                       fill
                       className="object-cover object-center"
                     />
-                    <div className="absolute inset-0 bg-linear-to-t from-black/85 via-black/30 to-transparent" />
+                    <div className="absolute inset-0 bg-linear-to-t from-black/85 via-black/65 to-transparent" />
                     <div className="absolute bottom-0 left-0 right-0 p-40 flex flex-col">
                       <h3 className="text-white font-light text-subHeading mb-20">
                         {item.title}

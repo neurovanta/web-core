@@ -50,7 +50,7 @@ function MobileAccordion() {
               <div key={i} className="border-t border-[#D7D7D7]">
                 <button
                   onClick={() => toggle(i)}
-                  className="flex flex-row items-center justify-between w-full py-20 focus-visible:outline-none"
+                  className={`flex flex-row items-center justify-between w-full pt-20 focus-visible:outline-none ${isOpen ? "pb-[5px]" : "pb-20"} transition-all duration-400`}
                 >
                   <div className="flex flex-row items-center gap-20">
                     <span className="w-[35px] h-[35px] rounded-full bg-secondary text-white flex items-center justify-center text-subHeading shrink-0">

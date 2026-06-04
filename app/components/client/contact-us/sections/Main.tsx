@@ -29,7 +29,7 @@ export default function Main() {
         {/* ── Left ── */}
         <div className={`flex flex-col ${isMobile ? "px-[16px]" : ""}`}>
           {/* Title */}
-          <AnimatedHeading title={title} className="text-heading mb-20" />
+          <AnimatedHeading title={title} className="text-heading mb-[10px] sm:mb-20" />
 
           {/* Description */}
           <SectionDescription
