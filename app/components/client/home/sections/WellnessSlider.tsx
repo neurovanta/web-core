@@ -267,6 +267,7 @@ export default function WellnessSlider({
             <span className="text-secondary/40">0{slides.length}</span>
           </div>
           <Swiper
+            allowTouchMove={false}
             onSwiper={(swiper) => {
               swiperRef.current = swiper;
             }}
@@ -283,12 +284,10 @@ export default function WellnessSlider({
             }}
             spaceBetween={29}
             loop={false}
-            allowTouchMove={true}
             initialSlide={0}
             breakpoints={{
               0: { slidesPerView: 1 },
               640: { slidesPerView: 2 },
-              768: { slidesPerView: 3 },
               1024: { slidesPerView: 3, spaceBetween: 20 },
               1500: { slidesPerView: 4, spaceBetween: 30 },
             }}
