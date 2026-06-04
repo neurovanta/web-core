@@ -217,7 +217,7 @@ export default function WorldClassClients() {
     >
       <ElasticEffect />
 
-      <div className="mb-20 md:mb-50 container">
+      <div className="mb-[15px] sm:mb-20 md:mb-50 container">
         <AnimatedHeading
           title={heading}
           className="text-heading text-secondary max-w-[21ch]"

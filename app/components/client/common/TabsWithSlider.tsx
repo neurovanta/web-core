@@ -331,7 +331,7 @@ export default function TabsWithSlider({
           {/* Original tabs — md and above, completely unchanged */}
           <div className="hidden md:grid grid-cols-2 lg:flex gap-[10px] sm:gap-[30px] 3xl:gap-[34px] w-fit lg:ml-auto">
             {[leftCol, rightCol].map((col, colIdx) => (
-              <ul key={colIdx} className="flex flex-col lg:w-[380px]">
+              <ul key={colIdx} className="flex flex-col md:w-[320px] lg:w-[380px]">
                 {col.map((cat, itemIndex) => {
                   const globalIdx =
                     colIdx === 0
@@ -475,7 +475,7 @@ export default function TabsWithSlider({
                           }}
                           className="absolute inset-0 z-10 will-change-[clip-path]"
                         >
-                          <div className="relative overflow-hidden h-[250px] sm:h-[350px] lg:h-[420px] 3xl:h-[550px]">
+                          <div className="relative overflow-hidden h-[250px] md:h-[320px] lg:h-[420px] 3xl:h-[550px]">
                             <Image
                               src={pending.image}
                               alt={pending.title}
@@ -485,7 +485,7 @@ export default function TabsWithSlider({
                             />
                           </div>
 
-                          <div className="overflow-hidden mt-30">
+                          <div className="overflow-hidden mt-[10px] md:mt-30">
                             <p
                               ref={(el) => {
                                 overlayTitleRefs.current[i] = el;
@@ -551,7 +551,7 @@ function SlideCard({
     <Link href={slide.href} className="block group">
       <ElasticEffect />
       <div
-        className="relative overflow-hidden h-[250px] lg:h-[420px] 3xl:h-[550px]"
+        className="relative overflow-hidden h-[250px] md:h-[320px] lg:h-[420px] 3xl:h-[550px]"
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
       >

@@ -1,7 +1,7 @@
 "use client";
 
 import { IoSearch } from "react-icons/io5";
-import { MdLocalPhone } from "react-icons/md";
+import { PiPhoneLight } from "react-icons/pi";
 import { motion } from "framer-motion";
 import { useAppShell } from "./AppShell";
 import { useEffect, useRef, useState } from "react";
@@ -199,7 +199,7 @@ export default function Header() {
                   : "border-primary"
               } cursor-pointer transition-all duration-500 ease-in-out`}
             >
-              <MdLocalPhone
+              <PiPhoneLight strokeWidth={6}
                 className={`w-auto h-[15px] sm:h-[20px] ${
                   menuOpen || (!isScrolled && isCareerPage)
                     ? "text-secondary"

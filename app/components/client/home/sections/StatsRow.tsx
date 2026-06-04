@@ -36,7 +36,7 @@ export function StatRow({
       <div className="h-px w-full bg-border-color z-0" />
 
       <div
-        className={`relative py-[24px] sm:py-40 ${isActive ? "px-20 sm:px-60" : ""} transition-all duration-300 ease-in-out h-[81px] sm:h-auto flex`}
+        className={`relative py-[24px] sm:py-40 ${isActive ? "px-20 sm:px-60" : ""} transition-all duration-300 ease-in-out h-[82px] sm:h-auto flex`}
       >
         {/* Active bg */}
         <AnimatePresence>
@@ -109,7 +109,7 @@ export default function HeroStats() {
             <div className="max-w-[820px] 3xl:max-w-[735px]">
               <SectionDescription
                 text={description}
-                className="text-19 leading-[1.47] text-secondary tracking-[-0.03em]"
+                className="text-19 leading-[1.47] text-secondary sm:tracking-[-0.03em]"
                 as="p"
               />
             </div>

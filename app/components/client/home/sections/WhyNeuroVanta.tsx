@@ -236,7 +236,7 @@ setActiveIndex(swiper.activeIndex);
               </span>
               <span className="text-primary/40">0{slides.length}</span>
             </div>
-            <div className="flex items-center gap-[10px] pt-[5px]">
+            <div className="flex items-center gap-[10px] md:pt-[5px]">
               <SliderNavButton
                 direction="prev"
                 disabled={prevDisabled}
