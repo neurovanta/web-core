@@ -53,10 +53,10 @@ const handleToggle = (index: number) => {
       const viewportHeight = window.innerHeight;
 
       if (rect.bottom > viewportHeight - 40) {
-        const targetY = window.scrollY + rect.top - 80; // 80px padding from top
+        const targetY = window.scrollY + rect.top - 80;
         scrollTo(targetY, { duration: 0.8 });
       }
-    }, 50); // small delay so expansion starts before we measure
+    }, 50);
   }
 };
 
