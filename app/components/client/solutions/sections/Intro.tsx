@@ -50,7 +50,7 @@ export default function Intro() {
             />
             <SectionDescription
               text={description}
-              className="!text-subHeading text-secondary tracking-[-0.03em] max-w-[629px] whitespace-pre-line"
+              className="!text-subHeading text-secondary tracking-[-0.03em] md:max-w-[629px] sm:whitespace-pre-line"
             />
           </div>
         </div>

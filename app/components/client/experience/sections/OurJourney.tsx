@@ -62,16 +62,16 @@ const OurJourney = ({ data }: OurJourneyProps) => {
 
       {/* Grid */}
       <div className="container">
-        <div className="flex md:flex-row flex-col md:gap-100 3xl:gap-[104px] justify-center">
+        <div className="flex lg:flex-row flex-col lg:gap-100 3xl:gap-[104px] justify-center">
           {/* Title */}
           <div className="flex items-center">
             <AnimatedHeading
               title={title}
-              className="text-heading text-white mb-[15px] sm:mb-20 md:mb-0"
+              className="text-heading text-white mb-[15px] sm:mb-20 lg:mb-0"
             />
           </div>
 
-          <div className="flex justify-center items-stretch md:hidden mb-[15px] sm:mb-20 md:mb-0">
+          <div className="flex justify-center items-stretch lg:hidden mb-[15px] sm:mb-20 lg:mb-0">
             <div
               className="h-px w-full"
               style={{
@@ -91,7 +91,7 @@ const OurJourney = ({ data }: OurJourneyProps) => {
             />
           </div>
           {/* Subtitle + Description */}
-          <div className="md:py-80 flex flex-col md:gap-6 gap-[10px]">
+          <div className="lg:py-80 flex flex-col md:gap-6 gap-[10px]">
             <SectionDescription
               className="!text-subHeading text-white max-w-[45ch] whitespace-pre-line tracking-[-0.03em]"
               text={subtitle}
