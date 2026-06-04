@@ -300,7 +300,7 @@ export default function TabsWithSlider({
   }, [pendingSlides]);
 
   return (
-    <section className={`${className} overflow-hidden`}>
+    <section className={`${className} md:overflow-hidden`}>
       <div ref={containerRef} className="container">
         <div className="flex flex-wrap xl:flex-nowrap items-start justify-between gap-y-[15px] sm:gap-y-20 gap-x-8 mb-[30px] sm:mb-60">
           <div className="flex flex-col gap-[15px] sm:gap-20">
@@ -427,7 +427,7 @@ export default function TabsWithSlider({
       </div>
 
       {/* ── SLIDER — 100% unchanged ── */}
-      <div style={{ paddingLeft: inset }}>
+      <div style={{ paddingLeft: inset }} className="overflow-hidden">
         <Swiper
           onSwiper={(swiper) => {
             swiperRef.current = swiper;
@@ -444,8 +444,10 @@ export default function TabsWithSlider({
           onReachEnd={() => setNextDisabled(true)}
           breakpoints={{
             1650: { slidesPerView: 3.17, spaceBetween: 30 },
-            1024: { slidesPerView: 3.16, spaceBetween: 20 },
+            1284: { slidesPerView: 3.16, spaceBetween: 20 },
+            1024: { slidesPerView: 2.8, spaceBetween: 20 },
             768: { slidesPerView: 2.16, spaceBetween: 20 },
+            640: { slidesPerView: 2.16, spaceBetween: 20 },
           }}
           className="!overflow-visible"
         >
@@ -475,7 +477,7 @@ export default function TabsWithSlider({
                           }}
                           className="absolute inset-0 z-10 will-change-[clip-path]"
                         >
-                          <div className="relative overflow-hidden h-[250px] md:h-[320px] lg:h-[420px] 3xl:h-[550px]">
+                          <div className="relative overflow-hidden h-[250px] sm:h-[320px] lg:h-[420px] 3xl:h-[550px]">
                             <Image
                               src={pending.image}
                               alt={pending.title}
@@ -551,7 +553,7 @@ function SlideCard({
     <Link href={slide.href} className="block group">
       <ElasticEffect />
       <div
-        className="relative overflow-hidden h-[250px] md:h-[320px] lg:h-[420px] 3xl:h-[550px]"
+        className="relative overflow-hidden h-[250px] sm:h-[320px] lg:h-[420px] 3xl:h-[550px]"
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
       >
@@ -579,7 +581,14 @@ function SlideCard({
             alt="Arrow right tip"
             width={200}
             height={200}
-            className="h-[40px] w-[40px] md:h-[50px] xl:h-[80px] sm:w-auto object-contain pointer-events-none"
+            className="h-[40px] w-[40px] md:h-[50px] xl:h-[80px] sm:w-auto object-contain pointer-events-none hidden xl:block"
+          />
+          <Image
+            src="/assets/icons/top-right-arrow-mobile.svg"
+            alt="Arrow right tip"
+            width={200}
+            height={200}
+            className="h-[40px] w-[40px] sm:h-[50px] sm:w-auto object-contain pointer-events-none xl:hidden"
           />
         </div>
       </div>

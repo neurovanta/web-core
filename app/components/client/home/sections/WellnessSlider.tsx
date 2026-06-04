@@ -50,6 +50,8 @@ export default function WellnessSlider({
   const settleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   // ↓ NEW: prevents onSlideChange from hijacking activeIndex on programmatic scrolls
   const isProgrammaticScrollRef = useRef(false);
+  const touchStartXRef = useRef<number>(0);
+  const touchStartYRef = useRef<number>(0);
 
   useEffect(() => {
     const next = (activeIndex + 1) % slides.length;
@@ -169,9 +171,38 @@ export default function WellnessSlider({
     startAutoplay();
   };
 
+  const handleSectionTouchStart = (e: React.TouchEvent) => {
+    touchStartXRef.current = e.touches[0].clientX;
+    touchStartYRef.current = e.touches[0].clientY;
+  };
+
+  const handleSectionTouchEnd = (e: React.TouchEvent) => {
+    const deltaX = touchStartXRef.current - e.changedTouches[0].clientX;
+    const deltaY = Math.abs(
+      touchStartYRef.current - e.changedTouches[0].clientY,
+    );
+
+    // Only treat as horizontal swipe (ignore scrolls)
+    if (Math.abs(deltaX) < 50 || deltaY > Math.abs(deltaX)) return;
+
+    if (deltaX > 0) {
+      // Swipe left → next
+      const next = activeIndex + 1 >= slides.length ? 0 : activeIndex + 1;
+      handleSlideClick(next);
+    } else {
+      // Swipe right → prev
+      const prev = activeIndex - 1 < 0 ? slides.length - 1 : activeIndex - 1;
+      handleSlideClick(prev);
+    }
+  };
+
   return (
     // <section className="relative w-full h-[90vh] sm:h-[80vh] xl:h-[92vh] overflow-hidden">
-    <section className="relative w-full h-dvh overflow-hidden">
+    <section
+      onTouchStart={handleSectionTouchStart}
+      onTouchEnd={handleSectionTouchEnd}
+      className="relative w-full h-dvh overflow-hidden"
+    >
       {/* Base layer */}
       <div
         className="absolute inset-0 bg-cover bg-center"
@@ -231,11 +262,12 @@ export default function WellnessSlider({
         <div className="flex-1" />
 
         <div className="[&_.swiper-wrapper]:items-end relative">
-                    <div className="sm:hidden absolute right-0 top-1/2 -translate-y-1/2 z-50 flex items-center justify-center bg-primary h-[22px] w-[50px] text-[12px] font-semibold rounded-full">
+          <div className="sm:hidden absolute right-0 top-1/2 -translate-y-1/2 z-50 flex items-center justify-center bg-primary h-[22px] w-[50px] text-[12px] font-semibold rounded-full">
             <span className="text-secondary">0{activeIndex + 1}/</span>
             <span className="text-secondary/40">0{slides.length}</span>
           </div>
           <Swiper
+            allowTouchMove={false}
             onSwiper={(swiper) => {
               swiperRef.current = swiper;
             }}
@@ -252,12 +284,10 @@ export default function WellnessSlider({
             }}
             spaceBetween={29}
             loop={false}
-            allowTouchMove={true}
             initialSlide={0}
             breakpoints={{
               0: { slidesPerView: 1 },
               640: { slidesPerView: 2 },
-              768: { slidesPerView: 3 },
               1024: { slidesPerView: 3, spaceBetween: 20 },
               1500: { slidesPerView: 4, spaceBetween: 30 },
             }}
@@ -272,7 +302,9 @@ export default function WellnessSlider({
                         onClick={() => handleSlideClick(index)}
                         className="w-full text-left focus:outline-none cursor-pointer"
                       >
-                        <span className={`block not-odd:text-15 leading-[1.666] sm:leading-[1.73] mb-[5px] sm:mb-[14px] transition-colors duration-300 ${isActive ? "text-white" : "text-white/40"}`}>
+                        <span
+                          className={`block not-odd:text-15 leading-[1.666] sm:leading-[1.73] mb-[5px] sm:mb-[14px] transition-colors duration-300 ${isActive ? "text-white" : "text-white/40"}`}
+                        >
                           {slide.number}
                         </span>
                         <span
