@@ -7,7 +7,8 @@ import { SectionDescription } from "../animations/SectionDescription";
 import { moveUp, moveUpV2 } from "../animations/motionVarinats";
 import Reveal from "../animations/RevealItemsOneByOneAnimation";
 import { AnimatePresence, motion } from "framer-motion";
-import { useState } from "react";
+import { useState, useRef } from "react";
+import { useLenis } from "@/app/components/client/layout/LenisProvider";
 
 /* ─── Social brand styles ─────────────────────────────────────────── */
 const socialStyles: Record<SocialType, React.CSSProperties> = {
@@ -36,6 +37,29 @@ function splitItems<T>(items: T[]): [T[], T[]] {
 /* ─── Component ───────────────────────────────────────────────────── */
 export default function Footer() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
+const { scrollTo } = useLenis();
+
+const handleToggle = (index: number) => {
+  const isOpening = openIndex !== index;
+  setOpenIndex(isOpening ? index : null);
+
+  if (isOpening) {
+    setTimeout(() => {
+      const el = itemRefs.current[index];
+      if (!el) return;
+
+      const rect = el.getBoundingClientRect();
+      const viewportHeight = window.innerHeight;
+
+      if (rect.bottom > viewportHeight - 40) {
+        const targetY = window.scrollY + rect.top - 80;
+        scrollTo(targetY, { duration: 0.8 });
+      }
+    }, 50);
+  }
+};
+
   return (
     <footer className="bg-white overflow-hidden">
       {/* ── Main content container ── */}
@@ -161,12 +185,10 @@ export default function Footer() {
               delayRange={index * 0.13}
               variants={moveUpV2}
             >
-              <div className="border-b border-border-color">
+              <div ref={(el) => { itemRefs.current[index] = el; }} className="border-b border-border-color">
                 <button
                   type="button"
-                  onClick={() =>
-                    setOpenIndex(openIndex === index ? null : index)
-                  }
+onClick={() => handleToggle(index)}
                   className="w-full flex items-center justify-between py-20"
                 >
                   <span className="text-secondary text-subHeading tracking-[-0.03em]">
