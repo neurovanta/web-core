@@ -149,7 +149,7 @@ export default function Footer() {
             whileInView={{ scaleX: 1 }}
             transition={{ duration: 1.2, ease: [0.77, 0, 0.175, 1] }}
             viewport={{ once: true }}
-            className="absolute inset-0 bg-[#CBC3BB] origin-center"
+            className="absolute inset-0 bg-border-color origin-center"
           />
         </div>
 
@@ -161,7 +161,7 @@ export default function Footer() {
               delayRange={index * 0.13}
               variants={moveUpV2}
             >
-              <div className="border-b border-[#CBC3BB]">
+              <div className="border-b border-border-color">
                 <button
                   type="button"
                   onClick={() =>
@@ -188,7 +188,7 @@ export default function Footer() {
                       alt="Chevron Down"
                       width={13}
                       height={13}
-                      className={`h-[8px] xl:h-[9px] 3xl:h-[10px] w-auto object-fill transition-transform duration-300 ${
+                      className={`h-[7px] xl:h-[9px] 3xl:h-[10px] w-auto object-fill transition-transform duration-300 ${
                         openIndex === index ? "rotate-0" : ""
                       }`}
                     />

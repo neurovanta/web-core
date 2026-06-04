@@ -37,7 +37,7 @@ const Index = () => {
       </div>
       <TabsWithSlider
         data={longevitySystemsData}
-        className="bg-white py-120 3xl:py-150"
+        className="bg-white py-[65px] lg:py-120 3xl:py-150"
       />
       <HeroStats />
       <WhyNeuroVanta data={whyNeuroVantaData} />

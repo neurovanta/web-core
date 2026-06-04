@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 import { elevatingWellnessData } from "../data";
 import { AnimatedHeading } from "../../animations/AnimateHeading";
@@ -22,13 +23,16 @@ export default function ElevatingWellness() {
       [index]: (prev[index] ?? 0) + 1,
     }));
   };
+
+  const getSlug = (label: string) => label.toLowerCase().replace(/\s+/g, "-");
+
   return (
     <section className="bg-cream-bg py-[60px] lg:py-120 3xl:py-0 3xl:pt-150 3xl:pb-170 min-[1700px]:py-[177px] overflow-hidden">
       <div className="container">
         <div className="grid xl:grid-cols-[320px_auto] 3xl:grid-cols-[364px_auto] gap-x-160 3xl:gap-x-225">
           <AnimatedHeading
             title={heading}
-            className="xl:col-span-1 xl:col-start-2 col-start-1 text-heading text-secondary max-w-[20ch] mb-20 lg:mb-60"
+            className="xl:col-span-1 xl:col-start-2 col-start-1 text-heading text-secondary max-w-[20ch] mb-[15px] sm:mb-20 lg:mb-60"
             mode="reveal"
           />
 
@@ -58,31 +62,33 @@ export default function ElevatingWellness() {
                 delayRange={index * 0.13}
               >
                 <li className="border-b border-border-color">
-                  <div className="flex items-center justify-between py-[31px] h-[96px] sm:h-auto">
-                    <div className="flex items-center gap-[30px] sm:gap-80">
-                      <Image
-                        src={item.image}
-                        alt={item.label}
-                        width={60}
-                        height={60}
-                        className="w-[32px] h-[32px] sm:w-[45px] sm:h-[45px] md:w-[55px] md:h-[55px] object-contain shrink-0"
-                      />
+                  <Link href={`/industries/${getSlug(item.label)}`}>
+                    <div className="flex items-center justify-between py-[31px] h-[96px] sm:h-auto">
+                      <div className="flex items-center gap-[30px] sm:gap-80">
+                        <Image
+                          src={item.image}
+                          alt={item.label}
+                          width={60}
+                          height={60}
+                          className="w-[32px] h-[32px] sm:w-[45px] sm:h-[45px] md:w-[55px] md:h-[55px] object-contain shrink-0"
+                        />
 
-                      <span className="text-subHeading text-secondary tracking-[-0.03em] max-w-[222px]">
-                        {item.label}
-                      </span>
-                    </div>
+                        <span className="text-subHeading text-secondary tracking-[-0.03em] max-w-[222px]">
+                          {item.label}
+                        </span>
+                      </div>
 
-                    <div className="w-[34px] h-[34px] sm:w-[45px] sm:h-[45px] md:w-[50px] md:h-[50px]  rounded-full bg-primary flex items-center justify-center shrink-0">
-                      <Image
-                        src="/assets/icons/down-arrow-tip.svg"
-                        alt="arrow"
-                        width={14}
-                        height={14}
-                        className="w-[14px] sm:w-[16px] md:w-[18px] h-auto -rotate-90"
-                      />
+                      <div className="w-[34px] h-[34px] sm:w-[45px] sm:h-[45px] md:w-[50px] md:h-[50px]  rounded-full bg-primary flex items-center justify-center shrink-0">
+                        <Image
+                          src="/assets/icons/down-arrow-tip.svg"
+                          alt="arrow"
+                          width={14}
+                          height={14}
+                          className="w-[14px] sm:w-[16px] md:w-[18px] h-auto -rotate-90"
+                        />
+                      </div>
                     </div>
-                  </div>
+                  </Link>
                 </li>
               </Reveal>
             ))}
@@ -106,27 +112,29 @@ export default function ElevatingWellness() {
                       isActive ? "xl:pl-30" : "pl-0"
                     }`}
                   >
-                    <div className="flex items-center justify-between py-25">
-                      <span
-                        className={`text-subHeading text-secondary tracking-[-0.03em] transition-all duration-300 ${
-                          isActive ? "font-semibold" : ""
-                        }`}
-                      >
-                        {item.label}
-                      </span>
+                    <Link href={`/industries/${getSlug(item.label)}`}>
+                      <div className="flex items-center justify-between py-25">
+                        <span
+                          className={`text-subHeading text-secondary tracking-[-0.03em] transition-all duration-300 ${
+                            isActive ? "font-semibold" : ""
+                          }`}
+                        >
+                          {item.label}
+                        </span>
 
-                      <Image
-                        src="/assets/icons/top-right-arrow-secondary-50.svg"
-                        alt="arrow"
-                        width={50}
-                        height={50}
-                        className={`shrink-0 transition-all duration-300 w-auto h-[50px] ${
-                          isActive
-                            ? "opacity-100 translate-x-0 translate-y-0"
-                            : "opacity-0 -translate-x-4 translate-y-4"
-                        }`}
-                      />
-                    </div>
+                        <Image
+                          src="/assets/icons/top-right-arrow-secondary-50.svg"
+                          alt="arrow"
+                          width={50}
+                          height={50}
+                          className={`shrink-0 transition-all duration-300 w-auto h-[50px] ${
+                            isActive
+                              ? "opacity-100 translate-x-0 translate-y-0"
+                              : "opacity-0 -translate-x-4 translate-y-4"
+                          }`}
+                        />
+                      </div>
+                    </Link>
                   </li>
                 </Reveal>
               );
