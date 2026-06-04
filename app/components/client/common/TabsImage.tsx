@@ -42,7 +42,7 @@ export default function TabsImage({ data }: TabsImageProps) {
             <AnimatedHeading
               title={title}
               mode="reveal"
-              className="text-secondary mb-[15px] sm:mb-20 lg:max-w-[12ch]"
+              className="text-secondary mb-[15px] sm:mb-20 max-w-[14ch]"
             />
             <SectionDescription
               text={subtitle}

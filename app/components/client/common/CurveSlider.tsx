@@ -128,7 +128,7 @@ export default function CurveSlider({
         <AnimatedHeading title={title} className="mb-[15px] md:mb-20" />
         <SectionDescription
           text={description}
-          className="text-description tracking-[-0.03em]"
+          className="text-description md:tracking-[-0.03em]"
         />
       </div>
 

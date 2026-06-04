@@ -51,7 +51,7 @@ export default function SectionHeader({
             <SectionDescription
               text={description}
               delay={0.8}
-              className={`text-description text-secondary lg:tracking-[-0.03em] ${maxWDescription}`}
+              className={`text-description text-secondary md:tracking-[-0.03em] ${maxWDescription}`}
             />
           )}
         </div>

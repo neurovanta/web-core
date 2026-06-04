@@ -32,7 +32,7 @@ export default function OpenPositions() {
             <a
               data-text={mail}
               href={`mailto:${mail}`}
-              className="text-subHeading text-secondary underline decoration-2 underline-offset-3 hover:scale-[1.03] transition-all duration-600 inline-block"
+              className="text-subHeading text-secondary md:underline md:decoration-2 md:underline-offset-3 hover:scale-[1.03] transition-all duration-600 inline-block"
             >
               {mail}
             </a>
