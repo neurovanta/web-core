@@ -85,7 +85,7 @@ export default function TabsImage({ data }: TabsImageProps) {
               </AnimatePresence>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-30 3xl:gap-x-[33px]">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-30 3xl:gap-x-[33px]">
               {[leftCol, rightCol].map((col, colIdx) => (
                 <ul key={colIdx} className="flex flex-col">
                   {col.map((tab, itemIndex) => {
@@ -107,6 +107,7 @@ export default function TabsImage({ data }: TabsImageProps) {
                             className="group w-full text-left bg-none border-none cursor-pointer xl:min-w-[310px] 3xl:min-w-[350px]"
                           >
                             {colIdx === 0 && itemIndex === 0 && <div className="h-px w-full bg-border-color lg:hidden" />}
+                            {colIdx === 1 && itemIndex === 0 && <div className="h-px w-full bg-border-color hidden md:block lg:hidden" />}
                             <div className="flex items-center gap-[6px] justify-between relative overflow-hidden max-h-[49px]">
                               <AnimatePresence>
                                 {isActive && (
