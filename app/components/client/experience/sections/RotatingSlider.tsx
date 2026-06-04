@@ -1,19 +1,19 @@
 "use client";
 
-import { useState, useCallback, useRef, useEffect } from "react";
+import { useState, useCallback, useRef, useEffect, useRef as useItemRefs } from "react";
 import { slides } from "../data";
 import SliderNavButton from "../../common/SliderButton";
 import { AnimatedHeading } from "../../animations/AnimateHeading";
 import { motion, AnimatePresence, easeInOut } from "framer-motion";
 import { moveLeft } from "../../animations/motionVarinats";
 import Image from "next/image";
+import { useLenis } from "../../layout/LenisProvider";
 
 const TOTAL = slides.length;
 const TRANS_MS = 750;
 const FADE_MS = 270;
 const EASE = "cubic-bezier(0.45, 0, 0.2, 1)";
 const COLOR = "#51463E";
-const BG = "#F5F0EA";
 const DOT = 11;
 const BADGE = 50;
 const SVG_SIZE = 1780;
@@ -29,12 +29,27 @@ function angleOffset(deg: number, r: number) {
 }
 
 function MobileAccordion() {
-  const [openIndex, setOpenIndex] = useState(0);
+ const [openIndex, setOpenIndex] = useState(0);
+ const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
+ const { scrollTo } = useLenis();
+ 
+ const handleToggle = (i: number) => {
+   if (openIndex === i) return;
+   setOpenIndex(i);
+   setTimeout(() => {
+     const el = itemRefs.current[i];
+     if (!el) return;
+     const rect = el.getBoundingClientRect();
+     if (rect.bottom > window.innerHeight - 60) {
+       scrollTo(window.scrollY + rect.top - 500, { duration: 0.8 });
+     }
+   }, 50);
+ };
 
-  const toggle = (i: number) => {
-    if (openIndex === i) return;
-    setOpenIndex(i);
-  };
+  // const toggle = (i: number) => {
+  //   if (openIndex === i) return;
+  //   setOpenIndex(i);
+  // };
 
   return (
     <section className="md:hidden w-full bg-cream-bg select-none">
@@ -47,9 +62,9 @@ function MobileAccordion() {
           {slides.map((slide, i) => {
             const isOpen = openIndex === i;
             return (
-              <div key={i} className="border-t border-[#D7D7D7]">
+              <div key={i} className="border-t border-[#D7D7D7]" ref={(el) => { itemRefs.current[i] = el; }}>
                 <button
-                  onClick={() => toggle(i)}
+                  onClick={() => handleToggle(i)}
                   className={`flex flex-row items-center justify-between w-full pt-20 focus-visible:outline-none ${isOpen ? "pb-[5px]" : "pb-20"} transition-all duration-400`}
                 >
                   <div className="flex flex-row items-center gap-20">

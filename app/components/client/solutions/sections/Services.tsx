@@ -83,13 +83,13 @@ export default function Services() {
         <ServiceCard
           card={serviceCardsData[0]}
           paddingLeft={leftInset}
-          tileMaxWidth="max-w-[16ch]"
+          tileMaxWidth="md:max-w-[16ch]"
           descriptionMaxWidth="max-w-[701px]"
         />
         <ServiceCard
           card={serviceCardsData[1]}
           paddingLeft={leftInset}
-          tileMaxWidth="max-w-[12ch]"
+          tileMaxWidth="md:max-w-[12ch]"
           descriptionMaxWidth="max-w-[701px]"
         />
       </div>
