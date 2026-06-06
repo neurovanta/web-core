@@ -201,7 +201,7 @@ export default function WellnessSlider({
     <section
       onTouchStart={handleSectionTouchStart}
       onTouchEnd={handleSectionTouchEnd}
-      className="relative w-full h-dvh overflow-hidden"
+      className="relative w-full h-svh overflow-hidden"
     >
       {/* Base layer */}
       <div
