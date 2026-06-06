@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { AnimatedHeading } from "@/app/components/client/animations/AnimateHeading";
 import Reveal from "@/app/components/client/animations/RevealItemsOneByOneAnimation";
@@ -20,9 +20,52 @@ interface TabsImageProps {
   };
 }
 
+// Outside TabsImage component
+const ImageWipe = ({
+  className,
+  tabs,
+  activeIndex,
+  prevIndex,
+}: {
+  className?: string;
+  tabs: { title: string; image: string }[];
+  activeIndex: number;
+  prevIndex: number;
+}) => (
+  <div className={className}>
+    <ElasticEffect />
+
+    <Image
+      src={tabs[prevIndex].image}
+      alt="previous"
+      fill
+      className="object-cover pointer-events-none"
+    />
+
+    <AnimatePresence initial={false}>
+      <motion.div
+        key={activeIndex}
+        className="absolute inset-0"
+        initial={{ clipPath: "inset(0 100% 0 0)" }}
+        animate={{ clipPath: "inset(0 0% 0 0)" }}
+        transition={{ duration: 0.7, ease: [0.76, 0, 0.24, 1] }}
+      >
+        <Image
+          src={tabs[activeIndex].image}
+          alt={tabs[activeIndex].title}
+          fill
+          className="object-cover pointer-events-none"
+          priority
+        />
+      </motion.div>
+    </AnimatePresence>
+  </div>
+);
+
 export default function TabsImage({ data }: TabsImageProps) {
   const { title, subtitle, tabs } = data;
   const [activeIndex, setActiveIndex] = useState(0);
+  const prevIndexRef = useRef(0); // ← tracks last confirmed active
 
   const half = Math.ceil(tabs.length / 2);
   const leftCol = tabs.slice(0, half);
@@ -30,6 +73,7 @@ export default function TabsImage({ data }: TabsImageProps) {
 
   const triggerTransition = (idx: number) => {
     if (idx === activeIndex) return;
+    prevIndexRef.current = activeIndex; // ← snapshot before changing
     setActiveIndex(idx);
   };
 
@@ -49,41 +93,13 @@ export default function TabsImage({ data }: TabsImageProps) {
               className="text-description text-secondary tracking-[-0.03em] mb-[30px] lg:mb-60"
             />
 
-            <div className="relative w-full aspect-4/3 lg:hidden overflow-hidden mb-[15px] max-[430px]:max-h-[224px] min-[431px]:max-h-[420px]">
-              <ElasticEffect />
-              {/* Base layer — previous image, always visible underneath */}
-              <Image
-                src={
-                  tabs[activeIndex === 0 ? tabs.length - 1 : activeIndex - 1]
-                    ?.image ?? tabs[0].image
-                }
-                alt="previous"
-                fill
-                className="object-cover pointer-events-none"
-              />
-
-              {/* Wipe-in layer — new image slides over the base */}
-              <AnimatePresence initial={false}>
-                <motion.div
-                  key={activeIndex}
-                  className="absolute inset-0"
-                  initial={{ clipPath: "inset(0 100% 0 0)" }}
-                  animate={{ clipPath: "inset(0 0% 0 0)" }}
-                  transition={{
-                    duration: 0.7,
-                    ease: [0.76, 0, 0.24, 1],
-                  }}
-                >
-                  <Image
-                    src={tabs[activeIndex].image}
-                    alt={tabs[activeIndex].title}
-                    fill
-                    className="object-cover pointer-events-none"
-                    priority
-                  />
-                </motion.div>
-              </AnimatePresence>
-            </div>
+            {/* Mobile image */}
+            <ImageWipe
+  className="relative w-full aspect-4/3 lg:hidden overflow-hidden mb-[15px] max-[430px]:max-h-[224px] min-[431px]:max-h-[420px]"
+  tabs={tabs}
+  activeIndex={activeIndex}
+  prevIndex={prevIndexRef.current}
+/>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-30 3xl:gap-x-[33px]">
               {[leftCol, rightCol].map((col, colIdx) => (
@@ -92,7 +108,6 @@ export default function TabsImage({ data }: TabsImageProps) {
                     const globalIdx =
                       colIdx === 0 ? itemIndex : leftCol.length + itemIndex;
                     const isActive = globalIdx === activeIndex;
-                    // const isLastInCol = itemIndex === col.length - 1;
 
                     return (
                       <Reveal
@@ -106,8 +121,12 @@ export default function TabsImage({ data }: TabsImageProps) {
                             onMouseEnter={() => triggerTransition(globalIdx)}
                             className="group w-full text-left bg-none border-none cursor-pointer xl:min-w-[310px] 3xl:min-w-[350px]"
                           >
-                            {colIdx === 0 && itemIndex === 0 && <div className="h-px w-full bg-border-color lg:hidden" />}
-                            {colIdx === 1 && itemIndex === 0 && <div className="h-px w-full bg-border-color hidden md:block lg:hidden" />}
+                            {colIdx === 0 && itemIndex === 0 && (
+                              <div className="h-px w-full bg-border-color lg:hidden" />
+                            )}
+                            {colIdx === 1 && itemIndex === 0 && (
+                              <div className="h-px w-full bg-border-color hidden md:block lg:hidden" />
+                            )}
                             <div className="flex items-center gap-[6px] justify-between relative overflow-hidden max-h-[49px]">
                               <AnimatePresence>
                                 {isActive && (
@@ -140,9 +159,7 @@ export default function TabsImage({ data }: TabsImageProps) {
                               </span>
                             </div>
 
-                            {/* {!isLastInCol && ( */}
                             <div className="h-px w-full bg-border-color" />
-                            {/* )} */}
                           </button>
                         </li>
                       </Reveal>
@@ -153,42 +170,13 @@ export default function TabsImage({ data }: TabsImageProps) {
             </div>
           </div>
 
-          {/* Right Side */}
-          <div className="hidden lg:block relative w-full lg:flex-1 aspect-4/3 lg:aspect-auto lg:h-[420px] xl:h-[480px] 3xl:h-[578px] overflow-hidden">
-            <ElasticEffect />
-            {/* Base layer — previous image, always visible underneath */}
-            <Image
-              src={
-                tabs[activeIndex === 0 ? tabs.length - 1 : activeIndex - 1]
-                  ?.image ?? tabs[0].image
-              }
-              alt="previous"
-              fill
-              className="object-cover pointer-events-none"
-            />
-
-            {/* Wipe-in layer — new image slides over the base */}
-            <AnimatePresence initial={false}>
-              <motion.div
-                key={activeIndex}
-                className="absolute inset-0"
-                initial={{ clipPath: "inset(0 100% 0 0)" }}
-                animate={{ clipPath: "inset(0 0% 0 0)" }}
-                transition={{
-                  duration: 0.7,
-                  ease: [0.76, 0, 0.24, 1],
-                }}
-              >
-                <Image
-                  src={tabs[activeIndex].image}
-                  alt={tabs[activeIndex].title}
-                  fill
-                  className="object-cover pointer-events-none"
-                  priority
-                />
-              </motion.div>
-            </AnimatePresence>
-          </div>
+          {/* Right Side — desktop image */}
+          <ImageWipe
+  className="hidden lg:block relative w-full lg:flex-1 aspect-4/3 lg:aspect-auto lg:h-[420px] xl:h-[480px] 3xl:h-[578px] overflow-hidden"
+  tabs={tabs}
+  activeIndex={activeIndex}
+  prevIndex={prevIndexRef.current}
+/>
         </div>
       </div>
     </section>

@@ -45,7 +45,7 @@ export default function ElevatingWellness() {
           >
             <Image
               key={`${activeIndex}-${reloadKeys[activeIndex] ?? 0}`}
-              src={`${items[activeIndex].image}?v=${reloadKeys[activeIndex] ?? 0}`}
+              src={`${items[activeIndex].deskImage}?v=${reloadKeys[activeIndex] ?? 0}`}
               alt={items[activeIndex].label}
               width={500}
               height={500}
@@ -66,14 +66,14 @@ export default function ElevatingWellness() {
                     <div className="flex items-center justify-between py-[31px] h-[96px] sm:h-auto">
                       <div className="flex items-center gap-[30px] sm:gap-80">
                         <Image
-                          src={item.image}
+                          src={item.mobImage}
                           alt={item.label}
                           width={60}
                           height={60}
                           className="w-[32px] h-[32px] sm:w-[45px] sm:h-[45px] md:w-[55px] md:h-[55px] object-contain shrink-0"
                         />
 
-                        <span className="text-subHeading text-secondary tracking-[-0.03em] max-w-[222px]">
+                        <span className="text-subHeading text-secondary tracking-[-0.03em] max-w-[222px] md:max-w-full">
                           {item.label}
                         </span>
                       </div>

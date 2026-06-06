@@ -29,7 +29,7 @@ export default function HeroSection() {
   const { animateIn } = useAppShell();
 
   return (
-    <section className="relative w-full h-dvh flex flex-col items-center justify-end pb-[60px] md:pb-150">
+    <section className="relative w-full h-svh flex flex-col items-center justify-end pb-[60px] md:pb-150">
       <video
         autoPlay
         muted

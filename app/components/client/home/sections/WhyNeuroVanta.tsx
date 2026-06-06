@@ -55,20 +55,21 @@ function SlideCard({
       className="relative h-full select-none pt-20 sm:pt-60 3xl:pt-80 px-20 sm:px-50 3xl:px-70 pb-20 sm:pb-70 3xl:pb-[74px] bg-[#FBF7F433] border-x border-x-[#FBF7F4]/10 sm:bg-transparent mx-[16px] sm:mx-0"
       onMouseEnter={() => onHover(index)}
     >
-        {/* gradient top & bottom borders */}
-  <span
-    className="absolute inset-x-0 top-0 h-px pointer-events-none sm:hidden"
-    style={{
-      background: "linear-gradient(270deg, rgba(251, 247, 244, 0.1) 0%, #FBF7F4 48.08%, rgba(251, 247, 244, 0.1) 100%)",
-    }}
-  />
-  <span
-    className="absolute inset-x-0 bottom-0 h-px pointer-events-none sm:hidden"
-    style={{
-      background: "linear-gradient(270deg, rgba(251, 247, 244, 0.1) 0%, #FBF7F4 48.08%, rgba(251, 247, 244, 0.1) 100%)",
-    }}
-  />
+      <span
+        className="absolute inset-x-0 top-0 h-px pointer-events-none sm:hidden"
+        style={{
+          background: "linear-gradient(270deg, rgba(251, 247, 244, 0.1) 0%, #FBF7F4 48.08%, rgba(251, 247, 244, 0.1) 100%)",
+        }}
+      />
+      <span
+        className="absolute inset-x-0 bottom-0 h-px pointer-events-none sm:hidden"
+        style={{
+          background: "linear-gradient(270deg, rgba(251, 247, 244, 0.1) 0%, #FBF7F4 48.08%, rgba(251, 247, 244, 0.1) 100%)",
+        }}
+      />
+
       <div className="hidden sm:block">{!isLast && <SlideDivider />}</div>
+
       <div className="flex flex-col justify-between h-full">
         <div className="mb-[30px] sm:mb-0">
           <Image
@@ -79,34 +80,34 @@ function SlideCard({
             className="h-[40px] w-[40px] sm:h-[50px] md:h-[70px] sm:w-auto"
           />
         </div>
+
         <div>
+          {/* Title — slides up slightly on activate, no remount */}
           <motion.p
-            key={`${index}-${isActive}`}
-            initial="hidden"
-            animate="show"
-            variants={moveUp(0)}
-            className={`text-subHeading tracking-[-0.03em] text-secondary ${
+            transition={{ duration: 0.45, ease: [0.76, 0, 0.24, 1] }}
+            className={`text-subHeading tracking-[-0.03em] text-secondary transition-[margin] duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] ${
               isActive ? "mb-[10px] sm:mb-30" : "mb-0"
             }`}
           >
             {slide.title}
           </motion.p>
-<div
-  className={`overflow-hidden transition-all duration-500 ${
-    isActive
-      ? "opacity-100 max-h-[300px]"
-      : "opacity-0 max-h-0"
-  }`}
->
-            <motion.p
-              key={`${index}-${isActive}-desc`}
-              initial="hidden"
-              animate="show"
-              variants={moveUp(0)}
-              className="text-secondary text-19 leading-[1.4210]"
-            >
-              {slide.description}
-            </motion.p>
+
+          {/* Description — grid-rows collapse, no max-h lag */}
+          <div
+            className={`grid transition-all duration-500 ease-[cubic-bezier(0.76,0,0.24,1)] ${
+              isActive
+                ? "grid-rows-[1fr] opacity-100"
+                : "grid-rows-[0fr] opacity-0"
+            }`}
+          >
+            <div className="overflow-hidden">
+              <motion.p
+                transition={{ duration: 0.5, ease: [0.76, 0, 0.24, 1] }}
+                className="text-secondary text-19 leading-[1.4210]"
+              >
+                {slide.description}
+              </motion.p>
+            </div>
           </div>
         </div>
       </div>

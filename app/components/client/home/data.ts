@@ -203,13 +203,13 @@ export const elevatingWellnessData = {
   heading: "ELEVATING WELLNESS ACROSS INDUSTRIES",
 
   items: [
-    { id: 1, label: "Longevity Clinics", image: "/assets/images/home/elevating-wellness/1-anim-1.svg" },
-    { id: 2, label: "Wellness & Medical Resorts", image: "/assets/images/home/elevating-wellness/2-anim-2.svg" },
-    { id: 3, label: "Premium Gyms & Sports Clubs", image: "/assets/images/home/elevating-wellness/3-anim-3.svg" },
-    { id: 4, label: "Luxury Hotels & Spas", image: "/assets/images/home/elevating-wellness/4-anim-4.svg" },
-    { id: 5, label: "Corporate Wellness Spaces", image: "/assets/images/home/elevating-wellness/5-anim-5.svg" },
-    { id: 6, label: "Private Clients & Residences", image: "/assets/images/home/elevating-wellness/6-anim-6.svg" },
-    { id: 7, label: "Hospitals & Rehabilitation Centres", image: "/assets/images/home/elevating-wellness/7-anim-7.svg" },
+    { id: 1, label: "Longevity Clinics", deskImage: "/assets/images/home/elevating-wellness/1-anim-1.svg", mobImage: "/assets/images/home/elevating-wellness/mobile/1.svg" },
+    { id: 2, label: "Wellness & Medical Resorts", deskImage: "/assets/images/home/elevating-wellness/2-anim-2.svg", mobImage: "/assets/images/home/elevating-wellness/mobile/2.svg" },
+    { id: 3, label: "Premium Gyms & Sports Clubs", deskImage: "/assets/images/home/elevating-wellness/3-anim-3.svg", mobImage: "/assets/images/home/elevating-wellness/mobile/3.svg" },
+    { id: 4, label: "Luxury Hotels & Spas", deskImage: "/assets/images/home/elevating-wellness/4-anim-4.svg", mobImage: "/assets/images/home/elevating-wellness/mobile/4.svg" },
+    { id: 5, label: "Corporate Wellness Spaces", deskImage: "/assets/images/home/elevating-wellness/5-anim-5.svg", mobImage: "/assets/images/home/elevating-wellness/mobile/5.svg" },
+    { id: 6, label: "Private Clients & Residences", deskImage: "/assets/images/home/elevating-wellness/6-anim-6.svg", mobImage: "/assets/images/home/elevating-wellness/mobile/6.svg" },
+    { id: 7, label: "Hospitals & Rehabilitation Centres", deskImage: "/assets/images/home/elevating-wellness/7-anim-7.svg", mobImage: "/assets/images/home/elevating-wellness/mobile/7.svg" },
   ],
 };
 
