@@ -71,7 +71,7 @@ export default function DescImageIntro({
               src={image}
               alt={imageAlt}
               fill
-              className="object-cover pointer-events-none"
+              className="object-cover object-top pointer-events-none"
             />
           </div>
         </div>
