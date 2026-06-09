@@ -1,5 +1,6 @@
 "use client";
 
+import { useLenis } from "@/app/components/client/layout/LenisProvider";
 import React, { useState, useRef, useEffect } from "react";
 import { UseFormRegisterReturn } from "react-hook-form";
 import { motion, AnimatePresence } from "framer-motion";
@@ -28,6 +29,7 @@ export const FloatingSelect: React.FC<FloatingSelectProps> = ({
 
   const hasValue = value && value.trim().length > 0;
   const isFloated = hasValue || open;
+  const { scrollTo } = useLenis();
 
   // Close on outside click
   useEffect(() => {
@@ -48,7 +50,22 @@ export const FloatingSelect: React.FC<FloatingSelectProps> = ({
     <div
       ref={containerRef}
       className="relative w-full group cursor-pointer"
-      onClick={() => setOpen((p) => !p)}
+      onClick={() => {
+        const next = !open;
+        setOpen(next);
+
+        if (next && containerRef.current) {
+          const rect = containerRef.current.getBoundingClientRect();
+          const dropdownHeight = options.length * 52; // ~52px per option
+          const spaceBelow = window.innerHeight - rect.bottom;
+
+          if (spaceBelow < dropdownHeight + 20) {
+            const scrollAmount =
+              window.scrollY + (dropdownHeight - spaceBelow) + 40; // 40px breathing room
+            scrollTo(scrollAmount, { duration: 0.8 });
+          }
+        }
+      }}
     >
       {/* Label + Icon */}
       <div
