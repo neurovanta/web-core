@@ -7,7 +7,10 @@ export const footerMenus: FooterMenu[] = [
   {
     heading: "Solutions",
     items: [
-      { label: "Bespoke Wellness & Longevity Solutions", href: "/solutions/bespoke-wellness" },
+      {
+        label: "Bespoke Wellness & Longevity Solutions",
+        href: "/solutions/bespoke-wellness",
+      },
       { label: "Well Space Design", href: "/solutions/well-space-design" },
     ],
   },
@@ -19,7 +22,10 @@ export const footerMenus: FooterMenu[] = [
       { label: "Thermal Detoxification", href: "/systems/thermal" },
       { label: "Light & Photo Biomodulation", href: "/systems/light" },
       { label: "Neuro & Cognitive Optimization", href: "/systems/neuro" },
-      { label: "Metabolic & Performance Optimization", href: "/systems/metabolic" },
+      {
+        label: "Metabolic & Performance Optimization",
+        href: "/systems/metabolic",
+      },
       { label: "Diagnostics & Bio-Monitoring", href: "/systems/diagnostics" },
       { label: "Mind-Body Immersion Experiences", href: "/systems/mind-body" },
     ],
@@ -43,8 +49,6 @@ export const socialLinks = [
 
 export type SocialType = (typeof socialLinks)[number]["type"];
 
-
-
 export type NavItem = {
   label: string;
   href?: string;
@@ -60,14 +64,11 @@ export const NAV_ITEMS: NavItem[] = [
     label: "Solutions",
     href: "/solutions",
     subItems: [
-      { label: "Recovery & Regeneration Systems", href: "/solutions/recovery" },
-      { label: "Oxygen & Cellular Enhancement", href: "/solutions/oxygen" },
-      { label: "Thermal Detoxification", href: "/solutions/thermal" },
-      { label: "Light & Photobiomodulation", href: "/solutions/light" },
-      { label: "Neuro & Cognitive Optimization", href: "/solutions/neuro" },
-      { label: "Metabolic & Performance Optimization", href: "/solutions/metabolic" },
-      { label: "Diagnostics & Bio-Monitoring", href: "/solutions/diagnostics" },
-      { label: "Mind–Body Immersion Experiences", href: "/solutions/mindbody" },
+      {
+        label: "Bespoke Wellness & Longevity Solutions",
+        href: "/solutions/bespoke-wellness",
+      },
+      { label: "Well Space Design", href: "/solutions/well-space-design" },
     ],
   },
   {
@@ -79,7 +80,10 @@ export const NAV_ITEMS: NavItem[] = [
       { label: "Thermal Detoxification", href: "/systems/thermal" },
       { label: "Light & Photobiomodulation", href: "/systems/light" },
       { label: "Neuro & Cognitive Optimization", href: "/systems/neuro" },
-      { label: "Metabolic & Performance Optimization", href: "/systems/metabolic" },
+      {
+        label: "Metabolic & Performance Optimization",
+        href: "/systems/metabolic",
+      },
       { label: "Diagnostics & Bio-Monitoring", href: "/systems/diagnostics" },
       { label: "Mind–Body Immersion Experiences", href: "/systems/mindbody" },
     ],
@@ -88,11 +92,31 @@ export const NAV_ITEMS: NavItem[] = [
     label: "Industries We Serve",
     href: "/industries",
     subItems: [
-      { label: "Professional Sports", href: "/industries/sports" },
-      { label: "Corporate Wellness", href: "/industries/corporate" },
-      { label: "Hospitality & Spas", href: "/industries/hospitality" },
-      { label: "Medical & Clinical", href: "/industries/medical" },
-      { label: "Military & Defense", href: "/industries/military" },
+      { label: "Longevity Clinics", href: "/systems/longevity-clinics" },
+      {
+        label: "Wellness & Medical Resorts",
+        href: "/systems/wellness-and-medical-resorts",
+      },
+      {
+        label: "Premium Gyms & Sports Clubs",
+        href: "/systems/premium-gyms-and-sports-clubs",
+      },
+      {
+        label: "Luxury Hotels & Spas",
+        href: "/systems/luxury-hotels-and-spas",
+      },
+      {
+        label: "Corporate Wellness Spaces",
+        href: "/systems/corporate-wellness-spaces",
+      },
+      {
+        label: "Private Clients & Residences",
+        href: "/systems/private-clients-and-residences",
+      },
+      {
+        label: "Hospitals & Rehabilitation Centres",
+        href: "/systems/hospitals-and-rehabilitation-centres",
+      },
     ],
   },
   {
