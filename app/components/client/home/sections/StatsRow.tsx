@@ -126,7 +126,7 @@ export default function HeroStats() {
               viewport={{ once: true }}
               className=""
             >
-              <CustomButton label="About Neuro Vanta" href="#" variant={2} />
+              <CustomButton label="About Neuro Vanta" href="/about-us" variant={2} />
             </motion.div>
           </div>
 

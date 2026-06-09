@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
+import { Autoplay } from "swiper/modules";
 import { useContainerInset } from "@/app/hooks/useContainerInset";
 import { motion, AnimatePresence } from "framer-motion";
 import { AnimatedHeading } from "../animations/AnimateHeading";
@@ -429,12 +430,17 @@ export default function TabsWithSlider({
       {/* ── SLIDER — 100% unchanged ── */}
       <div style={{ paddingLeft: inset }} className="overflow-hidden">
         <Swiper
+        modules={[Autoplay]}
           onSwiper={(swiper) => {
             swiperRef.current = swiper;
           }}
           slidesPerView={1.47}
           spaceBetween={15}
-          speed={700}
+          speed={900}
+          autoplay={{
+            delay: 3000,
+            disableOnInteraction: false,
+          }}
           onSlideChange={(swiper) => {
             setActiveSwiperSlide(swiper.activeIndex);
             setPrevDisabled(swiper.isBeginning);
