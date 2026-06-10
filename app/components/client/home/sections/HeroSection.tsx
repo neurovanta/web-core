@@ -62,16 +62,16 @@ export default function HeroSection() {
             animate={animateIn ? "visible" : "hidden"}
             variants={btnVariant(0.55)}
           >
-            <CustomButton label="For Commercial" href="#" variant={1} />
+            <CustomButton label="Longetivity Systems" href="/systems" variant={1} />
           </motion.div>
 
-          <motion.div
+          {/* <motion.div
             initial="hidden"
             animate={animateIn ? "visible" : "hidden"}
             variants={btnVariant(0.72)}
           >
             <CustomButton label="For Individual" href="#" variant={1} />
-          </motion.div>
+          </motion.div> */}
         </div>
 
       </div>

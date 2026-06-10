@@ -1,5 +1,5 @@
 export const bannerData = {
-  title: "Our Systems",
+  title: "Longevity Systems",
   image: "/assets/images/systems/banner.jpg",
 };
 
