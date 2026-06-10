@@ -95,11 +95,11 @@ export default function TabsImage({ data }: TabsImageProps) {
 
             {/* Mobile image */}
             <ImageWipe
-  className="relative w-full aspect-4/3 lg:hidden overflow-hidden mb-[15px] max-[430px]:max-h-[224px] min-[431px]:max-h-[420px]"
-  tabs={tabs}
-  activeIndex={activeIndex}
-  prevIndex={prevIndexRef.current}
-/>
+              className="relative w-full aspect-4/3 lg:hidden overflow-hidden mb-[15px] max-[430px]:max-h-[224px] min-[431px]:max-h-[420px]"
+              tabs={tabs}
+              activeIndex={activeIndex}
+              prevIndex={prevIndexRef.current}
+            />
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-30 3xl:gap-x-[33px]">
               {[leftCol, rightCol].map((col, colIdx) => (
@@ -119,7 +119,7 @@ export default function TabsImage({ data }: TabsImageProps) {
                           <button
                             onClick={() => triggerTransition(globalIdx)}
                             onMouseEnter={() => triggerTransition(globalIdx)}
-                            className="group w-full text-left bg-none border-none cursor-pointer xl:min-w-[310px] 3xl:min-w-[350px]"
+                            className="group w-full text-left bg-none border-none xl:min-w-[310px] 3xl:min-w-[350px]"
                           >
                             {colIdx === 0 && itemIndex === 0 && (
                               <div className="h-px w-full bg-border-color lg:hidden" />
@@ -172,11 +172,11 @@ export default function TabsImage({ data }: TabsImageProps) {
 
           {/* Right Side — desktop image */}
           <ImageWipe
-  className="hidden lg:block relative w-full lg:flex-1 aspect-4/3 lg:aspect-auto lg:h-[420px] xl:h-[480px] 3xl:h-[578px] overflow-hidden"
-  tabs={tabs}
-  activeIndex={activeIndex}
-  prevIndex={prevIndexRef.current}
-/>
+            className="hidden lg:block relative w-full lg:flex-1 aspect-4/3 lg:aspect-auto lg:h-[420px] xl:h-[480px] 3xl:h-[578px] overflow-hidden"
+            tabs={tabs}
+            activeIndex={activeIndex}
+            prevIndex={prevIndexRef.current}
+          />
         </div>
       </div>
     </section>
