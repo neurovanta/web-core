@@ -4,7 +4,7 @@ export const wellnessSliderData = {
     "Personalized, science-led systems tailored to individual physiology, lifestyle, and performance goals.",
   buttons: [
     { label: "EXPLORE", href: "/solutions/bespoke-wellness-longevity-solutions" },
-    { label: "VIEW PRODUCTS", href: "/systems/bespoke-wellness-longevity-solutions" },
+    // { label: "VIEW PRODUCTS", href: "/systems/bespoke-wellness-longevity-solutions" },
   ],
   slides: [
     {
@@ -36,7 +36,7 @@ export const wellnessSliderData2 = {
     "End-to-end design and integration of intelligent wellness environments—where architecture, technology, and human biology work in harmony.",
   buttons: [
     { label: "EXPLORE", href: "/solutions/wellness-space-design" },
-    { label: "VIEW PRODUCTS", href: "/systems/wellness-space-design" },
+    // { label: "VIEW PRODUCTS", href: "/systems/wellness-space-design" },
   ],
   slides: [
     {
