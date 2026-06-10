@@ -418,7 +418,7 @@ export default function Header() {
                     animate={{ height: "auto", opacity: 1 }}
                     exit={{ height: 0, opacity: 0 }}
                     transition={{ duration: 0.35, ease: [0.33, 1, 0.68, 1] }}
-                    className="hidden xl:block absolute top-full mt-2 right-0 max-w-[370px] 2xl:max-w-[500px] min-w-[280px] overflow-hidden rounded-[12px]"
+                    className="hidden xl:block border border-white/20 absolute top-full mt-2 right-0 max-w-[370px] 2xl:max-w-[500px] min-w-[280px] overflow-hidden rounded-[12px]"
                     style={{ zIndex: 1001 }}
                   >
                     <div className="bg-black/90 backdrop-blur-[20px] rounded-[12px] py-2">
@@ -434,7 +434,7 @@ export default function Header() {
                             onClick={closeSearch}
                             className="flex items-center gap-3 px-4 py-3 text-white text-sm hover:bg-white/10 transition-colors duration-200 rounded-lg mx-1 group"
                           >
-                            <IoSearch className="w-3.5 h-3.5 opacity-50 shrink-0" />
+                            <IoSearch className="w-3.5 h-3.5 opacity-80 shrink-0" />
                             <span data-text={result.label} className="contact-link">{result.label}</span>
                           </Link>
                         </motion.div>
@@ -518,7 +518,7 @@ export default function Header() {
                               onClick={closeSearch}
                               className="flex items-center gap-3 px-4 py-3 text-white text-sm hover:bg-white/10 transition-colors duration-200 rounded-[12px] mx-1"
                             >
-                              <IoSearch className="w-3.5 h-3.5 opacity-50 shrink-0" />
+                              <IoSearch className="w-3.5 h-3.5 opacity-80 shrink-0" />
                               <span>{result.label}</span>
                             </Link>
                           </motion.div>

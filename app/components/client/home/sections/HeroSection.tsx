@@ -39,7 +39,7 @@ export default function HeroSection() {
         poster="/assets/images/home/hero/hero-poster.jpg"
         className="absolute inset-0 w-full h-full object-cover object-center"
       >
-        <source src="/assets/videos/hero-bg.mp4" type="video/mp4" />
+        <source src="/assets/videos/hero-bg-2.mp4" type="video/mp4" />
       </video>
       <div className="absolute inset-0 bg-black/65" />
 
