@@ -35,7 +35,7 @@ export const serviceCardsData = [
     bgImage: "/assets/images/solutions/services/1.jpg",
     buttons: [
       { label: "EXPLORE", href: "/solutions/wellness" },
-      { label: "VIEW PRODUCTS", href: "/systems/wellness" },
+      // { label: "VIEW PRODUCTS", href: "/systems/wellness" },
     ],
   },
   {
@@ -45,7 +45,7 @@ export const serviceCardsData = [
     bgImage: "/assets/images/solutions/services/2.jpg",
     buttons: [
       { label: "EXPLORE", href: "/solutions/design" },
-      { label: "VIEW PRODUCTS", href: "/systems/design" },
+      // { label: "VIEW PRODUCTS", href: "/systems/design" },
     ],
   },
 ];

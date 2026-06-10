@@ -56,7 +56,7 @@ export function StatRow({
           <span className="text-heading text-secondary shrink-0 sm:min-w-[94px] 3xl:min-w-[104px]">{number}</span>
 
           {/* Label */}
-          <span className="flex-1 text-subHeading tracking-[-0.03em] text-secondary lg:pl-80 xl:pl-160 2xl:pl-[300px] 3xl:pl-[347px]">
+          <span className="flex-1 text-subHeading tracking-[-0.03em] text-secondary lg:pl-80 xl:pl-160 2xl:pl-[220px] 3xl:pl-[347px]">
             {label}
           </span>
 

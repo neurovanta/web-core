@@ -160,13 +160,13 @@ export const heroStatsData = {
     {
       id: 1,
       number: "20+",
-      label: "Group Experience",
+      label: "Years of Group Experience",
       icon: "/assets/images/home/hero-stats/1.svg",
     },
     {
       id: 2,
-      number: "14+",
-      label: "Global Brands",
+      number: "02",
+      label: "Continents of Supply Excellence",
       icon: "/assets/images/home/hero-stats/1.svg",
     },
   ],

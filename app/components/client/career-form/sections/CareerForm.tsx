@@ -30,11 +30,21 @@ export default function CareersForm() {
     handleSubmit,
     watch,
     formState: { errors },
-  } = useForm<FormData>();
+  } = useForm<FormData>({
+    defaultValues: {
+      firstName: "",
+      lastName: "",
+      email: "",
+      phone: "",
+      applyingFor: "",
+      yearsOfExperience: "",
+      additionalInfo: "",
+    },
+  });
 
   const watchedValues = watch();
 
-    const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     const checkMobile = () => {
