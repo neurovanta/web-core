@@ -2,7 +2,16 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   /* config options here */
-  allowedDevOrigins: ['192.168.1.2'],
+  images: {
+    dangerouslyAllowSVG: true,
+    unoptimized: true,
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "dl.dropboxusercontent.com",
+      },
+    ],
+  },
 };
 
 export default nextConfig;
