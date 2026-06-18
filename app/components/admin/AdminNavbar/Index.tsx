@@ -37,7 +37,7 @@ const AdminNavbar = () => {
     { name: "About", href: "/admin/about", icon: Info },
     {
       name: "Solutions",
-      href: "###",
+      href: "/admin/solutions",
       icon: Briefcase,
       hasChild: true,
       children: [
@@ -50,14 +50,14 @@ const AdminNavbar = () => {
     },
     {
       name: "Systems",
-      href: "###",
+      href: "/admin/systems",
       icon: Settings,
       hasChild: true,
       children: [{ name: "Main Page", href: "/admin/systems" }],
     },
     {
       name: "Industries",
-      href: "###",
+      href: "/admin/industries",
       icon: Factory,
       hasChild: true,
       children: [{ name: "Main Page", href: "/admin/industries" }],
@@ -66,7 +66,7 @@ const AdminNavbar = () => {
     { name: "Careers", href: "/admin/careers", icon: GraduationCap },
     {
       name: "Contact",
-      href: "##",
+      href: "/admin/contact",
       icon: Phone,
       hasChild: true,
       children: [

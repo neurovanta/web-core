@@ -10,11 +10,16 @@ import AdminItemContainer from "@/app/components/admin/common/AdminItemContainer
 import { toast } from "sonner";
 import { useEffect } from "react";
 import { RiDeleteBinLine } from "react-icons/ri";
-import { RiEyeLine, RiEyeOffLine } from "react-icons/ri";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 
-interface SolutionMainForm {
+interface IndividualIndustryForm {
+  isHidden: boolean;
+  slug: string;
   seo: { metaTitle: string; metaDescription: string; script: string };
+  thumbnailImage: string;
+  thumbnailImageAlt: string;
+  thumbnailTitle: string;
+  thumbnailDescription: string;
   bannerSection: {
     isHidden: boolean;
     image: string;
@@ -28,22 +33,22 @@ interface SolutionMainForm {
     image: string;
     imageAlt: string;
   };
-  solutions: {
+  secondSection: {
     isHidden: boolean;
-    slug: string;
-    thumbnailTitle: string;
-  }[];
+    title: string;
+    items: { title: string; image: string; imageAlt: string }[];
+  };
   thirdSection: {
     isHidden: boolean;
     title: string;
-    description: string;
-    items: { title: string; image: string; imageAlt: string }[];
+    items: { title: string; icon: string; iconAlt: string }[];
   };
   fourthSection: {
     isHidden: boolean;
     title: string;
     description: string;
-    items: { image: string; imageAlt: string }[];
+    image: string;
+    imageAlt: string;
   };
   fifthSection: {
     isHidden: boolean;
@@ -53,23 +58,28 @@ interface SolutionMainForm {
   };
 }
 
-export default function SolutionMainPage() {
+export default function IndividualIndustry({
+  createMode,
+}: {
+  createMode?: boolean;
+}) {
+  const { id } = useParams();
   const router = useRouter();
 
   const {
     register,
     handleSubmit,
     setValue,
-    control,
     watch,
+    control,
     formState: { errors },
-  } = useForm<SolutionMainForm>();
+  } = useForm<IndividualIndustryForm>();
 
   const {
-    fields: solutions,
-    append: appendSolution,
-    remove: removeSolution,
-  } = useFieldArray({ control, name: "solutions" });
+    fields: secondItems,
+    append: appendSecond,
+    remove: removeSecond,
+  } = useFieldArray({ control, name: "secondSection.items" });
 
   const {
     fields: thirdItems,
@@ -77,25 +87,26 @@ export default function SolutionMainPage() {
     remove: removeThird,
   } = useFieldArray({ control, name: "thirdSection.items" });
 
-  const {
-    fields: fourthItems,
-    append: appendFourth,
-    remove: removeFourth,
-  } = useFieldArray({ control, name: "fourthSection.items" });
-
   const fetchData = async () => {
+    if (createMode) return;
     try {
-      const res = await fetch("/api/admin/solution");
+      const res = await fetch(`/api/admin/industries?id=${id}`);
       if (res.ok) {
         const { data } = await res.json();
+        setValue("isHidden", data.isHidden);
+        setValue("slug", data.slug);
+        setValue("thumbnailImage", data.thumbnailImage);
+        setValue("thumbnailImageAlt", data.thumbnailImageAlt);
+        setValue("thumbnailTitle", data.thumbnailTitle);
+        setValue("thumbnailDescription", data.thumbnailDescription);
         setValue("seo", data.seo);
         setValue("bannerSection", data.bannerSection);
         setValue("firstSection", data.firstSection);
-        setValue("solutions", data.solutions);
+        setValue("secondSection", data.secondSection);
+        setValue("secondSection.items", data.secondSection?.items || []);
         setValue("thirdSection", data.thirdSection);
         setValue("thirdSection.items", data.thirdSection?.items || []);
         setValue("fourthSection", data.fourthSection);
-        setValue("fourthSection.items", data.fourthSection?.items || []);
         setValue("fifthSection", data.fifthSection);
       } else {
         const { message } = await res.json();
@@ -106,54 +117,25 @@ export default function SolutionMainPage() {
     }
   };
 
-  const onSubmit = async (data: SolutionMainForm) => {
+  const onSubmit = async (data: IndividualIndustryForm) => {
     try {
-      const res = await fetch("/api/admin/solution", {
-        method: "PATCH",
-        body: JSON.stringify(data),
-      });
+      const res = await fetch(
+        createMode ? "/api/admin/industries" : `/api/admin/industries?id=${id}`,
+        {
+          method: createMode ? "POST" : "PATCH",
+          body: JSON.stringify(data),
+        },
+      );
       if (res.ok) {
         const { message } = await res.json();
         toast.success(message);
+        if (createMode) router.push("/admin/industries");
       } else {
         const { message } = await res.json();
         toast.error(message);
       }
     } catch (e) {
       console.error(e);
-    }
-  };
-
-  const toggleSolutionVisibility = async (
-    e: React.MouseEvent,
-    id: string,
-    index: number,
-    currentValue: boolean,
-  ) => {
-    e.stopPropagation();
-
-    try {
-      const res = await fetch(`/api/admin/solution?id=${id}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          isHidden: !currentValue,
-        }),
-      });
-
-      if (res.ok) {
-        setValue(`solutions.${index}.isHidden`, !currentValue);
-
-        toast.success(!currentValue ? "Solution hidden" : "Solution visible");
-      } else {
-        const { message } = await res.json();
-        toast.error(message);
-      }
-    } catch (error) {
-      console.error(error);
-      toast.error("Something went wrong");
     }
   };
 
@@ -164,9 +146,20 @@ export default function SolutionMainPage() {
   return (
     <div className="flex flex-col gap-5">
       <form className="flex flex-col gap-5" onSubmit={handleSubmit(onSubmit)}>
-        {/* Banner Section */}
+        {/* Banner */}
         <AdminItemContainer>
-          <Label main>Banner Section</Label>
+          <Label
+            main
+            isHidden={watch("bannerSection.isHidden")}
+            onToggleHidden={() =>
+              setValue(
+                "bannerSection.isHidden",
+                !watch("bannerSection.isHidden"),
+              )
+            }
+          >
+            Banner Section
+          </Label>
           <div className="p-5 flex flex-col gap-4">
             <div className="grid grid-cols-2 gap-4">
               <div className="flex flex-col gap-2">
@@ -200,6 +193,79 @@ export default function SolutionMainPage() {
                 />
               </div>
             </div>
+          </div>
+        </AdminItemContainer>
+
+        {/* Page Details */}
+        <AdminItemContainer>
+          <Label main>Page Details</Label>
+          <div className="p-5 flex flex-col gap-4">
+            <Label className="font-bold">Slug</Label>
+            <div className="flex gap-2">
+              <Input
+                {...register("slug")}
+                placeholder="page-slug"
+                className="flex-1"
+              />
+              <Button
+                type="button"
+                onClick={() => {
+                  const title = watch("thumbnailTitle") || "";
+                  const slug = title
+                    .toLowerCase()
+                    .trim()
+                    .replace(/[^a-z0-9\s-]/g, "")
+                    .replace(/\s+/g, "-");
+                  setValue("slug", slug);
+                }}
+              >
+                Auto Generate
+              </Button>
+            </div>
+            {errors.slug && (
+              <p className="text-red-500">{errors.slug.message}</p>
+            )}
+
+            <Label className="font-bold">Thumbnail Image</Label>
+            <Controller
+              name="thumbnailImage"
+              control={control}
+              render={({ field }) => (
+                <ImageUploader value={field.value} onChange={field.onChange} />
+              )}
+            />
+            {errors.thumbnailImage && (
+              <p className="text-red-500">{errors.thumbnailImage.message}</p>
+            )}
+
+            <Label className="font-bold">Thumbnail Image Alt</Label>
+            <Input
+              {...register("thumbnailImageAlt")}
+              placeholder="Thumbnail Image Alt"
+            />
+            {errors.thumbnailImageAlt && (
+              <p className="text-red-500">{errors.thumbnailImageAlt.message}</p>
+            )}
+
+            <Label className="font-bold">Thumbnail Title</Label>
+            <Input
+              {...register("thumbnailTitle")}
+              placeholder="Thumbnail Title"
+            />
+            {errors.thumbnailTitle && (
+              <p className="text-red-500">{errors.thumbnailTitle.message}</p>
+            )}
+
+            <Label className="font-bold">Thumbnail Description</Label>
+            <Input
+              {...register("thumbnailDescription")}
+              placeholder="Thumbnail Description"
+            />
+            {errors.thumbnailDescription && (
+              <p className="text-red-500">
+                {errors.thumbnailDescription.message}
+              </p>
+            )}
           </div>
         </AdminItemContainer>
 
@@ -250,6 +316,78 @@ export default function SolutionMainPage() {
           </div>
         </AdminItemContainer>
 
+        {/* Second Section */}
+        <AdminItemContainer>
+          <Label
+            main
+            isHidden={watch("secondSection.isHidden")}
+            onToggleHidden={() =>
+              setValue(
+                "secondSection.isHidden",
+                !watch("secondSection.isHidden"),
+              )
+            }
+          >
+            Second Section
+          </Label>
+          <div className="p-5 flex flex-col gap-4">
+            <Label className="font-bold">Title</Label>
+            <Input {...register("secondSection.title")} placeholder="Title" />
+            <Label className="font-bold">Items</Label>
+            <div className="border border-black/20 p-2 rounded-md flex flex-col gap-4">
+              {secondItems.map((field, index) => (
+                <div
+                  key={field.id}
+                  className="grid grid-cols-2 gap-2 relative border-b border-black/20 pb-4"
+                >
+                  <div className="absolute top-2 right-2">
+                    <RiDeleteBinLine
+                      className="cursor-pointer text-red-600"
+                      onClick={() => removeSecond(index)}
+                    />
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <Label className="font-bold">Image</Label>
+                    <Controller
+                      name={`secondSection.items.${index}.image`}
+                      control={control}
+                      render={({ field }) => (
+                        <ImageUploader
+                          value={field.value}
+                          onChange={field.onChange}
+                        />
+                      )}
+                    />
+                    <Label className="font-bold">Alt Tag</Label>
+                    <Input
+                      {...register(`secondSection.items.${index}.imageAlt`)}
+                      placeholder="Alt Tag"
+                    />
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <Label className="font-bold">Title</Label>
+                    <Input
+                      {...register(`secondSection.items.${index}.title`)}
+                      placeholder="Title"
+                    />
+                  </div>
+                </div>
+              ))}
+              <div className="flex justify-end">
+                <Button
+                  type="button"
+                  addItem
+                  onClick={() =>
+                    appendSecond({ title: "", image: "", imageAlt: "" })
+                  }
+                >
+                  Add Item
+                </Button>
+              </div>
+            </div>
+          </div>
+        </AdminItemContainer>
+
         {/* Third Section */}
         <AdminItemContainer>
           <Label
@@ -264,11 +402,6 @@ export default function SolutionMainPage() {
           <div className="p-5 flex flex-col gap-4">
             <Label className="font-bold">Title</Label>
             <Input {...register("thirdSection.title")} placeholder="Title" />
-            <Label className="font-bold">Description</Label>
-            <Textarea
-              {...register("thirdSection.description")}
-              placeholder="Description"
-            />
             <Label className="font-bold">Items</Label>
             <div className="border border-black/20 p-2 rounded-md flex flex-col gap-4">
               {thirdItems.map((field, index) => (
@@ -283,20 +416,21 @@ export default function SolutionMainPage() {
                     />
                   </div>
                   <div className="flex flex-col gap-2">
-                    <Label className="font-bold">Image</Label>
+                    <Label className="font-bold">Icon</Label>
                     <Controller
-                      name={`thirdSection.items.${index}.image`}
+                      name={`thirdSection.items.${index}.icon`}
                       control={control}
                       render={({ field }) => (
                         <ImageUploader
                           value={field.value}
                           onChange={field.onChange}
+                          isLogo
                         />
                       )}
                     />
                     <Label className="font-bold">Alt Tag</Label>
                     <Input
-                      {...register(`thirdSection.items.${index}.imageAlt`)}
+                      {...register(`thirdSection.items.${index}.iconAlt`)}
                       placeholder="Alt Tag"
                     />
                   </div>
@@ -314,7 +448,7 @@ export default function SolutionMainPage() {
                   type="button"
                   addItem
                   onClick={() =>
-                    appendThird({ title: "", image: "", imageAlt: "" })
+                    appendThird({ title: "", icon: "", iconAlt: "" })
                   }
                 >
                   Add Item
@@ -339,54 +473,36 @@ export default function SolutionMainPage() {
             Fourth Section
           </Label>
           <div className="p-5 flex flex-col gap-4">
-            <Label className="font-bold">Title</Label>
-            <Input {...register("fourthSection.title")} placeholder="Title" />
-            <Label className="font-bold">Description</Label>
-            <Textarea
-              {...register("fourthSection.description")}
-              placeholder="Description"
-            />
-            <Label className="font-bold">Items</Label>
-            <div className="border border-black/20 p-2 rounded-md flex flex-col gap-4">
-              {fourthItems.map((field, index) => (
-                <div
-                  key={field.id}
-                  className="relative border-b border-black/20 pb-4"
-                >
-                  <div className="absolute top-2 right-2">
-                    <RiDeleteBinLine
-                      className="cursor-pointer text-red-600"
-                      onClick={() => removeFourth(index)}
+            <div className="grid grid-cols-2 gap-4">
+              <div className="flex flex-col gap-2">
+                <Label className="font-bold">Image</Label>
+                <Controller
+                  name="fourthSection.image"
+                  control={control}
+                  render={({ field }) => (
+                    <ImageUploader
+                      value={field.value}
+                      onChange={field.onChange}
                     />
-                  </div>
-                  <div className="flex flex-col gap-2 w-1/2">
-                    <Label className="font-bold">Image</Label>
-                    <Controller
-                      name={`fourthSection.items.${index}.image`}
-                      control={control}
-                      render={({ field }) => (
-                        <ImageUploader
-                          value={field.value}
-                          onChange={field.onChange}
-                        />
-                      )}
-                    />
-                    <Label className="font-bold">Alt Tag</Label>
-                    <Input
-                      {...register(`fourthSection.items.${index}.imageAlt`)}
-                      placeholder="Alt Tag"
-                    />
-                  </div>
-                </div>
-              ))}
-              <div className="flex justify-end">
-                <Button
-                  type="button"
-                  addItem
-                  onClick={() => appendFourth({ image: "", imageAlt: "" })}
-                >
-                  Add Item
-                </Button>
+                  )}
+                />
+                <Label className="font-bold">Alt Tag</Label>
+                <Input
+                  {...register("fourthSection.imageAlt")}
+                  placeholder="Alt Tag"
+                />
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label className="font-bold">Title</Label>
+                <Input
+                  {...register("fourthSection.title")}
+                  placeholder="Title"
+                />
+                <Label className="font-bold">Description</Label>
+                <Textarea
+                  {...register("fourthSection.description")}
+                  placeholder="Description"
+                />
               </div>
             </div>
           </div>
@@ -404,25 +520,32 @@ export default function SolutionMainPage() {
             Fifth Section
           </Label>
           <div className="p-5 flex flex-col gap-4">
-            <Label className="font-bold">Title</Label>
-            <Input {...register("fifthSection.title")} placeholder="Title" />
-            <div className="flex flex-col gap-2">
-              <Label className="font-bold">Image</Label>
-              <Controller
-                name="fifthSection.image"
-                control={control}
-                render={({ field }) => (
-                  <ImageUploader
-                    value={field.value}
-                    onChange={field.onChange}
-                  />
-                )}
-              />
-              <Label className="font-bold">Alt Tag</Label>
-              <Input
-                {...register("fifthSection.imageAlt")}
-                placeholder="Alt Tag"
-              />
+            <div className="grid grid-cols-2 gap-4">
+              <div className="flex flex-col gap-2">
+                <Label className="font-bold">Image</Label>
+                <Controller
+                  name="fifthSection.image"
+                  control={control}
+                  render={({ field }) => (
+                    <ImageUploader
+                      value={field.value}
+                      onChange={field.onChange}
+                    />
+                  )}
+                />
+                <Label className="font-bold">Alt Tag</Label>
+                <Input
+                  {...register("fifthSection.imageAlt")}
+                  placeholder="Alt Tag"
+                />
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label className="font-bold">Title</Label>
+                <Input
+                  {...register("fifthSection.title")}
+                  placeholder="Title"
+                />
+              </div>
             </div>
           </div>
         </AdminItemContainer>
@@ -430,7 +553,7 @@ export default function SolutionMainPage() {
         {/* SEO */}
         <AdminItemContainer>
           <Label main>SEO</Label>
-          <div className="p-5 flex flex-col gap-2">
+          <div className="p-5 flex flex-col gap-4">
             <Label className="font-bold">Meta Title</Label>
             <Input {...register("seo.metaTitle")} placeholder="Meta Title" />
             <Label className="font-bold">Meta Description</Label>
@@ -448,65 +571,10 @@ export default function SolutionMainPage() {
             type="submit"
             className="cursor-pointer border-2 border-white hover:text-white text-[14px] shadow-lg"
           >
-            Page Submit
+            {createMode ? "Create Industry" : "Save Changes"}
           </Button>
         </div>
       </form>
-
-      {/* Solutions List — outside form */}
-      <div className="bg-white border border-black/20 rounded-xl p-5 flex flex-col gap-4">
-        <div className="flex items-center justify-between border-b border-black/20 pb-3">
-          <Label className="text-base font-bold">Solutions</Label>
-          <Button
-            type="button"
-            onClick={() => router.push("/admin/solutions/new")}
-            addItem
-          >
-            + Add Solution
-          </Button>
-        </div>
-        <div className="flex flex-col gap-2">
-          {solutions.length === 0 && (
-            <p className="text-sm text-black/40">No solutions added yet.</p>
-          )}
-          {solutions.map((field, index) => {
-            const id = (field as typeof field & { _id?: string })._id;
-            const title = watch(`solutions.${index}.thumbnailTitle`);
-            const isHidden = watch(`solutions.${index}.isHidden`);
-            return (
-              <div
-                key={field.id}
-                className="flex items-center justify-between border border-black/10 rounded-md px-4 py-3 hover:shadow-sm transition-all cursor-pointer"
-                onClick={() => id && router.push(`/admin/solutions/${id}`)}
-              >
-                <div className="flex items-center gap-3">
-                  <div
-                    onClick={(e) =>
-                      id && toggleSolutionVisibility(e, id, index, isHidden)
-                    }
-                  >
-                    {isHidden ? (
-                      <RiEyeOffLine
-                        className="text-gray-400 cursor-pointer hover:scale-120 transition-all"
-                        size={16}
-                      />
-                    ) : (
-                      <RiEyeLine
-                        className="text-green-600 cursor-pointer hover:scale-120 transition-all"
-                        size={16}
-                      />
-                    )}
-                  </div>
-
-                  <span className="text-sm font-medium">
-                    {title || `Solution ${index + 1}`}
-                  </span>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
     </div>
   );
 }

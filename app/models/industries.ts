@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const individualSolutionSchema = new mongoose.Schema({
+const individualIndustrySchema = new mongoose.Schema({
   isHidden: { type: Boolean, default: false },
   slug: { type: String },
   thumbnailImage: { type: String },
@@ -21,8 +21,9 @@ const individualSolutionSchema = new mongoose.Schema({
   firstSection: {
     isHidden: { type: Boolean, default: false },
     title: { type: String },
-    subTitle: { type: String },
     description: { type: String },
+    image: { type: String },
+    imageAlt: { type: String },
   },
   secondSection: {
     isHidden: { type: Boolean, default: false },
@@ -62,27 +63,12 @@ const individualSolutionSchema = new mongoose.Schema({
   fifthSection: {
     isHidden: { type: Boolean, default: false },
     title: { type: String },
-    description: { type: String },
-    items: {
-      type: [
-        {
-          title: { type: String },
-          image: { type: String },
-          imageAlt: { type: String },
-        },
-      ],
-      default: [],
-    },
-  },
-  sixthSection: {
-    isHidden: { type: Boolean, default: false },
-    title: { type: String },
     image: { type: String },
     imageAlt: { type: String },
   },
 });
 
-const solutionSchema = new mongoose.Schema({
+const industriesSchema = new mongoose.Schema({
   seo: {
     metaTitle: { type: String },
     metaDescription: { type: String },
@@ -101,40 +87,11 @@ const solutionSchema = new mongoose.Schema({
     image: { type: String },
     imageAlt: { type: String },
   },
-  solutions: {
-    type: [individualSolutionSchema],
+  industries: {
+    type: [individualIndustrySchema],
     default: [],
   },
   thirdSection: {
-    isHidden: { type: Boolean, default: false },
-    title: { type: String },
-    description: { type: String },
-    items: {
-      type: [
-        {
-          title: { type: String },
-          image: { type: String },
-          imageAlt: { type: String },
-        },
-      ],
-      default: [],
-    },
-  },
-  fourthSection: {
-    isHidden: { type: Boolean, default: false },
-    title: { type: String },
-    description: { type: String },
-    items: {
-      type: [
-        {
-          image: { type: String },
-          imageAlt: { type: String },
-        },
-      ],
-      default: [],
-    },
-  },
-  fifthSection: {
     isHidden: { type: Boolean, default: false },
     title: { type: String },
     image: { type: String },
@@ -142,5 +99,5 @@ const solutionSchema = new mongoose.Schema({
   },
 });
 
-export default mongoose.models.Solution ||
-  mongoose.model("Solution", solutionSchema);
+export default mongoose.models.Industries ||
+  mongoose.model("Industries", industriesSchema);

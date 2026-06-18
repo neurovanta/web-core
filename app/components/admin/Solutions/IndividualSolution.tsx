@@ -17,6 +17,10 @@ interface IndividualSolutionForm {
   isHidden: boolean;
   slug: string;
   seo: { metaTitle: string; metaDescription: string; script: string };
+  thumbnailImage: string;
+  thumbnailImageAlt: string;
+  thumbnailTitle: string;
+  thumbnailDescription: string;
   bannerSection: {
     isHidden: boolean;
     image: string;
@@ -122,6 +126,10 @@ export default function IndividualSolution({
         const { data } = await res.json();
         setValue("isHidden", data.isHidden);
         setValue("slug", data.slug);
+        setValue("thumbnailImage", data.thumbnailImage);
+        setValue("thumbnailImageAlt", data.thumbnailImageAlt);
+        setValue("thumbnailTitle", data.thumbnailTitle);
+        setValue("thumbnailDescription", data.thumbnailDescription);
         setValue("seo", data.seo);
         setValue("bannerSection", data.bannerSection);
         setValue("firstSection", data.firstSection);
@@ -163,7 +171,6 @@ export default function IndividualSolution({
       console.error(e);
     }
   };
-  
 
   useEffect(() => {
     fetchData();
@@ -174,24 +181,25 @@ export default function IndividualSolution({
       <form className="flex flex-col gap-5" onSubmit={handleSubmit(onSubmit)}>
         {/* Banner */}
         <AdminItemContainer>
-          <Label main>Banner Section</Label>
+          <Label
+            main
+            isHidden={watch("bannerSection.isHidden")}
+            onToggleHidden={() =>
+              setValue(
+                "bannerSection.isHidden",
+                !watch("bannerSection.isHidden"),
+              )
+            }
+          >
+            Banner Section
+          </Label>
           <div className="p-5 flex flex-col gap-4">
-            <div className="flex justify-end">
-              <Controller
-                name="bannerSection.isHidden"
-                control={control}
-                render={({ field }) => (
-                  <EyeToggle value={field.value} onChange={field.onChange} />
-                )}
-              />
-            </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="flex flex-col gap-2">
                 <Label className="font-bold">Image</Label>
                 <Controller
                   name="bannerSection.image"
                   control={control}
-                  rules={{ required: "Image is required" }}
                   render={({ field }) => (
                     <ImageUploader
                       value={field.value}
@@ -234,7 +242,7 @@ export default function IndividualSolution({
               <Button
                 type="button"
                 onClick={() => {
-                  const title = watch("bannerSection.title") || "";
+                  const title = watch("thumbnailTitle") || "";
                   const slug = title
                     .toLowerCase()
                     .trim()
@@ -249,22 +257,62 @@ export default function IndividualSolution({
             {errors.slug && (
               <p className="text-red-500">{errors.slug.message}</p>
             )}
+
+            <Label className="font-bold">Thumbnail Image</Label>
+            <Controller
+              name="thumbnailImage"
+              control={control}
+              render={({ field }) => (
+                <ImageUploader value={field.value} onChange={field.onChange} />
+              )}
+            />
+            {errors.thumbnailImage && (
+              <p className="text-red-500">{errors.thumbnailImage.message}</p>
+            )}
+
+            <Label className="font-bold">Thumbnail Image Alt</Label>
+            <Input
+              {...register("thumbnailImageAlt")}
+              placeholder="Thumbnail Image Alt"
+            />
+            {errors.thumbnailImageAlt && (
+              <p className="text-red-500">{errors.thumbnailImageAlt.message}</p>
+            )}
+
+            <Label className="font-bold">Thumbnail Title</Label>
+            <Input
+              {...register("thumbnailTitle")}
+              placeholder="Thumbnail Title"
+            />
+            {errors.thumbnailTitle && (
+              <p className="text-red-500">{errors.thumbnailTitle.message}</p>
+            )}
+
+            <Label className="font-bold">Thumbnail Description</Label>
+            <Input
+              {...register("thumbnailDescription")}
+              placeholder="Thumbnail Description"
+            />
+            {errors.thumbnailDescription && (
+              <p className="text-red-500">
+                {errors.thumbnailDescription.message}
+              </p>
+            )}
           </div>
         </AdminItemContainer>
 
         {/* First Section */}
         <AdminItemContainer>
-          <Label main>First Section</Label>
+          <Label
+            main
+            isHidden={watch("firstSection.isHidden")}
+            onToggleHidden={() =>
+              setValue("firstSection.isHidden", !watch("firstSection.isHidden"))
+            }
+          >
+            First Section
+          </Label>
           <div className="p-5 flex flex-col gap-4">
-            <div className="flex justify-end">
-              <Controller
-                name="firstSection.isHidden"
-                control={control}
-                render={({ field }) => (
-                  <EyeToggle value={field.value} onChange={field.onChange} />
-                )}
-              />
-            </div>
             <Label className="font-bold">Title</Label>
             <Input {...register("firstSection.title")} placeholder="Title" />
             <Label className="font-bold">Sub Title</Label>
@@ -282,17 +330,19 @@ export default function IndividualSolution({
 
         {/* Second Section */}
         <AdminItemContainer>
-          <Label main>Second Section</Label>
+          <Label
+            main
+            isHidden={watch("secondSection.isHidden")}
+            onToggleHidden={() =>
+              setValue(
+                "secondSection.isHidden",
+                !watch("secondSection.isHidden"),
+              )
+            }
+          >
+            Second Section
+          </Label>
           <div className="p-5 flex flex-col gap-4">
-            <div className="flex justify-end">
-              <Controller
-                name="secondSection.isHidden"
-                control={control}
-                render={({ field }) => (
-                  <EyeToggle value={field.value} onChange={field.onChange} />
-                )}
-              />
-            </div>
             <Label className="font-bold">Title</Label>
             <Input {...register("secondSection.title")} placeholder="Title" />
             <Label className="font-bold">Items</Label>
@@ -352,17 +402,16 @@ export default function IndividualSolution({
 
         {/* Third Section */}
         <AdminItemContainer>
-          <Label main>Third Section</Label>
+          <Label
+            main
+            isHidden={watch("thirdSection.isHidden")}
+            onToggleHidden={() =>
+              setValue("thirdSection.isHidden", !watch("thirdSection.isHidden"))
+            }
+          >
+            Third Section
+          </Label>
           <div className="p-5 flex flex-col gap-4">
-            <div className="flex justify-end">
-              <Controller
-                name="thirdSection.isHidden"
-                control={control}
-                render={({ field }) => (
-                  <EyeToggle value={field.value} onChange={field.onChange} />
-                )}
-              />
-            </div>
             <Label className="font-bold">Title</Label>
             <Input {...register("thirdSection.title")} placeholder="Title" />
             <Label className="font-bold">Items</Label>
@@ -423,17 +472,19 @@ export default function IndividualSolution({
 
         {/* Fourth Section */}
         <AdminItemContainer>
-          <Label main>Fourth Section</Label>
+          <Label
+            main
+            isHidden={watch("fourthSection.isHidden")}
+            onToggleHidden={() =>
+              setValue(
+                "fourthSection.isHidden",
+                !watch("fourthSection.isHidden"),
+              )
+            }
+          >
+            Fourth Section
+          </Label>
           <div className="p-5 flex flex-col gap-4">
-            <div className="flex justify-end">
-              <Controller
-                name="fourthSection.isHidden"
-                control={control}
-                render={({ field }) => (
-                  <EyeToggle value={field.value} onChange={field.onChange} />
-                )}
-              />
-            </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="flex flex-col gap-2">
                 <Label className="font-bold">Image</Label>
@@ -471,17 +522,16 @@ export default function IndividualSolution({
 
         {/* Fifth Section */}
         <AdminItemContainer>
-          <Label main>Fifth Section</Label>
+          <Label
+            main
+            isHidden={watch("fifthSection.isHidden")}
+            onToggleHidden={() =>
+              setValue("fifthSection.isHidden", !watch("fifthSection.isHidden"))
+            }
+          >
+            Fifth Section
+          </Label>
           <div className="p-5 flex flex-col gap-4">
-            <div className="flex justify-end">
-              <Controller
-                name="fifthSection.isHidden"
-                control={control}
-                render={({ field }) => (
-                  <EyeToggle value={field.value} onChange={field.onChange} />
-                )}
-              />
-            </div>
             <Label className="font-bold">Title</Label>
             <Input {...register("fifthSection.title")} placeholder="Title" />
             <Label className="font-bold">Description</Label>
@@ -546,17 +596,16 @@ export default function IndividualSolution({
 
         {/* Sixth Section */}
         <AdminItemContainer>
-          <Label main>Sixth Section</Label>
+          <Label
+            main
+            isHidden={watch("sixthSection.isHidden")}
+            onToggleHidden={() =>
+              setValue("sixthSection.isHidden", !watch("sixthSection.isHidden"))
+            }
+          >
+            Sixth Section
+          </Label>
           <div className="p-5 flex flex-col gap-4">
-            <div className="flex justify-end">
-              <Controller
-                name="sixthSection.isHidden"
-                control={control}
-                render={({ field }) => (
-                  <EyeToggle value={field.value} onChange={field.onChange} />
-                )}
-              />
-            </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="flex flex-col gap-2">
                 <Label className="font-bold">Image</Label>
