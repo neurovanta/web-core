@@ -10,7 +10,6 @@ import AdminItemContainer from "@/app/components/admin/common/AdminItemContainer
 import { toast } from "sonner";
 import { useEffect } from "react";
 import { RiDeleteBinLine } from "react-icons/ri";
-import { RiEyeLine, RiEyeOffLine } from "react-icons/ri";
 import { useParams, useRouter } from "next/navigation";
 
 interface IndividualSolutionForm {
@@ -64,26 +63,6 @@ interface IndividualSolutionForm {
   };
 }
 
-const EyeToggle = ({
-  value,
-  onChange,
-}: {
-  value: boolean;
-  onChange: (v: boolean) => void;
-}) =>
-  value ? (
-    <RiEyeOffLine
-      className="cursor-pointer text-gray-500"
-      size={20}
-      onClick={() => onChange(false)}
-    />
-  ) : (
-    <RiEyeLine
-      className="cursor-pointer text-green-600"
-      size={20}
-      onClick={() => onChange(true)}
-    />
-  );
 
 export default function IndividualSolution({
   createMode,

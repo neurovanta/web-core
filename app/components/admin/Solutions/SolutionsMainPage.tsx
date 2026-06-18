@@ -488,12 +488,12 @@ export default function SolutionMainPage() {
                     {isHidden ? (
                       <RiEyeOffLine
                         className="text-gray-400 cursor-pointer hover:scale-120 transition-all"
-                        size={16}
+                        size={22}
                       />
                     ) : (
                       <RiEyeLine
                         className="text-green-600 cursor-pointer hover:scale-120 transition-all"
-                        size={16}
+                        size={22}
                       />
                     )}
                   </div>

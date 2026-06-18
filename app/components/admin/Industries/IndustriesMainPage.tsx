@@ -269,9 +269,9 @@ export default function IndustriesMainPage() {
                 <div className="flex items-center gap-3">
                   <div onClick={(e) => id && toggleIndustryVisibility(e, id, index, isHidden)}>
                     {isHidden ? (
-                      <RiEyeOffLine className="text-gray-400 cursor-pointer hover:scale-120 transition-all" size={16} />
+                      <RiEyeOffLine className="text-gray-400 cursor-pointer hover:scale-120 transition-all" size={22} />
                     ) : (
-                      <RiEyeLine className="text-green-600 cursor-pointer hover:scale-120 transition-all" size={16} />
+                      <RiEyeLine className="text-green-600 cursor-pointer hover:scale-120 transition-all" size={22} />
                     )}
                   </div>
                   <span className="text-sm font-medium">

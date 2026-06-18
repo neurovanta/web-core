@@ -58,9 +58,9 @@ function ClientSideLink({
           }
         }}
         className={cn(
-          "flex items-center px-4 py-2 text-md font-medium rounded-md transition-colors justify-between",
-          "hover:bg-gray-50 hover:text-secondary/80",
-          isActive ? "bg-gray-50" : "text-gray-700",
+          "flex items-center px-4 py-3 text-md font-medium transition-colors justify-between",
+          "hover:bg-primary/40 hover:text-secondary/80",
+          isActive ? "bg-primary text-white" : "text-gray-700",
           className,
         )}
       >
@@ -77,17 +77,23 @@ function ClientSideLink({
       </Link>
       {isOpen && children && (
         <div className="flex pl-14 flex-col items-start gap-2">
-          {children.map((item, index) => (
-            <div key={index} className="flex items-center gap-2">
-              <div>-</div>
-              <Link
-                href={item.href}
-                className="w-full rounded-md cursor-pointer hover:bg-gray-50 hover:text-primary text-[15px] font-medium"
-              >
-                {item.name}
-              </Link>
-            </div>
-          ))}
+          {children.map((item, index) => {
+            const isChildActive = pathname === item.href;
+            return (
+              <div key={index} className="flex items-center gap-2">
+                <div>-</div>
+                <Link
+                  href={item.href}
+                  className={cn(
+                    "w-full rounded-md cursor-pointer hover:bg-gray-50 hover:text-primary text-[15px] font-medium px-2 py-0.5",
+                    isChildActive && "text-primary font-semibold",
+                  )}
+                >
+                  {item.name}
+                </Link>
+              </div>
+            );
+          })}
         </div>
       )}
     </>

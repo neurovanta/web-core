@@ -1,7 +1,7 @@
 "use client";
 
 import ClientSideLink from "@/app/(admin)/admin/client-side-link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   Home,
   Info,
@@ -23,15 +23,6 @@ interface SolutionItem {
 
 const AdminNavbar = () => {
   const [openLink, setOpenLink] = useState<string | null>(null);
-  // const [solutionsList, setSolutionsList] = useState<SolutionItem[]>([]);
-
-  // useEffect(() => {
-  //   fetch("/api/admin/solution")
-  //     .then((r) => r.json())
-  //     .then((d) => setSolutionsList(d.data?.solutions || []))
-  //     .catch(console.error);
-  // }, []);
-
   const navItems = [
     { name: "Home", href: "/admin/home", icon: Home },
     { name: "About", href: "/admin/about", icon: Info },
@@ -42,10 +33,6 @@ const AdminNavbar = () => {
       hasChild: true,
       children: [
         { name: "Main Page", href: "/admin/solutions" },
-        // ...solutionsList.map((s) => ({
-        //   name: s.bannerSection.title || "Untitled",
-        //   href: `/admin/solutions/${s._id}`,
-        // })),
       ],
     },
     {
@@ -71,7 +58,7 @@ const AdminNavbar = () => {
       hasChild: true,
       children: [
         { name: "Main Page", href: "/admin/contact" },
-        { name: "Enquiries", href: "/admin/contact/enquiry" },
+        // { name: "Enquiries", href: "/admin/contact/enquiry" },
       ],
     },
     { name: "Settings", href: "/admin/settings", icon: Settings },

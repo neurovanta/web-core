@@ -61,8 +61,8 @@ const Label = React.forwardRef<
     {main && onToggleHidden !== undefined && (
       <span onClick={(e) => { e.preventDefault(); onToggleHidden(); }} className="cursor-pointer">
         {isHidden
-          ? <RiEyeOffLine className="text-gray-500" size={20} />
-          : <RiEyeLine className="text-green-600" size={20} />
+          ? <RiEyeOffLine className="text-gray-500" size={22} />
+          : <RiEyeLine className="text-green-600" size={22} />
         }
       </span>
     )}

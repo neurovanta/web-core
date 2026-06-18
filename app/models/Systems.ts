@@ -1,14 +1,12 @@
 import mongoose from "mongoose";
 
-const individualIndustrySchema = new mongoose.Schema({
+const individualProductSchema = new mongoose.Schema({
   isHidden: { type: Boolean, default: false },
   slug: { type: String },
+  categoryId: { type: mongoose.Schema.Types.ObjectId, ref: "Systems" },
   thumbnailImage: { type: String },
   thumbnailImageAlt: { type: String },
   thumbnailTitle: { type: String },
-  thumbnailDescription: { type: String },
-  homeAnimatedIcon: { type: String },
-  homeAnimatedIconAlt: { type: String },
   seo: {
     metaTitle: { type: String },
     metaDescription: { type: String },
@@ -16,40 +14,30 @@ const individualIndustrySchema = new mongoose.Schema({
   },
   bannerSection: {
     isHidden: { type: Boolean, default: false },
-    image: { type: String },
-    imageAlt: { type: String },
     title: { type: String },
+    imageAlt: { type: String },
+    image: { type: String },
   },
   firstSection: {
     isHidden: { type: Boolean, default: false },
     title: { type: String },
+    subTitle: { type: String },
     description: { type: String },
-    image: { type: String },
-    imageAlt: { type: String },
   },
   secondSection: {
     isHidden: { type: Boolean, default: false },
     title: { type: String },
-    items: {
-      type: [
-        {
-          title: { type: String },
-          image: { type: String },
-          imageAlt: { type: String },
-        },
-      ],
-      default: [],
-    },
+    description: { type: String },
   },
   thirdSection: {
     isHidden: { type: Boolean, default: false },
-    title: { type: String },
     items: {
       type: [
         {
           title: { type: String },
-          icon: { type: String },
-          iconAlt: { type: String },
+          description: { type: String },
+          image: { type: String },
+          imageAlt: { type: String },
         },
       ],
       default: [],
@@ -58,19 +46,59 @@ const individualIndustrySchema = new mongoose.Schema({
   fourthSection: {
     isHidden: { type: Boolean, default: false },
     title: { type: String },
-    description: { type: String },
-    image: { type: String },
-    imageAlt: { type: String },
+    items: {
+      type: [
+        {
+          category: { type: String },
+          title: { type: String },
+          description: { type: String },
+          items: {
+            type: [
+              {
+                icon: { type: String },
+                iconAlt: { type: String },
+                title: { type: String },
+              },
+            ],
+            default: [],
+          },
+        },
+      ],
+      default: [],
+    },
+    itemsTwo: {
+      type: [
+        {
+          image: { type: String },
+          imageAlt: { type: String },
+        },
+      ],
+      default: [],
+    },
   },
   fifthSection: {
     isHidden: { type: Boolean, default: false },
     title: { type: String },
-    image: { type: String },
-    imageAlt: { type: String },
+    description: { type: String },
+    items: {
+      type: [
+        {
+          image: { type: String },
+          imageAlt: { type: String },
+        },
+      ],
+      default: [],
+    },
   },
 });
 
-const industriesSchema = new mongoose.Schema({
+const categorySchema = new mongoose.Schema({
+  isHidden: { type: Boolean, default: false },
+  title: { type: String },
+  products: { type: [individualProductSchema], default: [] },
+});
+
+const systemsSchema = new mongoose.Schema({
   seo: {
     metaTitle: { type: String },
     metaDescription: { type: String },
@@ -78,20 +106,21 @@ const industriesSchema = new mongoose.Schema({
   },
   bannerSection: {
     isHidden: { type: Boolean, default: false },
-    image: { type: String },
-    imageAlt: { type: String },
     title: { type: String },
+    imageAlt: { type: String },
+    image: { type: String },
   },
   firstSection: {
     isHidden: { type: Boolean, default: false },
     title: { type: String },
+    subTitle: { type: String },
     description: { type: String },
-    image: { type: String },
-    imageAlt: { type: String },
   },
-  industries: {
-    type: [individualIndustrySchema],
-    default: [],
+  secondSection: {
+    isHidden: { type: Boolean, default: false },
+    title: { type: String },
+    description: { type: String },
+    categories: { type: [categorySchema], default: [] },
   },
   thirdSection: {
     isHidden: { type: Boolean, default: false },
@@ -101,5 +130,5 @@ const industriesSchema = new mongoose.Schema({
   },
 });
 
-export default mongoose.models.Industries ||
-  mongoose.model("Industries", industriesSchema);
+export default mongoose.models.Systems ||
+  mongoose.model("Systems", systemsSchema);

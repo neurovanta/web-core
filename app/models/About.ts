@@ -1,14 +1,6 @@
 import mongoose from "mongoose";
 
-const individualIndustrySchema = new mongoose.Schema({
-  isHidden: { type: Boolean, default: false },
-  slug: { type: String },
-  thumbnailImage: { type: String },
-  thumbnailImageAlt: { type: String },
-  thumbnailTitle: { type: String },
-  thumbnailDescription: { type: String },
-  homeAnimatedIcon: { type: String },
-  homeAnimatedIconAlt: { type: String },
+const aboutSchema = new mongoose.Schema({
   seo: {
     metaTitle: { type: String },
     metaDescription: { type: String },
@@ -23,9 +15,8 @@ const individualIndustrySchema = new mongoose.Schema({
   firstSection: {
     isHidden: { type: Boolean, default: false },
     title: { type: String },
+    subtitle: { type: String },
     description: { type: String },
-    image: { type: String },
-    imageAlt: { type: String },
   },
   secondSection: {
     isHidden: { type: Boolean, default: false },
@@ -34,8 +25,9 @@ const individualIndustrySchema = new mongoose.Schema({
       type: [
         {
           title: { type: String },
-          image: { type: String },
-          imageAlt: { type: String },
+          description: { type: String },
+          icon: { type: String },
+          iconAlt: { type: String },
         },
       ],
       default: [],
@@ -59,41 +51,31 @@ const individualIndustrySchema = new mongoose.Schema({
     isHidden: { type: Boolean, default: false },
     title: { type: String },
     description: { type: String },
-    image: { type: String },
-    imageAlt: { type: String },
+    items: {
+      type: [
+        {
+          title: { type: String },
+          image: { type: String },
+          imageAlt: { type: String },
+        },
+      ],
+      default: [],
+    },
   },
   fifthSection: {
     isHidden: { type: Boolean, default: false },
     title: { type: String },
-    image: { type: String },
-    imageAlt: { type: String },
+    items: {
+      type: [
+        {
+          image: { type: String },
+          imageAlt: { type: String },
+        },
+      ],
+      default: [],
+    },
   },
-});
-
-const industriesSchema = new mongoose.Schema({
-  seo: {
-    metaTitle: { type: String },
-    metaDescription: { type: String },
-    script: { type: String },
-  },
-  bannerSection: {
-    isHidden: { type: Boolean, default: false },
-    image: { type: String },
-    imageAlt: { type: String },
-    title: { type: String },
-  },
-  firstSection: {
-    isHidden: { type: Boolean, default: false },
-    title: { type: String },
-    description: { type: String },
-    image: { type: String },
-    imageAlt: { type: String },
-  },
-  industries: {
-    type: [individualIndustrySchema],
-    default: [],
-  },
-  thirdSection: {
+  sixthSection: {
     isHidden: { type: Boolean, default: false },
     title: { type: String },
     image: { type: String },
@@ -101,5 +83,4 @@ const industriesSchema = new mongoose.Schema({
   },
 });
 
-export default mongoose.models.Industries ||
-  mongoose.model("Industries", industriesSchema);
+export default mongoose.models.About || mongoose.model("About", aboutSchema);

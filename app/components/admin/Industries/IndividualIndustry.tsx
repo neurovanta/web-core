@@ -20,6 +20,8 @@ interface IndividualIndustryForm {
   thumbnailImageAlt: string;
   thumbnailTitle: string;
   thumbnailDescription: string;
+  homeAnimatedIcon: string;
+  homeAnimatedIconAlt: string;
   bannerSection: {
     isHidden: boolean;
     image: string;
@@ -99,6 +101,8 @@ export default function IndividualIndustry({
         setValue("thumbnailImageAlt", data.thumbnailImageAlt);
         setValue("thumbnailTitle", data.thumbnailTitle);
         setValue("thumbnailDescription", data.thumbnailDescription);
+        setValue("homeAnimatedIcon", data.homeAnimatedIcon);
+        setValue("homeAnimatedIconAlt", data.homeAnimatedIconAlt);
         setValue("seo", data.seo);
         setValue("bannerSection", data.bannerSection);
         setValue("firstSection", data.firstSection);
@@ -266,6 +270,33 @@ export default function IndividualIndustry({
                 {errors.thumbnailDescription.message}
               </p>
             )}
+          </div>
+
+          <div className="px-5 pb-5 flex gap-4">
+            <div className="flex flex-col gap-4 w-full">
+              <Label className="font-bold">Home Animated Icon</Label>
+              <Controller
+                name="homeAnimatedIcon"
+                control={control}
+                render={({ field }) => (
+                  <ImageUploader value={field.value} onChange={field.onChange} />
+                )}
+              />
+              {errors.homeAnimatedIcon && (
+                <p className="text-red-500">{errors.homeAnimatedIcon.message}</p>
+              )}
+            </div>
+
+            <div className="flex flex-col gap-4 w-full">
+              <Label className="font-bold">Home Animated Icon Alt</Label>
+              <Input
+                {...register("homeAnimatedIconAlt")}
+                placeholder="Home Animated Icon Alt"
+              />
+              {errors.homeAnimatedIconAlt && (
+                <p className="text-red-500">{errors.homeAnimatedIconAlt.message}</p>
+              )}
+            </div>
           </div>
         </AdminItemContainer>
 
