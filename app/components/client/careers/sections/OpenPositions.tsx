@@ -27,7 +27,8 @@ export default function OpenPositions() {
           <motion.div
             initial="hidden"
             whileInView="show"
-            variants={moveUp(0.4)}
+            variants={moveUp(0.2)}
+            viewport={{ once: true }}
           >
             <a
               data-text={mail}
@@ -42,7 +43,9 @@ export default function OpenPositions() {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 sm:border-l border-b sm:border-b-0 border-[#D7D7D7] ">
           {positions.map((pos, i) => (
             <Reveal key={i} variants={moveUpV2} delayRange={i * 0.12}>
-              <div className={`sm:border-r border-t sm:border-t-0 sm:border-b xl:border-b-0 border-[#D7D7D7] sm:pl-50 3xl:pl-[72px] pr-20 flex flex-col pt-20 pb-20 sm:pb-20 xl:pb-0 sm:pt-[36px]`}>
+              <div
+                className={`sm:border-r border-t sm:border-t-0 sm:border-b xl:border-b-0 border-[#D7D7D7] sm:pl-50 3xl:pl-[72px] pr-20 flex flex-col pt-20 pb-20 sm:pb-20 xl:pb-0 sm:pt-[36px]`}
+              >
                 {/* Role label */}
                 <span className="text-19 leading-[1.53] sm:leading-[2.63] md:-tracking-[0.03em] text-secondary mb-[10px]">
                   {pos.role}

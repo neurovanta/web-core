@@ -2,7 +2,7 @@
 
 import { brandsData } from "../data";
 import { AnimatedHeading } from "../../animations/AnimateHeading";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { BrandCard } from "../../common/BrandCard";
