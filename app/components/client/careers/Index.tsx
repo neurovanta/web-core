@@ -7,7 +7,7 @@ import OpenPositions from "./sections/OpenPositions";
 const Index = () => {
   return (
     <>
-      <InnerBanner {...bannerData} />
+      {/* <InnerBanner {...bannerData} /> */}
       <CareerIntro {...careerIntro} />
       <OpenPositions />
       <CurveSlider {...careerCulture} button={true} />

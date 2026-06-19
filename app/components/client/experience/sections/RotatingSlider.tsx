@@ -1,15 +1,14 @@
 "use client";
 
-import { useState, useCallback, useRef, useEffect, useRef as useItemRefs } from "react";
-import { slides } from "../data";
+import { useState, useCallback, useRef, useEffect } from "react";
 import SliderNavButton from "../../common/SliderButton";
 import { AnimatedHeading } from "../../animations/AnimateHeading";
 import { motion, AnimatePresence, easeInOut } from "framer-motion";
 import { moveLeft } from "../../animations/motionVarinats";
 import Image from "next/image";
 import { useLenis } from "../../layout/LenisProvider";
+import { ExperienceType } from "@/app/types/experience";
 
-const TOTAL = slides.length;
 const TRANS_MS = 750;
 const FADE_MS = 270;
 const EASE = "cubic-bezier(0.45, 0, 0.2, 1)";
@@ -28,23 +27,23 @@ function angleOffset(deg: number, r: number) {
   return { x: r * Math.sin(rad), y: -r * Math.cos(rad) };
 }
 
-function MobileAccordion() {
- const [openIndex, setOpenIndex] = useState(0);
- const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
- const { scrollTo } = useLenis();
- 
- const handleToggle = (i: number) => {
-   if (openIndex === i) return;
-   setOpenIndex(i);
-   setTimeout(() => {
-     const el = itemRefs.current[i];
-     if (!el) return;
-     const rect = el.getBoundingClientRect();
-     if (rect.bottom > window.innerHeight - 60) {
-       scrollTo(window.scrollY + rect.top - 500, { duration: 0.8 });
-     }
-   }, 50);
- };
+function MobileAccordion({ data }: { data: ExperienceType["thirdSection"] }) {
+  const [openIndex, setOpenIndex] = useState(0);
+  const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const { scrollTo } = useLenis();
+
+  const handleToggle = (i: number) => {
+    if (openIndex === i) return;
+    setOpenIndex(i);
+    setTimeout(() => {
+      const el = itemRefs.current[i];
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      if (rect.bottom > window.innerHeight - 60) {
+        scrollTo(window.scrollY + rect.top - 500, { duration: 0.8 });
+      }
+    }, 50);
+  };
 
   // const toggle = (i: number) => {
   //   if (openIndex === i) return;
@@ -55,14 +54,20 @@ function MobileAccordion() {
     <section className="md:hidden w-full bg-cream-bg select-none">
       <div className="container py-[60px]">
         <AnimatedHeading
-          title={"The Experience Journey"}
+          title={data.title}
           className="text-heading mb-[30px]"
         />
         <div className="border-b border-[#D7D7D7]">
-          {slides.map((slide, i) => {
+          {data.items.map((slide, i) => {
             const isOpen = openIndex === i;
             return (
-              <div key={i} className="border-t border-[#D7D7D7]" ref={(el) => { itemRefs.current[i] = el; }}>
+              <div
+                key={i}
+                className="border-t border-[#D7D7D7]"
+                ref={(el) => {
+                  itemRefs.current[i] = el;
+                }}
+              >
                 <button
                   onClick={() => handleToggle(i)}
                   className={`flex flex-row items-center justify-between w-full pt-20 focus-visible:outline-none ${isOpen ? "pb-[5px]" : "pb-20"} transition-all duration-400`}
@@ -118,7 +123,13 @@ function MobileAccordion() {
   );
 }
 
-export default function ExperienceJourneySlider() {
+export default function ExperienceJourneySlider({
+  data,
+}: {
+  data: ExperienceType["thirdSection"];
+}) {
+  const TOTAL = data.items.length;
+  const slides = data.items;
   const sectionRef = useRef<HTMLDivElement>(null);
   const [sectionW, setSectionW] = useState(0);
 
@@ -196,7 +207,7 @@ export default function ExperienceJourneySlider() {
 
   return (
     <>
-      <MobileAccordion />
+      <MobileAccordion data={data} />
       <section
         ref={sectionRef}
         className="hidden md:block relative w-full select-none overflow-hidden bg-cream-bg max-h-[580px] lg:max-h-[669px] 3xl:max-h-[779px]"

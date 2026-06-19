@@ -26,6 +26,7 @@ const homeSchema = new mongoose.Schema({
     isHidden: { type: Boolean, default: false },
     title: { type: String },
     description: { type: String },
+    slug: { type: String },
     items: {
       type: [
         {
@@ -41,6 +42,7 @@ const homeSchema = new mongoose.Schema({
     isHidden: { type: Boolean, default: false },
     title: { type: String },
     description: { type: String },
+    slug: { type: String },
     items: {
       type: [
         {
@@ -55,14 +57,6 @@ const homeSchema = new mongoose.Schema({
   fourthSection: {
     isHidden: { type: Boolean, default: false },
     title: { type: String },
-    categories: {
-      type: [{ type: mongoose.Schema.Types.ObjectId, ref: "Systems" }],
-      default: [],
-    },
-    products: {
-      type: [{ type: mongoose.Schema.Types.ObjectId }],
-      default: [],
-    },
   },
   fifthSection: {
     isHidden: { type: Boolean, default: false },
@@ -144,6 +138,11 @@ const homeSchema = new mongoose.Schema({
       ],
       default: [],
     },
+  },
+  ninthSection: {
+    isHidden: { type: Boolean, default: false },
+    title: { type: String },
+    subtitle: { type: String },
   },
 });
 

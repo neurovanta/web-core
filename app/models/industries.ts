@@ -9,6 +9,8 @@ const individualIndustrySchema = new mongoose.Schema({
   thumbnailDescription: { type: String },
   homeAnimatedIcon: { type: String },
   homeAnimatedIconAlt: { type: String },
+  homeAnimatedMobIcon: { type: String },
+  homeAnimatedMobIconAlt: { type: String },
   seo: {
     metaTitle: { type: String },
     metaDescription: { type: String },
@@ -88,6 +90,10 @@ const industriesSchema = new mongoose.Schema({
     description: { type: String },
     image: { type: String },
     imageAlt: { type: String },
+  },
+  secondSection: {
+    isHidden: { type: Boolean, default: false },
+    title: { type: String },
   },
   industries: {
     type: [individualIndustrySchema],

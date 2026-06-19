@@ -63,7 +63,7 @@ export default function AdminLogin() {
           />
           <button
             type="submit"
-            className="w-full py-2.5 bg-primary hover:bg-primary/85 text-secondary text-20 font-medium rounded-lg transition-colors border-2 border-secondary"
+            className="w-full py-2.5 bg-primary hover:bg-primary/85 text-secondary text-20 font-medium rounded-lg transition-colors border-2 border-secondary cursor-pointer"
           >
             Sign in
           </button>

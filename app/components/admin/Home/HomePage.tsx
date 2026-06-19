@@ -5,17 +5,18 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { ImageUploader } from "@/components/ui/image-uploader";
+import { VideoUploader } from "@/components/ui/video-uploader";
 import { Textarea } from "@/components/ui/textarea";
 import AdminItemContainer from "@/app/components/admin/common/AdminItemContainer";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
 import { RiDeleteBinLine } from "react-icons/ri";
 
-interface SystemsCategory {
-  _id: string;
-  title: string;
-  products: { _id: string; thumbnailTitle: string }[];
-}
+// interface SystemsCategory {
+//   _id: string;
+//   title: string;
+//   products: { _id: string; thumbnailTitle: string }[];
+// }
 
 interface HomeForm {
   seo: { metaTitle: string; metaDescription: string; script: string };
@@ -31,19 +32,21 @@ interface HomeForm {
     isHidden: boolean;
     title: string;
     description: string;
+    slug: string;
     items: { title: string; image: string; imageAlt: string }[];
   };
   thirdSection: {
     isHidden: boolean;
     title: string;
     description: string;
+    slug: string;
     items: { title: string; image: string; imageAlt: string }[];
   };
   fourthSection: {
     isHidden: boolean;
     title: string;
-    categories: string[];
-    products: string[];
+    // categories: string[];
+    // products: string[];
   };
   fifthSection: {
     isHidden: boolean;
@@ -65,12 +68,12 @@ interface HomeForm {
   seventhSection: {
     isHidden: boolean;
     title: string;
-    items: {
-      homeAnimatedIcon: string;
-      homeAnimatedIconAlt: string;
-      slug: string;
-      thumbnailTitle: string;
-    }[];
+    // items: {
+    //   homeAnimatedIcon: string;
+    //   homeAnimatedIconAlt: string;
+    //   slug: string;
+    //   thumbnailTitle: string;
+    // }[];
   };
   eighthSection: {
     isHidden: boolean;
@@ -79,16 +82,21 @@ interface HomeForm {
     row2: { image: string; imageAlt: string }[];
     row3: { image: string; imageAlt: string }[];
   };
+  ninthSection: {
+    isHidden: boolean;
+    title: string;
+    subtitle: string;
+  };
 }
 
 export default function HomePage() {
   const { register, handleSubmit, setValue, control, watch } =
     useForm<HomeForm>();
-  const [systemsCategories, setSystemsCategories] = useState<SystemsCategory[]>(
-    [],
-  );
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const [selectedProducts, setSelectedProducts] = useState<string[]>([]);
+  // const [systemsCategories, setSystemsCategories] = useState<SystemsCategory[]>(
+  //   [],
+  // );
+  // const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  // const [selectedProducts, setSelectedProducts] = useState<string[]>([]);
 
   const {
     fields: buttons,
@@ -120,12 +128,12 @@ export default function HomePage() {
     remove: removeSixth,
     replace: replaceSixth,
   } = useFieldArray({ control, name: "sixthSection.items" });
-  const {
-    fields: seventhItems,
-    append: appendSeventh,
-    remove: removeSeventh,
-    replace: replaceSeventh,
-  } = useFieldArray({ control, name: "seventhSection.items" });
+  // const {
+  //   fields: seventhItems,
+  //   append: appendSeventh,
+  //   remove: removeSeventh,
+  //   replace: replaceSeventh,
+  // } = useFieldArray({ control, name: "seventhSection.items" });
   const {
     fields: row1Items,
     append: appendRow1,
@@ -160,25 +168,26 @@ export default function HomePage() {
         setValue("sixthSection", data.sixthSection);
         setValue("seventhSection", data.seventhSection);
         setValue("eighthSection", data.eighthSection);
-        setSystemsCategories(categories || []);
+        setValue("ninthSection", data.ninthSection);
+        // setSystemsCategories(categories || []);
 
         replaceButtons(data.firstSection?.buttons || []);
         replaceSecond(data.secondSection?.items || []);
         replaceThird(data.thirdSection?.items || []);
         replaceFifth(data.fifthSection?.items || []);
         replaceSixth(data.sixthSection?.items || []);
-        replaceSeventh(data.seventhSection?.items || []);
+        // replaceSeventh(data.seventhSection?.items || []);
         replaceRow1(data.eighthSection?.row1 || []);
         replaceRow2(data.eighthSection?.row2 || []);
         replaceRow3(data.eighthSection?.row3 || []);
-        const cats = (data.fourthSection?.categories || []).map((c: unknown) =>
-          String(c),
-        );
-        const prods = (data.fourthSection?.products || []).map((p: unknown) =>
-          String(p),
-        );
-        setSelectedCategories(cats);
-        setSelectedProducts(prods);
+        // const cats = (data.fourthSection?.categories || []).map((c: unknown) =>
+        //   String(c),
+        // );
+        // const prods = (data.fourthSection?.products || []).map((p: unknown) =>
+        //   String(p),
+        // );
+        // setSelectedCategories(cats);
+        // setSelectedProducts(prods);
       } else {
         const { message } = await res.json();
         toast.error(message);
@@ -194,8 +203,8 @@ export default function HomePage() {
         ...data,
         fourthSection: {
           ...data.fourthSection,
-          categories: selectedCategories,
-          products: selectedProducts,
+          // categories: selectedCategories,
+          // products: selectedProducts,
         },
       };
       const res = await fetch("/api/admin/home", {
@@ -214,17 +223,17 @@ export default function HomePage() {
     }
   };
 
-  const toggleCategory = (id: string) => {
-    setSelectedCategories((prev) =>
-      prev.includes(id) ? prev.filter((c) => c !== id) : [...prev, id],
-    );
-  };
+  // const toggleCategory = (id: string) => {
+  //   setSelectedCategories((prev) =>
+  //     prev.includes(id) ? prev.filter((c) => c !== id) : [...prev, id],
+  //   );
+  // };
 
-  const toggleProduct = (id: string) => {
-    setSelectedProducts((prev) =>
-      prev.includes(id) ? prev.filter((p) => p !== id) : [...prev, id],
-    );
-  };
+  // const toggleProduct = (id: string) => {
+  //   setSelectedProducts((prev) =>
+  //     prev.includes(id) ? prev.filter((p) => p !== id) : [...prev, id],
+  //   );
+  // };
 
   useEffect(() => {
     fetchData();
@@ -254,7 +263,7 @@ export default function HomePage() {
                   name="firstSection.video"
                   control={control}
                   render={({ field }) => (
-                    <ImageUploader
+                    <VideoUploader
                       value={field.value}
                       onChange={field.onChange}
                     />
@@ -350,6 +359,8 @@ export default function HomePage() {
               {...register("secondSection.description")}
               placeholder="Description"
             />
+            <Label className="font-bold">Slug</Label>
+            <Input {...register("secondSection.slug")} placeholder="Slug" />
             <div className="flex items-center justify-between mt-2">
               <Label className="font-bold">Items</Label>
               <Button
@@ -430,6 +441,8 @@ export default function HomePage() {
               {...register("thirdSection.description")}
               placeholder="Description"
             />
+            <Label className="font-bold">Slug</Label>
+            <Input {...register("thirdSection.slug")} placeholder="Slug" />
             <div className="flex items-center justify-between mt-2">
               <Label className="font-bold">Items</Label>
               <Button
@@ -508,7 +521,7 @@ export default function HomePage() {
           <div className="p-5 flex flex-col gap-4">
             <Label className="font-bold">Title</Label>
             <Input {...register("fourthSection.title")} placeholder="Title" />
-            <div className="flex flex-col gap-3 mt-2">
+            {/* <div className="flex flex-col gap-3 mt-2">
               {systemsCategories.length === 0 && (
                 <p className="text-sm text-black/40">
                   No categories found in Systems.
@@ -563,7 +576,7 @@ export default function HomePage() {
                   </div>
                 </div>
               ))}
-            </div>
+            </div> */}
           </div>
         </AdminItemContainer>
 
@@ -770,7 +783,7 @@ export default function HomePage() {
           <div className="p-5 flex flex-col gap-4">
             <Label className="font-bold">Title</Label>
             <Input {...register("seventhSection.title")} placeholder="Title" />
-            <div className="flex items-center justify-between mt-2">
+            {/* <div className="flex items-center justify-between mt-2">
               <Label className="font-bold">Items</Label>
               <Button
                 type="button"
@@ -841,7 +854,7 @@ export default function HomePage() {
                   </div>
                 </div>
               ))}
-            </div>
+            </div> */}
           </div>
         </AdminItemContainer>
 
@@ -925,6 +938,26 @@ export default function HomePage() {
                 </div>
               );
             })}
+          </div>
+        </AdminItemContainer>
+
+        <AdminItemContainer>
+          <Label main>Ninth Section</Label>
+          <div className="p-5 flex flex-col gap-4">
+            <div className="flex flex-col gap-2">
+              <Label className="font-bold">Title</Label>
+              <Input
+                {...register("ninthSection.title")}
+                placeholder="Title"
+              />
+            </div>
+            <div className="flex flex-col gap-2">
+              <Label className="font-bold">Subtitle</Label>
+              <Input
+                {...register("ninthSection.subtitle")}
+                placeholder="Subtitle"
+              />
+            </div>
           </div>
         </AdminItemContainer>
 

@@ -6,6 +6,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAP } from "@gsap/react";
 import CircleAnimation from "../../common/CircleAnimation";
+import { SolutionType } from "@/app/types/solution";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
@@ -35,41 +36,13 @@ const STACK_CONFIG: StackItem[] = [
   { rotation: 0, dx: 0, dy: 0 },
 ];
 
-interface ImageItem {
-  src: string;
-  alt: string;
-}
-
-const IMAGES: ImageItem[] = [
-  {
-    src: "/assets/images/solutions/solutions-animated/2.jpg",
-    alt: "Wellness room",
-  },
-  {
-    src: "/assets/images/solutions/solutions-animated/4.jpg",
-    alt: "Therapy session",
-  },
-  {
-    src: "/assets/images/solutions/solutions-animated/5.jpg",
-    alt: "Infrared panel",
-  },
-  {
-    src: "/assets/images/solutions/solutions-animated/1.jpg",
-    alt: "Red light therapy session",
-  },
-  {
-    src: "/assets/images/solutions/solutions-animated/6.jpg",
-    alt: "Wellness space",
-  },
-  {
-    src: "/assets/images/solutions/solutions-animated/3.jpg",
-    alt: "Light panel",
-  },
-];
-
 // ─────────────────────────────────────────────────────────────────────────────
 
-export default function MoreThanSolutions() {
+export default function MoreThanSolutions({
+  data,
+}: {
+  data: SolutionType["fourthSection"];
+}) {
   const sectionRef = useRef<HTMLElement>(null);
   const stackRef = useRef<HTMLDivElement>(null);
   const imgRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -190,7 +163,7 @@ export default function MoreThanSolutions() {
             className="relative"
             style={{ width: IMG_W, height: IMG_H }}
           >
-            {IMAGES.map((img, i) => (
+            {data.items.map((item, i) => (
               <div
                 key={i}
                 ref={(el) => {
@@ -200,8 +173,8 @@ export default function MoreThanSolutions() {
                 style={{ width: IMG_W, height: IMG_H, zIndex: i + 1 }}
               >
                 <Image
-                  src={img.src}
-                  alt={img.alt}
+                  src={item.image}
+                  alt={item.imageAlt}
                   width={IMG_W}
                   height={IMG_H}
                   draggable={false}

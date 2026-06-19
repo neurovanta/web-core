@@ -1,16 +1,22 @@
 import InnerBanner from "../common/InnerBanner";
 import InnerCta from "../common/InnerCta";
-import { bannerData, ctaBannerData, introData, industriesData } from "./data";
 import DescImageIntro from "../common/DescImageIntro";
 import IndustriesWeServe from "./sections/IndustriesWeServe";
+import { Industries } from "@/app/types/industry";
 
-const Index = () => {
+const Index = ({ data }: { data: Industries }) => {
   return (
     <>
-      <InnerBanner {...bannerData} />
-      <DescImageIntro data={introData} />
-      <IndustriesWeServe data={industriesData} />
-      <InnerCta data={ctaBannerData} maxW="max-w-[18ch]" />
+      <InnerBanner data={data.bannerSection} />
+      <DescImageIntro data={data.firstSection} />
+      <IndustriesWeServe data={{ title: data.secondSection.title, items: data.industries }} />
+      <InnerCta
+        data={{
+          bgImage: data.thirdSection.image,
+          title: data.thirdSection.title,
+        }}
+        maxW="max-w-[18ch]"
+      />
     </>
   );
 };

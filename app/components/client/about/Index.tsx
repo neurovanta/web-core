@@ -1,22 +1,45 @@
 import InnerBanner from "../common/InnerBanner";
 import SectionHeader from "../common/SectionHeader";
-import { bannerData, sectionHeaderData, whySetsUsApartData, ctaBannerData, approachData } from "./data";
 import InfiniteClients from "./sections/InfiniteClients";
 import Purposes from "./sections/Purposes";
 import InnerCta from "../common/InnerCta";
 import CommonSlider from "../common/CommonSlider";
 import TabsImage from "../common/TabsImage";
+import { AboutType } from "@/app/types/about";
 
-const Index = () => {
+const Index = ({ data }: { data: AboutType }) => {
   return (
     <>
-      <InnerBanner {...bannerData} />
-      <SectionHeader {...sectionHeaderData} maxWDescription="max-w-[949px]" />
-      <Purposes />
-      <CommonSlider data={whySetsUsApartData} />
-      <TabsImage data={approachData} />
-      <InfiniteClients />
-      <InnerCta data={ctaBannerData} maxW="max-w-[19ch]" />
+      <InnerBanner data={data.bannerSection} />
+      <SectionHeader data={data.firstSection} maxWDescription="max-w-[949px]" />
+      <Purposes data={data.secondSection} />
+      <CommonSlider
+        data={{
+          heading: data.thirdSection.title,
+          slides: data.thirdSection.items.map((item) => ({
+            icon: item.icon,
+            title: item.title,
+          })),
+        }}
+      />
+      <TabsImage
+        data={{
+          title: data.fourthSection.title,
+          subtitle: data.fourthSection.description,
+          tabs: data.fourthSection.items.map((item) => ({
+            title: item.title,
+            image: item.image,
+          })),
+        }}
+      />
+      <InfiniteClients data={data.fifthSection} />
+      <InnerCta
+        data={{
+          bgImage: data.sixthSection.image,
+          title: data.sixthSection.title,
+        }}
+        maxW="max-w-[19ch]"
+      />
     </>
   );
 };

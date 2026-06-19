@@ -9,6 +9,7 @@ import { AnimatedHeading } from "../../animations/AnimateHeading";
 import { motion } from "framer-motion";
 import { moveUp } from "../../animations/motionVarinats";
 import { useState, useEffect } from "react";
+import { HomeType } from "@/app/types/home";
 
 interface FormData {
   firstName: string;
@@ -26,7 +27,7 @@ const COMPANY_OPTIONS = [
   { value: "nonprofit", label: "Non-profit" },
 ];
 
-export default function BeginHerePage() {
+export default function BeginHerePage({data}: {data: HomeType["ninthSection"]}) {
   const {
     register,
     handleSubmit,
@@ -67,11 +68,11 @@ export default function BeginHerePage() {
       <div className="container">
         <div className="mb-[30px] sm:mb-60 md:mb-100">
           <AnimatedHeading
-            title="Where Intelligence Meets Longevity"
+            title={data.title}
             className="text-heading text-secondary mb-[5px] sm:mb-20"
           />
           <AnimatedHeading
-            title="BEGIN HERE."
+            title={data.subtitle}
             className="text-150 text-secondary leading-none"
             mode="reveal"
           />

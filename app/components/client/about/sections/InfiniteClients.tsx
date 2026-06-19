@@ -2,14 +2,18 @@
 
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
-import { brandsData } from "../data";
 import { BrandCard } from "@/app/components/client/common/BrandCard";
 import { AnimatedHeading } from "@/app/components/client/animations/AnimateHeading";
 import { useContainerInset } from "@/app/hooks/useContainerInset";
 import { ElasticEffect } from "../../animations/ElasticEffect";
+import { AboutType } from "@/app/types/about";
 
-export default function InfiniteClients() {
-  const { title, brands } = brandsData;
+export default function InfiniteClients({
+  data,
+}: {
+  data: AboutType["fifthSection"];
+}) {
+  const { title, items } = data;
 
   const isDesktopRef = useRef(false);
   const viewportRef = useRef<HTMLDivElement | null>(null);
@@ -92,8 +96,8 @@ export default function InfiniteClients() {
             ref={trackRef}
             className="flex w-max items-center gap-[10px] sm:gap-[20px] 3xl:gap-[24px]"
           >
-            {brands.map((brand) => (
-              <BrandCard key={brand.id} brand={brand} />
+            {items.map((item, i) => (
+              <BrandCard key={i} brand={item} />
             ))}
           </div>
         </div>

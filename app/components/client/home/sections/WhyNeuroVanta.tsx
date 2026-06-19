@@ -7,10 +7,11 @@ import "swiper/css";
 import Image from "next/image";
 import { AnimatedHeading } from "../../animations/AnimateHeading";
 import Reveal from "../../animations/RevealItemsOneByOneAnimation";
-import { moveUp, moveUpV2 } from "../../animations/motionVarinats";
+import { moveUpV2 } from "../../animations/motionVarinats";
 import { motion } from "framer-motion";
 import { ElasticEffect } from "../../animations/ElasticEffect";
 import SliderNavButton from "../../common/SliderButton";
+import { HomeType } from "@/app/types/home";
 
 export type WhySlide = {
   icon: string;
@@ -58,13 +59,15 @@ function SlideCard({
       <span
         className="absolute inset-x-0 top-0 h-px pointer-events-none sm:hidden"
         style={{
-          background: "linear-gradient(270deg, rgba(251, 247, 244, 0.1) 0%, #FBF7F4 48.08%, rgba(251, 247, 244, 0.1) 100%)",
+          background:
+            "linear-gradient(270deg, rgba(251, 247, 244, 0.1) 0%, #FBF7F4 48.08%, rgba(251, 247, 244, 0.1) 100%)",
         }}
       />
       <span
         className="absolute inset-x-0 bottom-0 h-px pointer-events-none sm:hidden"
         style={{
-          background: "linear-gradient(270deg, rgba(251, 247, 244, 0.1) 0%, #FBF7F4 48.08%, rgba(251, 247, 244, 0.1) 100%)",
+          background:
+            "linear-gradient(270deg, rgba(251, 247, 244, 0.1) 0%, #FBF7F4 48.08%, rgba(251, 247, 244, 0.1) 100%)",
         }}
       />
 
@@ -115,8 +118,18 @@ function SlideCard({
   );
 }
 
-export default function WhySection({ data }: { data: WhySectionData }) {
-  const { heading, slides } = data;
+export default function WhySection({
+  data,
+}: {
+  data: HomeType["sixthSection"];
+}) {
+  const slides: WhySlide[] = data.items.map((item) => ({
+    icon: item.icon,
+    title: item.title,
+    description: item.description,
+  }));
+
+  const { title } = data;
   const swiperRef = useRef<SwiperType | null>(null);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isHoveringRef = useRef(false);
@@ -127,13 +140,13 @@ export default function WhySection({ data }: { data: WhySectionData }) {
   const [nextDisabled, setNextDisabled] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
 
-    const updateNavState = (swiper: SwiperType) => {
+  const updateNavState = (swiper: SwiperType) => {
     // Show nav only if not all slides are visible at once
     const slidesPerView = swiper.params.slidesPerView as number;
     setShowNav(slides.length > Math.floor(slidesPerView));
     setPrevDisabled(swiper.isBeginning);
     setNextDisabled(swiper.isEnd);
-setActiveIndex(swiper.activeIndex);
+    setActiveIndex(swiper.activeIndex);
   };
 
   const getSlidesPerView = useCallback((): number => {
@@ -224,7 +237,7 @@ setActiveIndex(swiper.activeIndex);
       <ElasticEffect />
       <div className="container flex flex-col sm:flex-row justify-between items-start">
         <AnimatedHeading
-          title={heading}
+          title={title}
           className="text-heading mb-[15px] sm:mb-20 lg:mb-60 text-secondary w-full"
           mode="reveal"
         />

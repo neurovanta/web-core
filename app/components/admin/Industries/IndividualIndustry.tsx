@@ -22,6 +22,8 @@ interface IndividualIndustryForm {
   thumbnailDescription: string;
   homeAnimatedIcon: string;
   homeAnimatedIconAlt: string;
+  homeAnimatedMobIcon: string;
+  homeAnimatedMobIconAlt: string;
   bannerSection: {
     isHidden: boolean;
     image: string;
@@ -103,6 +105,8 @@ export default function IndividualIndustry({
         setValue("thumbnailDescription", data.thumbnailDescription);
         setValue("homeAnimatedIcon", data.homeAnimatedIcon);
         setValue("homeAnimatedIconAlt", data.homeAnimatedIconAlt);
+        setValue("homeAnimatedMobIcon", data.homeAnimatedMobIcon);
+        setValue("homeAnimatedMobIconAlt", data.homeAnimatedMobIconAlt);
         setValue("seo", data.seo);
         setValue("bannerSection", data.bannerSection);
         setValue("firstSection", data.firstSection);
@@ -279,11 +283,16 @@ export default function IndividualIndustry({
                 name="homeAnimatedIcon"
                 control={control}
                 render={({ field }) => (
-                  <ImageUploader value={field.value} onChange={field.onChange} />
+                  <ImageUploader
+                    value={field.value}
+                    onChange={field.onChange}
+                  />
                 )}
               />
               {errors.homeAnimatedIcon && (
-                <p className="text-red-500">{errors.homeAnimatedIcon.message}</p>
+                <p className="text-red-500">
+                  {errors.homeAnimatedIcon.message}
+                </p>
               )}
             </div>
 
@@ -294,7 +303,43 @@ export default function IndividualIndustry({
                 placeholder="Home Animated Icon Alt"
               />
               {errors.homeAnimatedIconAlt && (
-                <p className="text-red-500">{errors.homeAnimatedIconAlt.message}</p>
+                <p className="text-red-500">
+                  {errors.homeAnimatedIconAlt.message}
+                </p>
+              )}
+            </div>
+          </div>
+
+          <div className="px-5 pb-5 flex gap-4">
+            <div className="flex flex-col gap-4 w-full">
+              <Label className="font-bold">Home Animated Mobile Icon</Label>
+              <Controller
+                name="homeAnimatedMobIcon"
+                control={control}
+                render={({ field }) => (
+                  <ImageUploader
+                    value={field.value}
+                    onChange={field.onChange}
+                  />
+                )}
+              />
+              {errors.homeAnimatedMobIcon && (
+                <p className="text-red-500">
+                  {errors.homeAnimatedMobIcon.message}
+                </p>
+              )}
+            </div>
+
+            <div className="flex flex-col gap-4 w-full">
+              <Label className="font-bold">Home Animated Mobile Icon Alt</Label>
+              <Input
+                {...register("homeAnimatedMobIconAlt")}
+                placeholder="Home Animated Mob Icon Alt"
+              />
+              {errors.homeAnimatedMobIconAlt && (
+                <p className="text-red-500">
+                  {errors.homeAnimatedMobIconAlt.message}
+                </p>
               )}
             </div>
           </div>

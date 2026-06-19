@@ -3,6 +3,7 @@
 import CustomButton from "@/app/components/client/common/CustomButton";
 import { motion } from "framer-motion";
 import { useAppShell } from "@/app/components/client/layout/AppShell";
+import { HomeType } from "@/app/types/home";
 
 // Small clip-up reveal for title
 const titleVariant = {
@@ -11,7 +12,11 @@ const titleVariant = {
     y: 0,
     opacity: 1,
     clipPath: "inset(0% 0% 0% 0%)",
-    transition: { delay: 0.1, duration: 0.9, ease: [0.33, 1, 0.68, 1] as [number, number, number, number] },
+    transition: {
+      delay: 0.1,
+      duration: 0.9,
+      ease: [0.33, 1, 0.68, 1] as [number, number, number, number],
+    },
   },
 };
 
@@ -21,11 +26,19 @@ const btnVariant = (delay: number) => ({
   visible: {
     y: 0,
     opacity: 1,
-    transition: { delay, duration: 0.7, ease: [0.33, 1, 0.68, 1] as [number, number, number, number] },
+    transition: {
+      delay,
+      duration: 0.7,
+      ease: [0.33, 1, 0.68, 1] as [number, number, number, number],
+    },
   },
 });
 
-export default function HeroSection() {
+export default function HeroSection({
+  data,
+}: {
+  data: HomeType["firstSection"];
+}) {
   const { animateIn } = useAppShell();
 
   return (
@@ -44,16 +57,14 @@ export default function HeroSection() {
       <div className="absolute inset-0 bg-black/65" />
 
       <div className="container relative z-10 flex flex-col items-center text-center gap-20 sm:gap-50">
-
         {/* Title — clips up from bottom */}
         <motion.h1
           className="text-70 text-white text-center uppercase leading-[1.142] max-w-[1135px]"
           initial="hidden"
           animate={animateIn ? "visible" : "hidden"}
           variants={titleVariant}
-        >
-          Advanced Longevity. <br /> Designed for Life Performance.
-        </motion.h1>
+          dangerouslySetInnerHTML={{ __html: data.title }}
+        />
 
         {/* Buttons — one by one after title */}
         <div className="flex items-center gap-[10px] sm:gap-20 flex-wrap justify-center">
@@ -62,7 +73,11 @@ export default function HeroSection() {
             animate={animateIn ? "visible" : "hidden"}
             variants={btnVariant(0.55)}
           >
-            <CustomButton label="Longevity Systems" href="/longevity-systems" variant={1} />
+            <CustomButton
+              label={data.buttons[0].label}
+              href={data.buttons[0].href}
+              variant={1}
+            />
           </motion.div>
 
           {/* <motion.div
@@ -73,7 +88,6 @@ export default function HeroSection() {
             <CustomButton label="For Individual" href="#" variant={1} />
           </motion.div> */}
         </div>
-
       </div>
     </section>
   );

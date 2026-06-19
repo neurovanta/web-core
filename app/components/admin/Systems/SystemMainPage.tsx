@@ -257,6 +257,29 @@ export default function SystemsMainPage() {
             />
           </div>
         </AdminItemContainer>
+        
+
+        {/* Second Section */}
+        <AdminItemContainer>
+          <Label
+            main
+            isHidden={watch("secondSection.isHidden")}
+            onToggleHidden={() =>
+              setValue("secondSection.isHidden", !watch("secondSection.isHidden"))
+            }
+          >
+            Second Section
+          </Label>
+          <div className="p-5 flex flex-col gap-4">
+            <Label className="font-bold">Title</Label>
+            <Input {...register("secondSection.title")} placeholder="Title" />
+            <Label className="font-bold">Description</Label>
+            <Textarea
+              {...register("secondSection.description")}
+              placeholder="Description"
+            />
+          </div>
+        </AdminItemContainer>
 
         {/* Third Section */}
         <AdminItemContainer>

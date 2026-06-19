@@ -15,10 +15,6 @@ interface InnerCtaProps {
   data: {
     bgImage: string;
     title: string;
-    btn: {
-      label: string;
-      href: string;
-    };
   };
   maxW?: string;
 }
@@ -43,7 +39,7 @@ export default function InnerCta({ data, maxW = "" }: InnerCtaProps) {
           end: "bottom top",
           scrub: true,
         },
-      }
+      },
     );
   }, []);
 
@@ -75,11 +71,7 @@ export default function InnerCta({ data, maxW = "" }: InnerCtaProps) {
         />
 
         <div>
-          <CustomButton
-            label={data.btn.label}
-            href={data.btn.href}
-            variant={1}
-          />
+          <CustomButton label="Contact Us" href="/contact-us" variant={1} />
         </div>
       </div>
     </section>

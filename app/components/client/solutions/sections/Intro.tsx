@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import { introData } from "../data";
 import { AnimatedHeading } from "@/app/components/client/animations/AnimateHeading";
 import { SectionDescription } from "../../animations/SectionDescription";
 import { useGSAP } from "@gsap/react";
@@ -9,11 +8,16 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useRef } from "react";
 import { ElasticEffect } from "../../animations/ElasticEffect";
+import { SolutionType } from "@/app/types/solution";
 
 gsap.registerPlugin(ScrollTrigger);
 
-export default function Intro() {
-  const { title, description, image, imageAlt } = introData;
+export default function Intro({
+  data,
+}: {
+  data: SolutionType["firstSection"];
+}) {
+  const { title, description, image, imageAlt } = data;
   const sectionRef = useRef<HTMLDivElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
 
@@ -33,7 +37,7 @@ export default function Intro() {
           end: "bottom top",
           scrub: true,
         },
-      }
+      },
     );
   }, []);
 
@@ -56,9 +60,7 @@ export default function Intro() {
         </div>
 
         {/* Right — image */}
-        <div
-          className="w-full lg:w-1/2 aspect-[4/3] lg:aspect-auto max-[430px]:max-h-[201px] min-[431px]:h-[400px] sm:max-h-auto lg:h-[500px] 3xl:h-[575px] relative overflow-hidden"
-        >
+        <div className="w-full lg:w-1/2 aspect-[4/3] lg:aspect-auto max-[430px]:max-h-[201px] min-[431px]:h-[400px] sm:max-h-auto lg:h-[500px] 3xl:h-[575px] relative overflow-hidden">
           <div ref={imageRef} className="relative w-full h-full">
             <ElasticEffect />
             <Image src={image} alt={imageAlt} fill className="object-cover" />

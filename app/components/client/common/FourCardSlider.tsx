@@ -16,22 +16,23 @@ import { motion } from "framer-motion";
 interface FourCardSliderProps {
   data: {
     title: string;
-    slides: {
+    items: {
       title: string;
       image: string;
+      imageAlt: string;
     }[];
   };
 }
 
 export default function FourCardSlider({ data }: FourCardSliderProps) {
-  const { title, slides } = data;
+  const { title, items } = data;
   const swiperRef = useRef<SwiperType | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [slidesPerView, setSlidesPerView] = useState(4);
   const [prevDisabled, setPrevDisabled] = useState(true);
   const [nextDisabled, setNextDisabled] = useState(false);
 
-  const totalSlides = slides.length;
+  const totalSlides = items.length;
   const isSliding = slidesPerView < totalSlides;
   const totalDots = Math.ceil(totalSlides / slidesPerView);
   const activeDotIndex = Math.floor(activeIndex / slidesPerView);
@@ -107,20 +108,20 @@ export default function FourCardSlider({ data }: FourCardSliderProps) {
           centeredSlidesBounds={true}
           className="!overflow-visible min-[460px]:!overflow-hidden"
         >
-          {slides.map((slide, i) => (
+          {items.map((item, i) => (
             <SwiperSlide key={i}>
               <Reveal variants={moveUpV2} delayRange={i * 0.15}>
                 <div className="relative w-full group h-[359px] md:h-[440px] lg:h-[500px] 3xl:h-[609px] overflow-hidden">
                   <ElasticEffect />
                   <Image
-                    src={slide.image}
-                    alt={slide.title}
+                    src={item.image}
+                    alt={item.imageAlt}
                     fill
                     className="object-cover pointer-events-none group-hover:scale-105 transition-all duration-700"
                   />
                   <div className="absolute left-0 right-0 bottom-0 h-[306px] w-full z-30 bg-linear-to-b from-transparent to-black opacity-80" />
                   <p className="absolute bottom-0 left-0 right-0 z-40 text-white text-subHeading px-30 3xl:px-40 py-40 -tracking-[0.03em]">
-                    {slide.title}
+                    {item.title}
                   </p>
                 </div>
               </Reveal>
