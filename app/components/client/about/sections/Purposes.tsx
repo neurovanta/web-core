@@ -5,17 +5,17 @@ import { useRef, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import type { Swiper as SwiperType } from "swiper";
 import "swiper/css";
-import { purposesData } from "../data";
 import { AnimatedHeading } from "@/app/components/client/animations/AnimateHeading";
 import Reveal from "../../animations/RevealItemsOneByOneAnimation";
 import { moveUpV2 } from "../../animations/motionVarinats";
 import { ElasticEffect } from "../../animations/ElasticEffect";
+import { AboutType } from "@/app/types/about";
 
-export default function Purposes() {
+export default function Purposes({ data }: { data: AboutType["secondSection"] }) {
   const swiperRef = useRef<SwiperType | null>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [slidesPerView, setSlidesPerView] = useState(1);
-  const totalSlides = purposesData.length;
+  const totalSlides = data.items.length;
 
   const isSliding = slidesPerView < totalSlides;
   const totalDots = Math.ceil(totalSlides / slidesPerView);
@@ -44,7 +44,7 @@ export default function Purposes() {
 
         {/* Mobile: no Swiper */}
         <div className="flex flex-col md:hidden">
-          {purposesData.map((item, i) => (
+          {data.items.map((item, i) => (
             <div key={i}>
               {i > 0 && (
                 <div
@@ -59,8 +59,8 @@ export default function Purposes() {
                 <div className="flex flex-col flex-1">
                   <div className="w-[40px] h-[40px] sm:w-[55px] sm:h-[55px] relative shrink-0 mb-[15px] sm:mb-20">
                     <Image
-                      src={item.image}
-                      alt={item.title}
+                      src={item.icon}
+                      alt={item.iconAlt}
                       fill
                       className="object-contain pointer-events-none"
                     />
@@ -99,7 +99,7 @@ export default function Purposes() {
             }}
             allowTouchMove={isSliding}
           >
-            {purposesData.map((item, i) => (
+            {data.items.map((item, i) => (
               <SwiperSlide key={i}>
                 <Reveal variants={moveUpV2} delayRange={i * 0.14}>
                   <div className="flex items-stretch">
@@ -113,8 +113,8 @@ export default function Purposes() {
                     <div className="flex flex-col flex-1 max-w-[490px]">
                       <div className="w-[70px] h-[70px] relative shrink-0 mb-50">
                         <Image
-                          src={item.image}
-                          alt={item.title}
+                          src={item.icon}
+                          alt={item.iconAlt}
                           fill
                           className="object-contain pointer-events-none"
                         />

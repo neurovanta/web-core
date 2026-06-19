@@ -1,87 +1,114 @@
-// ─── Shared ───────────────────────────────────────────────────────────────────
-
-interface WithHidden {
-  isHidden: boolean;
-}
-
-// ─── Individual Solution ───────────────────────────────────────────────────────
-
-export interface IndividualSolution {
+export interface IndividualSolutionType {
   _id: string;
   isHidden: boolean;
   slug: string;
+  thumbnailImage: string;
+  thumbnailImageAlt: string;
+  thumbnailTitle: string;
+  thumbnailDescription: string;
   seo: {
     metaTitle: string;
     metaDescription: string;
     script: string;
   };
-  bannerSection: WithHidden & {
+  bannerSection: {
+    isHidden: boolean;
     image: string;
     imageAlt: string;
     title: string;
   };
-  firstSection: WithHidden & {
+  firstSection: {
+    isHidden: boolean;
     title: string;
     subTitle: string;
     description: string;
   };
-  secondSection: WithHidden & {
+  secondSection: {
+    isHidden: boolean;
     title: string;
-    items: { title: string; image: string; imageAlt: string }[];
+    items: {
+      title: string;
+      image: string;
+      imageAlt: string;
+    }[];
   };
-  thirdSection: WithHidden & {
+  thirdSection: {
+    isHidden: boolean;
     title: string;
-    items: { title: string; icon: string; iconAlt: string }[];
+    items: {
+      title: string;
+      icon: string;
+      iconAlt: string;
+    }[];
   };
-  fourthSection: WithHidden & {
+  fourthSection: {
+    isHidden: boolean;
     title: string;
     description: string;
     image: string;
     imageAlt: string;
   };
-  fifthSection: WithHidden & {
+  fifthSection: {
+    isHidden: boolean;
     title: string;
     description: string;
-    items: { title: string; image: string; imageAlt: string }[];
+    items: {
+      title: string;
+      image: string;
+      imageAlt: string;
+    }[];
   };
-  sixthSection: WithHidden & {
+  sixthSection: {
+    isHidden: boolean;
     title: string;
     image: string;
     imageAlt: string;
   };
 }
 
-// ─── Main Solution Page ────────────────────────────────────────────────────────
-
 export interface SolutionType {
+  _id: string;
   seo: {
     metaTitle: string;
     metaDescription: string;
     script: string;
   };
-  bannerSection: WithHidden & {
+  bannerSection: {
+    isHidden: boolean;
     image: string;
     imageAlt: string;
     title: string;
   };
-  firstSection: WithHidden & {
+  firstSection: {
+    isHidden: boolean;
     title: string;
     description: string;
     image: string;
     imageAlt: string;
   };
-  solutions: IndividualSolution[];
-  thirdSection: WithHidden & {
+  solutions: IndividualSolutionType[];
+  thirdSection: {
+    isHidden: boolean;
     title: string;
     description: string;
-    items: { title: string; image: string; imageAlt: string }[];
+    button: { label: string; href: string };
+    items: {
+      title: string;
+      image: string;
+      imageAlt: string;
+    }[];
   };
-  fourthSection: WithHidden & {
+  fourthSection: {
+    isHidden: boolean;
     title: string;
     description: string;
-    items: { image: string; imageAlt: string }[];
+    items: {
+      image: string;
+      imageAlt: string;
+    }[];
   };
-  fifthSection: WithHidden & {
+  fifthSection: {
+    isHidden: boolean;
     title: string;
     image: string;
     imageAlt: string;

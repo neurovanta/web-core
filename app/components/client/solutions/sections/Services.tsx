@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useRef } from "react";
-import { serviceCardsData } from "../data";
+// import { serviceCardsData } from "../data";
 import CustomButton from "../../common/CustomButton";
 import { AnimatedHeading } from "../../animations/AnimateHeading";
 import { SectionDescription } from "../../animations/SectionDescription";
@@ -11,15 +11,14 @@ import ContainerAnchor from "../../layout/ContainerAnchor";
 import Reveal from "../../animations/RevealItemsOneByOneAnimation";
 import { moveUpV2 } from "../../animations/motionVarinats";
 import { ElasticEffect } from "../../animations/ElasticEffect";
+import { SolutionType } from "@/app/types/solution";
 
 export interface ServiceCard {
-  title: string;
-  description: string;
-  bgImage: string;
-  buttons: {
-    label: string;
-    href: string;
-  }[];
+  thumbnailImage: string;
+  thumbnailImageAlt: string;
+  thumbnailTitle: string;
+  thumbnailDescription: string;
+  slug: string;
 }
 
 function ServiceCard({
@@ -36,8 +35,8 @@ function ServiceCard({
   return (
     <div className="relative w-full lg:w-1/2 overflow-hidden flex flex-col justify-center">
       <Image
-        src={card.bgImage}
-        alt={card.title}
+        src={card.thumbnailImage}
+        alt={card.thumbnailImageAlt}
         fill
         className="object-cover"
       />
@@ -49,28 +48,28 @@ function ServiceCard({
         style={{ paddingLeft }}
       >
         <AnimatedHeading
-          title={card.title}
+          title={card.thumbnailTitle}
           className={`text-heading text-white mb-[15px] sm:mb-20 ${tileMaxWidth ?? ""}`}
         />
 
         <SectionDescription
-          text={card.description}
+          text={card.thumbnailDescription}
           className={`text-description text-white sm:tracking-[-0.03em] mb-[145px] 3xl:mb-[197px] ${descriptionMaxWidth ?? ""}`}
         />
 
         <div className="flex lg:flex-col gap-[10px] lg:gap-20">
-          {card.buttons.map((btn, index) => (
-            <Reveal key={btn.label} variants={moveUpV2} delayRange={index * 0.12}>
-            <CustomButton label={btn.label} href={btn.href} />
-            </Reveal>
-          ))}
+          {/* {card.buttons.map((btn, index) => ( */}
+          <Reveal variants={moveUpV2} delayRange={0.12}>
+            <CustomButton label="EXPLORE" href={`/solutions/${card.slug}`} />
+          </Reveal>
+          {/* ))} */}
         </div>
       </div>
     </div>
   );
 }
 
-export default function Services() {
+export default function Services({ data }: { data: any }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const leftInset = useContainerInset(containerRef);
 
@@ -81,13 +80,13 @@ export default function Services() {
 
       <div className="flex flex-col lg:flex-row">
         <ServiceCard
-          card={serviceCardsData[0]}
+          card={data[0]}
           paddingLeft={leftInset}
           tileMaxWidth="md:max-w-[25ch] lg:max-w-[16ch]"
           descriptionMaxWidth="max-w-[550px] lg:max-w-[701px]"
         />
         <ServiceCard
-          card={serviceCardsData[1]}
+          card={data[1]}
           paddingLeft={leftInset}
           tileMaxWidth="md:max-w-[12ch]"
           descriptionMaxWidth="max-w-[550px] lg:max-w-[701px]"

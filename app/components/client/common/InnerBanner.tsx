@@ -7,13 +7,15 @@ import Breadcrumb from "./BreadCrumb";
 import { AnimatedHeading } from "../animations/AnimateHeading";
 
 export default function InnerBanner({
-  image,
-  title,
+  data,
   maxWTitle = "",
   breadcrumbs = [],
 }: {
-  image: string;
-  title: string;
+  data: {
+    image: string;
+    imageAlt: string;
+    title: string;
+  };
   maxWTitle?: string;
   breadcrumbs?: any[];
 }) {
@@ -67,8 +69,8 @@ export default function InnerBanner({
       <div className="absolute inset-0 w-full h-full">
         <div ref={imageRef} className="absolute inset-0 w-full h-full">
           <Image
-            src={image}
-            alt="banner-image"
+            src={data.image}
+            alt={data.imageAlt}
             fill
             priority
             className="w-full h-full object-cover object-center pointer-events-none"
@@ -81,7 +83,7 @@ export default function InnerBanner({
       <div className="absolute bottom-[60px] md:bottom-20 left-0 right-0 z-10 flex flex-col items-center gap-[15px] sm:gap-20 md:gap-50 container">
         <div className={maxWTitle}>
           <AnimatedHeading
-            title={title}
+            title={data.title.replace(/\\n/g, "\n")}
             className="text-white text-center text-60 3xl:text-70 leading-[1.26666] md:leading-[1.142] whitespace-pre-line"
             mode="blade"
           />

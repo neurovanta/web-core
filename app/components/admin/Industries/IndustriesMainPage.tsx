@@ -27,6 +27,10 @@ interface IndustriesMainForm {
     image: string;
     imageAlt: string;
   };
+  secondSection: {
+    isHidden: boolean;
+    title: string;
+  };
   industries: {
     isHidden: boolean;
     slug: string;
@@ -62,6 +66,7 @@ export default function IndustriesMainPage() {
         setValue("seo", data.seo);
         setValue("bannerSection", data.bannerSection);
         setValue("firstSection", data.firstSection);
+        setValue("secondSection", data.secondSection);
         setValue("industries", data.industries);
         setValue("thirdSection", data.thirdSection);
       } else {
@@ -179,6 +184,27 @@ export default function IndustriesMainPage() {
                 <Input {...register("firstSection.title")} placeholder="Title" />
                 <Label className="font-bold">Description</Label>
                 <Textarea {...register("firstSection.description")} placeholder="Description" />
+              </div>
+            </div>
+          </div>
+        </AdminItemContainer>
+
+        {/* Second Section */}
+        <AdminItemContainer>
+          <Label
+            main
+            isHidden={watch("secondSection.isHidden")}
+            onToggleHidden={() =>
+              setValue("secondSection.isHidden", !watch("secondSection.isHidden"))
+            }
+          >
+            Second Section
+          </Label>
+          <div className="p-5 flex flex-col gap-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="flex flex-col gap-2">
+                <Label className="font-bold">Title</Label>
+                <Input {...register("secondSection.title")} placeholder="Title" />
               </div>
             </div>
           </div>

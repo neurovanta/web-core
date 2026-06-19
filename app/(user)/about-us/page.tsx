@@ -1,11 +1,14 @@
-import Index from '@/app/components/client/about/Index'
+import Index from "@/app/components/client/about/Index";
+import { getAbout } from "@/lib/services/about.service";
+import { AboutType } from "@/app/types/about";
 
-const page = () => {
+const page = async () => {
+  const data: AboutType = await getAbout();
   return (
     <>
-    <Index />
+      <Index data={data} />
     </>
-  )
-}
+  );
+};
 
-export default page
+export default page;

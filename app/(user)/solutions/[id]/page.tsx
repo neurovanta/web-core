@@ -1,11 +1,10 @@
-import Index from '@/app/components/client/solution-details/Index'
+import Index from "@/app/components/client/solution-details/Index";
+import { getSolutionBySlug } from "@/lib/services/solutions.service";
 
-const page = () => {
-  return (
-    <>
-    <Index />
-    </>
-  )
-}
+const page = async ({ params }: { params: Promise<{ id: string }> }) => {
+  const { id } = await params;
+  const data = await getSolutionBySlug(id);
+  return <Index data={data} />;
+};
 
-export default page
+export default page;

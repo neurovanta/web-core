@@ -6,29 +6,33 @@ import { motion } from "framer-motion";
 import { moveUp } from "../animations/motionVarinats";
 
 interface SectionHeaderProps {
-  title: string;
-  subtitle?: string;
-  description?: string;
+  data: {
+    title: string;
+    subtitle?: string;
+    subTitle?: string;
+    description?: string;
+  };
   maxWTitle?: string;
   maxWSubtitle?: string;
   maxWDescription?: string;
 }
 
 export default function SectionHeader({
-  title,
-  subtitle,
-  description,
+  data,
   maxWTitle = "",
   maxWSubtitle = "",
   maxWDescription = "",
 }: SectionHeaderProps) {
+  const subtitle = (data as any).subTitle ?? data.subtitle;
   return (
     <div className="container py-[65px] lg:py-120 3xl:py-150">
       <div className="flex flex-col sm:flex-row justify-between items-start w-full">
-        <div className={`w-full sm:w-[40%] 3xl:w-[42.4%] shrink-0 mb-[15px] sm:mb-0`}>
+        <div
+          className={`w-full sm:w-[40%] 3xl:w-[42.4%] shrink-0 mb-[15px] sm:mb-0`}
+        >
           <div className="sm:max-w-[88%]">
             <AnimatedHeading
-              title={title}
+              title={data.title}
               className={`text-heading text-secondary ${maxWTitle}`}
               mode="reveal"
             />
@@ -47,9 +51,9 @@ export default function SectionHeader({
               {subtitle}
             </motion.p>
           )}
-          {description && (
+          {data.description && (
             <SectionDescription
-              text={description}
+              text={data.description}
               delay={0.8}
               className={`text-description text-secondary md:tracking-[-0.03em] ${maxWDescription}`}
             />

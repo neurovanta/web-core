@@ -1,12 +1,12 @@
 "use client";
 
-import { brandsData } from "../data";
 import { AnimatedHeading } from "../../animations/AnimateHeading";
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { BrandCard } from "../../common/BrandCard";
 import { ElasticEffect } from "../../animations/ElasticEffect";
+import { HomeType } from "@/app/types/home";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -15,13 +15,17 @@ type CardWithHandlers = HTMLElement & {
   _leave?: () => void;
 };
 
-export default function WorldClassClients() {
-  const { heading, rows } = brandsData;
+export default function WorldClassClients({
+  data,
+}: {
+  data: HomeType["eighthSection"];
+}) {
+  const { title, row1, row2, row3 } = data;
 
   const sectionRef = useRef<HTMLDivElement | null>(null);
 
   const mobileRowRef = useRef<HTMLDivElement | null>(null);
-  const mobileBrands = [...rows.row1, ...rows.row2, ...rows.row3];
+  const mobileBrands = [...row1, ...row2, ...row3];
 
   useEffect(() => {
     const marqueeTweens: gsap.core.Tween[] = [];
@@ -219,7 +223,7 @@ export default function WorldClassClients() {
 
       <div className="mb-[15px] sm:mb-20 md:mb-50 container">
         <AnimatedHeading
-          title={heading}
+          title={title}
           className="text-heading text-secondary max-w-[21ch]"
         />
       </div>
@@ -228,7 +232,7 @@ export default function WorldClassClients() {
       <div className="xl:hidden overflow-hidden">
         <div ref={mobileRowRef} className="flex w-max gap-[10px] sm:gap-20">
           {[...mobileBrands, ...mobileBrands].map((brand, index) => (
-            <BrandCard key={`${brand.id}-${index}`} brand={brand} />
+            <BrandCard key={`${brand._id}-${index}`} brand={brand} />
           ))}
         </div>
       </div>
@@ -236,25 +240,25 @@ export default function WorldClassClients() {
       {/* Desktop - unchanged */}
       <div className="hidden xl:flex logo-wrap flex-col gap-5 3xl:mt-[5px] container">
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:flex lg:flex-wrap w-full lg:justify-end gap-20">
-          {rows.row1.map((brand) => (
-            <BrandCard key={brand.id} brand={brand} />
+          {row1.map((brand) => (
+            <BrandCard key={brand._id} brand={brand} />
           ))}
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:flex lg:flex-wrap w-full lg:justify-start gap-20">
-          {rows.row2.map((brand) => (
-            <BrandCard key={brand.id} brand={brand} />
+          {row2.map((brand) => (
+            <BrandCard key={brand._id} brand={brand} />
           ))}
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 gap-20 lg:flex w-full lg:justify-between">
           <div className="order-2 sm:order-1 lg:order-1">
-            <BrandCard key={rows.row3[0].id} brand={rows.row3[0]} />
+            <BrandCard key={row3[0]._id} brand={row3[0]} />
           </div>
 
           <div className="col-span-1 sm:col-span-2 sm:grid sm:grid-cols-2 flex gap-20 flex-wrap order-1 sm:order-2 lg:order-2 lg:flex lg:flex-wrap">
-            {rows.row3.slice(1).map((brand) => (
-              <BrandCard key={brand.id} brand={brand} />
+            {row3.slice(1).map((brand) => (
+              <BrandCard key={brand._id} brand={brand} />
             ))}
           </div>
         </div>

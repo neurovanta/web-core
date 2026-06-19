@@ -10,6 +10,7 @@ import { SectionDescription } from "../../animations/SectionDescription";
 import Reveal from "../../animations/RevealItemsOneByOneAnimation";
 import { moveUp, moveUpV2 } from "../../animations/motionVarinats";
 import { motion } from "framer-motion";
+import { SolutionType } from "@/app/types/solution";
 
 export type Slide = {
   number: string;
@@ -37,7 +38,7 @@ export default function WellnessRequirements({
   data,
   descriptionMaxWidth = "max-w-[54ch]",
 }: {
-  data: WellnessSliderData;
+  data: SolutionType["thirdSection"];
   descriptionMaxWidth?: string;
 }) {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -45,7 +46,7 @@ export default function WellnessRequirements({
   const [topVisible, setTopVisible] = useState(false);
   const [topIndex, setTopIndex] = useState<number | null>(null);
 
-  const { slides } = data;
+  const { items: slides } = data;
   const swiperRef = useRef<SwiperType | null>(null);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const settleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -225,7 +226,7 @@ export default function WellnessRequirements({
       <div className="container relative z-10 flex flex-col justify-between py-[60px] lg:py-120 min-h-[600px] sm:min-h-0 sm:h-auto">
         <div className="flex flex-col">
           <AnimatedHeading
-            title={data.heading}
+            title={data.title}
             className="text-white text-heading max-w-[23ch] mb-[15px] sm:mb-20"
           />
           <SectionDescription
@@ -238,11 +239,7 @@ export default function WellnessRequirements({
             whileInView="show"
             viewport={{ once: true }}
           >
-            <CustomButton
-              label={data.button.label}
-              href={data.button.href}
-              variant={1}
-            />
+            <CustomButton label="Contact Us" href="/contact-us" variant={1} />
           </motion.div>
         </div>
 
@@ -279,7 +276,7 @@ export default function WellnessRequirements({
             {slides.map((slide, index) => {
               const isActive = index === activeIndex;
               return (
-                <SwiperSlide key={slide.number}>
+                <SwiperSlide key={index}>
                   <Reveal variants={moveUpV2} delayRange={index * 0.15}>
                     <div>
                       <button
@@ -289,7 +286,7 @@ export default function WellnessRequirements({
                         <span
                           className={`block not-odd:text-15 leading-[1.666] sm:leading-[1.73] mb-[5px] sm:mb-[14px] transition-colors duration-300 ${isActive ? "text-white" : "text-white/40"}`}
                         >
-                          {slide.number}
+                          {index + 1}
                         </span>
                         <span
                           className={`block text-19 leading-[1.5263] mb-20 sm:mb-25 sm:min-h-[45px] 2xl:min-h-0 transition-colors duration-300 ${

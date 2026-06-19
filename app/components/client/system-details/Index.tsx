@@ -1,3 +1,4 @@
+import { IndividualProduct } from "@/app/types/system";
 import CurveSlider from "../common/CurveSlider";
 import InnerBanner from "../common/InnerBanner";
 import SectionHeader from "../common/SectionHeader";
@@ -9,13 +10,13 @@ import {
 import Discovery from "./sections/Discovery";
 import HighlightSlider from "./sections/HighlightSlider";
 
-const Index = () => {
+const Index = ({ data }: { data: IndividualProduct }) => {
   return (
     <>
-      <InnerBanner {...bannerData} maxWTitle="max-w-[54ch]" />
-      <SectionHeader {...sectionHeaderData} maxWTitle="sm:max-w-[15ch]" maxWSubtitle="max-w-[55ch]" maxWDescription="max-w-[65ch] 3xl:max-w-[80ch]" />
-      <HighlightSlider />
-      <Discovery />
+      <InnerBanner data={data.bannerSection} maxWTitle="max-w-[54ch]" />
+      <SectionHeader data={data.firstSection} maxWTitle="sm:max-w-[15ch]" maxWSubtitle="max-w-[55ch]" maxWDescription="max-w-[65ch] 3xl:max-w-[80ch]" />
+      <HighlightSlider data={data.secondSection} />
+      <Discovery data={data.thirdSection} />
       <CurveSlider {...longevityInnovationData} />
     </>
   );

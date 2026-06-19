@@ -1,16 +1,19 @@
 "use client";
 
 import { useState } from "react";
-import { heroStatsData } from "../data";
-
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import CustomButton from "../../common/CustomButton";
 import { AnimatedHeading } from "../../animations/AnimateHeading";
 import { SectionDescription } from "../../animations/SectionDescription";
 import Reveal from "../../animations/RevealItemsOneByOneAnimation";
-import { moveRight, moveUp, moveUpV2 } from "../../animations/motionVarinats";
+import { moveRight, moveUpV2 } from "../../animations/motionVarinats";
 import { ElasticEffect } from "../../animations/ElasticEffect";
+import { HomeType } from "@/app/types/home";
+
+interface HeroStatsProps {
+  data: HomeType["fifthSection"];
+}
 
 interface StatRowProps {
   number: string;
@@ -51,9 +54,13 @@ export function StatRow({
           )}
         </AnimatePresence>
 
-        <div className={`relative z-10 flex items-center sm:min-h-[60px] md:min-h-[70px] md:gap-50 2xl:gap-0 ${isActive ? "gap-[30px]" : "gap-[36px]"} w-full`}>
+        <div
+          className={`relative z-10 flex items-center sm:min-h-[60px] md:min-h-[70px] md:gap-50 2xl:gap-0 ${isActive ? "gap-[30px]" : "gap-[36px]"} w-full`}
+        >
           {/* Number */}
-          <span className="text-heading text-secondary shrink-0 sm:min-w-[94px] 3xl:min-w-[104px]">{number}</span>
+          <span className="text-heading text-secondary shrink-0 sm:min-w-[94px] 3xl:min-w-[104px]">
+            {number}
+          </span>
 
           {/* Label */}
           <span className="flex-1 text-subHeading tracking-[-0.03em] text-secondary lg:pl-80 xl:pl-160 2xl:pl-[220px] 3xl:pl-[347px]">
@@ -90,8 +97,7 @@ export function StatRow({
   );
 }
 
-export default function HeroStats() {
-  const { title, description, button, stats } = heroStatsData;
+export default function HeroStats({ data }: HeroStatsProps) {
   const [activeIndex, setActiveIndex] = useState(1);
 
   return (
@@ -101,14 +107,14 @@ export default function HeroStats() {
         <div className="flex flex-col md:mb-120">
           <div className="w-full">
             <AnimatedHeading
-              title={title}
+              title={data.title}
               className="text-secondary text-heading mb-[15px] sm:mb-20 md:mb-50 max-w-[31ch]"
               mode="reveal"
               delay={0.2}
             />
             <div className="max-w-[820px] 3xl:max-w-[735px]">
               <SectionDescription
-                text={description}
+                text={data.description}
                 className="text-19 leading-[1.47] text-secondary sm:tracking-[-0.03em]"
                 as="p"
               />
@@ -126,20 +132,24 @@ export default function HeroStats() {
               viewport={{ once: true }}
               className=""
             >
-              <CustomButton label="About Neuro Vanta" href="/about-us" variant={2} />
+              <CustomButton
+                label={data.button.label}
+                href={data.button.href}
+                variant={2}
+              />
             </motion.div>
           </div>
 
           <div className="flex flex-col lg:flex-1 w-full max-w-[1136px] relative">
             <ElasticEffect />
-            {stats.map((stat, idx) => (
-              <Reveal key={stat.id} variants={moveUpV2} delayRange={idx * 0.15}>
+            {data.items.map((stat, idx) => (
+              <Reveal key={idx} variants={moveUpV2} delayRange={idx * 0.15}>
                 <StatRow
-                  number={stat.number}
-                  label={stat.label}
+                  number={stat.value}
+                  label={stat.title}
                   icon={stat.icon}
                   isActive={activeIndex === idx}
-                  isLast={idx === stats.length - 1}
+                  isLast={idx === data.items.length - 1}
                   onHover={() => setActiveIndex(idx)}
                   onClick={() => setActiveIndex(idx)}
                 />

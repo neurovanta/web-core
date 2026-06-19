@@ -5,15 +5,23 @@ import CircleAnimation from "@/app/components/client/common/CircleAnimation";
 import { AnimatedHeading } from "../../animations/AnimateHeading";
 import { SectionDescription } from "../../animations/SectionDescription";
 
-const HowItFits = ({title, description, image}: {title: string, description: string, image: string}) => {
+interface HowItFitsProps {
+  data: {
+    title: string;
+    description: string;
+    image: string;
+    imageAlt: string;
+  };
+}
 
+const HowItFits = ({ data }: HowItFitsProps) => {
   return (
     <section className="relative w-full max-h-[503px] 3xl:h-[503px] py-[90px] lg:py-170 3xl:py-[180px] overflow-hidden">
       {/* Background Image */}
       <div className="absolute inset-0 -z-10">
         <Image
-          src={image}
-          alt="how-it-fits-background"
+          src={data.image}
+          alt={data.imageAlt}
           fill
           className="object-cover object-center"
         />
@@ -29,13 +37,13 @@ const HowItFits = ({title, description, image}: {title: string, description: str
       {/* Text Content */}
       <div className="container mx-auto flex flex-col items-center justify-center text-center h-full">
         <AnimatedHeading
-          title={title}
+          title={data.title}
           className="text-heading mb-[15px] sm:mb-20 text-white"
           mode="reveal"
         />
         <SectionDescription
           className="text-description max-w-[61ch] text-white"
-          text={description}
+          text={data.description}
         />
       </div>
     </section>

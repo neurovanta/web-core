@@ -26,11 +26,6 @@ const individualProductSchema = new mongoose.Schema({
   },
   secondSection: {
     isHidden: { type: Boolean, default: false },
-    title: { type: String },
-    description: { type: String },
-  },
-  thirdSection: {
-    isHidden: { type: Boolean, default: false },
     items: {
       type: [
         {
@@ -43,7 +38,7 @@ const individualProductSchema = new mongoose.Schema({
       default: [],
     },
   },
-  fourthSection: {
+  thirdSection: {
     isHidden: { type: Boolean, default: false },
     title: { type: String },
     items: {
@@ -76,7 +71,7 @@ const individualProductSchema = new mongoose.Schema({
       default: [],
     },
   },
-  fifthSection: {
+  fourthSection: {
     isHidden: { type: Boolean, default: false },
     title: { type: String },
     description: { type: String },

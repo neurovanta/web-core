@@ -9,18 +9,12 @@ import { AnimatedHeading } from "../../animations/AnimateHeading";
 import { SectionDescription } from "../../animations/SectionDescription";
 import Reveal from "../../animations/RevealItemsOneByOneAnimation";
 import { moveUpV2 } from "../../animations/motionVarinats";
+import { HomeType } from "@/app/types/home";
 
 export type Slide = {
   number: string;
   title: string;
   image: string;
-};
-
-export type WellnessSliderData = {
-  heading: string;
-  description: string;
-  buttons: { label: string; href: string }[];
-  slides: Slide[];
 };
 
 const AUTOPLAY_DELAY = 3000;
@@ -36,7 +30,7 @@ export default function WellnessSlider({
   data,
   descriptionMaxWidth = "max-w-[52ch]",
 }: {
-  data: WellnessSliderData;
+  data: HomeType["secondSection"];
   descriptionMaxWidth?: string;
 }) {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -44,7 +38,7 @@ export default function WellnessSlider({
   const [topVisible, setTopVisible] = useState(false);
   const [topIndex, setTopIndex] = useState<number | null>(null);
 
-  const { slides } = data;
+  const { items: slides } = data;
   const swiperRef = useRef<SwiperType | null>(null);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const settleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -231,7 +225,7 @@ export default function WellnessSlider({
         <div className="flex items-start justify-between">
           <div className="flex flex-col gap-[15px] sm:gap-20">
             <AnimatedHeading
-              title={data.heading}
+              title={data.title}
               className="text-white text-heading max-w-[25ch]"
             />
             <div className="mb-[30px]">
@@ -243,20 +237,24 @@ export default function WellnessSlider({
           </div>
 
           <div className="hidden min-[870px]:flex min-[870px]:flex-col items-end gap-20 shrink-0 xl:pt-[13px]">
-            {data.buttons.map((btn, i) => (
-              <Reveal key={btn.label} variants={moveUpV2} delayRange={i * 0.12}>
-                <CustomButton label={btn.label} href={btn.href} variant={1} />
-              </Reveal>
-            ))}
+            {/* {data.buttons.map((btn, i) => ( */}
+            <Reveal variants={moveUpV2} delayRange={0.12}>
+              <CustomButton
+                label="Explore"
+                href={data.slug}
+                variant={1}
+              />
+            </Reveal>
+            {/* ))} */}
           </div>
         </div>
 
         <div className="flex min-[870px]:hidden items-start gap-[10px] sm:gap-20 shrink-0 sm:mt-20">
-          {data.buttons.map((btn) => (
-            <Reveal key={btn.label} variants={moveUpV2} delayRange={0.2}>
-              <CustomButton label={btn.label} href={btn.href} variant={1} />
+          {/* {data.buttons.map((btn) => ( */}
+            <Reveal  variants={moveUpV2} delayRange={0.2}>
+              <CustomButton label="Explore" href={data.slug} variant={1} />
             </Reveal>
-          ))}
+          {/* ))} */}
         </div>
 
         <div className="flex-1" />
@@ -295,7 +293,7 @@ export default function WellnessSlider({
             {slides.map((slide, index) => {
               const isActive = index === activeIndex;
               return (
-                <SwiperSlide key={slide.number}>
+                <SwiperSlide key={index}>
                   <Reveal variants={moveUpV2} delayRange={index * 0.15}>
                     <div>
                       <button
@@ -305,7 +303,7 @@ export default function WellnessSlider({
                         <span
                           className={`block not-odd:text-15 leading-[1.666] sm:leading-[1.73] mb-[5px] sm:mb-[14px] transition-colors duration-300 ${isActive ? "text-white" : "text-white/40"}`}
                         >
-                          {slide.number}
+                          {index + 1}
                         </span>
                         <span
                           className={`block text-19 leading-[1.5263] mb-20 sm:mb-25 sm:min-h-[45px] 2xl:min-h-0 transition-colors duration-300 ${

@@ -7,12 +7,11 @@ import { Autoplay, EffectFade } from "swiper/modules";
 import type { Swiper as SwiperType } from "swiper";
 import "swiper/css";
 import "swiper/css/effect-fade";
-import { highlightSlides } from "../data";
-import { AnimatedHeading } from "../../animations/AnimateHeading";
 import { AnimatePresence, motion } from "framer-motion";
 import { SectionDescription } from "../../animations/SectionDescription";
 import { moveUp } from "../../animations/motionVarinats";
 import { ElasticEffect } from "../../animations/ElasticEffect";
+import { IndividualProduct } from "@/app/types/system";
 
 // ── Pill border via gradient image ───────────────────────────────────────────
 function HighlightPill() {
@@ -63,7 +62,7 @@ function Pagination({
 }
 
 // ── Main component ────────────────────────────────────────────────────────────
-export default function HighlightSlider() {
+export default function HighlightSlider({ data }: { data: IndividualProduct["secondSection"] }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const swiperRef = useRef<SwiperType | null>(null);
 
@@ -91,12 +90,12 @@ export default function HighlightSlider() {
         }}
         className="w-full h-full"
       >
-        {highlightSlides.map((slide, i) => (
+        {data.items.map((slide, i) => (
           <SwiperSlide key={i} className="relative">
             {/* Background image */}
             <div className="relative w-full h-[554px] sm:h-[600px]  md:h-[888px] 3xl:h-[888px] max-h-[888px]">
               <Image
-                src={slide.bgImage}
+                src={slide.image}
                 alt={slide.title}
                 fill
                 className="object-cover object-center"
@@ -149,11 +148,11 @@ export default function HighlightSlider() {
                   variants={moveUp(0.1)}
                   className="h2 text-white mb-[10px] sm:mb-20 text-heading whitespace-pre-line"
                 >
-                  {highlightSlides[activeIndex].title}
+                  {data.items[activeIndex].title}
                 </motion.h2>
 
                 <SectionDescription
-                  text={highlightSlides[activeIndex].description}
+                  text={data.items[activeIndex].description}
                   className="text-description text-white -tracking-[0.03em] max-w-[30ch]"
                 />
               </motion.div>
@@ -162,7 +161,7 @@ export default function HighlightSlider() {
 
           <div className="pointer-events-auto">
             <Pagination
-              total={highlightSlides.length}
+              total={data.items.length}
               active={activeIndex}
               onBulletClick={handleBulletClick}
             />

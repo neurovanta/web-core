@@ -2,16 +2,14 @@
 
 import Image from "next/image";
 import ContactForm from "./ContactForm";
-import { contactUsData } from "../data";
 import { AnimatedHeading } from "../../animations/AnimateHeading";
 import { SectionDescription } from "../../animations/SectionDescription";
 import { moveUp } from "../../animations/motionVarinats";
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
+import { ContactType } from "@/app/types/contact";
 
-export default function Main() {
-  const { title, description, office } = contactUsData;
-
+export default function Main({ data }: { data: ContactType["firstSection"] }) {
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -29,11 +27,11 @@ export default function Main() {
         {/* ── Left ── */}
         <div className={`flex flex-col ${isMobile ? "px-[16px]" : ""}`}>
           {/* Title */}
-          <AnimatedHeading title={title} className="text-heading mb-[10px] sm:mb-20" />
+          <AnimatedHeading title={data.title} className="text-heading mb-[10px] sm:mb-20" />
 
           {/* Description */}
           <SectionDescription
-            text={description}
+            text={data.description}
             className="text-description md:-tracking-[0.03em] text-secondary mb-[30px] sm:mb-60 max-w-[624px]"
           />
 
@@ -46,21 +44,21 @@ export default function Main() {
             className="bg-cream-bg p-20 sm:p-40 flex flex-col w-full sm:w-fit 3xl:min-w-[529px]"
           >
             <p className="text-subHeading -tracking-[0.03em] text-secondary mb-[10px] sm:mb-20">
-              {office.title}
+              {data.office.title}
             </p>
 
             <p className="text-description -tracking-[0.03em] text-secondary whitespace-pre-line mb-[15px] sm:mb-20">
-              {office.address}
+              {data.office.address}
             </p>
 
             <a
-              href={office.directionHref}
+              href={data.office.directionHref}
               target="_blank"
               rel="noopener noreferrer"
-              data-text={office.directionLabel}
+              data-text={data.office.directionLabel}
               className="text-15 text-secondary uppercase underline font-semibold inline-flex items-center gap-[10px] w-fit hover:scale-[1.03] transition-all duration-300"
             >
-              {office.directionLabel}
+              {data.office.directionLabel}
               <Image
                 src="/assets/icons/view-direction-arrow.svg"
                 alt=""
@@ -82,21 +80,21 @@ export default function Main() {
             {/* Mail + Phone */}
             <div className="flex items-center gap-[15px] sm:gap-[18px]">
               <a
-                href={`mailto:${office.mail}`}
-                data-text={office.mail}
+                href={`mailto:${data.office.mail}`}
+                data-text={data.office.mail}
                 className="text-description -tracking-[0.03em] text-secondary underline hover:scale-[1.03] transition-all duration-300"
               >
-                {office.mail}
+                {data.office.mail}
               </a>
 
               <span className="text-secondary">|</span>
 
               <a
-                href={`tel:${office.phone}`}
-                data-text={office.phone}
+                href={`tel:${data.office.phone}`}
+                data-text={data.office.phone}
                 className="text-description -tracking-[0.03em] text-secondary underline hover:scale-[1.03] transition-all duration-300"
               >
-                {office.phone}
+                {data.office.phone}
               </a>
             </div>
           </motion.div>

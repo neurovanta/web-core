@@ -3,18 +3,18 @@
 import { useState, useCallback, useEffect, useRef } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { discoverGalleryData } from "../data";
 import { ElasticEffect } from "../../animations/ElasticEffect";
+import { IndividualProduct } from "@/app/types/system";
 
 const AUTOPLAY_MS = 4000;
 
-function DiscoverySlider() {
+function DiscoverySlider({ images }: { images: IndividualProduct["thirdSection"]["itemsTwo"] }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [prevIndex, setPrevIndex] = useState<number | null>(null);
   const [animKey, setAnimKey] = useState(0);
   const [direction, setDirection] = useState<1 | -1>(1);
 
-  const slides = discoverGalleryData.slides;
+  const slides = images;
 
   const goTo = useCallback(
     (i: number, dir?: 1 | -1) => {

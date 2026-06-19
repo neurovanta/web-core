@@ -1,14 +1,14 @@
 import InnerBanner from "../common/InnerBanner";
-import { bannerData } from "./data";
 import Main from "./sections/Main";
 import ContactMap from "./sections/ContactMap";
+import { ContactType } from "@/app/types/contact";
 
-const Index = () => {
+const Index = ({ data }: { data: ContactType }) => {
   return (
     <>
-      <InnerBanner {...bannerData} maxWTitle="max-w-[85ch]" />
-      <Main />
-      <ContactMap />
+      <InnerBanner data={data.bannerSection} maxWTitle="max-w-[85ch]" />
+      <Main data={data.firstSection} />
+      <ContactMap data={data.secondSection} />
     </>
   );
 };

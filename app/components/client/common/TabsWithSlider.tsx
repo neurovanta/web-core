@@ -76,7 +76,10 @@ function CategoryDropdown({
       const minSpace = 220; // minimum space needed
 
       // Position on top if not enough space below
-      setPositionTop(spaceBelow < dropdownHeight + minSpace && spaceAbove > dropdownHeight + minSpace);
+      setPositionTop(
+        spaceBelow < dropdownHeight + minSpace &&
+          spaceAbove > dropdownHeight + minSpace,
+      );
     }, 0);
 
     return () => clearTimeout(timer);
@@ -87,7 +90,10 @@ function CategoryDropdown({
     if (!open) return;
 
     const handleClickOutside = (e: MouseEvent) => {
-      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(e.target as Node)
+      ) {
         setOpen(false);
       }
     };
@@ -332,7 +338,10 @@ export default function TabsWithSlider({
           {/* Original tabs — md and above, completely unchanged */}
           <div className="hidden md:grid grid-cols-2 lg:flex gap-[10px] sm:gap-[30px] 3xl:gap-[34px] w-fit lg:ml-auto">
             {[leftCol, rightCol].map((col, colIdx) => (
-              <ul key={colIdx} className="flex flex-col md:w-[320px] lg:w-[380px]">
+              <ul
+                key={colIdx}
+                className="flex flex-col md:w-[320px] lg:w-[380px]"
+              >
                 {col.map((cat, itemIndex) => {
                   const globalIdx =
                     colIdx === 0
@@ -430,7 +439,7 @@ export default function TabsWithSlider({
       {/* ── SLIDER — 100% unchanged ── */}
       <div style={{ paddingLeft: inset }} className="overflow-hidden">
         <Swiper
-        modules={[Autoplay]}
+          modules={[Autoplay]}
           onSwiper={(swiper) => {
             swiperRef.current = swiper;
           }}
@@ -464,48 +473,48 @@ export default function TabsWithSlider({
 
               return (
                 <SwiperSlide key={`${visibleIndex}-${i}`}>
-                    <div className="relative overflow-hidden">
-                      {baseSlide && (
-                        <SlideCard
-                          slide={baseSlide}
-                          index={i}
-                          isFirstVisible={i === activeSwiperSlide}
-                          titleRef={(el) => {
-                            baseTitleRefs.current[i] = el;
-                          }}
-                        />
-                      )}
+                  <div className="relative overflow-hidden">
+                    {baseSlide && (
+                      <SlideCard
+                        slide={baseSlide}
+                        index={i}
+                        isFirstVisible={i === activeSwiperSlide}
+                        titleRef={(el) => {
+                          baseTitleRefs.current[i] = el;
+                        }}
+                      />
+                    )}
 
-                      {pending && (
-                        <div
-                          ref={(el) => {
-                            overlayWrapRefs.current[i] = el;
-                          }}
-                          className="absolute inset-0 z-10 will-change-[clip-path]"
-                        >
-                          <div className="relative overflow-hidden h-[250px] sm:h-[320px] lg:h-[420px] 3xl:h-[550px]">
-                            <Image
-                              src={pending.image}
-                              alt={pending.title}
-                              fill
-                              className="object-cover"
-                              priority
-                            />
-                          </div>
-
-                          <div className="overflow-hidden mt-[10px] md:mt-30">
-                            <p
-                              ref={(el) => {
-                                overlayTitleRefs.current[i] = el;
-                              }}
-                              className="text-subHeading tracking-[-0.03em] text-secondary"
-                            >
-                              {pending.title}
-                            </p>
-                          </div>
+                    {pending && (
+                      <div
+                        ref={(el) => {
+                          overlayWrapRefs.current[i] = el;
+                        }}
+                        className="absolute inset-0 z-10 will-change-[clip-path]"
+                      >
+                        <div className="relative overflow-hidden h-[250px] sm:h-[320px] lg:h-[420px] 3xl:h-[550px]">
+                          <Image
+                            src={pending.image}
+                            alt={pending.title}
+                            fill
+                            className="object-cover"
+                            priority
+                          />
                         </div>
-                      )}
-                    </div>
+
+                        <div className="overflow-hidden mt-[10px] md:mt-30">
+                          <p
+                            ref={(el) => {
+                              overlayTitleRefs.current[i] = el;
+                            }}
+                            className="text-subHeading tracking-[-0.03em] text-secondary"
+                          >
+                            {pending.title}
+                          </p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </SwiperSlide>
               );
             },

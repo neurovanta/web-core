@@ -12,6 +12,12 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  experimental: {
+    serverActions: {
+      bodySizeLimit: "25mb",
+    },
+  },
+  serverExternalPackages: ["node-fetch", "fetch-blob", "dropbox"],
 };
 
 export default nextConfig;
