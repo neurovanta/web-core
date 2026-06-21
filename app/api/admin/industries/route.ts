@@ -153,3 +153,41 @@ export async function POST(request: NextRequest) {
     );
   }
 }
+
+
+export async function DELETE(request: NextRequest) {
+  try {
+    const isAdmin = await verifyAdmin(request);
+    if (!isAdmin) {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    }
+
+    await connectDB();
+    const id = request.nextUrl.searchParams.get("id");
+
+    if (!id) {
+      return NextResponse.json({ message: "No id specified" }, { status: 400 });
+    }
+
+    const doc = await Industries.findOne({});
+    if (!doc) {
+      return NextResponse.json({ message: "Not found" }, { status: 404 });
+    }
+
+    const index = doc.industries.findIndex(
+      (s: { _id: { toString: () => string } }) => s._id.toString() === id,
+    );
+    if (index === -1) {
+      return NextResponse.json({ message: "Industry not found" }, { status: 404 });
+    }
+
+    doc.industries.splice(index, 1);
+    await doc.save();
+    revalidateTag("industries", "default");
+
+    return NextResponse.json({ message: "Industry deleted successfully" }, { status: 200 });
+  } catch (error: unknown) {
+    console.error(error);
+    return NextResponse.json({ message: "Internal Server Error" }, { status: 500 });
+  }
+}

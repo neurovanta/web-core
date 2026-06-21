@@ -52,7 +52,7 @@ async function getAccessToken(): Promise<string> {
       expiresAt: Date.now() + (data.expires_in || 3600) * 1000,
     };
 
-    console.log("New token info:", tokenInfo);
+    // console.log("New token info:", tokenInfo);
     return tokenInfo.accessToken;
   } catch (error) {
     console.error("Error getting access token:", error);
@@ -65,13 +65,13 @@ let currentAccessToken: string | null = null;
 
 export async function getDropboxInstance(): Promise<Dropbox> {
   const accessToken = await getAccessToken();
-  console.log("Access Token:", accessToken);
+  // console.log("Access Token:", accessToken);
 
   if (!dropboxInstance || currentAccessToken !== accessToken) {
     dropboxInstance = new Dropbox({
       accessToken,
       fetch: (url: RequestInfo, init?: RequestInit) => {
-        console.log("Dropbox API Request:", url, init); // Log each Dropbox API request
+        // console.log("Dropbox API Request:", url, init); // Log each Dropbox API request
         return fetch(url, init) as Promise<Response>;
       },
     });
@@ -90,7 +90,7 @@ export async function uploadToDropbox(file: File, filePath: string): Promise<str
       contents: fileContent,
     });
 
-    console.log("File uploaded successfully:", response);
+    // console.log("File uploaded successfully:", response);
     if (!response.result.path_display) {
       throw new Error("Failed to retrieve uploaded file path");
     }
@@ -100,7 +100,7 @@ export async function uploadToDropbox(file: File, filePath: string): Promise<str
         requested_visibility: { ".tag": "public" },
       },
     });
-    console.log("Uploaded file path:", sharedLinkResponse);
+    // console.log("Uploaded file path:", sharedLinkResponse);
     if (!sharedLinkResponse.result.url) {
       throw new Error("Failed to create shared link");
     }
@@ -108,7 +108,7 @@ export async function uploadToDropbox(file: File, filePath: string): Promise<str
     // Convert the shared link to a direct download link
     const directLink = sharedLinkResponse.result.url.replace("www.dropbox.com", "dl.dropboxusercontent.com");
 
-    console.log("Direct download link:", directLink);
+    // console.log("Direct download link:", directLink);
     return directLink;
   } catch (error) {
     console.error("Error uploading file to Dropbox:", error);

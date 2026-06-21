@@ -30,7 +30,7 @@ export default function AdminLayout({
         </div>
 
         {/* Logout */}
-        <div className="px-3 py-4 border-t border-border-color">
+        <div className="px-3 py-4 border-t border-border-color rounded-md">
           <ClientSideLink
             href="/admin/logout"
             name="Logout"

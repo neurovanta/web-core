@@ -17,7 +17,7 @@ const Index = ({ data }: { data: IndividualProduct }) => {
       <SectionHeader data={data.firstSection} maxWTitle="sm:max-w-[15ch]" maxWSubtitle="max-w-[55ch]" maxWDescription="max-w-[65ch] 3xl:max-w-[80ch]" />
       <HighlightSlider data={data.secondSection} />
       <Discovery data={data.thirdSection} />
-      <CurveSlider {...longevityInnovationData} />
+      <CurveSlider data={data.fourthSection} />
     </>
   );
 };

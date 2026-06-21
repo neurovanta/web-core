@@ -2,13 +2,14 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { footerMenus, socialLinks, SocialType } from "./data";
+import { SocialType } from "./data";
 import { SectionDescription } from "../animations/SectionDescription";
 import { moveUp, moveUpV2 } from "../animations/motionVarinats";
 import Reveal from "../animations/RevealItemsOneByOneAnimation";
 import { AnimatePresence, motion } from "framer-motion";
 import { useState, useRef } from "react";
 import { useLenis } from "@/app/components/client/layout/LenisProvider";
+import { NavData } from "@/app/types/header";
 
 /* ─── Social brand styles ─────────────────────────────────────────── */
 const socialStyles: Record<SocialType, React.CSSProperties> = {
@@ -35,30 +36,57 @@ function splitItems<T>(items: T[]): [T[], T[]] {
 }
 
 /* ─── Component ───────────────────────────────────────────────────── */
-export default function Footer() {
+export default function Footer({ navData }: { navData: NavData }) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
-const { scrollTo } = useLenis();
+  const { scrollTo } = useLenis();
 
-const handleToggle = (index: number) => {
-  const isOpening = openIndex !== index;
-  setOpenIndex(isOpening ? index : null);
+  const footerMenus = [
+    {
+      heading: navData.footer.solutionsLabel || "Solutions",
+      items: navData.footer.solutions
+        .filter((s) => !s.isHidden)
+        .map((s) => ({
+          label: s.thumbnailTitle,
+          href: `/solutions/${s.slug}`,
+        })),
+    },
+    {
+      heading: navData.footer.systemsLabel || "Longevity Systems",
+      items: navData.footer.systems
+        .filter((s) => !s.isHidden)
+        .map((s) => ({
+          label: s.title,
+          href: `/longevity-systems/#${s.title.toLowerCase().replace(/\s+/g, "-")}`,
+        })),
+    },
+    {
+      heading: "Quick Links",
+      items: navData.footer.quickLinks
+        .filter((l) => !l.isHidden)
+        .map((l) => ({ label: l.label, href: l.link })),
+    },
+  ];
 
-  if (isOpening) {
-    setTimeout(() => {
-      const el = itemRefs.current[index];
-      if (!el) return;
+  const handleToggle = (index: number) => {
+    const isOpening = openIndex !== index;
+    setOpenIndex(isOpening ? index : null);
 
-      const rect = el.getBoundingClientRect();
-      const viewportHeight = window.innerHeight;
+    if (isOpening) {
+      setTimeout(() => {
+        const el = itemRefs.current[index];
+        if (!el) return;
 
-      if (rect.bottom > viewportHeight - 40) {
-        const targetY = window.scrollY + rect.top - 80;
-        scrollTo(targetY, { duration: 0.8 });
-      }
-    }, 50);
-  }
-};
+        const rect = el.getBoundingClientRect();
+        const viewportHeight = window.innerHeight;
+
+        if (rect.bottom > viewportHeight - 40) {
+          const targetY = window.scrollY + rect.top - 80;
+          scrollTo(targetY, { duration: 0.8 });
+        }
+      }, 50);
+    }
+  };
 
   return (
     <footer className="bg-white overflow-hidden">
@@ -71,7 +99,7 @@ const handleToggle = (index: number) => {
             alt="Neuro Vanta"
             width={2000}
             height={300}
-            className="w-full h-full max-h-[218px]"
+            className="w-full h-full max-h-[218px] pointer-events-none"
           />
 
           {/* LEFT HALF */}
@@ -98,12 +126,7 @@ const handleToggle = (index: number) => {
           {/* Left – address */}
           <div className="sm:w-[51%] 3xl:pt-[16px]">
             <SectionDescription
-              text={[
-                "Neuro Vanta",
-                "P.O.Box 13653, 901 – SIT Tower",
-                "Dubai Silicon Oasis",
-                "Dubai, UAE",
-              ].join("\n")}
+              text={navData.contact.address}
               className="text-secondary text-19 leading-[1.54] sm:leading-[1.42] whitespace-pre-line md:tracking-[-0.03em]"
             />
           </div>
@@ -118,11 +141,11 @@ const handleToggle = (index: number) => {
                 viewport={{ once: true }}
               >
                 <Link
-                  href="mailto:mail@360-wellness.com"
+                  href={`mailto:${navData.contact.email}`}
                   className="contact-link leading-[1.3] sm:leading-[1.433] w-fit"
                   data-text="mail@360-wellness.com"
                 >
-                  mail@360-wellness.com
+                  {navData.contact.email}
                 </Link>
               </motion.div>
               <motion.div
@@ -132,37 +155,39 @@ const handleToggle = (index: number) => {
                 viewport={{ once: true }}
               >
                 <Link
-                  href="tel:+97143332175"
+                  href={`tel:${navData.contact.phone}`}
                   className="contact-link leading-[1.3] sm:leading-[1.433] w-fit"
                   data-text="+97143332175"
                 >
-                  +97143332175
+                  {navData.contact.phone}
                 </Link>
               </motion.div>
             </div>
 
             {/* Social links */}
             <div className="flex flex-wrap gap-x-30 gap-y-[5px]">
-              {socialLinks.map(({ label, href, type }, index) => (
-                <Reveal
-                  key={type}
-                  variants={moveUpV2}
-                  delayRange={index * 0.13}
-                >
-                  <Link
-                    href={href}
-                    className="contact-link text-19 leading-[1.42] tracking-[-0.03em] hover:scale-[1.05] transition-transform duration-300"
-                    style={
-                      type === "instagram"
-                        ? instagramGradient
-                        : socialStyles[type]
-                    }
-                    data-text={label}
+              {navData.socials
+                .filter((s) => !s.isHidden)
+                .map((s, index) => (
+                  <Reveal
+                    key={s.type}
+                    variants={moveUpV2}
+                    delayRange={index * 0.13}
                   >
-                    {label}
-                  </Link>
-                </Reveal>
-              ))}
+                    <Link
+                      href={s.link}
+                      className="contact-link text-19 leading-[1.42] tracking-[-0.03em] hover:scale-[1.05] transition-transform duration-300"
+                      style={
+                        s.type === "instagram"
+                          ? instagramGradient
+                          : (socialStyles[s.type as SocialType] ?? {})
+                      }
+                      data-text={s.label}
+                    >
+                      {s.label}
+                    </Link>
+                  </Reveal>
+                ))}
             </div>
           </div>
         </div>
@@ -185,10 +210,15 @@ const handleToggle = (index: number) => {
               delayRange={index * 0.13}
               variants={moveUpV2}
             >
-              <div ref={(el) => { itemRefs.current[index] = el; }} className="border-b border-border-color">
+              <div
+                ref={(el) => {
+                  itemRefs.current[index] = el;
+                }}
+                className="border-b border-border-color"
+              >
                 <button
                   type="button"
-onClick={() => handleToggle(index)}
+                  onClick={() => handleToggle(index)}
                   className="w-full flex items-center justify-between py-20"
                 >
                   <span className="text-secondary text-subHeading tracking-[-0.03em]">

@@ -365,7 +365,7 @@ export default function CareersPage() {
               {...register("thirdSection.description")}
               placeholder="Description"
             />
-            <div className="flex items-center justify-between mt-2">
+            <div className="flex items-center justify-between mt-2 border border-black/10 rounded-lg p-4 shadow-md">
               <Label className="font-bold">Items</Label>
               <Button
                 type="button"
@@ -470,12 +470,12 @@ export default function CareersPage() {
                   {job.isHidden ? (
                     <RiEyeOffLine
                       className="text-gray-400 cursor-pointer hover:scale-110 transition-all"
-                      size={16}
+                      size={22}
                     />
                   ) : (
                     <RiEyeLine
                       className="text-green-600 cursor-pointer hover:scale-110 transition-all"
-                      size={16}
+                      size={22}
                     />
                   )}
                 </div>
@@ -491,7 +491,7 @@ export default function CareersPage() {
               <div onClick={(e) => job._id && deleteJob(e, job._id)}>
                 <RiDeleteBinLine
                   className="text-red-400 cursor-pointer hover:text-red-600 hover:scale-110 transition-all"
-                  size={16}
+                  size={22}
                 />
               </div>
             </div>

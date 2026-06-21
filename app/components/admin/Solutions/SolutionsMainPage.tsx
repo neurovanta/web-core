@@ -8,9 +8,9 @@ import { ImageUploader } from "@/components/ui/image-uploader";
 import { Textarea } from "@/components/ui/textarea";
 import AdminItemContainer from "@/app/components/admin/common/AdminItemContainer";
 import { toast } from "sonner";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { RiDeleteBinLine } from "react-icons/ri";
-import { RiEyeLine, RiEyeOffLine } from "react-icons/ri";
+import { RiEyeLine, RiEyeOffLine, RiDeleteBin6Line } from "react-icons/ri";
 import { useRouter } from "next/navigation";
 
 interface SolutionMainForm {
@@ -83,6 +83,12 @@ export default function SolutionMainPage() {
     remove: removeFourth,
   } = useFieldArray({ control, name: "fourthSection.items" });
 
+  const [confirmDialog, setConfirmDialog] = useState<{
+    open: boolean;
+    id: string;
+    label: string;
+  }>({ open: false, id: "", label: "" });
+
   const fetchData = async () => {
     try {
       const res = await fetch("/api/admin/solution");
@@ -153,6 +159,27 @@ export default function SolutionMainPage() {
       }
     } catch (error) {
       console.error(error);
+      toast.error("Something went wrong");
+    }
+  };
+
+  const handleDeleteSolution = async () => {
+    try {
+      const res = await fetch(`/api/admin/solution?id=${confirmDialog.id}`, {
+        method: "DELETE",
+      });
+      if (res.ok) {
+        const index = solutions.findIndex(
+          (f) => (f as typeof f & { _id?: string })._id === confirmDialog.id,
+        );
+        if (index !== -1) removeSolution(index);
+        toast.success("Solution deleted");
+        setConfirmDialog({ open: false, id: "", label: "" });
+      } else {
+        const { message } = await res.json();
+        toast.error(message);
+      }
+    } catch {
       toast.error("Something went wrong");
     }
   };
@@ -497,16 +524,62 @@ export default function SolutionMainPage() {
                       />
                     )}
                   </div>
-
                   <span className="text-sm font-medium">
                     {title || `Solution ${index + 1}`}
                   </span>
+                </div>
+                <div
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    id &&
+                      setConfirmDialog({
+                        open: true,
+                        id,
+                        label: title || `Solution ${index + 1}`,
+                      });
+                  }}
+                >
+                  <RiDeleteBin6Line
+                    className="text-red-400 cursor-pointer hover:scale-120 transition-all"
+                    size={20}
+                  />
                 </div>
               </div>
             );
           })}
         </div>
       </div>
+      {confirmDialog.open && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+          <div className="bg-white rounded-xl shadow-xl p-6 w-full max-w-sm flex flex-col gap-4">
+            <h2 className="text-sm font-bold">Delete Solution</h2>
+            <p className="text-sm text-black/60">
+              Are you sure you want to delete{" "}
+              <span className="font-semibold text-black">
+                {confirmDialog.label}
+              </span>
+              ?
+            </p>
+            <div className="flex justify-end gap-2">
+              <Button
+                type="button"
+                onClick={() =>
+                  setConfirmDialog({ open: false, id: "", label: "" })
+                }
+              >
+                Cancel
+              </Button>
+              <Button
+                type="button"
+                className="bg-red-500 hover:bg-red-600 text-white"
+                onClick={handleDeleteSolution}
+              >
+                Delete
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -235,7 +235,7 @@ export default function AboutPage() {
                 + Add Item
               </Button>
             </div>
-            <div className="flex flex-col gap-4">
+            <div className="grid grid-cols-2 gap-4">
               {secondItems.map((field, index) => (
                 <div
                   key={field.id}
@@ -317,7 +317,7 @@ export default function AboutPage() {
                 + Add Item
               </Button>
             </div>
-            <div className="flex flex-col gap-4">
+            <div className="grid grid-cols-2 gap-4">
               {thirdItems.map((field, index) => (
                 <div
                   key={field.id}
@@ -400,7 +400,7 @@ export default function AboutPage() {
                 + Add Item
               </Button>
             </div>
-            <div className="flex flex-col gap-4">
+            <div className="grid grid-cols-2 gap-4">
               {fourthItems.map((field, index) => (
                 <div
                   key={field.id}
@@ -473,7 +473,7 @@ export default function AboutPage() {
                 + Add Item
               </Button>
             </div>
-            <div className="flex flex-col gap-4">
+            <div className="grid grid-cols-2 gap-4">
               {fifthItems.map((field, index) => (
                 <div
                   key={field.id}

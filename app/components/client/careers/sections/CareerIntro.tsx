@@ -8,20 +8,15 @@ import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ElasticEffect } from "../../animations/ElasticEffect";
+import { Careers } from "@/app/types/career";
 
 gsap.registerPlugin(ScrollTrigger);
 
-interface CareerIntroProps {
-  title: string;
-  description: string;
-  bgImage: string;
-}
-
 export default function CareerIntro({
-  title,
-  description,
-  bgImage,
-}: CareerIntroProps) {
+  data,
+}: {
+  data: Careers["firstSection"];
+}) {
   const sectionRef = useRef<HTMLElement>(null);
   const imageRef = useRef<HTMLDivElement>(null);
 
@@ -53,8 +48,8 @@ export default function CareerIntro({
       {/* Background Image */}
       <div className="absolute inset-0 -z-10" ref={imageRef}>
         <Image
-          src={bgImage}
-          alt="Why work with us background"
+          src={data.image}
+          alt={data.imageAlt}
           fill
           className="object-cover pointer-events-none"
           priority
@@ -68,7 +63,7 @@ export default function CareerIntro({
           {/* Col 1 — Title */}
           <div className="flex items-center">
             <AnimatedHeading
-              title={title}
+              title={data.title}
               className="text-heading text-white"
             />
           </div>
@@ -97,7 +92,7 @@ export default function CareerIntro({
           {/* Col 3 — Description */}
           <div className="md:py-40 3xl:py-[45px] flex items-center">
             <SectionDescription
-              text={description}
+              text={data.description}
               className="text-subHeading text-white max-w-[40ch] tracking-[-0.03em]"
             />
           </div>

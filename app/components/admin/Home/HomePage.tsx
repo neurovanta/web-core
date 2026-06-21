@@ -289,7 +289,7 @@ export default function HomePage() {
                 />
               </div>
             </div>
-            <div className="flex items-center justify-between mt-2">
+            <div className="flex items-center justify-between mt-2 border border-black/10 rounded-lg p-4">
               <Label className="font-bold">Buttons</Label>
               <Button
                 type="button"
@@ -299,7 +299,7 @@ export default function HomePage() {
                 + Add Button
               </Button>
             </div>
-            <div className="flex flex-col gap-3">
+            <div className="grid grid-cols-2 gap-4">
               {buttons.map((field, index) => (
                 <div
                   key={field.id}
@@ -361,7 +361,7 @@ export default function HomePage() {
             />
             <Label className="font-bold">Slug</Label>
             <Input {...register("secondSection.slug")} placeholder="Slug" />
-            <div className="flex items-center justify-between mt-2">
+            <div className="flex items-center justify-between mt-2 border border-black/10 rounded-lg p-4 shadow-md">
               <Label className="font-bold">Items</Label>
               <Button
                 type="button"
@@ -373,7 +373,7 @@ export default function HomePage() {
                 + Add Item
               </Button>
             </div>
-            <div className="flex flex-col gap-4">
+            <div className="grid grid-cols-2 gap-4">
               {secondItems.map((field, index) => (
                 <div
                   key={field.id}
@@ -443,7 +443,7 @@ export default function HomePage() {
             />
             <Label className="font-bold">Slug</Label>
             <Input {...register("thirdSection.slug")} placeholder="Slug" />
-            <div className="flex items-center justify-between mt-2">
+            <div className="flex items-center justify-between mt-2 border border-black/10 rounded-lg p-4 shadow-md">
               <Label className="font-bold">Items</Label>
               <Button
                 type="button"
@@ -455,7 +455,7 @@ export default function HomePage() {
                 + Add Item
               </Button>
             </div>
-            <div className="flex flex-col gap-4">
+            <div className="grid grid-cols-2 gap-4">
               {thirdItems.map((field, index) => (
                 <div
                   key={field.id}
@@ -615,7 +615,7 @@ export default function HomePage() {
                 />
               </div>
             </div>
-            <div className="flex items-center justify-between mt-2">
+            <div className="flex items-center justify-between mt-2 border border-black/10 rounded-lg p-4 shadow-md">
               <Label className="font-bold">Items</Label>
               <Button
                 type="button"
@@ -627,7 +627,7 @@ export default function HomePage() {
                 + Add Item
               </Button>
             </div>
-            <div className="flex flex-col gap-4">
+            <div className="grid grid-cols-2 gap-4">
               {fifthItems.map((field, index) => (
                 <div
                   key={field.id}
@@ -695,7 +695,7 @@ export default function HomePage() {
           <div className="p-5 flex flex-col gap-4">
             <Label className="font-bold">Title</Label>
             <Input {...register("sixthSection.title")} placeholder="Title" />
-            <div className="flex items-center justify-between mt-2">
+            <div className="flex items-center justify-between mt-2 border border-black/10 rounded-lg p-4 shadow-md">
               <Label className="font-bold">Items</Label>
               <Button
                 type="button"
@@ -712,7 +712,7 @@ export default function HomePage() {
                 + Add Item
               </Button>
             </div>
-            <div className="flex flex-col gap-4">
+            <div className="grid grid-cols-2 gap-4">
               {sixthItems.map((field, index) => (
                 <div
                   key={field.id}
@@ -892,7 +892,7 @@ export default function HomePage() {
                       + Add Logo
                     </Button>
                   </div>
-                  <div className="flex flex-col gap-3">
+                  <div className="grid grid-cols-2 gap-4">
                     {fields.map((field, index) => (
                       <div
                         key={field.id}
