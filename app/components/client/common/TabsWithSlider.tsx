@@ -15,6 +15,7 @@ import gsap from "gsap";
 import { SectionDescription } from "../animations/SectionDescription";
 import { ElasticEffect } from "../animations/ElasticEffect";
 import SliderNavButton from "./SliderButton";
+import { useLenis } from "../layout/LenisProvider";
 
 export type TabsWithSliderSlide = {
   image: string;
@@ -43,6 +44,10 @@ function preloadImages(srcs: string[]): void {
     const img = new window.Image();
     img.src = src;
   });
+}
+
+function slugify(str: string) {
+  return str.toLowerCase().trim().replace(/\s+/g, "-");
 }
 
 // ─── Mobile Category Dropdown (below md only) ────────────────────────────────
@@ -188,6 +193,8 @@ export default function TabsWithSlider({
   const overlayWrapRefs = useRef<(HTMLDivElement | null)[]>([]);
   const overlayTitleRefs = useRef<(HTMLDivElement | null)[]>([]);
   const baseTitleRefs = useRef<(HTMLParagraphElement | null)[]>([]);
+  const sectionRef = useRef<HTMLElement>(null);
+  const { scrollTo, ready } = useLenis();
 
   const [leftCol, rightCol] = splitColumns(data.categories);
 
@@ -306,8 +313,40 @@ export default function TabsWithSlider({
     return () => cancelAnimationFrame(raf);
   }, [pendingSlides]);
 
+  const categoryKey = data.categories.map((c) => c.label).join("|");
+
+  useEffect(() => {
+    if (!ready) return;
+
+    const hash = decodeURIComponent(window.location.hash.replace("#", ""));
+    if (!hash) return;
+
+    const matchedIndex = data.categories.findIndex(
+      (cat) => slugify(cat.label) === hash.toLowerCase(),
+    );
+    if (matchedIndex === -1) return;
+
+    setActiveIndex(matchedIndex);
+    swiperRef.current?.slideTo(0, 0);
+
+    const scrollToSection = () => {
+      if (!sectionRef.current) return;
+      const top =
+        sectionRef.current.getBoundingClientRect().top + window.scrollY;
+      scrollTo(top, { duration: 1.5 });
+    };
+
+    if (document.readyState === "complete") {
+      requestAnimationFrame(scrollToSection);
+    } else {
+      window.addEventListener("load", scrollToSection, { once: true });
+    }
+
+    return () => window.removeEventListener("load", scrollToSection);
+  }, [ready, categoryKey]);
+
   return (
-    <section className={`${className} md:overflow-hidden`}>
+    <section ref={sectionRef} className={`${className} md:overflow-hidden`}>
       <div ref={containerRef} className="container">
         <div className="flex flex-wrap xl:flex-nowrap items-start justify-between gap-y-[15px] sm:gap-y-20 gap-x-8 mb-[30px] sm:mb-60">
           <div className="flex flex-col gap-[15px] sm:gap-20">

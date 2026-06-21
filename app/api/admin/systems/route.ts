@@ -221,3 +221,63 @@ export async function POST(request: NextRequest) {
     );
   }
 }
+
+
+export async function DELETE(request: NextRequest) {
+  try {
+    const isAdmin = await verifyAdmin(request);
+    if (!isAdmin) {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    }
+
+    await connectDB();
+    const id = request.nextUrl.searchParams.get("id");
+    const categoryId = request.nextUrl.searchParams.get("categoryId");
+
+    const doc = await Systems.findOne({});
+    if (!doc) {
+      return NextResponse.json({ message: "Not found" }, { status: 404 });
+    }
+
+    // Delete single product
+    if (id) {
+      for (const cat of doc.secondSection.categories) {
+        const index = cat.products.findIndex(
+          (p: { _id: { toString: () => string } }) => p._id.toString() === id,
+        );
+        if (index !== -1) {
+          cat.products.splice(index, 1);
+          await doc.save();
+          revalidateTag("Systems", "default");
+          return NextResponse.json(
+            { message: "Product deleted successfully" },
+            { status: 200 },
+          );
+        }
+      }
+      return NextResponse.json({ message: "Product not found" }, { status: 404 });
+    }
+
+    // Delete category and all its products
+    if (categoryId) {
+      const index = doc.secondSection.categories.findIndex(
+        (c: { _id: { toString: () => string } }) => c._id.toString() === categoryId,
+      );
+      if (index === -1) {
+        return NextResponse.json({ message: "Category not found" }, { status: 404 });
+      }
+      doc.secondSection.categories.splice(index, 1);
+      await doc.save();
+      revalidateTag("Systems", "default");
+      return NextResponse.json(
+        { message: "Category deleted successfully" },
+        { status: 200 },
+      );
+    }
+
+    return NextResponse.json({ message: "No target specified" }, { status: 400 });
+  } catch (error: unknown) {
+    console.error(error);
+    return NextResponse.json({ message: "Internal Server Error" }, { status: 500 });
+  }
+}

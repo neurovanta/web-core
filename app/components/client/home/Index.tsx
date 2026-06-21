@@ -45,7 +45,7 @@ const Index = ({ data }: { data: HomePageData }) => {
               image: p.thumbnailImage ?? "",
               imageAlt: p.thumbnailImageAlt,
               title: p.thumbnailTitle,
-              href: `/systems/${p.slug ?? ""}`,
+              href: `/longevity-systems/${p.slug ?? ""}`,
             })),
           })),
         }}

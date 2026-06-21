@@ -10,10 +10,18 @@ import {
 } from "react";
 import Link from "next/link";
 import gsap from "gsap";
-import { NAV_ITEMS, SOCIAL_LINKS, CONTACT_INFO, NavItem } from "./data";
 import { moveLeft, moveUp } from "../animations/motionVarinats";
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
+import {
+  NavData,
+  NavSocial,
+  NavLink,
+  NavSolution,
+  NavSystem,
+  NavIndustry,
+  NavItem,
+} from "@/app/types/header";
 
 const LAYER_BG = ["#F9F5F0", "#E2D3C3", "#51463E"] as const;
 const STAGGER = 0.12;
@@ -28,10 +36,11 @@ export interface NavDropdownHandle {
 
 interface NavDropdownProps {
   onOpenChange?: (open: boolean) => void;
+  navData: NavData;
 }
 
 export const NavDropdown = forwardRef<NavDropdownHandle, NavDropdownProps>(
-  ({ onOpenChange }, ref) => {
+  ({ onOpenChange, navData }, ref) => {
     const [menuOpen, setMenuOpen] = useState(false);
     const [activeItem, setActiveItem] = useState<NavItem | null>(null);
     const [hoveredItem, setHoveredItem] = useState<string | null>(null);
@@ -46,6 +55,46 @@ export const NavDropdown = forwardRef<NavDropdownHandle, NavDropdownProps>(
     const contentRef = useRef<HTMLDivElement>(null);
     const navItemRefs = useRef<(HTMLLIElement | null)[]>([]);
 
+const groupBuilders: Record<string, NavItem> = {
+  solutions: {
+    label: navData.header.solutionsLabel || "Solutions",
+    href: "/solutions",
+    subItems: navData.header.solutions
+      .filter((s: NavSolution) => !s.isHidden)
+      .map((s: NavSolution) => ({
+        label: s.thumbnailTitle,
+        href: `/solutions/${s.slug}`,
+      })),
+  },
+  systems: {
+    label: navData.header.systemsLabel || "Longevity Systems",
+    href: "/longevity-systems",
+    subItems: navData.header.systems
+      .filter((sys: NavSystem) => !sys.isHidden)
+      .map((sys: NavSystem) => ({
+        label: sys.title,
+        href: `/longevity-systems/#${sys.title.toLowerCase().replace(/\s+/g, "-")}`
+      })),
+  },
+  industries: {
+    label: navData.header.industriesLabel || "Industries We Serve",
+    href: "/industries",
+    subItems: navData.header.industries
+      .filter((ind: NavIndustry) => !ind.isHidden)
+      .map((ind: NavIndustry) => ({
+        label: ind.thumbnailTitle,
+        href: `/industries/${ind.slug}`,
+      })),
+  },
+};
+
+const navItems: NavItem[] = navData.header.menuItems
+  .map((m: any) =>
+    m.kind === "link"
+      ? { label: m.label, href: m.link }
+      : groupBuilders[m.groupKey],
+  )
+  .filter(Boolean);
     // State machine: "closed" | "opening" | "open" | "closing"
     const stateRef = useRef<"closed" | "opening" | "open" | "closing">(
       "closed",
@@ -227,7 +276,7 @@ export const NavDropdown = forwardRef<NavDropdownHandle, NavDropdownProps>(
     // True when a sub-nav item is currently hovered
     const anySubHovered =
       hoveredItem !== null &&
-      !!NAV_ITEMS.find((it) => it.label === hoveredItem)?.subItems?.length;
+      !!navItems.find((it) => it.label === hoveredItem)?.subItems?.length;
 
     return (
       <div
@@ -290,41 +339,43 @@ export const NavDropdown = forwardRef<NavDropdownHandle, NavDropdownProps>(
                   {/* ── Col 1: Social ── */}
                   <div className="hidden xl:flex flex-col shrink-0 pb-60">
                     <div className="mt-auto flex flex-col gap-20">
-                      {SOCIAL_LINKS.map((s, i) => (
-                        <motion.div
-                          initial="hidden"
-                          whileInView="show"
-                          variants={moveLeft((i + 1) * 0.2)}
-                          key={i}
-                        >
-                          <a
-                            data-text={s.label}
-                            href={s.href}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-19 leading-[1.42] tracking-[-0.03em] contact-link hover:scale-105 transition-all duration-300"
-                            style={
-                              s.label === "Instagram"
-                                ? {
-                                    background:
-                                      "linear-gradient(90deg, #4C66C7 0%, #F04D5A 35.1%, #FAD85C 66.83%, #C92AAA 100%)",
-                                    WebkitBackgroundClip: "text",
-                                    WebkitTextFillColor: "transparent",
-                                    backgroundClip: "text",
-                                  }
-                                : s.label === "LinkedIn"
-                                  ? { color: "#2671AD" }
-                                  : s.label === "Youtube"
-                                    ? { color: "#D92935" }
-                                    : s.label === "Facebook"
-                                      ? { color: "#416FF0" }
-                                      : { color: "rgba(81,70,62,0.5)" }
-                            }
+                      {navData.socials
+                        .filter((s: NavSocial) => !s.isHidden)
+                        .map((s: NavSocial, i: number) => (
+                          <motion.div
+                            initial="hidden"
+                            whileInView="show"
+                            variants={moveLeft((i + 1) * 0.2)}
+                            key={i}
                           >
-                            {s.label}
-                          </a>
-                        </motion.div>
-                      ))}
+                            <a
+                              data-text={s.label}
+                              href={s.link}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-19 leading-[1.42] tracking-[-0.03em] contact-link hover:scale-105 transition-all duration-300"
+                              style={
+                                s.label === "Instagram"
+                                  ? {
+                                      background:
+                                        "linear-gradient(90deg, #4C66C7 0%, #F04D5A 35.1%, #FAD85C 66.83%, #C92AAA 100%)",
+                                      WebkitBackgroundClip: "text",
+                                      WebkitTextFillColor: "transparent",
+                                      backgroundClip: "text",
+                                    }
+                                  : s.label === "LinkedIn"
+                                    ? { color: "#2671AD" }
+                                    : s.label === "Youtube"
+                                      ? { color: "#D92935" }
+                                      : s.label === "Facebook"
+                                        ? { color: "#416FF0" }
+                                        : { color: "rgba(81,70,62,0.5)" }
+                              }
+                            >
+                              {s.label}
+                            </a>
+                          </motion.div>
+                        ))}
                     </div>
                   </div>
 
@@ -332,7 +383,7 @@ export const NavDropdown = forwardRef<NavDropdownHandle, NavDropdownProps>(
                   <div className="flex flex-col justify-end md:justify-start 2xl:justify-end flex-1 min-w-0 pb-[30px] md:pb-50 xl:pl-225 3xl:pl-[264px]">
                     <nav className="pt-[30px] sm:pt-60 3xl:pt-50 md:pr-20">
                       <ul className="flex flex-col gap-[30px] 3xl:gap-40">
-                        {NAV_ITEMS.map((item, i) => {
+                        {navItems.map((item, i) => {
                           const hasSubs = !!item.subItems?.length;
                           const isHovered = hoveredItem === item.label;
 
@@ -581,55 +632,59 @@ export const NavDropdown = forwardRef<NavDropdownHandle, NavDropdownProps>(
                     {/* Contact — bottom-right */}
                     <div className="mt-auto flex flex-col items-end pb-20 xl:pb-50 md:pt-80 2xl:pt-0">
                       <a
-                        href={`mailto:${CONTACT_INFO.email}`}
-                        className="text-subHeading tracking-[-0.03em]"
+                        data-text={navData.contact.email}
+                        href={`mailto:${navData.contact.email}`}
+                        className="text-subHeading tracking-[-0.03em] contact-link"
                       >
-                        {CONTACT_INFO.email}
+                        {navData.contact.email}
                       </a>
                       <a
-                        href={`tel:${CONTACT_INFO.phone}`}
-                        className="text-subHeading tracking-[-0.03em]"
+                        data-text={navData.contact.phone}
+                        href={`tel:${navData.contact.phone}`}
+                        className="text-subHeading tracking-[-0.03em] contact-link"
                       >
-                        {CONTACT_INFO.phone}
+                        {navData.contact.phone}
                       </a>
                     </div>
 
                     <div className="flex xl:hidden gap-20 pb-50 justify-end">
-                      {SOCIAL_LINKS.map((s, i) => (
-                        <motion.div
-                          initial="hidden"
-                          whileInView="show"
-                          variants={moveLeft((i + 1) * 0.2)}
-                          key={i}
-                        >
-                          <a
-                            data-text={s.label}
-                            href={s.href}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-19 leading-[1.42] tracking-[-0.03em] contact-link hover:scale-105 transition-all duration-300"
-                            style={
-                              s.label === "Instagram"
-                                ? {
-                                    background:
-                                      "linear-gradient(90deg, #4C66C7 0%, #F04D5A 35.1%, #FAD85C 66.83%, #C92AAA 100%)",
-                                    WebkitBackgroundClip: "text",
-                                    WebkitTextFillColor: "transparent",
-                                    backgroundClip: "text",
-                                  }
-                                : s.label === "LinkedIn"
-                                  ? { color: "#2671AD" }
-                                  : s.label === "Youtube"
-                                    ? { color: "#D92935" }
-                                    : s.label === "Facebook"
-                                      ? { color: "#416FF0" }
-                                      : { color: "rgba(81,70,62,0.5)" }
-                            }
+                      {navData.socials
+                        .filter((s: NavSocial) => !s.isHidden)
+                        .map((s: NavSocial, i: number) => (
+                          <motion.div
+                            initial="hidden"
+                            whileInView="show"
+                            variants={moveLeft((i + 1) * 0.2)}
+                            key={i}
                           >
-                            {s.label}
-                          </a>
-                        </motion.div>
-                      ))}
+                            <a
+                              data-text={s.label}
+                              href={s.link}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-19 leading-[1.42] tracking-[-0.03em] contact-link hover:scale-105 transition-all duration-300"
+                              style={
+                                s.label === "Instagram"
+                                  ? {
+                                      background:
+                                        "linear-gradient(90deg, #4C66C7 0%, #F04D5A 35.1%, #FAD85C 66.83%, #C92AAA 100%)",
+                                      WebkitBackgroundClip: "text",
+                                      WebkitTextFillColor: "transparent",
+                                      backgroundClip: "text",
+                                    }
+                                  : s.label === "LinkedIn"
+                                    ? { color: "#2671AD" }
+                                    : s.label === "Youtube"
+                                      ? { color: "#D92935" }
+                                      : s.label === "Facebook"
+                                        ? { color: "#416FF0" }
+                                        : { color: "rgba(81,70,62,0.5)" }
+                              }
+                            >
+                              {s.label}
+                            </a>
+                          </motion.div>
+                        ))}
                     </div>
                   </div>
                 </div>
@@ -640,55 +695,57 @@ export const NavDropdown = forwardRef<NavDropdownHandle, NavDropdownProps>(
                 <div className="w-full h-px bg-black/20 mb-[30px]" />
                 <div className="flex flex-col gap-[2px] mb-[9px] sm:mb-20">
                   <a
-                    href={`mailto:${CONTACT_INFO.email}`}
+                    href={`mailto:${navData.contact.email}`}
                     className="text-subHeading tracking-[-0.03em]"
                   >
-                    {CONTACT_INFO.email}
+                    {navData.contact.email}
                   </a>
                   <a
-                    href={`tel:${CONTACT_INFO.phone}`}
+                    href={`tel:${navData.contact.phone}`}
                     className="text-subHeading tracking-[-0.03em]"
                   >
-                    {CONTACT_INFO.phone}
+                    {navData.contact.phone}
                   </a>
                 </div>
 
                 <div className="flex gap-[30px] mb-[30px] sm:pb-50">
-                  {SOCIAL_LINKS.map((s, i) => (
-                    <motion.div
-                      initial="hidden"
-                      whileInView="show"
-                      variants={moveLeft((i + 1) * 0.2)}
-                      key={i}
-                    >
-                      <a
-                        data-text={s.label}
-                        href={s.href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-19 leading-[1.42] tracking-[-0.03em] contact-link hover:scale-105 transition-all duration-300"
-                        style={
-                          s.label === "Instagram"
-                            ? {
-                                background:
-                                  "linear-gradient(90deg, #4C66C7 0%, #F04D5A 35.1%, #FAD85C 66.83%, #C92AAA 100%)",
-                                WebkitBackgroundClip: "text",
-                                WebkitTextFillColor: "transparent",
-                                backgroundClip: "text",
-                              }
-                            : s.label === "LinkedIn"
-                              ? { color: "#2671AD" }
-                              : s.label === "Youtube"
-                                ? { color: "#D92935" }
-                                : s.label === "Facebook"
-                                  ? { color: "#416FF0" }
-                                  : { color: "rgba(81,70,62,0.5)" }
-                        }
+                  {navData.socials
+                    .filter((s: NavSocial) => !s.isHidden)
+                    .map((s: NavSocial, i: number) => (
+                      <motion.div
+                        initial="hidden"
+                        whileInView="show"
+                        variants={moveLeft((i + 1) * 0.2)}
+                        key={i}
                       >
-                        {s.label}
-                      </a>
-                    </motion.div>
-                  ))}
+                        <a
+                          data-text={s.label}
+                          href={s.link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-19 leading-[1.42] tracking-[-0.03em] contact-link hover:scale-105 transition-all duration-300"
+                          style={
+                            s.label === "Instagram"
+                              ? {
+                                  background:
+                                    "linear-gradient(90deg, #4C66C7 0%, #F04D5A 35.1%, #FAD85C 66.83%, #C92AAA 100%)",
+                                  WebkitBackgroundClip: "text",
+                                  WebkitTextFillColor: "transparent",
+                                  backgroundClip: "text",
+                                }
+                              : s.label === "LinkedIn"
+                                ? { color: "#2671AD" }
+                                : s.label === "Youtube"
+                                  ? { color: "#D92935" }
+                                  : s.label === "Facebook"
+                                    ? { color: "#416FF0" }
+                                    : { color: "rgba(81,70,62,0.5)" }
+                          }
+                        >
+                          {s.label}
+                        </a>
+                      </motion.div>
+                    ))}
                 </div>
               </div>
             </div>

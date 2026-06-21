@@ -186,7 +186,7 @@ const Settings = () => {
             <div className="flex justify-center">
               <Button
                 type="submit"
-                className="w-full cursor-pointer text-white text-[16px]"
+                className="w-full cursor-pointer text-secondary text-[16px]"
               >
                 Submit
               </Button>
@@ -210,7 +210,7 @@ const Settings = () => {
               </p>
               <Button
                 type="button"
-                className="w-full cursor-pointer text-white text-[16px]"
+                className="w-full cursor-pointer text-secondary text-[16px]"
                 onClick={checkCurrentPassword}
               >
                 Continue
@@ -230,7 +230,7 @@ const Settings = () => {
               </p>
               <Button
                 type="button"
-                className="w-full cursor-pointer text-white text-[16px]"
+                className="w-full cursor-pointer text-secondary text-[16px]"
                 onClick={submitNewPassword}
               >
                 Confirm
@@ -268,7 +268,7 @@ const Settings = () => {
             <div className="flex justify-center">
               <Button
                 type="button"
-                className="w-full cursor-pointer text-white text-[16px]"
+                className="w-full cursor-pointer text-secondary text-[16px]"
                 onClick={() => EmailSectionSubmit()}
               >
                 Submit

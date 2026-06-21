@@ -3,9 +3,9 @@ import type { Metadata } from "next";
 import { DM_Sans } from "next/font/google";
 import "../globals.css";
 import { LenisProvider } from "../components/client/layout/LenisProvider";
-import Footer from "../components/client/layout/Footer";
-import Header from "../components/client/layout/Header";
 import AppShell from "../components/client/layout/AppShell";
+import HeaderServer from "../components/client/layout/HeaderServer";
+import FooterServer from "../components/client/layout/FooterServer";
 
 const dmSans = DM_Sans({
   variable: "--font-dm-sans",
@@ -28,9 +28,9 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col">
         <LenisProvider>
           <AppShell>
-            <Header />
+            <HeaderServer />
             {children}
-            <Footer />
+            <FooterServer />
           </AppShell>
         </LenisProvider>
       </body>

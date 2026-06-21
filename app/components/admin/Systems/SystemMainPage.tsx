@@ -9,7 +9,12 @@ import { Textarea } from "@/components/ui/textarea";
 import AdminItemContainer from "@/app/components/admin/common/AdminItemContainer";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
-import { RiEyeLine, RiEyeOffLine } from "react-icons/ri";
+import {
+  RiEyeLine,
+  RiEyeOffLine,
+  RiPencilLine,
+  RiDeleteBin6Line,
+} from "react-icons/ri";
 import { useRouter } from "next/navigation";
 
 interface SystemsMainForm {
@@ -54,7 +59,18 @@ export default function SystemsMainPage() {
     open: boolean;
     title: string;
   }>({ open: false, title: "" });
-
+  const [editDialog, setEditDialog] = useState<{
+    open: boolean;
+    categoryId: string;
+    title: string;
+  }>({ open: false, categoryId: "", title: "" });
+  const [confirmDialog, setConfirmDialog] = useState<{
+    open: boolean;
+    type: "category" | "product" | null;
+    id: string;
+    categoryId?: string;
+    label: string;
+  }>({ open: false, type: null, id: "", label: "" });
   const {
     register,
     handleSubmit,
@@ -190,6 +206,75 @@ export default function SystemsMainPage() {
     }
   };
 
+  const handleDeleteConfirm = async () => {
+    try {
+      const url =
+        confirmDialog.type === "category"
+          ? `/api/admin/systems?categoryId=${confirmDialog.id}`
+          : `/api/admin/systems?id=${confirmDialog.id}`;
+
+      const res = await fetch(url, { method: "DELETE" });
+      if (res.ok) {
+        if (confirmDialog.type === "category") {
+          setCategories((prev) =>
+            prev.filter((c) => c._id !== confirmDialog.id),
+          );
+          toast.success("Category deleted");
+        } else {
+          setCategories((prev) =>
+            prev.map((c) =>
+              c._id === confirmDialog.categoryId
+                ? {
+                    ...c,
+                    products: c.products.filter(
+                      (p) => p._id !== confirmDialog.id,
+                    ),
+                  }
+                : c,
+            ),
+          );
+          toast.success("Product deleted");
+        }
+        setConfirmDialog({ open: false, type: null, id: "", label: "" });
+      } else {
+        const { message } = await res.json();
+        toast.error(message);
+      }
+    } catch {
+      toast.error("Something went wrong");
+    }
+  };
+
+  const renameCategory = async () => {
+    if (!editDialog.title.trim()) return;
+    try {
+      const res = await fetch(
+        `/api/admin/systems?categoryId=${editDialog.categoryId}`,
+        {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ title: editDialog.title.trim() }),
+        },
+      );
+      if (res.ok) {
+        setCategories((prev) =>
+          prev.map((c) =>
+            c._id === editDialog.categoryId
+              ? { ...c, title: editDialog.title.trim() }
+              : c,
+          ),
+        );
+        toast.success("Category renamed");
+        setEditDialog({ open: false, categoryId: "", title: "" });
+      } else {
+        const { message } = await res.json();
+        toast.error(message);
+      }
+    } catch {
+      toast.error("Something went wrong");
+    }
+  };
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -257,7 +342,6 @@ export default function SystemsMainPage() {
             />
           </div>
         </AdminItemContainer>
-        
 
         {/* Second Section */}
         <AdminItemContainer>
@@ -265,7 +349,10 @@ export default function SystemsMainPage() {
             main
             isHidden={watch("secondSection.isHidden")}
             onToggleHidden={() =>
-              setValue("secondSection.isHidden", !watch("secondSection.isHidden"))
+              setValue(
+                "secondSection.isHidden",
+                !watch("secondSection.isHidden"),
+              )
             }
           >
             Second Section
@@ -394,6 +481,39 @@ export default function SystemsMainPage() {
                       />
                     )}
                   </div>
+                  <div
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      cat._id &&
+                        setEditDialog({
+                          open: true,
+                          categoryId: cat._id,
+                          title: cat.title,
+                        });
+                    }}
+                  >
+                    <RiPencilLine
+                      className="text-blue-500 cursor-pointer hover:scale-110 transition-all"
+                      size={20}
+                    />
+                  </div>
+                  <div
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      cat._id &&
+                        setConfirmDialog({
+                          open: true,
+                          type: "category",
+                          id: cat._id,
+                          label: cat.title || "this category",
+                        });
+                    }}
+                  >
+                    <RiDeleteBin6Line
+                      className="text-red-400 cursor-pointer hover:scale-110 transition-all"
+                      size={20}
+                    />
+                  </div>
                   <span className="text-sm font-semibold">
                     {cat.title || "Untitled Category"}
                   </span>
@@ -475,6 +595,25 @@ export default function SystemsMainPage() {
                         {product.thumbnailTitle || "Untitled Product"}
                       </span>
                     </div>
+                    <div
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        product._id &&
+                          cat._id &&
+                          setConfirmDialog({
+                            open: true,
+                            type: "product",
+                            id: product._id,
+                            categoryId: cat._id,
+                            label: product.thumbnailTitle || "this product",
+                          });
+                      }}
+                    >
+                      <RiDeleteBin6Line
+                        className="text-red-400 cursor-pointer hover:scale-110 transition-all"
+                        size={20}
+                      />
+                    </div>
                   </div>
                 ))}
               </div>
@@ -520,6 +659,77 @@ export default function SystemsMainPage() {
           </div>
         </div>
       )}
+
+      {editDialog.open && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+          <div className="bg-white rounded-xl shadow-xl p-6 w-full max-w-sm flex flex-col gap-4">
+            <h2 className="text-sm font-bold">Rename Category</h2>
+            <div className="flex flex-col gap-2">
+              <Label className="font-bold">Title</Label>
+              <Input
+                autoFocus
+                placeholder="Category title"
+                value={editDialog.title}
+                onChange={(e) =>
+                  setEditDialog((prev) => ({ ...prev, title: e.target.value }))
+                }
+                onKeyDown={(e) => e.key === "Enter" && renameCategory()}
+              />
+            </div>
+            <div className="flex justify-end gap-2">
+              <Button
+                type="button"
+                onClick={() =>
+                  setEditDialog({ open: false, categoryId: "", title: "" })
+                }
+              >
+                Cancel
+              </Button>
+              <Button
+                type="button"
+                onClick={renameCategory}
+                disabled={!editDialog.title.trim()}
+              >
+                Save
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {confirmDialog.open && (
+  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+    <div className="bg-white rounded-xl shadow-xl p-6 w-full max-w-sm flex flex-col gap-4">
+      <h2 className="text-sm font-bold">
+        Delete {confirmDialog.type === "category" ? "Category" : "Product"}
+      </h2>
+      <p className="text-sm text-black/60">
+        Are you sure you want to delete{" "}
+        <span className="font-semibold text-black">{confirmDialog.label}</span>?
+        {confirmDialog.type === "category" && (
+          <span className="block mt-1 text-red-500">
+            This will also delete all products in this category.
+          </span>
+        )}
+      </p>
+      <div className="flex justify-end gap-2">
+        <Button
+          type="button"
+          onClick={() => setConfirmDialog({ open: false, type: null, id: "", label: "" })}
+        >
+          Cancel
+        </Button>
+        <Button
+          type="button"
+          className="bg-red-500 hover:bg-red-600 text-white"
+          onClick={handleDeleteConfirm}
+        >
+          Delete
+        </Button>
+      </div>
+    </div>
+  </div>
+)}
     </div>
   );
 }

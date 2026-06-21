@@ -63,7 +63,6 @@ interface IndividualSolutionForm {
   };
 }
 
-
 export default function IndividualSolution({
   createMode,
 }: {
@@ -324,12 +323,23 @@ export default function IndividualSolution({
           <div className="p-5 flex flex-col gap-4">
             <Label className="font-bold">Title</Label>
             <Input {...register("secondSection.title")} placeholder="Title" />
-            <Label className="font-bold">Items</Label>
-            <div className="border border-black/20 p-2 rounded-md flex flex-col gap-4">
+            <div className="flex items-center justify-between mt-4 border border-black/20 rounded-md p-4">
+              <Label className="font-bold">Items</Label>
+              <Button
+                type="button"
+                addItem
+                onClick={() =>
+                  appendSecond({ title: "", image: "", imageAlt: "" })
+                }
+              >
+                Add Item
+              </Button>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
               {secondItems.map((field, index) => (
                 <div
                   key={field.id}
-                  className="grid grid-cols-2 gap-2 relative border-b border-black/20 pb-4"
+                  className="grid grid-cols-2 gap-2 relative border border-black/20 rounded-md p-4"
                 >
                   <div className="absolute top-2 right-2">
                     <RiDeleteBinLine
@@ -364,17 +374,6 @@ export default function IndividualSolution({
                   </div>
                 </div>
               ))}
-              <div className="flex justify-end">
-                <Button
-                  type="button"
-                  addItem
-                  onClick={() =>
-                    appendSecond({ title: "", image: "", imageAlt: "" })
-                  }
-                >
-                  Add Item
-                </Button>
-              </div>
             </div>
           </div>
         </AdminItemContainer>
@@ -393,12 +392,23 @@ export default function IndividualSolution({
           <div className="p-5 flex flex-col gap-4">
             <Label className="font-bold">Title</Label>
             <Input {...register("thirdSection.title")} placeholder="Title" />
-            <Label className="font-bold">Items</Label>
-            <div className="border border-black/20 p-2 rounded-md flex flex-col gap-4">
+            <div className="flex items-center justify-between mt-4 border border-black/20 rounded-md p-4">
+              <Label className="font-bold">Items</Label>
+              <Button
+                type="button"
+                addItem
+                onClick={() =>
+                  appendThird({ title: "", icon: "", iconAlt: "" })
+                }
+              >
+                Add Item
+              </Button>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
               {thirdItems.map((field, index) => (
                 <div
                   key={field.id}
-                  className="grid grid-cols-2 gap-2 relative border-b border-black/20 pb-4"
+                  className="grid grid-cols-2 gap-2 relative border border-black/20 rounded-md p-4"
                 >
                   <div className="absolute top-2 right-2">
                     <RiDeleteBinLine
@@ -434,17 +444,6 @@ export default function IndividualSolution({
                   </div>
                 </div>
               ))}
-              <div className="flex justify-end">
-                <Button
-                  type="button"
-                  addItem
-                  onClick={() =>
-                    appendThird({ title: "", icon: "", iconAlt: "" })
-                  }
-                >
-                  Add Item
-                </Button>
-              </div>
             </div>
           </div>
         </AdminItemContainer>

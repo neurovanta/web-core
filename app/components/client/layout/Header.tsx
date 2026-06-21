@@ -11,6 +11,7 @@ import { NavDropdown, NavDropdownHandle } from "./NavDropdown";
 import Image from "next/image";
 import MenuIcon from "./HamburgerAniamtion";
 import { usePathname } from "next/navigation";
+import { NavData } from "@/app/types/header";
 
 const dropDown = (delay: number) => ({
   hidden: { y: -22, opacity: 0 },
@@ -38,7 +39,7 @@ const getHeaderPadding = () => {
   return window.innerWidth < 1024 ? "30px" : "50px";
 };
 
-export default function Header() {
+export default function Header({ navData }: { navData: NavData }) {
   const { animateIn } = useAppShell();
 
   const headerRef = useRef<HTMLElement>(null);
@@ -262,7 +263,7 @@ export default function Header() {
                 alt="Logo"
                 width={500}
                 height={150}
-                className="max-w-[158px] sm:max-w-[200px] md:max-w-[220px] lg:max-w-none h-[20px] sm:h-[40px]"
+                className="max-w-[158px] sm:max-w-[200px] md:max-w-[220px] lg:max-w-none h-[20px] sm:h-[40px] pointer-events-none"
               />
             </Link>
           </motion.div>
@@ -533,7 +534,7 @@ export default function Header() {
         </AnimatePresence>
       </header>
 
-      <NavDropdown ref={dropdownRef} onOpenChange={setMenuOpen} />
+      <NavDropdown ref={dropdownRef} onOpenChange={setMenuOpen} navData={navData} />
     </>
   );
 }

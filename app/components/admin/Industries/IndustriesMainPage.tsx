@@ -8,8 +8,8 @@ import { ImageUploader } from "@/components/ui/image-uploader";
 import { Textarea } from "@/components/ui/textarea";
 import AdminItemContainer from "@/app/components/admin/common/AdminItemContainer";
 import { toast } from "sonner";
-import { useEffect } from "react";
-import { RiEyeLine, RiEyeOffLine } from "react-icons/ri";
+import { useEffect, useState } from "react";
+import { RiEyeLine, RiEyeOffLine, RiDeleteBin6Line } from "react-icons/ri";
 import { useRouter } from "next/navigation";
 
 interface IndustriesMainForm {
@@ -56,7 +56,17 @@ export default function IndustriesMainPage() {
     formState: { errors },
   } = useForm<IndustriesMainForm>();
 
-  const { fields: industries } = useFieldArray({ control, name: "industries" });
+  const { fields: industries, remove: removeIndustry } = useFieldArray({
+    control,
+    name: "industries",
+  });
+
+  const [confirmDialog, setConfirmDialog] = useState<{
+    open: boolean;
+    id: string;
+    index: number;
+    label: string;
+  }>({ open: false, id: "", index: -1, label: "" });
 
   const fetchData = async () => {
     try {
@@ -122,6 +132,24 @@ export default function IndustriesMainPage() {
     }
   };
 
+  const handleDeleteIndustry = async () => {
+    try {
+      const res = await fetch(`/api/admin/industries?id=${confirmDialog.id}`, {
+        method: "DELETE",
+      });
+      if (res.ok) {
+        removeIndustry(confirmDialog.index);
+        toast.success("Industry deleted");
+        setConfirmDialog({ open: false, id: "", index: -1, label: "" });
+      } else {
+        const { message } = await res.json();
+        toast.error(message);
+      }
+    } catch {
+      toast.error("Something went wrong");
+    }
+  };
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -140,15 +168,24 @@ export default function IndustriesMainPage() {
                   name="bannerSection.image"
                   control={control}
                   render={({ field }) => (
-                    <ImageUploader value={field.value} onChange={field.onChange} />
+                    <ImageUploader
+                      value={field.value}
+                      onChange={field.onChange}
+                    />
                   )}
                 />
                 <Label className="font-bold">Alt Tag</Label>
-                <Input {...register("bannerSection.imageAlt")} placeholder="Alt Tag" />
+                <Input
+                  {...register("bannerSection.imageAlt")}
+                  placeholder="Alt Tag"
+                />
               </div>
               <div className="flex flex-col gap-2">
                 <Label className="font-bold">Title</Label>
-                <Input {...register("bannerSection.title")} placeholder="Title" />
+                <Input
+                  {...register("bannerSection.title")}
+                  placeholder="Title"
+                />
               </div>
             </div>
           </div>
@@ -173,17 +210,29 @@ export default function IndustriesMainPage() {
                   name="firstSection.image"
                   control={control}
                   render={({ field }) => (
-                    <ImageUploader value={field.value} onChange={field.onChange} />
+                    <ImageUploader
+                      value={field.value}
+                      onChange={field.onChange}
+                    />
                   )}
                 />
                 <Label className="font-bold">Alt Tag</Label>
-                <Input {...register("firstSection.imageAlt")} placeholder="Alt Tag" />
+                <Input
+                  {...register("firstSection.imageAlt")}
+                  placeholder="Alt Tag"
+                />
               </div>
               <div className="flex flex-col gap-2">
                 <Label className="font-bold">Title</Label>
-                <Input {...register("firstSection.title")} placeholder="Title" />
+                <Input
+                  {...register("firstSection.title")}
+                  placeholder="Title"
+                />
                 <Label className="font-bold">Description</Label>
-                <Textarea {...register("firstSection.description")} placeholder="Description" />
+                <Textarea
+                  {...register("firstSection.description")}
+                  placeholder="Description"
+                />
               </div>
             </div>
           </div>
@@ -195,7 +244,10 @@ export default function IndustriesMainPage() {
             main
             isHidden={watch("secondSection.isHidden")}
             onToggleHidden={() =>
-              setValue("secondSection.isHidden", !watch("secondSection.isHidden"))
+              setValue(
+                "secondSection.isHidden",
+                !watch("secondSection.isHidden"),
+              )
             }
           >
             Second Section
@@ -204,7 +256,10 @@ export default function IndustriesMainPage() {
             <div className="grid grid-cols-2 gap-4">
               <div className="flex flex-col gap-2">
                 <Label className="font-bold">Title</Label>
-                <Input {...register("secondSection.title")} placeholder="Title" />
+                <Input
+                  {...register("secondSection.title")}
+                  placeholder="Title"
+                />
               </div>
             </div>
           </div>
@@ -229,15 +284,24 @@ export default function IndustriesMainPage() {
                   name="thirdSection.image"
                   control={control}
                   render={({ field }) => (
-                    <ImageUploader value={field.value} onChange={field.onChange} />
+                    <ImageUploader
+                      value={field.value}
+                      onChange={field.onChange}
+                    />
                   )}
                 />
                 <Label className="font-bold">Alt Tag</Label>
-                <Input {...register("thirdSection.imageAlt")} placeholder="Alt Tag" />
+                <Input
+                  {...register("thirdSection.imageAlt")}
+                  placeholder="Alt Tag"
+                />
               </div>
               <div className="flex flex-col gap-2">
                 <Label className="font-bold">Title</Label>
-                <Input {...register("thirdSection.title")} placeholder="Title" />
+                <Input
+                  {...register("thirdSection.title")}
+                  placeholder="Title"
+                />
               </div>
             </div>
           </div>
@@ -250,7 +314,10 @@ export default function IndustriesMainPage() {
             <Label className="font-bold">Meta Title</Label>
             <Input {...register("seo.metaTitle")} placeholder="Meta Title" />
             <Label className="font-bold">Meta Description</Label>
-            <Input {...register("seo.metaDescription")} placeholder="Meta Description" />
+            <Input
+              {...register("seo.metaDescription")}
+              placeholder="Meta Description"
+            />
             <Label className="font-bold">Script</Label>
             <Textarea {...register("seo.script")} placeholder="Script" />
           </div>
@@ -292,23 +359,90 @@ export default function IndustriesMainPage() {
                 className="flex items-center justify-between border border-black/10 rounded-md px-4 py-3 hover:shadow-sm transition-all cursor-pointer"
                 onClick={() => id && router.push(`/admin/industries/${id}`)}
               >
-                <div className="flex items-center gap-3">
-                  <div onClick={(e) => id && toggleIndustryVisibility(e, id, index, isHidden)}>
-                    {isHidden ? (
-                      <RiEyeOffLine className="text-gray-400 cursor-pointer hover:scale-120 transition-all" size={22} />
-                    ) : (
-                      <RiEyeLine className="text-green-600 cursor-pointer hover:scale-120 transition-all" size={22} />
-                    )}
+                <div className="flex gap-3 justify-between w-full">
+                  <div className="flex items-center gap-3">
+                    <div
+                      onClick={(e) =>
+                        id && toggleIndustryVisibility(e, id, index, isHidden)
+                      }
+                    >
+                      {isHidden ? (
+                        <RiEyeOffLine
+                          className="text-gray-400 cursor-pointer hover:scale-120 transition-all"
+                          size={22}
+                        />
+                      ) : (
+                        <RiEyeLine
+                          className="text-green-600 cursor-pointer hover:scale-120 transition-all"
+                          size={22}
+                        />
+                      )}
+                    </div>
+                    <span className="text-sm font-medium">
+                      {title || `Industry ${index + 1}`}
+                    </span>
                   </div>
-                  <span className="text-sm font-medium">
-                    {title || `Industry ${index + 1}`}
-                  </span>
+
+                  <div
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      id &&
+                        setConfirmDialog({
+                          open: true,
+                          id,
+                          index,
+                          label: title || `Industry ${index + 1}`,
+                        });
+                    }}
+                  >
+                    <RiDeleteBin6Line
+                      className="text-red-400 cursor-pointer hover:scale-120 transition-all"
+                      size={20}
+                    />
+                  </div>
                 </div>
               </div>
             );
           })}
         </div>
       </div>
+
+      {confirmDialog.open && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+          <div className="bg-white rounded-xl shadow-xl p-6 w-full max-w-sm flex flex-col gap-4">
+            <h2 className="text-sm font-bold">Delete Industry</h2>
+            <p className="text-sm text-black/60">
+              Are you sure you want to delete{" "}
+              <span className="font-semibold text-black">
+                {confirmDialog.label}
+              </span>
+              ?
+            </p>
+            <div className="flex justify-end gap-2">
+              <Button
+                type="button"
+                onClick={() =>
+                  setConfirmDialog({
+                    open: false,
+                    id: "",
+                    index: -1,
+                    label: "",
+                  })
+                }
+              >
+                Cancel
+              </Button>
+              <Button
+                type="button"
+                className="bg-red-500 hover:bg-red-600 text-white"
+                onClick={handleDeleteIndustry}
+              >
+                Delete
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

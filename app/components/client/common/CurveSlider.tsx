@@ -9,12 +9,7 @@ import { ElasticEffect } from "../animations/ElasticEffect";
 import { moveUp } from "../animations/motionVarinats";
 import { motion } from "framer-motion";
 
-interface CurveSliderProps {
-  button?: boolean;
-  title: string;
-  description: string;
-  images: string[];
-}
+
 
 const SPEED = 0.5;
 
@@ -32,10 +27,9 @@ function EllipseMask({ flip = false }: { flip?: boolean }) {
 
 export default function CurveSlider({
   button = false,
-  title,
-  description,
-  images,
-}: CurveSliderProps) {
+  data,
+}: any) {
+  const { title, description, items } = data;
   const trackRef = useRef<HTMLDivElement>(null);
   const xRef = useRef(0);
   const rafRef = useRef<number>(0);
@@ -43,7 +37,7 @@ export default function CurveSlider({
   const slideRef = useRef<HTMLDivElement>(null);
   const [slideWidth, setSlideWidth] = useState(0);
   const gap = slideWidth < 300 ? 3.26 : 10;
-  const totalWidth = slideWidth > 0 ? (slideWidth + gap) * images.length : 1;
+  const totalWidth = slideWidth > 0 ? (slideWidth + gap) * items.length : 1;
 
   useEffect(() => {
     const el = slideRef.current;
@@ -109,7 +103,7 @@ export default function CurveSlider({
     rafRef.current = requestAnimationFrame(tick);
   };
 
-  const slides = [...images, ...images, ...images];
+  const slides = [...items, ...items, ...items];
 
   return (
     <section className="relative w-full overflow-hidden border-b md:pb-20 3xl:pb-150 border-border-color">
@@ -121,7 +115,7 @@ export default function CurveSlider({
           variants={moveUp(0.2)}
           className="hidden xl:flex absolute left-0 bottom-100 3xl:bottom-[205px] right-0 z-20 w-full justify-center"
         >
-          <CustomButton label="Apply Now" href="/careers/form" variant={2} />
+          <CustomButton label="Apply Now" href="/careers/apply" variant={2} />
         </motion.div>
       )}
       <div className="absolute md:top-3 3xl:top-0 left-0 right-0 z-20 text-center">
@@ -173,8 +167,8 @@ mt-[30px] md:mt-0
               className={`relative shrink-0 overflow-hidden w-[146.47px] h-[244px] sm:h-[380px] md:h-[500px] lg:h-[620px] sm:w-[200px] md:w-[230px] lg:w-[300px] xl:w-[449px] xl:h-[748px]`}
             >
               <Image
-                src={src}
-                alt={`Slide ${(i % images.length) + 1}`}
+                src={src.image}
+                alt={src.imageAlt}
                 fill
                 className="object-cover object-top pointer-events-none"
                 draggable={false}

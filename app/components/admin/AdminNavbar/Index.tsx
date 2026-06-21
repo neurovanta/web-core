@@ -11,6 +11,7 @@ import {
   Factory,
   Star,
   GraduationCap,
+  Navigation,
 } from "lucide-react";
 
 interface SolutionItem {
@@ -61,6 +62,7 @@ const AdminNavbar = () => {
         // { name: "Enquiries", href: "/admin/contact/enquiry" },
       ],
     },
+    { name: "Navigation", href: "/admin/navigation", icon: Navigation },
     { name: "Settings", href: "/admin/settings", icon: Settings },
   ];
 

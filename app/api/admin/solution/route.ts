@@ -150,3 +150,41 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ message: "Internal Server Error" }, { status: 500 });
   }
 }
+
+
+export async function DELETE(request: NextRequest) {
+  try {
+    const isAdmin = await verifyAdmin(request);
+    if (!isAdmin) {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    }
+
+    await connectDB();
+    const id = request.nextUrl.searchParams.get("id");
+
+    if (!id) {
+      return NextResponse.json({ message: "No id specified" }, { status: 400 });
+    }
+
+    const doc = await Solution.findOne({});
+    if (!doc) {
+      return NextResponse.json({ message: "Not found" }, { status: 404 });
+    }
+
+    const index = doc.solutions.findIndex(
+      (s: { _id: { toString: () => string } }) => s._id.toString() === id,
+    );
+    if (index === -1) {
+      return NextResponse.json({ message: "Solution not found" }, { status: 404 });
+    }
+
+    doc.solutions.splice(index, 1);
+    await doc.save();
+    revalidateTag("solutions", "default");
+
+    return NextResponse.json({ message: "Solution deleted successfully" }, { status: 200 });
+  } catch (error: unknown) {
+    console.error(error);
+    return NextResponse.json({ message: "Internal Server Error" }, { status: 500 });
+  }
+}

@@ -234,7 +234,7 @@ const {
           <div className="p-5 flex flex-col gap-4">
             <Label className="font-bold">Title</Label>
             <Input {...register("thirdSection.title")} placeholder="Title" />
-            <div className="flex items-center justify-between mt-2">
+            <div className="flex items-center justify-between mt-2 border border-black/10 rounded-lg p-4 shadow-md">
               <Label className="font-bold">Items</Label>
               <Button
                 type="button"
@@ -244,7 +244,7 @@ const {
                 + Add Item
               </Button>
             </div>
-            <div className="flex flex-col gap-4">
+            <div className="grid grid-cols-2 gap-3">
               {thirdItems.map((field, index) => (
                 <div
                   key={field.id}
