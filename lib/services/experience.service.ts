@@ -12,6 +12,6 @@ export const getExperience = unstable_cache(
 
     return JSON.parse(JSON.stringify(experience));
   },
-  ["experience"],
-  { tags: ["experience"] },
+  ["Experience"],
+  { tags: ["Experience"] },
 );

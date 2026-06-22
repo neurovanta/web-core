@@ -92,8 +92,8 @@ export async function PATCH(request: NextRequest) {
       Object.assign(found, body);
       await doc.save();
 
-      revalidateTag("solutions", "default");
-      revalidateTag(`solution-${found.slug}`, "default");
+      revalidateTag("Solutions", "default");
+      // revalidateTag(`Solution-slug-${found.slug}`, "default");
 
       return NextResponse.json(
         { data: found, message: "Solution updated successfully" },
@@ -106,7 +106,7 @@ export async function PATCH(request: NextRequest) {
       new: true,
     });
 
-    revalidateTag("solutions", "default");
+    revalidateTag("Solutions", "default");
 
     return NextResponse.json(
       { data: doc, message: "Solutions page updated successfully" },
@@ -139,7 +139,7 @@ export async function POST(request: NextRequest) {
     doc.solutions.push(body);
     await doc.save();
 
-    revalidateTag("solutions", "default");
+    revalidateTag("Solutions", "default");
 
     return NextResponse.json(
       { data: doc, message: "Solution created successfully" },
@@ -180,7 +180,7 @@ export async function DELETE(request: NextRequest) {
 
     doc.solutions.splice(index, 1);
     await doc.save();
-    revalidateTag("solutions", "default");
+    revalidateTag("Solutions", "default");
 
     return NextResponse.json({ message: "Solution deleted successfully" }, { status: 200 });
   } catch (error: unknown) {

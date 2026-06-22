@@ -13,8 +13,8 @@ export const getSolutions = unstable_cache(
 
     return JSON.parse(JSON.stringify(doc));
   },
-  ["solutions"],
-  { tags: ["solutions"] },
+  ["Solutions"],
+  { tags: ["Solutions"] },
 );
 
 export const getSolutionBySlug = (slug: string) =>
@@ -41,6 +41,6 @@ export const getSolutionBySlug = (slug: string) =>
         fifthSection: aboutDoc.fourthSection,
       }));
     },
-    [`solution-slug-${slug}`],
-    { tags: ["solutions"] },
+    [`Solution-slug-${slug}`],
+    { tags: ["Solutions"] },
   )();

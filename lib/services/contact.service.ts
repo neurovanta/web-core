@@ -12,6 +12,6 @@ export const getContact = unstable_cache(
 
     return JSON.parse(JSON.stringify(contact));
   },
-  ["contact"],
-  { tags: ["contact"] },
+  ["Contact"],
+  { tags: ["Contact"] },
 );

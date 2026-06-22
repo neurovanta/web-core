@@ -134,6 +134,6 @@ header: {
       }),
     );
   },
-  ["global-nav-items"],
-  { tags: ["global-nav-items"] },
+  ["Global-nav-items"],
+  { tags: ["Global-nav-items"] },
 );

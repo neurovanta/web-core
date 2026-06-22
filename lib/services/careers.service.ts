@@ -12,6 +12,6 @@ export const getCareers = unstable_cache(
 
     return JSON.parse(JSON.stringify(careers));
   },
-  ["careers"],
-  { tags: ["careers"] },
+  ["Careers"],
+  { tags: ["Careers"] },
 );
