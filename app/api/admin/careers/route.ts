@@ -59,10 +59,30 @@ export async function PATCH(request: NextRequest) {
       );
     }
 
-    const updated = await Careers.findOneAndUpdate({}, body, {
-      upsert: true,
-      new: true,
-    });
+    const flatSet: Record<string, unknown> = {};
+
+    for (const [sectionKey, sectionValue] of Object.entries(body)) {
+      if (
+        typeof sectionValue === "object" &&
+        sectionValue !== null &&
+        !Array.isArray(sectionValue)
+      ) {
+        for (const [fieldKey, fieldValue] of Object.entries(
+          sectionValue as Record<string, unknown>,
+        )) {
+          flatSet[`${sectionKey}.${fieldKey}`] = fieldValue;
+        }
+      } else {
+        flatSet[sectionKey] = sectionValue;
+      }
+    }
+
+    const updated = await Careers.findOneAndUpdate(
+      {},
+      { $set: flatSet },
+      { upsert: true, new: true },
+    );
+
     revalidateTag("Careers", "default");
     return NextResponse.json(
       { data: updated, message: "Careers page updated successfully" },
