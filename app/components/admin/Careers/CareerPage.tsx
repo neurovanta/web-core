@@ -566,6 +566,7 @@ export default function CareersPage() {
             <div className="flex justify-end gap-2 pt-2">
               <Button
                 type="button"
+                className="cursor-pointer"
                 onClick={() =>
                   setJobDialog((prev) => ({ ...prev, open: false }))
                 }
@@ -574,6 +575,7 @@ export default function CareersPage() {
               </Button>
               <Button
                 type="button"
+                className="cursor-pointer"
                 onClick={saveJob}
                 disabled={!jobDialog.job.designation.trim()}
               >
