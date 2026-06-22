@@ -1,8 +1,8 @@
 export const careersFormData = {
-  title: "YOUR NEXT CHAPTER STARTS HERE",
-  subtitle: "Work on meaningful projects that blend innovation with real–world impact.",
+  title: "YOUR NEXT CHAPTER STARTS HERE.",
+  subtitle: "We are always looking for talented, driven individuals who want to be part of something that matters.",
   description:
-    "We're always looking for passionate thinkers, creative problem solvers, and driven individuals who want to make an impact. At Imtiaz, you won't just find a job—you'll discover a place to grow, innovate, and shape meaningful experiences.",
+    "At Neurovanta, you will work on projects that are genuinely changing the way the world approaches wellness and longevity. We value expertise, integrity, and a high standard of work. If that resonates with you, we would like to hear from you. ",
   applyingForOptions: [
     { label: "UI/UX Designer", value: "ui-ux-designer" },
     { label: "Frontend Developer", value: "frontend-developer" },
