@@ -92,8 +92,8 @@ export async function PATCH(request: NextRequest) {
       Object.assign(found, body);
       await doc.save();
 
-      revalidateTag("industries", "default");
-      revalidateTag(`industry-${found.slug}`, "default");
+      revalidateTag("Industries", "default");
+      // revalidateTag(`Industry-slug-${found.slug}`, "default");
 
       return NextResponse.json(
         { data: found, message: "Industry updated successfully" },
@@ -106,7 +106,7 @@ export async function PATCH(request: NextRequest) {
       new: true,
     });
 
-    revalidateTag("industries", "default");
+    revalidateTag("Industries", "default");
 
     return NextResponse.json(
       { data: doc, message: "Industries page updated successfully" },
@@ -139,7 +139,7 @@ export async function POST(request: NextRequest) {
     doc.industries.push(body);
     await doc.save();
 
-    revalidateTag("industries", "default");
+    revalidateTag("Industries", "default");
 
     return NextResponse.json(
       { data: doc, message: "Industry created successfully" },
@@ -183,7 +183,7 @@ export async function DELETE(request: NextRequest) {
 
     doc.industries.splice(index, 1);
     await doc.save();
-    revalidateTag("industries", "default");
+    revalidateTag("Industries", "default");
 
     return NextResponse.json({ message: "Industry deleted successfully" }, { status: 200 });
   } catch (error: unknown) {

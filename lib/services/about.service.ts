@@ -12,6 +12,6 @@ export const getAbout = unstable_cache(
 
     return JSON.parse(JSON.stringify(about));
   },
-  ["about"],
-  { tags: ["about"] },
+  ["About"],
+  { tags: ["About"] },
 );

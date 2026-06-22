@@ -44,6 +44,6 @@ export const getHome = unstable_cache(
 
     return JSON.parse(JSON.stringify({ home, categories, industries }));
   },
-  ["home"],
-  { tags: ["home"] },
+  ["Home"],
+  { tags: ["Home"] },
 );

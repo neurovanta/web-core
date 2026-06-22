@@ -12,25 +12,26 @@ export const getSystems = unstable_cache(
 
     return JSON.parse(JSON.stringify(doc));
   },
-  ["systems"],
-  { tags: ["systems"] },
+  ["Systems"],
+  { tags: ["Systems"] },
 );
 
-export const getSystemProductBySlug = unstable_cache(
-  async (slug: string) => {
-    await connectDB();
+export const getSystemProductBySlug = (slug: string) =>
+  unstable_cache(
+    async () => {
+      await connectDB();
 
-    const doc = (await SystemsModel.findOne({}).lean()) as any;
+      const doc = (await SystemsModel.findOne({}).lean()) as any;
 
-    if (!doc) throw new Error("Systems not found");
+      if (!doc) throw new Error("Systems not found");
 
-    for (const cat of doc.secondSection.categories) {
-      const found = cat.products.find((p: any) => p.slug === slug);
-      if (found) return JSON.parse(JSON.stringify(found));
-    }
+      for (const cat of doc.secondSection.categories) {
+        const found = cat.products.find((p: any) => p.slug === slug);
+        if (found) return JSON.parse(JSON.stringify(found));
+      }
 
-    throw new Error(`Product not found: ${slug}`);
-  },
-  ["system-product-slug"],
-  { tags: ["systems"] },
-);
+      throw new Error(`Product not found: ${slug}`);
+    },
+    ["System-product-slug", slug],
+    { tags: ["Systems"] },
+  )();

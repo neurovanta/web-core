@@ -45,7 +45,7 @@ export async function PATCH(request: NextRequest) {
       result = settings;
     });
 
-    revalidateTag("global-nav-items", "default");
+    revalidateTag("Global-nav-items", "default");
     return NextResponse.json({ message: "Order saved", data: result?.header?.menuItems });
   } catch (error) {
     console.error(error);

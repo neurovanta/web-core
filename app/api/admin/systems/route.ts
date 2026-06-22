@@ -115,7 +115,7 @@ export async function PATCH(request: NextRequest) {
           Object.assign(found, body);
           await doc.save();
           revalidateTag("Systems", "default");
-          revalidateTag(`product-${found.slug}`, "default");
+          // revalidateTag(`product-${found.slug}`, "default");
           return NextResponse.json(
             { data: found, message: "Product updated successfully" },
             { status: 200 },
