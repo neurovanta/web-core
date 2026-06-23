@@ -42,7 +42,7 @@ const Index = ({ data }: { data: HomePageData }) => {
           categories: data.categories.map((cat) => ({
             label: cat.title,
             slides: cat.products.map((p) => ({
-              image: p.thumbnailImage ?? "",
+              image: p.thumbnailImage || "/assets/placeholder.png",
               imageAlt: p.thumbnailImageAlt,
               title: p.thumbnailTitle,
               href: `/longevity-systems/${p.slug ?? ""}`,

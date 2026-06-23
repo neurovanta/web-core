@@ -20,7 +20,7 @@ const HowItFits = ({ data }: HowItFitsProps) => {
       {/* Background Image */}
       <div className="absolute inset-0 -z-10">
         <Image
-          src={data.image}
+          src={data.image || "/assets/placeholder.png"}
           alt={data.imageAlt}
           fill
           className="object-cover object-center"

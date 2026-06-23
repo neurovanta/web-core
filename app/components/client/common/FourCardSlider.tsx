@@ -114,7 +114,7 @@ export default function FourCardSlider({ data }: FourCardSliderProps) {
                 <div className="relative w-full group h-[359px] md:h-[440px] lg:h-[500px] 3xl:h-[609px] overflow-hidden">
                   <ElasticEffect />
                   <Image
-                    src={item.image}
+                    src={item.image || "/assets/placeholder.png"}
                     alt={item.imageAlt}
                     fill
                     className="object-cover pointer-events-none group-hover:scale-105 transition-all duration-700"

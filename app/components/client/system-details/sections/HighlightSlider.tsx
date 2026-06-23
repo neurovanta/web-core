@@ -95,7 +95,7 @@ export default function HighlightSlider({ data }: { data: IndividualProduct["sec
             {/* Background image */}
             <div className="relative w-full h-[554px] sm:h-[600px]  md:h-[888px] 3xl:h-[888px] max-h-[888px]">
               <Image
-                src={slide.image}
+                src={slide.image || "/assets/placeholder.png"}
                 alt={slide.title}
                 fill
                 className="object-cover object-center"

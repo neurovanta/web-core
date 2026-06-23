@@ -35,7 +35,7 @@ function ServiceCard({
   return (
     <div className="relative w-full lg:w-1/2 overflow-hidden flex flex-col justify-center">
       <Image
-        src={card.thumbnailImage}
+        src={card.thumbnailImage || "/assets/placeholder.png"}
         alt={card.thumbnailImageAlt}
         fill
         className="object-cover"

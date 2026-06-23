@@ -39,7 +39,7 @@ const Index = ({ data }: { data: IndividualSolutionType }) => {
       />
       <InnerCta
         data={{
-          bgImage: data.sixthSection.image,
+          bgImage: data.sixthSection.image || "/assets/placeholder.png",
           title: data.sixthSection.title,
         }}
         maxW="max-w-[18ch]"

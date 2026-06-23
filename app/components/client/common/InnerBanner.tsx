@@ -69,7 +69,7 @@ export default function InnerBanner({
       <div className="absolute inset-0 w-full h-full">
         <div ref={imageRef} className="absolute inset-0 w-full h-full">
           <Image
-            src={data.image}
+            src={data.image || "/assets/placeholder.png"}
             alt={data.imageAlt}
             fill
             priority

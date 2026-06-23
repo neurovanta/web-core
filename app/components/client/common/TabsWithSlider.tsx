@@ -533,7 +533,7 @@ export default function TabsWithSlider({
                       >
                         <div className="relative overflow-hidden h-[250px] sm:h-[320px] lg:h-[420px] 3xl:h-[550px]">
                           <Image
-                            src={pending.image}
+                            src={pending.image || "/assets/placeholder.png"}
                             alt={pending.title}
                             fill
                             className="object-cover"
@@ -612,7 +612,7 @@ function SlideCard({
         onMouseLeave={() => setHovered(false)}
       >
         <Image
-          src={slide.image}
+          src={slide.image || "/assets/placeholder.png"}
           alt={slide.title}
           fill
           className="object-cover transition-transform duration-500 group-hover:scale-105"
