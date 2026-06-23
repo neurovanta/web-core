@@ -24,7 +24,7 @@ const Index = ({ data }: { data: IndividualIndustry }) => {
       <HowItFits data={data.fourthSection} />
       <InnerCta
         data={{
-          bgImage: data.fifthSection.image,
+          bgImage: data.fifthSection.image || "/assets/placeholder.png",
           title: data.fifthSection.title,
         }}
         maxW="max-w-[18ch]"

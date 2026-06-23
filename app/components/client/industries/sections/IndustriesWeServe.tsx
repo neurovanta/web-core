@@ -50,7 +50,7 @@ const IndustryCard = ({
     onClick={onActivate}
   >
     <Image
-      src={item.image}
+      src={item.image || "/assets/placeholder.png"}
       alt={item.title}
       fill
       className="object-cover object-center"
@@ -185,7 +185,7 @@ const MobileAccordion = ({ items }: { items: IndustryItem[] }) => {
                     {/* Image */}
                     <div className="relative w-full aspect-[16/9] h-[181px] min-[500px]:h-auto overflow-hidden mb-[15px]">
                       <Image
-                        src={item.image}
+                        src={item.image || "/assets/placeholder.png"}
                         alt={item.title}
                         fill
                         className="object-cover object-top"
@@ -428,7 +428,7 @@ const IndustriesWeServe = ({ data }: { data: IndustriesWeServeProps }) => {
                     style={{ height: 360 }}
                   >
                     <Image
-                      src={item.image}
+                      src={item.image || "/assets/placeholder.png"}
                       alt={item.title}
                       fill
                       className="object-cover object-center"

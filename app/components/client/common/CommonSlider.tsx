@@ -65,7 +65,7 @@ function CommonSlideCard({
   <div className="flex flex-col justify-between h-full">
     <div>
       <Image
-        src={slide.icon}
+        src={slide.icon || "/assets/placeholder.png"}
         alt="icon"
         width={100}
         height={100}

@@ -209,7 +209,7 @@ function HighlightItem({ icon, title }: { icon: string; title: string }) {
   return (
     <div className="flex flex-col gap-[10px] sm:gap-[15px]">
       <div className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 relative flex-shrink-0">
-        <Image src={icon} alt={title} fill className="object-contain" />
+        <Image src={icon || "/assets/placeholder.png"} alt={title} fill className="object-contain" />
       </div>
       <p className="text-description md:tracking-[-0.03em] max-w-[110px] sm:max-w-[152px]">{title}</p>
     </div>

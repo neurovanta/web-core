@@ -21,7 +21,7 @@ const Index = ({ data }: { data: Systems }) => {
           categories: data.secondSection.categories.map((cat) => ({
             label: cat.title,
             slides: cat.products.map((p) => ({
-              image: p.thumbnailImage ?? "",
+              image: p.thumbnailImage || "/assets/placeholder.png",
               imageAlt: p.thumbnailImageAlt,
               title: p.thumbnailTitle,
               href: `/longevity-systems/${p.slug ?? ""}`,
@@ -32,7 +32,7 @@ const Index = ({ data }: { data: Systems }) => {
       />
       <InnerCta
         data={{
-          bgImage: data.thirdSection.image,
+          bgImage: data.thirdSection.image || "/assets/placeholder.png",
           title: data.thirdSection.title,
         }}
         maxW="max-w-[18ch]"

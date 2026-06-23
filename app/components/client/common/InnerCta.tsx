@@ -52,7 +52,7 @@ export default function InnerCta({ data, maxW = "" }: InnerCtaProps) {
       {/* Background Image */}
       <div ref={imageRef} className="absolute inset-0 will-change-transform">
         <Image
-          src={data.bgImage}
+          src={data.bgImage || "/assets/placeholder.png"}
           alt={data.title}
           fill
           priority

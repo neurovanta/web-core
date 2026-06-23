@@ -167,7 +167,7 @@ mt-[30px] md:mt-0
               className={`relative shrink-0 overflow-hidden w-[146.47px] h-[244px] sm:h-[380px] md:h-[500px] lg:h-[620px] sm:w-[200px] md:w-[230px] lg:w-[300px] xl:w-[449px] xl:h-[748px]`}
             >
               <Image
-                src={src.image}
+                src={src.image || "/assets/placeholder.png"}
                 alt={src.imageAlt}
                 fill
                 className="object-cover object-top pointer-events-none"

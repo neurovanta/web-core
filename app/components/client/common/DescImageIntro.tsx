@@ -68,7 +68,7 @@ export default function DescImageIntro({
         <div className="w-full lg:w-1/2 aspect-[4/3] max-[430px]:max-h-[201px] min-[431px]:h-[400px] sm:max-h-auto lg:aspect-auto lg:h-[460px] 3xl:h-[524px] relative overflow-hidden">
           <div ref={imageRef} className="relative w-full h-full">
             <Image
-              src={image}
+              src={image || "/assets/placeholder.png"}
               alt={imageAlt}
               fill
               className="object-cover object-top pointer-events-none"
