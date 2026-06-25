@@ -150,7 +150,7 @@ export default function HighlightSlider({
                   initial="hidden"
                   animate="show"
                   variants={moveUp(0.1)}
-                  className="h2 text-white mb-[10px] sm:mb-20 text-heading whitespace-pre-line"
+                  className="h2 text-white mb-[10px] sm:mb-20 text-heading whitespace-pre-line max-w-[20ch]"
                 >
                   {data.items[activeIndex].title.split("\\n").map((line, i) => (
                     <span key={i}>
