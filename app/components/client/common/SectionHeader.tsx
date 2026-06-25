@@ -23,7 +23,7 @@ export default function SectionHeader({
   maxWSubtitle = "",
   maxWDescription = "",
 }: SectionHeaderProps) {
-  const subtitle = (data as any).subTitle ?? data.subtitle;
+  const subtitle = (data as any).subTitle ?? data?.subtitle;
   return (
     <div className="container py-[65px] lg:py-120 3xl:py-150">
       <div className="flex flex-col sm:flex-row justify-between items-start w-full">
@@ -32,7 +32,7 @@ export default function SectionHeader({
         >
           <div className="sm:max-w-[88%]">
             <AnimatedHeading
-              title={data.title}
+              title={data?.title}
               className={`text-heading text-secondary ${maxWTitle}`}
               mode="reveal"
             />

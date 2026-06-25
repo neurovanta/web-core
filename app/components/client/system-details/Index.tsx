@@ -14,10 +14,10 @@ const Index = ({ data }: { data: IndividualProduct }) => {
   return (
     <>
       <InnerBanner data={data.bannerSection} maxWTitle="max-w-[54ch]" />
-      <SectionHeader data={data.firstSection} maxWTitle="sm:max-w-[15ch]" maxWSubtitle="max-w-[55ch]" maxWDescription="max-w-[65ch] 3xl:max-w-[80ch]" />
-      <HighlightSlider data={data.secondSection} />
-      <Discovery data={data.thirdSection} />
-      <CurveSlider data={data.fourthSection} />
+      {data?.firstSection.title && <SectionHeader data={data?.firstSection} maxWTitle="sm:max-w-[15ch]" maxWSubtitle="max-w-[55ch]" maxWDescription="max-w-[65ch] 3xl:max-w-[80ch]" />}
+      {data?.secondSection.items.length > 0 && <HighlightSlider data={data?.secondSection} />}
+      {data?.thirdSection.items.length > 0 && <Discovery data={data?.thirdSection} />}
+      {data.fourthSection.items.length > 0 && <CurveSlider data={data.fourthSection} />}
     </>
   );
 };
