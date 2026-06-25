@@ -80,13 +80,13 @@ export default function Services({ data }: { data: any }) {
 
       <div className="flex flex-col lg:flex-row">
         <ServiceCard
-          card={data[0]}
+          card={data[1]}
           paddingLeft={leftInset}
           tileMaxWidth="md:max-w-[25ch] lg:max-w-[16ch]"
           descriptionMaxWidth="max-w-[550px] lg:max-w-[701px]"
         />
         <ServiceCard
-          card={data[1]}
+          card={data[0]}
           paddingLeft={leftInset}
           tileMaxWidth="md:max-w-[12ch]"
           descriptionMaxWidth="max-w-[550px] lg:max-w-[701px]"

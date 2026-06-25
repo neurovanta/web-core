@@ -428,7 +428,7 @@ const navItems: NavItem[] = navData.header.menuItems
                                 <>
                                   {/* Below 2xl: button triggers mobile slide */}
                                   <button
-                                    className="2xl:hidden flex items-center justify-between w-full text-left uppercase"
+                                    className="2xl:hidden flex items-center justify-between w-full text-left"
                                     onClick={() => {
                                       setMobileSubOpen(true);
                                       setMobileActiveItem(item);
@@ -448,7 +448,7 @@ const navItems: NavItem[] = navData.header.menuItems
                                   <Link
                                     href={item.href ?? "#"}
                                     onClick={closeMenu}
-                                    className="hidden 2xl:flex flex-col items-start w-full cursor-pointer uppercase"
+                                    className="hidden 2xl:flex flex-col items-start w-full cursor-pointer"
                                   >
                                     {NavLabel}
                                   </Link>
@@ -457,7 +457,7 @@ const navItems: NavItem[] = navData.header.menuItems
                                 <Link
                                   href={item.href ?? "#"}
                                   onClick={closeMenu}
-                                  className="flex flex-col items-start w-full uppercase"
+                                  className="flex flex-col items-start w-full"
                                 >
                                   {NavLabel}
                                 </Link>
@@ -502,7 +502,7 @@ const navItems: NavItem[] = navData.header.menuItems
                                     className="md:hidden h-[8px] w-auto object-fill rotate-90 opacity-40"
                                   />
                                 </span>
-                                <span className="text-subHeading text-secondary uppercase">
+                                <span className="text-subHeading text-secondary">
                                   {mobileActiveItem.label}
                                 </span>
                               </div>
@@ -527,7 +527,7 @@ const navItems: NavItem[] = navData.header.menuItems
                                     }}
                                     className="group flex items-center py-[8px] relative"
                                   >
-                                    <span className="text-description text-secondary/80 uppercase">
+                                    <span className="text-description text-secondary/80 capitalize">
                                       Overview
                                     </span>
                                   </Link>
@@ -561,8 +561,8 @@ const navItems: NavItem[] = navData.header.menuItems
                                           height={13}
                                           className="md:hidden h-[6px] w-auto object-fill -rotate-90 opacity-40"
                                         />
-                                        <span className="text-description text-secondary/80 uppercase">
-                                          {sub.label}
+                                        <span className="text-description text-secondary/80 capitalize">
+                                          {sub.label.toLowerCase()}
                                         </span>
                                       </div>
                                     </Link>
@@ -620,8 +620,8 @@ const navItems: NavItem[] = navData.header.menuItems
                             onClick={closeMenu}
                             className="group inline-flex flex-col w-fit relative"
                           >
-                            <span className="text-description tracking-[-0.03em] text-secondary/50 group-hover:text-secondary transition-colors duration-300 uppercase">
-                              {sub.label}
+                            <span className="text-description tracking-[-0.03em] text-secondary/50 group-hover:text-secondary transition-colors duration-300 capitalize">
+                              {sub.label.toLowerCase()}
                             </span>
                             <span className="absolute bottom-[2px] left-0 h-px w-0 bg-secondary transition-all duration-500 ease-out group-hover:w-full" />
                           </Link>
