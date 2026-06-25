@@ -49,12 +49,12 @@ interface IndividualSolutionForm {
     image: string;
     imageAlt: string;
   };
-  // fifthSection: {
-  //   isHidden: boolean;
-  //   title: string;
-  //   description: string;
-  //   items: { title: string; image: string; imageAlt: string }[];
-  // };
+  fifthSection: {
+    isHidden: boolean;
+    title: string;
+    description: string;
+    items: { title: string; image: string; imageAlt: string }[];
+  };
   sixthSection: {
     isHidden: boolean;
     title: string;
@@ -90,11 +90,11 @@ export default function IndividualSolution({
     append: appendThird,
     remove: removeThird,
   } = useFieldArray({ control, name: "thirdSection.items" });
-  // const {
-  //   fields: fifthItems,
-  //   append: appendFifth,
-  //   remove: removeFifth,
-  // } = useFieldArray({ control, name: "fifthSection.items" });
+  const {
+    fields: fifthItems,
+    append: appendFifth,
+    remove: removeFifth,
+  } = useFieldArray({ control, name: "fifthSection.items" });
 
   const fetchData = async () => {
     if (createMode) return;
@@ -116,8 +116,8 @@ export default function IndividualSolution({
         setValue("thirdSection", data.thirdSection);
         setValue("thirdSection.items", data.thirdSection?.items || []);
         setValue("fourthSection", data.fourthSection);
-        // setValue("fifthSection", data.fifthSection);
-        // setValue("fifthSection.items", data.fifthSection?.items || []);
+        setValue("fifthSection", data.fifthSection);
+        setValue("fifthSection.items", data.fifthSection?.items || []);
         setValue("sixthSection", data.sixthSection);
       } else {
         const { message } = await res.json();
@@ -499,7 +499,7 @@ export default function IndividualSolution({
         </AdminItemContainer>
 
         {/* Fifth Section */}
-        {/* <AdminItemContainer>
+        <AdminItemContainer>
           <Label
             main
             isHidden={watch("fifthSection.isHidden")}
@@ -570,7 +570,7 @@ export default function IndividualSolution({
               </div>
             </div>
           </div>
-        </AdminItemContainer> */}
+        </AdminItemContainer>
 
         {/* Sixth Section */}
         <AdminItemContainer>
