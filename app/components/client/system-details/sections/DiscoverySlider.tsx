@@ -79,7 +79,7 @@ function DiscoverySlider({ images }: { images: IndividualProduct["thirdSection"]
           >
             <ElasticEffect />
             <Image
-              src={slides[activeIndex].image}
+              src={slides[activeIndex].image || "/assets/placeholder.png"}
               alt={`Gallery ${activeIndex + 1}`}
               fill
               className="object-cover pointer-events-none"
@@ -106,7 +106,7 @@ function DiscoverySlider({ images }: { images: IndividualProduct["thirdSection"]
               className="relative shrink-0 overflow-hidden cursor-pointer p-0 border-0 bg-transparent w-[66.45px] h-[42px] md:w-[100px] md:h-[60px] 2xl:w-[125px] 2xl:h-[75px] 3xl:w-[137.27px] 3xl:h-[86.57px]"
             >
               <Image
-                src={slide.image}
+                src={slide.image || "/assets/placeholder.png"}
                 alt={`Thumbnail ${i + 1}`}
                 fill
                 className="object-cover"
