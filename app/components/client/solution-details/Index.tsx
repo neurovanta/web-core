@@ -27,16 +27,18 @@ const Index = ({ data }: { data: IndividualSolutionType }) => {
         }}
       />
       <HowItFits data={data.fourthSection} />
-      <TabsImage
-        data={{
-          title: data.fifthSection.title,
-          subtitle: data.fifthSection.description,
-          tabs: data.fifthSection.items.map((item) => ({
-            title: item.title,
-            image: item.image,
-          })),
-        }}
-      />
+      {data?.fifthSection?.items?.length > 0 && (
+        <TabsImage
+          data={{
+            title: data.fifthSection.title,
+            subtitle: data.fifthSection.description,
+            tabs: data.fifthSection.items.map((item) => ({
+              title: item.title,
+              image: item.image || "/assets/placeholder.png",
+            })),
+          }}
+        />
+      )}
       <InnerCta
         data={{
           bgImage: data.sixthSection.image || "/assets/placeholder.png",
