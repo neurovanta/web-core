@@ -93,6 +93,8 @@ export async function PATCH(request: NextRequest) {
       await doc.save();
 
       revalidateTag("Industries", "default");
+      revalidateTag("Home", "default");
+      revalidateTag("Global-nav-items", "default");
       // revalidateTag(`Industry-slug-${found.slug}`, "default");
 
       return NextResponse.json(
@@ -107,6 +109,8 @@ export async function PATCH(request: NextRequest) {
     });
 
     revalidateTag("Industries", "default");
+    revalidateTag("Home", "default");
+    revalidateTag("Global-nav-items", "default");
 
     return NextResponse.json(
       { data: doc, message: "Industries page updated successfully" },
@@ -140,6 +144,8 @@ export async function POST(request: NextRequest) {
     await doc.save();
 
     revalidateTag("Industries", "default");
+    revalidateTag("Home", "default");
+    revalidateTag("Global-nav-items", "default");
 
     return NextResponse.json(
       { data: doc, message: "Industry created successfully" },
@@ -153,7 +159,6 @@ export async function POST(request: NextRequest) {
     );
   }
 }
-
 
 export async function DELETE(request: NextRequest) {
   try {
@@ -178,16 +183,27 @@ export async function DELETE(request: NextRequest) {
       (s: { _id: { toString: () => string } }) => s._id.toString() === id,
     );
     if (index === -1) {
-      return NextResponse.json({ message: "Industry not found" }, { status: 404 });
+      return NextResponse.json(
+        { message: "Industry not found" },
+        { status: 404 },
+      );
     }
 
     doc.industries.splice(index, 1);
     await doc.save();
     revalidateTag("Industries", "default");
+    revalidateTag("Home", "default");
+    revalidateTag("Global-nav-items", "default");
 
-    return NextResponse.json({ message: "Industry deleted successfully" }, { status: 200 });
+    return NextResponse.json(
+      { message: "Industry deleted successfully" },
+      { status: 200 },
+    );
   } catch (error: unknown) {
     console.error(error);
-    return NextResponse.json({ message: "Internal Server Error" }, { status: 500 });
+    return NextResponse.json(
+      { message: "Internal Server Error" },
+      { status: 500 },
+    );
   }
 }

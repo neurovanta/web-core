@@ -62,7 +62,11 @@ function Pagination({
 }
 
 // ── Main component ────────────────────────────────────────────────────────────
-export default function HighlightSlider({ data }: { data: IndividualProduct["secondSection"] }) {
+export default function HighlightSlider({
+  data,
+}: {
+  data: IndividualProduct["secondSection"];
+}) {
   const [activeIndex, setActiveIndex] = useState(0);
   const swiperRef = useRef<SwiperType | null>(null);
 
@@ -148,7 +152,14 @@ export default function HighlightSlider({ data }: { data: IndividualProduct["sec
                   variants={moveUp(0.1)}
                   className="h2 text-white mb-[10px] sm:mb-20 text-heading whitespace-pre-line"
                 >
-                  {data.items[activeIndex].title}
+                  {data.items[activeIndex].title.split("\\n").map((line, i) => (
+                    <span key={i}>
+                      {line}
+                      {i <
+                        data.items[activeIndex].title.split("\\n").length -
+                          1 && <br />}
+                    </span>
+                  ))}
                 </motion.h2>
 
                 <SectionDescription

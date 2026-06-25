@@ -299,7 +299,7 @@ export default function Discovery({ data }: { data: IndividualProduct["thirdSect
 
           {/* Right */}
           <div className="w-full h-[312px] sm:h-[450px] md:h-[500px] lg:h-[600px] xl:h-[700px] 2xl:h-[700px] 3xl:flex-none 3xl:w-[991px] 3xl:h-[840px]">
-            <DiscoverySlider images={data.itemsTwo} />
+            {data.itemsTwo && data.itemsTwo.length > 0 && <DiscoverySlider images={data.itemsTwo} />}
           </div>
 
           {tab.items.length > 0 && (
