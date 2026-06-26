@@ -6,6 +6,7 @@ import { LenisProvider } from "../components/client/layout/LenisProvider";
 import AppShell from "../components/client/layout/AppShell";
 import HeaderServer from "../components/client/layout/HeaderServer";
 import FooterServer from "../components/client/layout/FooterServer";
+import { Toaster } from "sonner";
 
 const dmSans = DM_Sans({
   variable: "--font-dm-sans",
@@ -26,6 +27,7 @@ export default function RootLayout({
   return (
     <html style={{ overflow: "hidden" }} lang="en" className={`${dmSans.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">
+        <Toaster />
         <LenisProvider>
           <AppShell>
             <HeaderServer />
