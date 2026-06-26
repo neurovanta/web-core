@@ -8,16 +8,16 @@ import { FloatingTextarea } from "../../common/form/FloatingTextarea";
 import { AnimatedHeading } from "../../animations/AnimateHeading";
 import { motion } from "framer-motion";
 import { moveUp } from "../../animations/motionVarinats";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { HomeType } from "@/app/types/home";
-
-interface FormData {
-  firstName: string;
-  forCompany: string;
-  email: string;
-  phone: string;
-  details: string;
-}
+import ReCAPTCHA from "react-google-recaptcha";
+import {
+  HomeEnquiryFormValues,
+  homeEnquirySchema,
+} from "@/lib/validations/homeEnquirySchema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { sendHomeEnquiryAction } from "@/lib/mail/actions/sendHomeEnquiryAction";
+import { toast } from "sonner";
 
 const COMPANY_OPTIONS = [
   { value: "individual", label: "Individual" },
@@ -27,13 +27,19 @@ const COMPANY_OPTIONS = [
   { value: "nonprofit", label: "Non-profit" },
 ];
 
-export default function BeginHerePage({data}: {data: HomeType["ninthSection"]}) {
+export default function BeginHerePage({
+  data,
+}: {
+  data: HomeType["ninthSection"];
+}) {
   const {
     register,
     handleSubmit,
     watch,
-    formState: { errors, isSubmitting },
-  } = useForm<FormData>({
+    reset,
+    formState: { errors },
+  } = useForm<HomeEnquiryFormValues>({
+    resolver: zodResolver(homeEnquirySchema),
     defaultValues: {
       firstName: "",
       forCompany: "",
@@ -44,6 +50,8 @@ export default function BeginHerePage({data}: {data: HomeType["ninthSection"]}) 
   });
 
   const [isMobile, setIsMobile] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const recaptchaRef = useRef<ReCAPTCHA>(null);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -57,9 +65,22 @@ export default function BeginHerePage({data}: {data: HomeType["ninthSection"]}) 
   // Watch values to power floating-label state
   const watchedValues = watch();
 
-  const onSubmit = (data: FormData) => {
-    console.log("Form submitted:", data);
-    // TODO: connect to API
+  const onSubmit = async (data: HomeEnquiryFormValues) => {
+    if (!recaptchaRef.current?.getValue()) {
+      toast.error("Please complete the captcha verification");
+      return;
+    }
+    setIsSubmitting(true);
+    try {
+      await sendHomeEnquiryAction(data);
+      toast.success("Enquiry sent successfully!");
+      reset();
+      recaptchaRef.current?.reset();
+    } catch (err) {
+      toast.error("Something went wrong. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -103,9 +124,12 @@ export default function BeginHerePage({data}: {data: HomeType["ninthSection"]}) 
             />
             <FloatingSelect
               id="forCompany"
-              label="For Company"
+              label="For Company*"
               options={COMPANY_OPTIONS}
-              registration={register("forCompany")}
+              registration={register("forCompany", {
+                required: "For company is required",
+              })}
+              error={errors.forCompany?.message}
               value={watchedValues.forCompany}
             />
           </motion.div>
@@ -152,7 +176,7 @@ export default function BeginHerePage({data}: {data: HomeType["ninthSection"]}) 
             whileInView="show"
             variants={moveUp(0.15)}
             viewport={{ once: true }}
-            className="mb-[10px] sm:mb-30"
+            className="mb-[10px] sm:mb-20"
           >
             <FloatingTextarea
               id="details"
@@ -163,6 +187,14 @@ export default function BeginHerePage({data}: {data: HomeType["ninthSection"]}) 
               value={watchedValues.details}
             />
           </motion.div>
+
+          <div className="mb-4">
+            <ReCAPTCHA
+              ref={recaptchaRef}
+              sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ""}
+            />
+          </div>
+
           {/* Submit */}
           <motion.div
             initial="hidden"
@@ -170,7 +202,13 @@ export default function BeginHerePage({data}: {data: HomeType["ninthSection"]}) 
             viewport={{ once: true }}
             variants={moveUp(0.22)}
           >
-            <CustomButton label="Send" variant={3} />
+            <CustomButton
+              label={isSubmitting ? "SUBMITTING..." : "Send"}
+              href={undefined}
+              variant={3}
+              onClick={handleSubmit(onSubmit)}
+              disabled={isSubmitting}
+            />
           </motion.div>
         </form>
       </div>

@@ -9,28 +9,29 @@ import CustomButton from "@/app/components/client/common/CustomButton";
 import { careersFormData } from "../data";
 import Image from "next/image";
 import ErrorMessage from "../../common/form/ErrorMessage";
-
-interface FormData {
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone: string;
-  applyingFor: string;
-  yearsOfExperience: string;
-  additionalInfo?: string;
-  attachment: FileList;
-}
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  careerEnquirySchema,
+  CareerEnquiryFormValues,
+} from "@/lib/validations/careerEnquirySchema";
+import { sendCareerEnquiryAction } from "@/lib/mail/actions/sendCareerEnquiryAction";
+import { toast } from "sonner";
+import ReCAPTCHA from "react-google-recaptcha";
 
 export default function CareersForm() {
   const [selectedFileName, setSelectedFileName] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const recaptchaRef = useRef<ReCAPTCHA>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const {
     register,
     handleSubmit,
+    reset,
     watch,
     formState: { errors },
-  } = useForm<FormData>({
+  } = useForm<CareerEnquiryFormValues>({
+    resolver: zodResolver(careerEnquirySchema),
     defaultValues: {
       firstName: "",
       lastName: "",
@@ -55,9 +56,36 @@ export default function CareersForm() {
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
-  const onSubmit = (data: FormData) => {
-    console.log("Form submitted:", data);
-  };
+const onSubmit = async (data: CareerEnquiryFormValues) => {
+  if (!recaptchaRef.current?.getValue()) {
+    toast.error("Please complete the captcha verification");
+    return;
+  }
+  setIsSubmitting(true);
+  try {
+    const formData = new FormData();
+    (Object.keys(data) as (keyof CareerEnquiryFormValues)[]).forEach((key) => {
+      if (key === "attachment") return;
+      const value = data[key];
+      if (value !== undefined && value !== null) {
+        formData.append(key, value as string);
+      }
+    });
+
+    const file = fileInputRef.current?.files?.[0];
+    if (file) formData.append("attachment", file);
+
+    const result = await sendCareerEnquiryAction(formData);
+    if (!result.success) throw new Error(result.message);
+    toast.success("Application submitted successfully!");
+    reset();
+    setSelectedFileName(null);
+  } catch (err) {
+    toast.error("Something went wrong. Please try again.");
+  } finally {
+    setIsSubmitting(false);
+  }
+};
 
   const { applyingForOptions, attachment } = careersFormData;
 
@@ -161,9 +189,7 @@ export default function CareersForm() {
             type="file"
             accept={attachment.accept}
             className="hidden"
-            {...register("attachment", {
-              required: "Attachment is required",
-            })}
+            {...register("attachment")}
             ref={(e) => {
               register("attachment").ref(e);
               fileInputRef.current = e;
@@ -206,18 +232,28 @@ export default function CareersForm() {
                   : "opacity-0 pointer-events-none"
               }`}
             >
-              <ErrorMessage message={errors.attachment?.message ?? ""} />
+              <ErrorMessage
+                message={errors.attachment?.message as string | undefined}
+              />
             </div>
           </div>
+        </div>
+
+        <div className="mb-4">
+          <ReCAPTCHA
+            ref={recaptchaRef}
+            sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ""}
+          />
         </div>
 
         {/* Submit */}
         <div>
           <CustomButton
-            label="SUBMIT"
+            label={isSubmitting ? "SUBMITTING..." : "SUBMIT"}
             href={undefined}
             variant={3}
             onClick={handleSubmit(onSubmit)}
+            disabled={isSubmitting}
           />
         </div>
       </div>

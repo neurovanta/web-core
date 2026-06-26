@@ -8,14 +8,15 @@ import CustomButton from "@/app/components/client/common/CustomButton";
 import { contactUsData } from "../data";
 import { AnimatedHeading } from "../../animations/AnimateHeading";
 import { useEffect, useState } from "react";
-
-interface FormData {
-  name: string;
-  email: string;
-  serviceRequired: string;
-  phoneNumber: string;
-  message: string;
-}
+import {
+  ContactEnquiryFormValues,
+  contactEnquirySchema,
+} from "@/lib/validations/contactEnquirySchema";
+import ReCAPTCHA from "react-google-recaptcha";
+import { useRef } from "react";
+import { toast } from "sonner";
+import { sendContactEnquiryAction } from "@/lib/mail/actions/sendContactEnquiryAction";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 export default function ContactForm() {
   const { form } = contactUsData;
@@ -23,12 +24,24 @@ export default function ContactForm() {
   const {
     register,
     handleSubmit,
+    reset,
     watch,
     formState: { errors },
-  } = useForm<FormData>();
+  } = useForm<ContactEnquiryFormValues>({
+    resolver: zodResolver(contactEnquirySchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      serviceRequired: "",
+      phoneNumber: "",
+      message: "",
+    },
+  });
 
   const watchedValues = watch();
-    const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const recaptchaRef = useRef<ReCAPTCHA>(null);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -39,8 +52,22 @@ export default function ContactForm() {
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
-  const onSubmit = (data: FormData) => {
-    console.log("Form submitted:", data);
+  const onSubmit = async (data: ContactEnquiryFormValues) => {
+    if (!recaptchaRef.current?.getValue()) {
+      toast.error("Please complete the captcha verification");
+      return;
+    }
+    setIsSubmitting(true);
+    try {
+      await sendContactEnquiryAction(data);
+      toast.success("Enquiry sent successfully!");
+      reset();
+      recaptchaRef.current?.reset();
+    } catch (err) {
+      toast.error("Something went wrong. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -89,6 +116,7 @@ export default function ContactForm() {
             registration={register("serviceRequired", {
               required: "Please select a service",
             })}
+            error={errors.serviceRequired?.message}
             value={watchedValues.serviceRequired}
           />
           <FloatingInput
@@ -121,13 +149,22 @@ export default function ContactForm() {
           />
         </div>
 
+        {/* Recaptcha */}
+        <div className="mb-4">
+          <ReCAPTCHA
+            ref={recaptchaRef}
+            sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || ""}
+          />
+        </div>
+
         {/* Submit */}
         <div>
           <CustomButton
-            label={form.submitLabel}
+            label={isSubmitting ? "SUBMITTING..." : form.submitLabel}
             href={undefined}
             variant={3}
             onClick={handleSubmit(onSubmit)}
+            disabled={isSubmitting}
           />
         </div>
       </div>

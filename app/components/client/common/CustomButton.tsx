@@ -8,6 +8,7 @@ type CustomButtonProps = {
   href?: string;
   onClick?: () => void;
   variant?: 1 | 2 | 3;
+  disabled?: boolean;
 };
 
 const variantStyles: Record<
@@ -62,6 +63,7 @@ export default function CustomButton({
   href,
   onClick,
   variant = 1,
+  disabled = false,
 }: CustomButtonProps) {
   const v = variantStyles[variant];
   const pillRef = useRef<HTMLSpanElement>(null);
@@ -118,8 +120,10 @@ export default function CustomButton({
   const handlePointerDown = (e: React.PointerEvent) => {
     if (e.pointerType === "touch") {
       // Re-measure right at interaction time — guarantees correct values on touch
-      const freshPillWidth = pillRef.current?.getBoundingClientRect().width ?? pillWidth;
-      const freshCircleSize = circleRef.current?.getBoundingClientRect().width ?? circleSize;
+      const freshPillWidth =
+        pillRef.current?.getBoundingClientRect().width ?? pillWidth;
+      const freshCircleSize =
+        circleRef.current?.getBoundingClientRect().width ?? circleSize;
       setPillWidth(freshPillWidth);
       setCircleSize(freshCircleSize);
 
@@ -136,7 +140,7 @@ export default function CustomButton({
 
   const content = (
     <span
-    data-no-elastic
+      data-no-elastic
       ref={pillRef}
       onPointerEnter={handlePointerEnter}
       onPointerLeave={handlePointerLeave}
@@ -197,5 +201,15 @@ export default function CustomButton({
   );
 
   if (href) return <Link href={href}>{content}</Link>;
-  return <button onClick={onClick}>{content}</button>;
+  return (
+    <button
+      onClick={onClick}
+      disabled={disabled}
+      className={
+        disabled ? "opacity-50 cursor-not-allowed pointer-events-none" : ""
+      }
+    >
+      {content}
+    </button>
+  );
 }
