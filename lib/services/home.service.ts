@@ -8,8 +8,6 @@ export const getHome = unstable_cache(
   async () => {
     await connectDB();
 
-    console.log("HOME CALLEDDD")
-
     const [home, systems, industriesDoc] = await Promise.all([
       HomeModel.findOne({}).lean(),
       SystemsModel.findOne({}).lean(),
@@ -22,12 +20,14 @@ export const getHome = unstable_cache(
       (systems as any)?.secondSection?.categories?.map((cat: any) => ({
         _id: String(cat._id),
         title: cat.title,
+        isHidden: cat.isHidden,
         products: cat.products.map((p: any) => ({
           _id: String(p._id),
           thumbnailTitle: p.thumbnailTitle,
           slug: p.slug,
           thumbnailImage: p.thumbnailImage,
           thumbnailImageAlt: p.thumbnailImageAlt,
+          isHidden: p.isHidden,
         })),
       })) ?? [];
 

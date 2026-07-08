@@ -20,7 +20,6 @@ export default function WorldClassClients({
 }: {
   data: HomeType["eighthSection"];
 }) {
-  console.log(data)
   const { title, row1, row2, row3 } = data;
 
   const sectionRef = useRef<HTMLDivElement | null>(null);

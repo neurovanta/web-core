@@ -18,14 +18,16 @@ const Index = ({ data }: { data: Systems }) => {
         data={{
           heading: data.secondSection.title,
           description: data.secondSection.description,
-          categories: data.secondSection.categories.map((cat) => ({
+          categories: data.secondSection.categories.filter((cat) => !cat.isHidden).map((cat) => ({
             label: cat.title,
-            slides: cat.products.map((p) => ({
-              image: p.thumbnailImage || "/assets/placeholder.png",
-              imageAlt: p.thumbnailImageAlt,
-              title: p.thumbnailTitle,
-              href: `/longevity-systems/${p.slug ?? ""}`,
-            })),
+            slides: cat.products
+              .filter((p) => !p.isHidden)
+              .map((p) => ({
+                image: p.thumbnailImage || "/assets/placeholder.png",
+                imageAlt: p.thumbnailImageAlt,
+                title: p.thumbnailTitle,
+                href: `/longevity-systems/${p.slug ?? ""}`,
+              })),
           })),
         }}
         className="bg-cream-bg py-[60px] lg:py-120"
