@@ -8,6 +8,8 @@ export const getHome = unstable_cache(
   async () => {
     await connectDB();
 
+    console.log("HOME CALLEDDD")
+
     const [home, systems, industriesDoc] = await Promise.all([
       HomeModel.findOne({}).lean(),
       SystemsModel.findOne({}).lean(),
