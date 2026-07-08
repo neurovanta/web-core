@@ -241,7 +241,7 @@ export default function WellnessSlider({
             <Reveal variants={moveUpV2} delayRange={0.12}>
               <CustomButton
                 label="Explore"
-                href={data.slug}
+                href={`/solutions/${data.slug}`}
                 variant={1}
               />
             </Reveal>
@@ -252,7 +252,7 @@ export default function WellnessSlider({
         <div className="flex min-[870px]:hidden items-start gap-[10px] sm:gap-20 shrink-0 sm:mt-20">
           {/* {data.buttons.map((btn) => ( */}
             <Reveal  variants={moveUpV2} delayRange={0.2}>
-              <CustomButton label="Explore" href={data.slug} variant={1} />
+              <CustomButton label="Explore" href={`/solutions/${data.slug}`} variant={1} />
             </Reveal>
           {/* ))} */}
         </div>
