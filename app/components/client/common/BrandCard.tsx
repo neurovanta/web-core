@@ -19,8 +19,8 @@ export function BrandCard({ brand }: { brand: Brand }) {
       "
     >
       <Image
-        src={brand.image}
-        alt={brand.imageAlt}
+        src={brand?.image}
+        alt={brand?.imageAlt}
         width={220}
         height={91}
         className="object-contain h-[35px] sm:h-[50px] lg:h-[65px] xl:h-[80px] 3xl:h-[91px] w-auto pointer-events-none"
