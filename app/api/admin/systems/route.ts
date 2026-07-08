@@ -115,6 +115,7 @@ export async function PATCH(request: NextRequest) {
           Object.assign(found, body);
           await doc.save();
           revalidateTag("Systems", "default");
+          revalidateTag("Home", "default");
           // revalidateTag(`product-${found.slug}`, "default");
           return NextResponse.json(
             { data: found, message: "Product updated successfully" },
@@ -143,6 +144,7 @@ export async function PATCH(request: NextRequest) {
       Object.assign(cat, body);
       await doc.save();
       revalidateTag("Systems", "default");
+      revalidateTag("Home", "default");
       return NextResponse.json(
         { data: cat, message: "Category updated successfully" },
         { status: 200 },
@@ -155,6 +157,7 @@ export async function PATCH(request: NextRequest) {
       new: true,
     });
     revalidateTag("Systems", "default");
+    revalidateTag("Home", "default");
     return NextResponse.json(
       { data: updated, message: "Systems page updated successfully" },
       { status: 200 },
@@ -199,6 +202,7 @@ export async function POST(request: NextRequest) {
       cat.products.push(body);
       await doc.save();
       revalidateTag("Systems", "default");
+      revalidateTag("Home", "default");
       return NextResponse.json(
         { data: doc, message: "Product created successfully" },
         { status: 201 },
@@ -209,6 +213,7 @@ export async function POST(request: NextRequest) {
     doc.secondSection.categories.push(body);
     await doc.save();
     revalidateTag("Systems", "default");
+    revalidateTag("Home", "default");
     return NextResponse.json(
       { data: doc, message: "Category created successfully" },
       { status: 201 },
@@ -249,6 +254,7 @@ export async function DELETE(request: NextRequest) {
           cat.products.splice(index, 1);
           await doc.save();
           revalidateTag("Systems", "default");
+          revalidateTag("Home", "default");
           return NextResponse.json(
             { message: "Product deleted successfully" },
             { status: 200 },
@@ -269,6 +275,7 @@ export async function DELETE(request: NextRequest) {
       doc.secondSection.categories.splice(index, 1);
       await doc.save();
       revalidateTag("Systems", "default");
+      revalidateTag("Home", "default");
       return NextResponse.json(
         { message: "Category deleted successfully" },
         { status: 200 },
