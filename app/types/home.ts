@@ -75,7 +75,7 @@ export interface HomePageData {
   categories: {
     _id: string;
     title: string;
-    products: { _id: string; thumbnailTitle: string; slug: string, thumbnailImage: string, thumbnailImageAlt: string }[];
+    products: { _id: string; thumbnailTitle: string; slug: string, thumbnailImage: string, thumbnailImageAlt: string, isHidden: boolean }[];
   }[];
   industries: {
     _id: string;

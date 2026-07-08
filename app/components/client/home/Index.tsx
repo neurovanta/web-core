@@ -41,7 +41,7 @@ const Index = ({ data }: { data: HomePageData }) => {
           heading: data.home.fourthSection.title,
           categories: data.categories.map((cat) => ({
             label: cat.title,
-            slides: cat.products.map((p) => ({
+            slides: cat.products.filter((p) => !p.isHidden).map((p) => ({
               image: p.thumbnailImage || "/assets/placeholder.png",
               imageAlt: p.thumbnailImageAlt,
               title: p.thumbnailTitle,
