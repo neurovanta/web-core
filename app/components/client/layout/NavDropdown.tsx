@@ -22,6 +22,7 @@ import {
   NavIndustry,
   NavItem,
 } from "@/app/types/header";
+import { usePathname } from "next/navigation";
 
 const LAYER_BG = ["#F9F5F0", "#E2D3C3", "#51463E"] as const;
 const STAGGER = 0.12;
@@ -54,47 +55,64 @@ export const NavDropdown = forwardRef<NavDropdownHandle, NavDropdownProps>(
     const layerRefs = useRef<(HTMLDivElement | null)[]>([null, null, null]);
     const contentRef = useRef<HTMLDivElement>(null);
     const navItemRefs = useRef<(HTMLLIElement | null)[]>([]);
+    const pathname = usePathname();
 
-const groupBuilders: Record<string, NavItem> = {
-  solutions: {
-    label: navData.header.solutionsLabel || "Solutions",
-    href: "/solutions",
-    subItems: navData.header.solutions
-      .filter((s: NavSolution) => !s.isHidden)
-      .map((s: NavSolution) => ({
-        label: s.thumbnailTitle,
-        href: `/solutions/${s.slug}`,
-      })),
-  },
-  systems: {
-    label: navData.header.systemsLabel || "Longevity Systems",
-    href: "/longevity-systems",
-    subItems: navData.header.systems
-      .filter((sys: NavSystem) => !sys.isHidden)
-      .map((sys: NavSystem) => ({
-        label: sys.title,
-        href: `/longevity-systems/#${sys.title.toLowerCase().replace(/\s+/g, "-")}`
-      })),
-  },
-  industries: {
-    label: navData.header.industriesLabel || "Industries We Serve",
-    href: "/industries",
-    subItems: navData.header.industries
-      .filter((ind: NavIndustry) => !ind.isHidden)
-      .map((ind: NavIndustry) => ({
-        label: ind.thumbnailTitle,
-        href: `/industries/${ind.slug}`,
-      })),
-  },
-};
+    const handleHashLinkClick = (
+      e: React.MouseEvent<HTMLAnchorElement>,
+      href: string,
+    ) => {
+      const [path, hash] = href.split("#");
+      if (!hash) return;
+      if (path.replace(/\/$/, "") !== pathname) return; // different page, let Link navigate normally
 
-const navItems: NavItem[] = navData.header.menuItems
-  .map((m: any) =>
-    m.kind === "link"
-      ? { label: m.label, href: m.link }
-      : groupBuilders[m.groupKey],
-  )
-  .filter(Boolean);
+      e.preventDefault();
+      if (window.location.hash === `#${hash}`) {
+        window.dispatchEvent(new HashChangeEvent("hashchange")); // same hash clicked again
+      } else {
+        window.location.hash = hash; // native assignment fires hashchange
+      }
+    };
+
+    const groupBuilders: Record<string, NavItem> = {
+      solutions: {
+        label: navData.header.solutionsLabel || "Solutions",
+        href: "/solutions",
+        subItems: navData.header.solutions
+          .filter((s: NavSolution) => !s.isHidden)
+          .map((s: NavSolution) => ({
+            label: s.thumbnailTitle,
+            href: `/solutions/${s.slug}`,
+          })),
+      },
+      systems: {
+        label: navData.header.systemsLabel || "Longevity Systems",
+        href: "/longevity-systems",
+        subItems: navData.header.systems
+          .filter((sys: NavSystem) => !sys.isHidden)
+          .map((sys: NavSystem) => ({
+            label: sys.title,
+            href: `/longevity-systems/#${sys.title.toLowerCase().replace(/\s+/g, "-")}`,
+          })),
+      },
+      industries: {
+        label: navData.header.industriesLabel || "Industries We Serve",
+        href: "/industries",
+        subItems: navData.header.industries
+          .filter((ind: NavIndustry) => !ind.isHidden)
+          .map((ind: NavIndustry) => ({
+            label: ind.thumbnailTitle,
+            href: `/industries/${ind.slug}`,
+          })),
+      },
+    };
+
+    const navItems: NavItem[] = navData.header.menuItems
+      .map((m: any) =>
+        m.kind === "link"
+          ? { label: m.label, href: m.link }
+          : groupBuilders[m.groupKey],
+      )
+      .filter(Boolean);
     // State machine: "closed" | "opening" | "open" | "closing"
     const stateRef = useRef<"closed" | "opening" | "open" | "closing">(
       "closed",
@@ -546,10 +564,11 @@ const navItems: NavItem[] = navData.header.menuItems
                                   >
                                     <Link
                                       href={sub.href}
-                                      onClick={() => {
+                                      onClick={(e) => {
                                         setMobileSubOpen(false);
                                         setMobileActiveItem(null);
                                         closeMenu();
+                                        handleHashLinkClick(e, sub.href);
                                       }}
                                       className="group flex items-center py-[8px] relative"
                                     >
@@ -617,7 +636,10 @@ const navItems: NavItem[] = navData.header.menuItems
                         >
                           <Link
                             href={sub.href}
-                            onClick={closeMenu}
+                            onClick={(e) => {
+                              closeMenu();
+                              handleHashLinkClick(e, sub.href);
+                            }}
                             className="group inline-flex flex-col w-fit relative"
                           >
                             <span className="text-description tracking-[-0.03em] text-secondary/50 group-hover:text-secondary transition-colors duration-300 capitalize">
