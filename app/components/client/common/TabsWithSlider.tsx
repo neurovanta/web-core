@@ -255,8 +255,8 @@ export default function TabsWithSlider({
 
   const handleCategoryClickRef = useRef(handleCategoryClick);
   useEffect(() => {
-  handleCategoryClickRef.current = handleCategoryClick;
-}, [handleCategoryClick]);
+    handleCategoryClickRef.current = handleCategoryClick;
+  }, [handleCategoryClick]);
 
   useEffect(() => {
     if (!pendingSlides) return;
@@ -344,14 +344,8 @@ export default function TabsWithSlider({
         const top =
           sectionRef.current.getBoundingClientRect().top + window.scrollY;
 
-        if (headerScrollLock.timer) clearTimeout(headerScrollLock.timer);
-        headerScrollLock.active = true;
-        scrollTo(top, { duration: 1.5 });
-
-        headerScrollLock.timer = setTimeout(() => {
-          headerScrollLock.active = false;
-          headerScrollLock.timer = null;
-        }, 1600);
+        headerScrollLock.lockAndHide(1600);
+        scrollTo(top + 50, { duration: 1.5 });
       };
 
       if (document.readyState === "complete") {

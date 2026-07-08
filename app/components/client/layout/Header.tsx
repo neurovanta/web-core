@@ -128,6 +128,29 @@ export default function Header({ navData }: { navData: NavData }) {
     }
   }, [menuOpen]);
 
+  const hideHeader = useCallback(() => {
+    const el = headerRef.current;
+    if (!el || menuOpenRef.current || isHidden.current) return;
+    isHidden.current = true;
+    el.style.transform = "translateY(-130%)";
+    el.style.opacity = "0";
+    el.style.pointerEvents = "none";
+  }, []);
+
+  const showHeader = useCallback(() => {
+    const el = headerRef.current;
+    if (!el || !isHidden.current) return;
+    isHidden.current = false;
+    el.style.transform = "translateY(0%)";
+    el.style.opacity = "1";
+    el.style.pointerEvents = "auto";
+  }, []);
+
+  useEffect(() => {
+    headerScrollLock.registerHeader({ hide: hideHeader, show: showHeader });
+    return () => headerScrollLock.unregisterHeader();
+  }, [hideHeader, showHeader]);
+
   useEffect(() => {
     const onScroll = () => {
       if (headerScrollLock.active) return;
@@ -145,27 +168,12 @@ export default function Header({ navData }: { navData: NavData }) {
         const padding = getHeaderPadding();
         el.style.paddingTop = padding;
         el.style.paddingBottom = padding;
-        if (isHidden.current) {
-          isHidden.current = false;
-          el.style.transform = "translateY(0%)";
-          el.style.opacity = "1";
-          el.style.pointerEvents = "auto";
-        }
+        showHeader();
       } else if (diff > 0) {
-        if (!menuOpenRef.current && !isHidden.current) {
-          isHidden.current = true;
-          el.style.transform = "translateY(-130%)";
-          el.style.opacity = "0";
-          el.style.pointerEvents = "none";
-        }
+        hideHeader();
       } else {
         setIsScrolled(true);
-        if (isHidden.current) {
-          isHidden.current = false;
-          el.style.transform = "translateY(0%)";
-          el.style.opacity = "1";
-          el.style.pointerEvents = "auto";
-        }
+        showHeader();
         if (!menuOpenRef.current) {
           el.style.background =
             "linear-gradient(90deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.5) 52.69%, rgba(0,0,0,0.5) 100%)";
@@ -179,7 +187,7 @@ export default function Header({ navData }: { navData: NavData }) {
 
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  }, [hideHeader, showHeader]);
 
   useEffect(() => {
     const el = headerRef.current;
@@ -286,7 +294,10 @@ export default function Header({ navData }: { navData: NavData }) {
                 exit={{ opacity: 0, x: 10 }}
                 transition={{ duration: 0.2 }}
               >
-                <Link onClick={() => dropdownRef.current?.close()} href="/contact-us">
+                <Link
+                  onClick={() => dropdownRef.current?.close()}
+                  href="/contact-us"
+                >
                   <button className="hidden md:flex justify-center items-center bg-primary text-secondary text-center leading-1 rounded-[50px] text-15 uppercase px-20 py-[3px] cursor-pointer 3xl:w-[109px] h-[30px] sm:h-8">
                     Contact
                   </button>
@@ -438,7 +449,12 @@ export default function Header({ navData }: { navData: NavData }) {
                             className="flex items-center gap-3 px-4 py-3 text-white text-sm hover:bg-white/10 transition-colors duration-200 rounded-lg mx-1 group"
                           >
                             <IoSearch className="w-3.5 h-3.5 opacity-80 shrink-0" />
-                            <span data-text={result.label} className="contact-link">{result.label}</span>
+                            <span
+                              data-text={result.label}
+                              className="contact-link"
+                            >
+                              {result.label}
+                            </span>
                           </Link>
                         </motion.div>
                       ))}
@@ -455,9 +471,9 @@ export default function Header({ navData }: { navData: NavData }) {
           {searchOpen && (
             <motion.div
               className="xl:hidden"
-              initial={{ opacity: 0, }}
-              animate={{ opacity: 1}}
-              exit={{ opacity: 0}}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
               // transition={{ duration: 0.3, ease: [0.33, 1, 0.68, 1] }}
             >
               <div className="container pb-4 pt-3 flex flex-col items-end gap-2">
@@ -536,7 +552,11 @@ export default function Header({ navData }: { navData: NavData }) {
         </AnimatePresence>
       </header>
 
-      <NavDropdown ref={dropdownRef} onOpenChange={setMenuOpen} navData={navData} />
+      <NavDropdown
+        ref={dropdownRef}
+        onOpenChange={setMenuOpen}
+        navData={navData}
+      />
     </>
   );
 }
