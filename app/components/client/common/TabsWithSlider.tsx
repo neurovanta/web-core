@@ -16,6 +16,7 @@ import { SectionDescription } from "../animations/SectionDescription";
 import { ElasticEffect } from "../animations/ElasticEffect";
 import SliderNavButton from "./SliderButton";
 import { useLenis } from "../layout/LenisProvider";
+import { headerScrollLock } from "@/lib/headerScrollLock";
 
 export type TabsWithSliderSlide = {
   image: string;
@@ -252,6 +253,11 @@ export default function TabsWithSlider({
     [activeIndex, data.categories],
   );
 
+  const handleCategoryClickRef = useRef(handleCategoryClick);
+  useEffect(() => {
+  handleCategoryClickRef.current = handleCategoryClick;
+}, [handleCategoryClick]);
+
   useEffect(() => {
     if (!pendingSlides) return;
 
@@ -318,31 +324,47 @@ export default function TabsWithSlider({
   useEffect(() => {
     if (!ready) return;
 
-    const hash = decodeURIComponent(window.location.hash.replace("#", ""));
-    if (!hash) return;
+    const applyHashCategory = () => {
+      const hash = decodeURIComponent(window.location.hash.replace("#", ""));
+      if (!hash) return;
 
-    const matchedIndex = data.categories.findIndex(
-      (cat) => slugify(cat.label) === hash.toLowerCase(),
-    );
-    if (matchedIndex === -1) return;
+      const matchedIndex = data.categories.findIndex(
+        (cat) => slugify(cat.label) === hash.toLowerCase(),
+      );
+      if (matchedIndex === -1) return;
 
-    setActiveIndex(matchedIndex);
-    swiperRef.current?.slideTo(0, 0);
+      setActiveIndex(matchedIndex);
+      swiperRef.current?.slideTo(0, 0);
 
-    const scrollToSection = () => {
-      if (!sectionRef.current) return;
-      const top =
-        sectionRef.current.getBoundingClientRect().top + window.scrollY;
-      scrollTo(top, { duration: 1.5 });
+      handleCategoryClickRef.current(matchedIndex);
+      swiperRef.current?.slideTo(0, 0);
+
+      const scrollToSection = () => {
+        if (!sectionRef.current) return;
+        const top =
+          sectionRef.current.getBoundingClientRect().top + window.scrollY;
+
+        if (headerScrollLock.timer) clearTimeout(headerScrollLock.timer);
+        headerScrollLock.active = true;
+        scrollTo(top, { duration: 1.5 });
+
+        headerScrollLock.timer = setTimeout(() => {
+          headerScrollLock.active = false;
+          headerScrollLock.timer = null;
+        }, 1600);
+      };
+
+      if (document.readyState === "complete") {
+        requestAnimationFrame(scrollToSection);
+      } else {
+        window.addEventListener("load", scrollToSection, { once: true });
+      }
     };
 
-    if (document.readyState === "complete") {
-      requestAnimationFrame(scrollToSection);
-    } else {
-      window.addEventListener("load", scrollToSection, { once: true });
-    }
+    applyHashCategory();
 
-    return () => window.removeEventListener("load", scrollToSection);
+    window.addEventListener("hashchange", applyHashCategory);
+    return () => window.removeEventListener("hashchange", applyHashCategory);
   }, [ready, categoryKey]);
 
   return (

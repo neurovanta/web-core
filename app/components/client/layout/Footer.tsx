@@ -10,6 +10,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useState, useRef } from "react";
 import { useLenis } from "@/app/components/client/layout/LenisProvider";
 import { NavData } from "@/app/types/header";
+import { usePathname } from "next/navigation";
 
 /* ─── Social brand styles ─────────────────────────────────────────── */
 const socialStyles: Record<SocialType, React.CSSProperties> = {
@@ -35,11 +36,34 @@ function splitItems<T>(items: T[]): [T[], T[]] {
   return [items.slice(0, 4), items.slice(4)];
 }
 
+function splitItemsBalanced<T>(items: T[]): [T[], T[]] {
+  const mid = Math.ceil(items.length / 2);
+
+  return [items.slice(0, mid), items.slice(mid)];
+}
+
 /* ─── Component ───────────────────────────────────────────────────── */
 export default function Footer({ navData }: { navData: NavData }) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const pathname = usePathname();
   const { scrollTo } = useLenis();
+
+  const handleHashLinkClick = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    href: string,
+  ) => {
+    const [path, hash] = href.split("#");
+    if (!hash) return;
+    if (path.replace(/\/$/, "") !== pathname) return; // different page, let Link navigate normally
+
+    e.preventDefault();
+    if (window.location.hash === `#${hash}`) {
+      window.dispatchEvent(new HashChangeEvent("hashchange")); // same hash clicked again
+    } else {
+      window.location.hash = hash; // native assignment fires hashchange
+    }
+  };
 
   const footerMenus = [
     {
@@ -291,7 +315,11 @@ export default function Footer({ navData }: { navData: NavData }) {
         {/* ── Desk Menu ── */}
         <div className="hidden lg:flex flex-wrap gap-y-20 gap-x-50 3xl:gap-x-[150px]">
           {footerMenus.map((menu, i) => {
-            const [col1, col2] = splitItems(menu.items);
+            const [col1, col2] =
+              menu.heading ===
+              (navData.footer.systemsLabel || "Longevity Systems")
+                ? splitItemsBalanced(menu.items)
+                : splitItems(menu.items);
             const isWide = col2.length > 0;
 
             return (
@@ -318,6 +346,7 @@ export default function Footer({ navData }: { navData: NavData }) {
                         <li key={label}>
                           <Link
                             href={href}
+                            onClick={(e) => handleHashLinkClick(e, href)}
                             data-text={label}
                             className="contact-link text-secondary text-19 leading-[1.789] tracking-[-0.03em] hover:opacity-70 transition-opacity w-fit"
                           >
@@ -334,6 +363,7 @@ export default function Footer({ navData }: { navData: NavData }) {
                           <li key={label}>
                             <Link
                               href={href}
+                              onClick={(e) => handleHashLinkClick(e, href)}
                               data-text={label}
                               className="contact-link text-secondary text-19 leading-[1.789] tracking-[-0.03em] hover:opacity-70 transition-opacity w-fit"
                             >

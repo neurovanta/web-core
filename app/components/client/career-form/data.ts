@@ -11,7 +11,7 @@ export const careersFormData = {
     { label: "Marketing Specialist", value: "marketing-specialist" },
   ],
   attachment: {
-    label: "Add an attachment*",
+    label: "Upload Resume*",
     hint: "Max. 20Mb. (pdf, png, jpeg, docx)",
     accept: ".pdf,.png,.jpeg,.jpg,.docx",
   },

@@ -12,6 +12,7 @@ import Image from "next/image";
 import MenuIcon from "./HamburgerAniamtion";
 import { usePathname } from "next/navigation";
 import { NavData } from "@/app/types/header";
+import { headerScrollLock } from "@/lib/headerScrollLock";
 
 const dropDown = (delay: number) => ({
   hidden: { y: -22, opacity: 0 },
@@ -129,6 +130,7 @@ export default function Header({ navData }: { navData: NavData }) {
 
   useEffect(() => {
     const onScroll = () => {
+      if (headerScrollLock.active) return;
       const currentY = window.scrollY;
       const diff = currentY - lastScrollY.current;
       lastScrollY.current = currentY;
@@ -263,7 +265,7 @@ export default function Header({ navData }: { navData: NavData }) {
                 alt="Logo"
                 width={500}
                 height={150}
-                className="max-w-[158px] sm:max-w-[200px] md:max-w-[220px] lg:max-w-none h-[20px] sm:h-[40px] pointer-events-none"
+                className="max-w-[158px] sm:max-w-[200px] md:max-w-[220px] lg:max-w-none h-[20px] sm:h-[40px] pointer-events-none select-none"
               />
             </Link>
           </motion.div>
@@ -284,7 +286,7 @@ export default function Header({ navData }: { navData: NavData }) {
                 exit={{ opacity: 0, x: 10 }}
                 transition={{ duration: 0.2 }}
               >
-                <Link href="/contact-us">
+                <Link onClick={() => dropdownRef.current?.close()} href="/contact-us">
                   <button className="hidden md:flex justify-center items-center bg-primary text-secondary text-center leading-1 rounded-[50px] text-15 uppercase px-20 py-[3px] cursor-pointer 3xl:w-[109px] h-[30px] sm:h-8">
                     Contact
                   </button>

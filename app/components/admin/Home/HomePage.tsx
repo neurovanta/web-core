@@ -18,6 +18,12 @@ import { RiDeleteBinLine } from "react-icons/ri";
 //   products: { _id: string; thumbnailTitle: string }[];
 // }
 
+interface SolutionOption {
+  _id: string;
+  thumbnailTitle: string;
+  slug: string;
+}
+
 interface HomeForm {
   seo: { metaTitle: string; metaDescription: string; script: string };
   firstSection: {
@@ -97,6 +103,7 @@ export default function HomePage() {
   // );
   // const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   // const [selectedProducts, setSelectedProducts] = useState<string[]>([]);
+  const [solutions, setSolutions] = useState<SolutionOption[]>([]);
 
   const {
     fields: buttons,
@@ -153,7 +160,7 @@ export default function HomePage() {
     replace: replaceRow3,
   } = useFieldArray({ control, name: "eighthSection.row3" });
 
-  const fetchData = async () => {
+const fetchData = async () => {
     try {
       const res = await fetch("/api/admin/home");
       if (res.ok) {
@@ -169,28 +176,31 @@ export default function HomePage() {
         setValue("seventhSection", data.seventhSection);
         setValue("eighthSection", data.eighthSection);
         setValue("ninthSection", data.ninthSection);
-        // setSystemsCategories(categories || []);
 
         replaceButtons(data.firstSection?.buttons || []);
         replaceSecond(data.secondSection?.items || []);
         replaceThird(data.thirdSection?.items || []);
         replaceFifth(data.fifthSection?.items || []);
         replaceSixth(data.sixthSection?.items || []);
-        // replaceSeventh(data.seventhSection?.items || []);
         replaceRow1(data.eighthSection?.row1 || []);
         replaceRow2(data.eighthSection?.row2 || []);
         replaceRow3(data.eighthSection?.row3 || []);
-        // const cats = (data.fourthSection?.categories || []).map((c: unknown) =>
-        //   String(c),
-        // );
-        // const prods = (data.fourthSection?.products || []).map((p: unknown) =>
-        //   String(p),
-        // );
-        // setSelectedCategories(cats);
-        // setSelectedProducts(prods);
       } else {
         const { message } = await res.json();
         toast.error(message);
+      }
+
+      // NEW: fetch solutions for the select dropdowns
+      const solRes = await fetch("/api/admin/solution");
+      if (solRes.ok) {
+        const { data: solData } = await solRes.json();
+        setSolutions(
+          (solData.solutions || []).map((s: any) => ({
+            _id: s._id,
+            thumbnailTitle: s.thumbnailTitle,
+            slug: s.slug,
+          })),
+        );
       }
     } catch (e) {
       console.error(e);
@@ -352,15 +362,29 @@ export default function HomePage() {
             Second Section
           </Label>
           <div className="p-5 flex flex-col gap-4">
-            <Label className="font-bold">Title</Label>
-            <Input {...register("secondSection.title")} placeholder="Title" />
+            <Label className="font-bold">Solution</Label>
+<select
+  value={watch("secondSection.slug") || ""}
+  onChange={(e) => {
+    const slug = e.target.value;
+    const sol = solutions.find((s) => s.slug === slug);
+    setValue("secondSection.slug", slug);
+    setValue("secondSection.title", sol?.thumbnailTitle || "");
+  }}
+  className="border border-black/10 rounded-lg p-2"
+>
+  <option value="">Select Solution</option>
+  {solutions.map((s) => (
+    <option key={s._id} value={s.slug}>
+      {s.thumbnailTitle}
+    </option>
+  ))}
+</select>
             <Label className="font-bold">Description</Label>
             <Textarea
               {...register("secondSection.description")}
               placeholder="Description"
             />
-            <Label className="font-bold">Slug</Label>
-            <Input {...register("secondSection.slug")} placeholder="Slug" />
             <div className="flex items-center justify-between mt-2 border border-black/10 rounded-lg p-4 shadow-md">
               <Label className="font-bold">Items</Label>
               <Button
@@ -434,15 +458,29 @@ export default function HomePage() {
             Third Section
           </Label>
           <div className="p-5 flex flex-col gap-4">
-            <Label className="font-bold">Title</Label>
-            <Input {...register("thirdSection.title")} placeholder="Title" />
+            <Label className="font-bold">Solution</Label>
+<select
+  value={watch("thirdSection.slug") || ""}
+  onChange={(e) => {
+    const slug = e.target.value;
+    const sol = solutions.find((s) => s.slug === slug);
+    setValue("thirdSection.slug", slug);
+    setValue("thirdSection.title", sol?.thumbnailTitle || "");
+  }}
+  className="border border-black/10 rounded-lg p-2"
+>
+  <option value="">Select Solution</option>
+  {solutions.map((s) => (
+    <option key={s._id} value={s.slug}>
+      {s.thumbnailTitle}
+    </option>
+  ))}
+</select>
             <Label className="font-bold">Description</Label>
             <Textarea
               {...register("thirdSection.description")}
               placeholder="Description"
             />
-            <Label className="font-bold">Slug</Label>
-            <Input {...register("thirdSection.slug")} placeholder="Slug" />
             <div className="flex items-center justify-between mt-2 border border-black/10 rounded-lg p-4 shadow-md">
               <Label className="font-bold">Items</Label>
               <Button
