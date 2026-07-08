@@ -18,7 +18,7 @@ const Index = ({ data }: { data: Systems }) => {
         data={{
           heading: data.secondSection.title,
           description: data.secondSection.description,
-          categories: data.secondSection.categories.map((cat) => ({
+          categories: data.secondSection.categories.filter((cat) => !cat.isHidden).map((cat) => ({
             label: cat.title,
             slides: cat.products
               .filter((p) => !p.isHidden)

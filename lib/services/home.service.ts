@@ -20,6 +20,7 @@ export const getHome = unstable_cache(
       (systems as any)?.secondSection?.categories?.map((cat: any) => ({
         _id: String(cat._id),
         title: cat.title,
+        isHidden: cat.isHidden,
         products: cat.products.map((p: any) => ({
           _id: String(p._id),
           thumbnailTitle: p.thumbnailTitle,

@@ -39,7 +39,7 @@ const Index = ({ data }: { data: HomePageData }) => {
       <TabsWithSlider
         data={{
           heading: data.home.fourthSection.title,
-          categories: data.categories.map((cat) => ({
+          categories: data.categories.filter((cat) => !cat.isHidden).map((cat) => ({
             label: cat.title,
             slides: cat.products.filter((p) => !p.isHidden).map((p) => ({
               image: p.thumbnailImage || "/assets/placeholder.png",
