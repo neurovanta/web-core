@@ -21,7 +21,6 @@ export default function WorldClassClients({
   data: HomeType["eighthSection"];
 }) {
   const { title, row1, row2, row3 } = data;
-  console.log(data, "clinet");
 
   const sectionRef = useRef<HTMLDivElement | null>(null);
 
