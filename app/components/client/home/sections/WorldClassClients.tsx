@@ -21,6 +21,7 @@ export default function WorldClassClients({
   data: HomeType["eighthSection"];
 }) {
   const { title, row1, row2, row3 } = data;
+  console.log(data, "clinet");
 
   const sectionRef = useRef<HTMLDivElement | null>(null);
 
@@ -251,17 +252,19 @@ export default function WorldClassClients({
           ))}
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-20 lg:flex w-full lg:justify-between">
-          <div className="order-2 sm:order-1 lg:order-1">
-            <BrandCard key={row3[0]?._id} brand={row3[0]} />
-          </div>
+        {row3.length > 0 && (
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-20 lg:flex w-full lg:justify-between">
+            <div className="order-2 sm:order-1 lg:order-1">
+              <BrandCard key={row3[0]?._id} brand={row3[0]} />
+            </div>
 
-          <div className="col-span-1 sm:col-span-2 sm:grid sm:grid-cols-2 flex gap-20 flex-wrap order-1 sm:order-2 lg:order-2 lg:flex lg:flex-wrap">
-            {row3.slice(1).map((brand) => (
-              <BrandCard key={brand._id} brand={brand} />
-            ))}
+            <div className="col-span-1 sm:col-span-2 sm:grid sm:grid-cols-2 flex gap-20 flex-wrap order-1 sm:order-2 lg:order-2 lg:flex lg:flex-wrap">
+              {row3.slice(1).map((brand) => (
+                <BrandCard key={brand._id} brand={brand} />
+              ))}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </section>
   );
