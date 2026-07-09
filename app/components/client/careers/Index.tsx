@@ -10,7 +10,17 @@ const Index = ({ data }: { data: Careers }) => {
     <>
       <InnerBanner data={data.bannerSection} />
       <CareerIntro data={data.firstSection} />
-      {data.secondSection?.jobs?.length > 0 ? <OpenPositions data={data.secondSection} /> : <NoOpenings />}
+      {(data.secondSection?.jobs?.filter((job) => !job.isHidden).length ?? 0) >
+      0 ? (
+        <OpenPositions
+          data={{
+            ...data.secondSection,
+            jobs: data.secondSection.jobs.filter((job) => !job.isHidden),
+          }}
+        />
+      ) : (
+        <NoOpenings />
+      )}
       <CurveSlider data={data.thirdSection} button={true} />
     </>
   );
