@@ -146,7 +146,7 @@ export default function Footer({ navData }: { navData: NavData }) {
         </div>
 
         {/* ── Top section: address + contact ── */}
-        <div className="flex flex-wrap mt-[60px] md:mt-80 gap-y-20 3xl:mt-[136px]">
+        <div className="flex flex-col sm:flex-row mt-[60px] md:mt-80 gap-y-20 3xl:mt-[136px]">
           {/* Left – address */}
           <div className="sm:w-[51%] 3xl:pt-[16px]">
             <SectionDescription
