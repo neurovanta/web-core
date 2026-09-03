@@ -60,8 +60,9 @@ export default function ContactForm() {
     setIsSubmitting(true);
     try {
       await sendContactEnquiryAction(data);
-      toast.success("Enquiry sent successfully!");
+      // toast.success("Enquiry sent successfully!");
       reset();
+      window.location.replace("thank-you");
       recaptchaRef.current?.reset();
     } catch (err) {
       toast.error("Something went wrong. Please try again.");
