@@ -67,7 +67,7 @@ export default function NotFound() {
       </div>
       <div className="absolute inset-0 bg-gradient-to-b from-black/35 via-black/15 to-black/60" />
 
-      <div className="container relative z-10 flex flex-col items-center text-center gap-20 sm:gap-50">
+      <div className="container relative z-10 flex justify-center max-xl:flex-1 flex-col items-center text-center gap-20 sm:gap-50">
         {/* 404 — clips up from bottom, then repeatedly shimmers like heat rising through it */}
         <motion.h1
           className="steam-text text-150 text-white text-center uppercase leading-[1.142] max-w-[1135px]"
