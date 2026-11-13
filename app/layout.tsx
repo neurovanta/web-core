@@ -2,7 +2,7 @@
 import type { Metadata } from "next";
 import { DM_Sans } from "next/font/google";
 import "@/app/globals.css";
-import { LenisProvider } from "@/app/components/client/layout/LenisProvider";
+// import { LenisProvider } from "@/app/components/client/layout/LenisProvider";
 import AppShell from "@/app/components/client/layout/AppShell";
 import HeaderServer from "@/app/components/client/layout/HeaderServer";
 import FooterServer from "@/app/components/client/layout/FooterServer";
@@ -28,13 +28,13 @@ export default function RootLayout({
     <html style={{ overflow: "hidden" }} lang="en" className={`${dmSans.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">
         <Toaster />
-        <LenisProvider>
+        {/* <LenisProvider> */}
           <AppShell>
             {/* <HeaderServer /> */}
             {children}
             {/* <FooterServer /> */}
           </AppShell>
-        </LenisProvider>
+        {/* </LenisProvider> */}
       </body>
     </html>
   );

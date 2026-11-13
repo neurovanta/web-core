@@ -57,7 +57,7 @@ const Index = ({ data }: { data: HomePageData }) => {
         data={data.home.seventhSection}
         industries={data.industries}
       />
-      <WorldClassClients data={data.home.eighthSection} />
+      {/* <WorldClassClients data={data.home.eighthSection} /> */}
       <BeginHerePage data={data.home.ninthSection} />
     </>
   );
