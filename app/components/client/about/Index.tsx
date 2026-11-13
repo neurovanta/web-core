@@ -32,7 +32,7 @@ const Index = ({ data }: { data: AboutType }) => {
           })),
         }}
       />
-      <InfiniteClients data={data.fifthSection} />
+      {/* <InfiniteClients data={data.fifthSection} /> */}
       <InnerCta
         data={{
           bgImage: data.sixthSection.image,
