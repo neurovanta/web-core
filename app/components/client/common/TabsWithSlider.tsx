@@ -173,12 +173,19 @@ function CategoryDropdown({
 export default function TabsWithSlider({
   data,
   className,
+  initialIndex = 0,
 }: {
   data: TabsWithSliderData;
   className?: string;
+  /** Category shown on first render (a URL hash still takes precedence). */
+  initialIndex?: number;
 }) {
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [visibleIndex, setVisibleIndex] = useState(0);
+  const startIndex =
+    initialIndex >= 0 && initialIndex < data.categories.length
+      ? initialIndex
+      : 0;
+  const [activeIndex, setActiveIndex] = useState(startIndex);
+  const [visibleIndex, setVisibleIndex] = useState(startIndex);
   const [pendingSlides, setPendingSlides] = useState<
     TabsWithSliderSlide[] | null
   >(null);
@@ -194,6 +201,7 @@ export default function TabsWithSlider({
   const overlayWrapRefs = useRef<(HTMLDivElement | null)[]>([]);
   const overlayTitleRefs = useRef<(HTMLDivElement | null)[]>([]);
   const baseTitleRefs = useRef<(HTMLParagraphElement | null)[]>([]);
+  const slotRefs = useRef<(HTMLDivElement | null)[]>([]);
   const sectionRef = useRef<HTMLElement>(null);
   const { scrollTo, ready } = useLenis();
 
@@ -242,6 +250,18 @@ export default function TabsWithSlider({
 
       const nextSlides = data.categories[index].slides;
 
+      // Slots the next category doesn't fill fade out instead of vanishing;
+      // slots it does fill are restored (in case a previous switch faded them).
+      slotRefs.current.forEach((slot, i) => {
+        if (!slot) return;
+        gsap.killTweensOf(slot);
+        if (i >= nextSlides.length) {
+          gsap.to(slot, { opacity: 0, duration: 0.45, ease: "power2.out" });
+        } else {
+          gsap.set(slot, { opacity: 1 });
+        }
+      });
+
       overlayWrapRefs.current = new Array(nextSlides.length).fill(null);
       overlayTitleRefs.current = new Array(nextSlides.length).fill(null);
 
@@ -287,9 +307,23 @@ export default function TabsWithSlider({
       const tl = gsap.timeline({
         onComplete: () => {
           if (capturedKey !== animKeyRef.current) return;
+          // Swap the base cards to the new category while the overlay still
+          // covers them, then remove the overlay once they've painted —
+          // avoids a one-frame flash of the old/unloaded image.
           setVisibleIndex(pendingIndexRef.current);
-          setPendingSlides(null);
-          tlRef.current = null;
+          requestAnimationFrame(() =>
+            requestAnimationFrame(() => {
+              if (capturedKey !== animKeyRef.current) return;
+              baseTitleRefs.current.forEach((el) => {
+                if (el) gsap.set(el, { clearProps: "opacity,transform" });
+              });
+              slotRefs.current.forEach((el) => {
+                if (el) gsap.set(el, { clearProps: "opacity" });
+              });
+              setPendingSlides(null);
+              tlRef.current = null;
+            }),
+          );
         },
       });
 
@@ -521,14 +555,27 @@ export default function TabsWithSlider({
           }}
           className="!overflow-visible"
         >
-          {(pendingSlides ?? data.categories[visibleIndex].slides).map(
-            (_: any, i: number) => {
+          {Array.from(
+            {
+              length: Math.max(
+                data.categories[visibleIndex].slides.length,
+                pendingSlides?.length ?? 0,
+              ),
+            },
+            (_, i: number) => {
               const baseSlide = data.categories[visibleIndex].slides[i];
               const pending = pendingSlides?.[i];
 
               return (
-                <SwiperSlide key={`${visibleIndex}-${i}`}>
-                  <div className="relative overflow-hidden">
+                // Stable key: cards update in place rather than remounting
+                // (a remount re-runs image loading and causes a flash).
+                <SwiperSlide key={i}>
+                  <div
+                    ref={(el) => {
+                      slotRefs.current[i] = el;
+                    }}
+                    className="relative overflow-hidden"
+                  >
                     {baseSlide && (
                       <SlideCard
                         slide={baseSlide}
@@ -545,7 +592,12 @@ export default function TabsWithSlider({
                         ref={(el) => {
                           overlayWrapRefs.current[i] = el;
                         }}
-                        className="absolute inset-0 z-10 will-change-[clip-path]"
+                        // No base card in this slot → overlay takes up the
+                        // space itself; otherwise it would have zero height
+                        // and the new card would pop in at the end.
+                        className={`${
+                          baseSlide ? "absolute inset-0 z-10" : "relative"
+                        } will-change-[clip-path]`}
                       >
                         <div className="relative overflow-hidden h-[250px] sm:h-[320px] lg:h-[420px] 3xl:h-[550px]">
                           <Image

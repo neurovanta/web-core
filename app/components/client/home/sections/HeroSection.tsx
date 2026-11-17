@@ -2,6 +2,7 @@
 
 import CustomButton from "@/app/components/client/common/CustomButton";
 import { motion } from "framer-motion";
+import { useEffect, useRef } from "react";
 import { useAppShell } from "@/app/components/client/layout/AppShell";
 import { HomeType } from "@/app/types/home";
 
@@ -39,20 +40,39 @@ export default function HeroSection({
 }: {
   data: HomeType["firstSection"];
 }) {
-  const { animateIn } = useAppShell();
+  const { animateIn, revealStarted } = useAppShell();
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  // CMS values, with the bundled assets as fallback when a field is empty.
+  const videoSrc = data.video || "/assets/videos/hero-bg-2.mp4";
+  const posterSrc = data.posterImage || "/assets/images/home/hero/hero-poster.jpg";
+
+  // Video buffers from page load (preload="auto") but only starts playing —
+  // from its first frame — once the intro's white stripes begin to wipe away.
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video || !revealStarted) return;
+    video.currentTime = 0;
+    video.play().catch(() => {
+      // Autoplay blocked (e.g. iOS Low Power Mode) — the poster stays visible.
+    });
+  }, [revealStarted, videoSrc]);
 
   return (
     <section className="relative w-full h-svh flex flex-col items-center justify-end pb-[60px] md:pb-150">
+      {/* key: a changed <source> src doesn't reload a mounted <video>, so remount on change */}
       <video
-        autoPlay
+        key={videoSrc}
+        ref={videoRef}
         muted
         loop
         playsInline
         preload="auto"
-        poster="/assets/images/home/hero/hero-poster.jpg"
+        poster={posterSrc}
+        aria-label={data.videoAlt || undefined}
         className="absolute inset-0 w-full h-full object-cover object-center"
       >
-        <source src="/assets/videos/hero-bg-2.mp4" type="video/mp4" />
+        <source src={videoSrc} type="video/mp4" />
       </video>
       <div className="absolute inset-0 bg-black/65" />
 

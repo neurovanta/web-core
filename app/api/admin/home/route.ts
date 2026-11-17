@@ -21,10 +21,12 @@ export async function GET() {
         (cat: {
           _id: unknown;
           title: string;
+          isHidden?: boolean;
           products: { _id: unknown; thumbnailTitle: string }[];
         }) => ({
           _id: cat._id,
           title: cat.title,
+          isHidden: !!cat.isHidden,
           products: cat.products.map((p) => ({
             _id: p._id,
             thumbnailTitle: p.thumbnailTitle,

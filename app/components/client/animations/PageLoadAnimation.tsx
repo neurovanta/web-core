@@ -138,10 +138,13 @@ import { motion } from "framer-motion";
 
 interface PageLoadAnimationProps {
   onComplete: () => void;
+  /** Fired when the white stripes start wiping away. */
+  onRevealStart?: () => void;
 }
 
 export default function PageLoadAnimation({
   onComplete,
+  onRevealStart,
 }: PageLoadAnimationProps) {
   const [revealLogo, setRevealLogo] = useState(false);
   const [wipeActive, setWipeActive] = useState(false);
@@ -149,11 +152,16 @@ export default function PageLoadAnimation({
   const [visible, setVisible] = useState(true);
   const onCompleteRef = useRef(onComplete);
   onCompleteRef.current = onComplete;
+  const onRevealStartRef = useRef(onRevealStart);
+  onRevealStartRef.current = onRevealStart;
 
   useEffect(() => {
     const raf = requestAnimationFrame(() => setRevealLogo(true));
     const t0 = setTimeout(() => setFadeLogo(true), 1900);
-    const t1 = setTimeout(() => setWipeActive(true), 2300);
+    const t1 = setTimeout(() => {
+      setWipeActive(true);
+      onRevealStartRef.current?.();
+    }, 2300);
     // last stripe: 2300 + 1300 = 3600ms
     const t2 = setTimeout(() => {
       setVisible(false);

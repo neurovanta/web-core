@@ -33,6 +33,7 @@ export interface HomeType {
     description?: string;
     categories: string[];
     products: string[];
+    defaultCategory?: string;
   };
   fifthSection: {
     isHidden: boolean;
