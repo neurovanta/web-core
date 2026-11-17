@@ -115,6 +115,8 @@ export async function GET() {
           industries: headerIndustries,
         },
         footer: {
+          image: settings.footer.image || "",
+          imageAlt: settings.footer.imageAlt || "",
           solutionsLabel: settings.footer.solutionsLabel || "Solutions",
           systemsLabel: settings.footer.systemsLabel || "Longevity Systems",
           quickLinks: settings.footer.quickLinks,
@@ -162,6 +164,10 @@ export async function PATCH(request: NextRequest) {
       settings.header.systemsLabel = body.header.systemsLabel;
     if (body.header?.industriesLabel !== undefined)
       settings.header.industriesLabel = body.header.industriesLabel;
+    if (body.footer?.image !== undefined)
+      settings.footer.image = body.footer.image;
+    if (body.footer?.imageAlt !== undefined)
+      settings.footer.imageAlt = body.footer.imageAlt;
     if (body.footer?.quickLinks)
       settings.footer.quickLinks = body.footer.quickLinks;
     if (body.footer?.solutionsLabel !== undefined)

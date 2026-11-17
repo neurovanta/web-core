@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { ImageUploader } from "@/components/ui/image-uploader";
 import AdminItemContainer from "@/app/components/admin/common/AdminItemContainer";
 import { toast } from "sonner";
 import { RiDeleteBin6Line, RiEyeLine, RiEyeOffLine } from "react-icons/ri";
@@ -40,6 +41,8 @@ interface GlobalSettingsForm {
     }[];
   };
   footer: {
+    image: string;
+    imageAlt: string;
     solutionsLabel: string;
     systemsLabel: string;
     quickLinks: { label: string; link: string; isHidden: boolean }[];
@@ -139,6 +142,8 @@ export default function GlobalSettingsPage() {
         setValue("header.solutions", data.header.solutions ?? []);
         setValue("header.systems", data.header.systems ?? []);
         setValue("header.industries", data.header.industries ?? []);
+        setValue("footer.image", data.footer.image ?? "");
+        setValue("footer.imageAlt", data.footer.imageAlt ?? "");
         setValue("footer.quickLinks", data.footer.quickLinks ?? []);
         setValue(
           "footer.solutionsLabel",
@@ -384,6 +389,31 @@ export default function GlobalSettingsPage() {
                 </span>
               </div>
             ))}
+          </div>
+        </AdminItemContainer>
+
+        {/* ── Footer Background Image ──────────────────────────────────────── */}
+        <AdminItemContainer>
+          <Label main>Footer — Background Image</Label>
+          <div className="p-5 flex flex-col gap-2 max-w-xl">
+            <Label className="font-bold">Image</Label>
+            <Controller
+              name="footer.image"
+              control={control}
+              render={({ field }) => (
+                <ImageUploader
+                  value={field.value}
+                  onChange={field.onChange}
+                  recommendedDimension="2880 x 1155"
+                />
+              )}
+            />
+            <p className="text-xs text-black/50">
+              Leave empty to use the default footer image. A dark overlay is
+              applied on the site.
+            </p>
+            <Label className="font-bold">Alt Tag</Label>
+            <Input {...register("footer.imageAlt")} placeholder="Alt Tag" />
           </div>
         </AdminItemContainer>
 

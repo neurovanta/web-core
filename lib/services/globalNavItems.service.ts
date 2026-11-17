@@ -125,6 +125,10 @@ header: {
   industries: headerIndustries,
 },
         footer: {
+          image: settings?.footer?.image || "",
+          imageAlt: settings?.footer?.imageAlt || "",
+          solutionsLabel: settings?.footer?.solutionsLabel || "Solutions",
+          systemsLabel: settings?.footer?.systemsLabel || "Longevity Systems",
           quickLinks: (settings?.footer?.quickLinks || []).filter(
             (q: any) => !q.isHidden,
           ),

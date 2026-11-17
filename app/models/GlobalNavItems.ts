@@ -69,6 +69,8 @@ const globalNavItemsSchema = new mongoose.Schema({
     },
   },
   footer: {
+    image: { type: String, default: "" },
+    imageAlt: { type: String, default: "" },
     solutionsLabel: { type: String, default: "Solutions" },
     systemsLabel: { type: String, default: "Longevity Systems" },
     quickLinks: {

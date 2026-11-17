@@ -68,6 +68,8 @@ export interface NavData {
     industries: NavIndustry[];
   };
   footer: {
+    image?: string;
+    imageAlt?: string;
     solutionsLabel: string;
     systemsLabel: string;
     quickLinks: NavLink[];

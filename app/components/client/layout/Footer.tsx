@@ -28,18 +28,25 @@ const instagramGradient: React.CSSProperties = {
   backgroundClip: "text",
 };
 
-/* ─── Helpers ─────────────────────────────────────────────────────── */
+/* ─── Background overlay (Figma: black 80% + bottom linear 70%) ───── */
+const footerOverlay: React.CSSProperties = {
+  background:
+    "linear-gradient(0deg, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), linear-gradient(180deg, rgba(0, 0, 0, 0) 70.42%, rgba(0, 0, 0, 0.7) 117.44%)",
+};
 
-/** Splits items: first 4 in col-1, anything beyond col-2 */
-function splitItems<T>(items: T[]): [T[], T[]] {
-  if (items.length <= 4) return [items, []];
-  return [items.slice(0, 4), items.slice(4)];
-}
-
-function splitItemsBalanced<T>(items: T[]): [T[], T[]] {
-  const mid = Math.ceil(items.length / 2);
-
-  return [items.slice(0, mid), items.slice(mid)];
+/* ─── Divider ─────────────────────────────────────────────────────── */
+function Divider({ className = "" }: { className?: string }) {
+  return (
+    <div className={`relative h-px w-full ${className}`}>
+      <motion.div
+        initial={{ scaleX: 0 }}
+        whileInView={{ scaleX: 1 }}
+        transition={{ duration: 1.2, ease: [0.77, 0, 0.175, 1] }}
+        viewport={{ once: true }}
+        className="absolute inset-0 bg-white/20 origin-center"
+      />
+    </div>
+  );
 }
 
 /* ─── Component ───────────────────────────────────────────────────── */
@@ -112,291 +119,222 @@ export default function Footer({ navData }: { navData: NavData }) {
     }
   };
 
+  const socials = navData.socials.filter((s) => !s.isHidden);
+
+  const socialLinks = (
+    <div className="flex flex-wrap gap-x-30 gap-y-[5px]">
+      {socials.map((s, index) => (
+        <Reveal key={s.type} variants={moveUpV2} delayRange={index * 0.13}>
+          <Link
+            href={s.link}
+            className="contact-link text-19 leading-[1.42] tracking-[-0.03em] hover:scale-[1.05] transition-transform duration-300"
+            style={
+              s.type === "instagram"
+                ? instagramGradient
+                : (socialStyles[s.type as SocialType] ?? {})
+            }
+            data-text={s.label}
+          >
+            {s.label}
+          </Link>
+        </Reveal>
+      ))}
+    </div>
+  );
+
   return (
-    <footer className="bg-white overflow-hidden">
-      {/* ── Main content container ── */}
-      <div className="container pb-[30px] sm:pb-80 3xl:pb-[84px]">
-        {/* Logo */}
-        <div className="w-full relative h-full max-h-[218px] mt-[40px] overflow-hidden">
-          <Image
-            src="/assets/logos/footer-logo.svg"
-            alt="Neuro Vanta"
-            width={2000}
-            height={300}
-            className="w-full h-full max-h-[218px] pointer-events-none"
-          />
+    <footer className="relative overflow-hidden bg-black text-white border-t border-white/30">
+      {/* ── Background image + overlay ── */}
+      <Image
+        src={navData.footer.image || "/assets/images/footer/footer-bg.jpg"}
+        alt={navData.footer.imageAlt || ""}
+        fill
+        sizes="100vw"
+        className="object-cover object-center pointer-events-none select-none"
+      />
+      <div className="absolute inset-0" style={footerOverlay} aria-hidden />
 
-          {/* LEFT HALF */}
+      <div className="relative z-10 container pt-[60px] md:pt-120 3xl:pt-[128px]">
+        {/* ── Top row: logo + contact ── */}
+        <div className="flex flex-col gap-y-30 sm:flex-row sm:items-start sm:justify-between">
           <motion.div
-            initial={{ x: "0%" }}
-            whileInView={{ x: "-100%" }}
-            transition={{ duration: 1.5, ease: [0.77, 0, 0.175, 1] }}
+            variants={moveUp(0)}
+            initial="hidden"
+            whileInView="show"
             viewport={{ once: true }}
-            className="absolute top-0 left-0 w-1/2 h-full bg-white z-10"
-          />
+          >
+            <Link href="/" aria-label="Neuro Vanta home" className="block">
+              <Image
+                src="/assets/logos/footer-logo.svg"
+                alt="Neuro Vanta"
+                width={1717}
+                height={218}
+                className="w-[200px] md:w-[260px] xl:w-[320px] 3xl:w-[366px] h-auto"
+              />
+            </Link>
+          </motion.div>
 
-          {/* RIGHT HALF */}
-          <motion.div
-            initial={{ x: "0%" }}
-            whileInView={{ x: "100%" }}
-            transition={{ duration: 1.5, ease: [0.77, 0, 0.175, 1] }}
-            viewport={{ once: true }}
-            className="absolute top-0 right-0 w-1/2 h-full bg-white z-10"
-          />
+          <div className="text-white text-30 leading-[1.3] flex flex-col sm:items-start">
+            <motion.div
+              variants={moveUp(0.1)}
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true }}
+            >
+              <Link
+                href={`mailto:${navData.contact.email}`}
+                className="contact-link w-fit"
+                data-text={navData.contact.email}
+              >
+                {navData.contact.email}
+              </Link>
+            </motion.div>
+            <motion.div
+              variants={moveUp(0.2)}
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true }}
+            >
+              <Link
+                href={`tel:${navData.contact.phone}`}
+                className="contact-link w-fit"
+                data-text={navData.contact.phone}
+              >
+                {navData.contact.phone}
+              </Link>
+            </motion.div>
+          </div>
         </div>
 
-        {/* ── Top section: address + contact ── */}
-        <div className="flex flex-col sm:flex-row mt-[60px] md:mt-80 gap-y-20 3xl:mt-[136px]">
-          {/* Left – address */}
-          <div className="sm:w-[51%] 3xl:pt-[16px]">
+        <Divider className="mt-40 md:mt-70 3xl:mt-[69px]" />
+
+        {/* ── Middle: address + menus ── */}
+        <div className="mt-40 md:mt-70 grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_repeat(3,auto)] gap-x-120 gap-y-40">
+          {/* Address + socials */}
+          <div className="flex flex-col gap-y-25 lg:gap-y-30">
             <SectionDescription
               text={navData.contact.address}
-              className="text-secondary text-19 leading-[1.54] sm:leading-[1.42] whitespace-pre-line md:tracking-[-0.03em]"
+              className="text-white/70 text-19 leading-[1.42] whitespace-pre-line tracking-[-0.03em]"
             />
+            {socialLinks}
           </div>
 
-          {/* Right – email, phone, then gap, then socials */}
-          <div className="sm:w-[49%]">
-            <div className="text-secondary text-subHeading lg:text-60 flex flex-col mb-20 sm:mb-50">
-              <motion.div
-                variants={moveUp(0)}
-                initial="hidden"
-                whileInView="show"
-                viewport={{ once: true }}
+          {/* Mobile accordion */}
+          <div className="lg:hidden border-t border-white/20">
+            {footerMenus.map((menu, index) => (
+              <Reveal
+                key={menu.heading}
+                delayRange={index * 0.13}
+                variants={moveUpV2}
               >
-                <Link
-                  href={`mailto:${navData.contact.email}`}
-                  className="contact-link leading-[1.3] sm:leading-[1.433] w-fit"
-                  data-text="mail@360-wellness.com"
+                <div
+                  ref={(el) => {
+                    itemRefs.current[index] = el;
+                  }}
+                  className="border-b border-white/20"
                 >
-                  {navData.contact.email}
-                </Link>
-              </motion.div>
-              <motion.div
-                variants={moveUp(0.15)}
-                initial="hidden"
-                whileInView="show"
-                viewport={{ once: true }}
-              >
-                <Link
-                  href={`tel:${navData.contact.phone}`}
-                  className="contact-link leading-[1.3] sm:leading-[1.433] w-fit"
-                  data-text="+97143332175"
-                >
-                  {navData.contact.phone}
-                </Link>
-              </motion.div>
-            </div>
-
-            {/* Social links */}
-            <div className="flex flex-wrap gap-x-30 gap-y-[5px]">
-              {navData.socials
-                .filter((s) => !s.isHidden)
-                .map((s, index) => (
-                  <Reveal
-                    key={s.type}
-                    variants={moveUpV2}
-                    delayRange={index * 0.13}
+                  <button
+                    type="button"
+                    onClick={() => handleToggle(index)}
+                    aria-expanded={openIndex === index}
+                    className="w-full flex items-center justify-between py-20"
                   >
-                    <Link
-                      href={s.link}
-                      className="contact-link text-19 leading-[1.42] tracking-[-0.03em] hover:scale-[1.05] transition-transform duration-300"
-                      style={
-                        s.type === "instagram"
-                          ? instagramGradient
-                          : (socialStyles[s.type as SocialType] ?? {})
-                      }
-                      data-text={s.label}
+                    <span className="text-white text-subHeading tracking-[-0.03em]">
+                      {menu.heading}
+                    </span>
+                    <motion.span
+                      animate={{ rotate: openIndex === index ? 180 : 0 }}
+                      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
                     >
-                      {s.label}
-                    </Link>
-                  </Reveal>
-                ))}
-            </div>
+                      <Image
+                        src="/assets/icons/down-arrow-tip.svg"
+                        alt=""
+                        width={13}
+                        height={13}
+                        className="h-[7px] w-auto brightness-0 invert"
+                      />
+                    </motion.span>
+                  </button>
+
+                  <AnimatePresence initial={false}>
+                    {openIndex === index && (
+                      <motion.div
+                        initial={{ height: 0 }}
+                        animate={{ height: "auto" }}
+                        exit={{ height: 0 }}
+                        transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
+                        className="overflow-hidden"
+                      >
+                        <motion.ul
+                          initial={{ opacity: 0, y: -8 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -8 }}
+                          transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                          className="pb-20 flex flex-col text-white/50"
+                        >
+                          {menu.items.map(({ label, href }) => (
+                            <li key={label}>
+                              <Link
+                                href={href}
+                                onClick={(e) => handleHashLinkClick(e, href)}
+                                data-text={label}
+                                className="contact-link text-19 leading-[2.3] tracking-[-0.03em] w-fit"
+                              >
+                                {label}
+                              </Link>
+                            </li>
+                          ))}
+                        </motion.ul>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              </Reveal>
+            ))}
           </div>
-        </div>
 
-        <div className="relative h-px w-full mt-[60px] lg:mb-80 3xl:mt-120 3xl:mb-100">
-          <motion.div
-            initial={{ scaleX: 0 }}
-            whileInView={{ scaleX: 1 }}
-            transition={{ duration: 1.2, ease: [0.77, 0, 0.175, 1] }}
-            viewport={{ once: true }}
-            className="absolute inset-0 bg-border-color origin-center"
-          />
-        </div>
-
-        {/* ── Mobile Menu ── */}
-        <div className="lg:hidden">
-          {footerMenus.map((menu, index) => (
+          {/* Desktop columns */}
+          {footerMenus.map((menu, i) => (
             <Reveal
               key={menu.heading}
-              delayRange={index * 0.13}
               variants={moveUpV2}
+              delayRange={i * 0.14}
+              className="hidden lg:block"
             >
-              <div
-                ref={(el) => {
-                  itemRefs.current[index] = el;
-                }}
-                className="border-b border-border-color"
-              >
-                <button
-                  type="button"
-                  onClick={() => handleToggle(index)}
-                  className="w-full flex items-center justify-between py-20"
-                >
-                  <span className="text-secondary text-subHeading tracking-[-0.03em]">
-                    {menu.heading}
-                  </span>
-
-                  <motion.span
-                    animate={{
-                      rotate: openIndex === index ? 180 : 0,
-                    }}
-                    transition={{
-                      duration: 0.6,
-                      ease: [0.22, 1, 0.36, 1],
-                    }}
-                    className="text-secondary"
-                  >
-                    <Image
-                      src="/assets/icons/down-arrow-tip.svg"
-                      alt="Chevron Down"
-                      width={13}
-                      height={13}
-                      className={`h-[7px] xl:h-[9px] 3xl:h-[10px] w-auto object-fill transition-transform duration-300 ${
-                        openIndex === index ? "rotate-0" : ""
-                      }`}
-                    />
-                  </motion.span>
-                </button>
-
-                <AnimatePresence initial={false}>
-                  {openIndex === index && (
-                    <motion.div
-                      initial={{ height: 0 }}
-                      animate={{ height: "auto" }}
-                      exit={{ height: 0 }}
-                      transition={{
-                        duration: 0.65,
-                        ease: [0.22, 1, 0.36, 1],
-                      }}
-                      className="overflow-hidden"
+              <h3 className="text-white text-30 leading-[1.23] mb-40 tracking-[-0.031em]">
+                {menu.heading}
+              </h3>
+              <ul className="flex flex-col text-white/50">
+                {menu.items.map(({ label, href }) => (
+                  <li key={label}>
+                    <Link
+                      href={href}
+                      onClick={(e) => handleHashLinkClick(e, href)}
+                      data-text={label}
+                      className="contact-link text-19 leading-[1.789] tracking-[-0.03em] w-fit"
                     >
-                      <motion.ul
-                        initial={{ opacity: 0, y: -8 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -8 }}
-                        transition={{
-                          duration: 0.4,
-                          ease: [0.22, 1, 0.36, 1],
-                        }}
-                        className="pb-20 flex flex-col"
-                      >
-                        {menu.items.map(({ label, href }) => (
-                          <li key={label}>
-                            <Link
-                              href={href}
-                              className="contact-link text-secondary text-19 leading-[2.3] tracking-[-0.03em]"
-                            >
-                              {label}
-                            </Link>
-                          </li>
-                        ))}
-                      </motion.ul>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
+                      {label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
             </Reveal>
           ))}
         </div>
 
-        {/* ── Desk Menu ── */}
-        <div className="hidden lg:flex flex-wrap gap-y-20 gap-x-50 3xl:gap-x-[150px]">
-          {footerMenus.map((menu, i) => {
-            const [col1, col2] =
-              menu.heading ===
-              (navData.footer.systemsLabel || "Longevity Systems")
-                ? splitItemsBalanced(menu.items)
-                : splitItems(menu.items);
-            const isWide = col2.length > 0;
+        <Divider className="mt-50 md:mt-80 2xl:mt-100" />
 
-            return (
-              <Reveal
-                key={menu.heading}
-                variants={moveUpV2}
-                delayRange={i * 0.14}
-              >
-                <div>
-                  {/* Heading */}
-                  <h3 className="text-secondary text-subHeading mb-2.5 md:mb-40 tracking-[-0.031em]">
-                    {menu.heading}
-                  </h3>
-
-                  {/* Items: single or double column */}
-                  <div
-                    className={
-                      isWide ? "flex flex-col sm:flex-row sm:gap-50" : ""
-                    }
-                  >
-                    {/* Column 1 (always present) */}
-                    <ul className="flex flex-col">
-                      {col1.map(({ label, href }) => (
-                        <li key={label}>
-                          <Link
-                            href={href}
-                            onClick={(e) => handleHashLinkClick(e, href)}
-                            data-text={label}
-                            className="contact-link text-secondary text-19 leading-[1.789] tracking-[-0.03em] hover:opacity-70 transition-opacity w-fit"
-                          >
-                            {label}
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-
-                    {/* Column 2 (only when items > 4) */}
-                    {col2.length > 0 && (
-                      <ul className="flex flex-col">
-                        {col2.map(({ label, href }) => (
-                          <li key={label}>
-                            <Link
-                              href={href}
-                              onClick={(e) => handleHashLinkClick(e, href)}
-                              data-text={label}
-                              className="contact-link text-secondary text-19 leading-[1.789] tracking-[-0.03em] hover:opacity-70 transition-opacity w-fit"
-                            >
-                              {label}
-                            </Link>
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                  </div>
-                </div>
-              </Reveal>
-            );
-          })}
-        </div>
+        {/* ── Copyright ── */}
+        <motion.p
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true }}
+          variants={moveUp(0.2)}
+          className="py-20 3xl:pb-[22px] text-white/50 text-15 leading-[2.66666667] tracking-[-0.03em]"
+        >
+          Copyright {new Date().getFullYear()}© Neuro Vanta All Rights
+        </motion.p>
       </div>
-
-      {/* ── Copyright bar ── */}
-      <motion.div
-        initial="hidden"
-        whileInView="show"
-        viewport={{
-          once: true,
-        }}
-        variants={moveUp(0.2)}
-        className="w-full py-[19px] md:py-[10px] bg-[#FFF8F0]"
-      >
-        <div className="container">
-          <p className="text-secondary text-19 md:text-15 leading-[1.54] md:leading-[2.666] md:tracking-[-0.03em]">
-            Copyright {new Date().getFullYear()}© Neuro Vanta All Rights
-          </p>
-        </div>
-      </motion.div>
     </footer>
   );
 }
