@@ -43,6 +43,61 @@ function HoverFillText({ children }: { children: React.ReactNode }) {
   );
 }
 
+/**
+ * Edge-fade cue for a scrollable column: fades the bottom edge while more
+ * content sits below, the top edge once scrolled down, and nothing when
+ * everything fits. Returns a style object with the matching CSS mask.
+ */
+const FADE_SIZE = "80px";
+const FADE_TOLERANCE = 8;
+function useScrollFade(
+  ref: React.RefObject<HTMLElement | null>,
+  active: boolean,
+): React.CSSProperties {
+  const [edges, setEdges] = useState({ top: false, bottom: false });
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || !active) return;
+
+    const update = () => {
+      // Ignore sub-pixel/line-box overflow of a few px — only real overflow counts.
+      // Layout height of the children — unlike scrollHeight it ignores
+      // transforms, so in-flight enter animations don't read as overflow.
+      const contentH = Array.from(el.children).reduce(
+        (sum, c) => sum + (c as HTMLElement).offsetHeight,
+        0,
+      );
+      const top = el.scrollTop > FADE_TOLERANCE;
+      const bottom =
+        el.scrollTop + el.clientHeight < contentH - FADE_TOLERANCE;
+      setEdges((prev) =>
+        prev.top === top && prev.bottom === bottom ? prev : { top, bottom },
+      );
+    };
+
+    update();
+    el.addEventListener("scroll", update, { passive: true });
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    Array.from(el.children).forEach((c) => ro.observe(c));
+    return () => {
+      el.removeEventListener("scroll", update);
+      ro.disconnect();
+    };
+  }, [ref, active]);
+
+  if (!edges.top && !edges.bottom) return {};
+  const mask = `linear-gradient(to bottom, ${
+    edges.top ? `transparent 0, #000 ${FADE_SIZE}` : "#000 0"
+  }, ${
+    edges.bottom
+      ? `#000 calc(100% - ${FADE_SIZE}), transparent 100%`
+      : "#000 100%"
+  })`;
+  return { maskImage: mask, WebkitMaskImage: mask };
+}
+
 const LAYER_BG = ["#F9F5F0", "#E2D3C3", "#51463E"] as const;
 const STAGGER = 0.12;
 const DURATION = 0.8;
@@ -76,7 +131,14 @@ export const NavDropdown = forwardRef<NavDropdownHandle, NavDropdownProps>(
     const layerRefs = useRef<(HTMLDivElement | null)[]>([null, null, null]);
     const contentRef = useRef<HTMLDivElement>(null);
     const navItemRefs = useRef<(HTMLLIElement | null)[]>([]);
+    const navColRef = useRef<HTMLDivElement>(null);
+    const subColRef = useRef<HTMLDivElement>(null);
     const pathname = usePathname();
+    // Measured only once the open animation has settled — the nav items'
+    // in-flight GSAP offset would otherwise read as overflow.
+    const [menuSettled, setMenuSettled] = useState(false);
+    const navColFade = useScrollFade(navColRef, menuSettled);
+    const subColFade = useScrollFade(subColRef, menuSettled);
 
     // Lenis keeps scrolling the page on wheel/trackpad unless it is stopped,
     // so the menu locks/unlocks through Lenis instead of body overflow.
@@ -206,6 +268,7 @@ export const NavDropdown = forwardRef<NavDropdownHandle, NavDropdownProps>(
         onComplete: () => {
           stateRef.current = "open";
           progressRef.current = 1;
+          setMenuSettled(true);
         },
       });
 
@@ -259,6 +322,7 @@ export const NavDropdown = forwardRef<NavDropdownHandle, NavDropdownProps>(
     const buildCloseTl = useCallback((fromProgress: number) => {
       tlRef.current?.kill();
 
+      setMenuSettled(false);
       const tl = gsap.timeline({
         onUpdate: () => {
           progressRef.current = 1 - tl.progress();
@@ -423,7 +487,7 @@ export const NavDropdown = forwardRef<NavDropdownHandle, NavDropdownProps>(
               layerRefs.current[0] = el;
             }}
             data-lenis-prevent
-            className="relative flex flex-col overflow-x-hidden overflow-y-auto overscroll-contain max-h-dvh"
+            className="relative flex flex-col overflow-x-hidden overflow-y-auto overscroll-contain max-h-dvh md:[@media(height<750px)]:h-[95svh]"
             style={{
               background: menuBg,
               transform: "translateY(-100%)",
@@ -431,7 +495,7 @@ export const NavDropdown = forwardRef<NavDropdownHandle, NavDropdownProps>(
           >
             <div
               ref={contentRef}
-              className="flex flex-col w-full text-white"
+              className="flex flex-col w-full text-white md:min-h-0"
               style={{ opacity: 0 }}
             >
               {/* Header spacer */}
@@ -439,16 +503,20 @@ export const NavDropdown = forwardRef<NavDropdownHandle, NavDropdownProps>(
 
               {/* Body */}
               <div
-                className="flex-1 container"
+                className="flex-1 container md:min-h-0 md:flex md:flex-col"
                 onMouseLeave={() => {
                   setHoveredItem(null);
                   setActiveItem(null);
                 }}
               >
-                <div className="border-t border-white/20">
-                <div className="flex items-stretch md:gap-x-120 py-[30px] md:py-50 lg:py-120">
+                <div className="border-t border-white/20 md:flex md:flex-col md:min-h-0">
+                <div className="flex items-stretch md:gap-x-120 py-[30px] md:py-50 lg:py-80 3xl:py-120 md:min-h-0">
                   {/* ── Col 1: Nav items ── */}
-                  <div className="flex flex-col flex-1 md:flex-none md:w-fit min-w-0">
+                  <div
+                    ref={navColRef}
+                    className="flex flex-col flex-1 md:flex-none md:w-fit min-w-0 md:min-h-0 md:overflow-y-auto md:overscroll-contain"
+                    style={navColFade}
+                  >
                     <nav>
                       <ul className="flex flex-col gap-[30px] 3xl:gap-[35px]">
                         {navItems.map((item, i) => {
@@ -457,7 +525,7 @@ export const NavDropdown = forwardRef<NavDropdownHandle, NavDropdownProps>(
 
                           const NavLabel = (
                             <span className="inline-flex items-center gap-[clamp(20px,5vw,95px)] relative w-fit">
-                              <span className="relative text-50 leading-[1.2] uppercase">
+                              <span className="relative text-50 [@media(width>1440px)_and_(height<750px)]:text-[40px] leading-[1.2] uppercase">
                                 {/* Dimmed base */}
                                 <span className="text-white/20">{item.label}</span>
                                 {/* White layer: wipes in left→right, fades out */}
@@ -675,7 +743,11 @@ export const NavDropdown = forwardRef<NavDropdownHandle, NavDropdownProps>(
                   <div className="hidden md:block w-px shrink-0 self-stretch bg-white/20" />
 
                   {/* ── Col 2: Sub-nav (top-aligned with col 1) ── */}
-                  <div className="hidden md:flex flex-col flex-1 min-w-0 self-start">
+                  <div
+                    ref={subColRef}
+                    className="hidden md:flex flex-col flex-1 min-w-0 self-start md:max-h-full md:overflow-y-auto md:overscroll-contain"
+                    style={subColFade}
+                  >
                     <div
                       className="flex flex-col"
                       style={{
