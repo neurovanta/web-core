@@ -9,26 +9,39 @@ import { IndividualIndustry } from "@/app/types/industry";
 const Index = ({ data }: { data: IndividualIndustry }) => {
   return (
     <>
-      <InnerBanner data={data.bannerSection} maxWTitle="max-w-[62ch]" />
-      <DescImageIntro data={data.firstSection} />
-      <FourCardSlider data={data.secondSection} />
-      <CommonSlider
-        data={{
-          heading: data.thirdSection.title,
-          slides: data.thirdSection.items.map((item) => ({
-            icon: item.icon,
-            title: item.title,
-          })),
-        }}
-      />
-      <HowItFits data={data.fourthSection} />
-      <InnerCta
-        data={{
-          bgImage: data.fifthSection.image || "/assets/placeholder.png",
-          title: data.fifthSection.title,
-        }}
-        maxW="max-w-[18ch]"
-      />
+      {!data.bannerSection?.isHidden && (
+        <InnerBanner data={data.bannerSection} maxWTitle="max-w-[62ch]" />
+      )}
+      {!data.firstSection?.isHidden && (
+        <DescImageIntro data={data.firstSection} />
+      )}
+      {!data.secondSection?.isHidden && (
+        <FourCardSlider data={data.secondSection} />
+      )}
+      {/* Benefits */}
+      {!data.thirdSection?.isHidden && (
+        <CommonSlider
+          data={{
+            heading: data.thirdSection.title,
+            slides: data.thirdSection.items.map((item) => ({
+              icon: item.icon,
+              title: item.title,
+            })),
+          }}
+        />
+      )}
+      {!data.fourthSection?.isHidden && (
+        <HowItFits data={data.fourthSection} />
+      )}
+      {!data.fifthSection?.isHidden && (
+        <InnerCta
+          data={{
+            bgImage: data.fifthSection.image || "/assets/placeholder.png",
+            title: data.fifthSection.title,
+          }}
+          maxW="max-w-[18ch]"
+        />
+      )}
     </>
   );
 };
