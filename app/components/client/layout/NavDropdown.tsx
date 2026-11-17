@@ -23,6 +23,10 @@ import {
   NavItem,
 } from "@/app/types/header";
 import { usePathname } from "next/navigation";
+import { useLenis } from "./LenisProvider";
+
+const FOCUSABLE =
+  'a[href], button:not([disabled]), input:not([disabled]), select, textarea, [tabindex]:not([tabindex="-1"])';
 
 /** Dimmed text with a white layer that wipes in left→right on parent `group` hover and fades out on leave. */
 function HoverFillText({ children }: { children: React.ReactNode }) {
@@ -53,10 +57,12 @@ export interface NavDropdownHandle {
 interface NavDropdownProps {
   onOpenChange?: (open: boolean) => void;
   navData: NavData;
+  /** Element (the header) that stays keyboard-reachable alongside the menu while it is open. */
+  trapWithin?: React.RefObject<HTMLElement | null>;
 }
 
 export const NavDropdown = forwardRef<NavDropdownHandle, NavDropdownProps>(
-  ({ onOpenChange, navData }, ref) => {
+  ({ onOpenChange, navData, trapWithin }, ref) => {
     const [menuOpen, setMenuOpen] = useState(false);
     const [activeItem, setActiveItem] = useState<NavItem | null>(null);
     const [hoveredItem, setHoveredItem] = useState<string | null>(null);
@@ -71,6 +77,25 @@ export const NavDropdown = forwardRef<NavDropdownHandle, NavDropdownProps>(
     const contentRef = useRef<HTMLDivElement>(null);
     const navItemRefs = useRef<(HTMLLIElement | null)[]>([]);
     const pathname = usePathname();
+
+    // Lenis keeps scrolling the page on wheel/trackpad unless it is stopped,
+    // so the menu locks/unlocks through Lenis instead of body overflow.
+    const { lockScroll, unlockScroll } = useLenis();
+    const scrollLockRef = useRef({ lockScroll, unlockScroll });
+    useEffect(() => {
+      scrollLockRef.current = { lockScroll, unlockScroll };
+    }, [lockScroll, unlockScroll]);
+
+    const reducedMotionRef = useRef(false);
+    useEffect(() => {
+      const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+      reducedMotionRef.current = mq.matches;
+      const handler = (e: MediaQueryListEvent) => {
+        reducedMotionRef.current = e.matches;
+      };
+      mq.addEventListener("change", handler);
+      return () => mq.removeEventListener("change", handler);
+    }, []);
 
     const handleHashLinkClick = (
       e: React.MouseEvent<HTMLAnchorElement>,
@@ -215,11 +240,10 @@ export const NavDropdown = forwardRef<NavDropdownHandle, NavDropdownProps>(
 
       tl.fromTo(
         navItemRefs.current.filter(Boolean),
-        { opacity: 0.2, y: 28, filter: "blur(1px)" },
+        { opacity: 0.2, y: 28 },
         {
           opacity: 1,
           y: 0,
-          filter: "blur(0px)",
           duration: 0.75,
           stagger: { each: 0.05, ease: "power2.out" },
         },
@@ -227,6 +251,7 @@ export const NavDropdown = forwardRef<NavDropdownHandle, NavDropdownProps>(
       );
 
       tl.progress(fromProgress);
+      if (reducedMotionRef.current) tl.timeScale(20);
       tlRef.current = tl;
       return tl;
     }, []);
@@ -245,7 +270,9 @@ export const NavDropdown = forwardRef<NavDropdownHandle, NavDropdownProps>(
           onOpenChange?.(false);
           setActiveItem(null);
           setHoveredItem(null);
-          document.body.style.overflow = "";
+          setMobileSubOpen(false);
+          setMobileActiveItem(null);
+          layerRefs.current[0]?.scrollTo({ top: 0 });
           if (wrapperRef.current)
             wrapperRef.current.style.pointerEvents = "none";
           gsap.set(navItemRefs.current.filter(Boolean), { opacity: 0, y: 24 });
@@ -273,6 +300,7 @@ export const NavDropdown = forwardRef<NavDropdownHandle, NavDropdownProps>(
       );
 
       if (fromProgress < 1) tl.progress(1 - fromProgress);
+      if (reducedMotionRef.current) tl.timeScale(20);
       tlRef.current = tl;
       return tl;
     }, []);
@@ -285,7 +313,7 @@ export const NavDropdown = forwardRef<NavDropdownHandle, NavDropdownProps>(
       setMenuOpen(true);
       onOpenChange?.(true); // ← must be here — fires immediately when open starts
       if (wrapperRef.current) wrapperRef.current.style.pointerEvents = "auto";
-      document.body.style.overflow = "hidden";
+      scrollLockRef.current.lockScroll();
       buildOpenTl(progressRef.current).play();
     }, [buildOpenTl, onOpenChange]);
 
@@ -295,8 +323,53 @@ export const NavDropdown = forwardRef<NavDropdownHandle, NavDropdownProps>(
 
       stateRef.current = "closing";
       onOpenChange?.(false);
+      // Unlock right away (not on animation end): Lenis ignores scrollTo while
+      // stopped, which would break route scroll-reset and #hash scrolling.
+      scrollLockRef.current.unlockScroll();
+      // Focus would be lost when the menu becomes inert — return it to the toggle.
+      if (wrapperRef.current?.contains(document.activeElement)) {
+        trapWithin?.current
+          ?.querySelector<HTMLElement>("button[aria-expanded]")
+          ?.focus();
+      }
       buildCloseTl(progressRef.current).play();
-    }, [buildCloseTl, onOpenChange]);
+    }, [buildCloseTl, onOpenChange, trapWithin]);
+
+    // Close when the route changes by any means (back/forward, programmatic).
+    const prevPathRef = useRef(pathname);
+    useEffect(() => {
+      if (prevPathRef.current === pathname) return;
+      prevPathRef.current = pathname;
+      closeMenu();
+    }, [pathname, closeMenu]);
+
+    // Keep Tab focus cycling within header + menu while open.
+    useEffect(() => {
+      if (!menuOpen) return;
+      const onKeyDown = (e: KeyboardEvent) => {
+        if (e.key !== "Tab") return;
+        const roots = [trapWithin?.current, wrapperRef.current].filter(
+          Boolean,
+        ) as HTMLElement[];
+        const items = roots
+          .flatMap((r) => Array.from(r.querySelectorAll<HTMLElement>(FOCUSABLE)))
+          .filter((el) => el.getClientRects().length > 0);
+        if (!items.length) return;
+        const first = items[0];
+        const last = items[items.length - 1];
+        const active = document.activeElement as HTMLElement | null;
+        const inside = !!active && items.includes(active);
+        if (e.shiftKey && (active === first || !inside)) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && (active === last || !inside)) {
+          e.preventDefault();
+          first.focus();
+        }
+      };
+      document.addEventListener("keydown", onKeyDown);
+      return () => document.removeEventListener("keydown", onKeyDown);
+    }, [menuOpen, trapWithin]);
 
     useEffect(() => {
       const onKey = (e: KeyboardEvent) => {
@@ -321,7 +394,7 @@ export const NavDropdown = forwardRef<NavDropdownHandle, NavDropdownProps>(
       <div
         ref={wrapperRef}
         className="fixed inset-0 z-999 pointer-events-none"
-        aria-hidden={!menuOpen}
+        inert={!menuOpen}
       >
         {/* Curtain */}
         <div className="absolute left-0 right-0 top-0 overflow-hidden z-2">
@@ -332,7 +405,6 @@ export const NavDropdown = forwardRef<NavDropdownHandle, NavDropdownProps>(
             className="absolute inset-0"
             style={{
               background: LAYER_BG[2],
-              willChange: "transform",
               transform: "translateY(-100%)",
             }}
           />
@@ -343,7 +415,6 @@ export const NavDropdown = forwardRef<NavDropdownHandle, NavDropdownProps>(
             className="absolute inset-0"
             style={{
               background: LAYER_BG[1],
-              willChange: "transform",
               transform: "translateY(-100%)",
             }}
           />
@@ -351,10 +422,10 @@ export const NavDropdown = forwardRef<NavDropdownHandle, NavDropdownProps>(
             ref={(el) => {
               layerRefs.current[0] = el;
             }}
-            className="relative flex flex-col overflow-hidden"
+            data-lenis-prevent
+            className="relative flex flex-col overflow-x-hidden overflow-y-auto overscroll-contain max-h-dvh"
             style={{
               background: menuBg,
-              willChange: "transform",
               transform: "translateY(-100%)",
             }}
           >
@@ -452,6 +523,7 @@ export const NavDropdown = forwardRef<NavDropdownHandle, NavDropdownProps>(
                                   <button
                                     className="2xl:hidden flex items-center justify-between w-full text-left"
                                     onClick={() => {
+                                      layerRefs.current[0]?.scrollTo({ top: 0 });
                                       setMobileSubOpen(true);
                                       setMobileActiveItem(item);
                                     }}
