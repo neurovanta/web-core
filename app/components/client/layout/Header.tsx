@@ -3,7 +3,7 @@
 import { IoSearch } from "react-icons/io5";
 import { PiPhoneLight } from "react-icons/pi";
 import { IoClose } from "react-icons/io5";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, MotionConfig } from "framer-motion";
 import { useAppShell } from "./AppShell";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
@@ -40,6 +40,13 @@ const getHeaderPadding = () => {
   return window.innerWidth < 1024 ? "30px" : "50px";
 };
 
+// Only compositor-friendly properties animate; padding/backdrop-filter changes apply instantly.
+const HEADER_TRANSITION =
+  "transform 0.6s cubic-bezier(0.77,0,0.175,1), opacity 0.6s cubic-bezier(0.77,0,0.175,1)";
+const SCROLLED_BG =
+  "linear-gradient(90deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.5) 52.69%, rgba(0,0,0,0.5) 100%)";
+const SCROLLED_BLUR = "blur(16px)";
+
 export default function Header({ navData }: { navData: NavData }) {
   const { animateIn } = useAppShell();
 
@@ -57,6 +64,16 @@ export default function Header({ navData }: { navData: NavData }) {
   const searchInputRef = useRef<HTMLInputElement>(null);
   const mobileSearchInputRef = useRef<HTMLInputElement>(null);
   const searchContainerRef = useRef<HTMLDivElement>(null);
+  const searchFocusTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const bgRestoreTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(
+    () => () => {
+      if (searchFocusTimer.current) clearTimeout(searchFocusTimer.current);
+      if (bgRestoreTimer.current) clearTimeout(bgRestoreTimer.current);
+    },
+    [],
+  );
 
   const pathname = usePathname();
   const isCareerPage = pathname.startsWith("/careers/");
@@ -74,7 +91,8 @@ export default function Header({ navData }: { navData: NavData }) {
   const openSearch = () => {
     setSearchOpen(true);
     // focus the right input depending on viewport
-    setTimeout(() => {
+    if (searchFocusTimer.current) clearTimeout(searchFocusTimer.current);
+    searchFocusTimer.current = setTimeout(() => {
       if (window.innerWidth >= 1280) {
         searchInputRef.current?.focus();
       } else {
@@ -84,6 +102,7 @@ export default function Header({ navData }: { navData: NavData }) {
   };
 
   const closeSearch = useCallback(() => {
+    if (searchFocusTimer.current) clearTimeout(searchFocusTimer.current);
     setSearchOpen(false);
     setSearchQuery("");
   }, []);
@@ -101,10 +120,14 @@ export default function Header({ navData }: { navData: NavData }) {
     };
     document.addEventListener("mousedown", handleClick);
     return () => document.removeEventListener("mousedown", handleClick);
-  }, [searchOpen]);
+  }, [searchOpen, closeSearch]);
 
   useEffect(() => {
     menuOpenRef.current = menuOpen;
+    if (bgRestoreTimer.current) {
+      clearTimeout(bgRestoreTimer.current);
+      bgRestoreTimer.current = null;
+    }
     const el = headerRef.current;
     if (!el) return;
     if (menuOpen) {
@@ -117,12 +140,13 @@ export default function Header({ navData }: { navData: NavData }) {
         el.style.pointerEvents = "auto";
       }
     } else {
-      setTimeout(() => {
+      bgRestoreTimer.current = setTimeout(() => {
+        bgRestoreTimer.current = null;
+        // Menu may have been reopened within the delay — never paint over it.
+        if (menuOpenRef.current) return;
         if (window.scrollY > 10) {
-          el.style.background =
-            // "linear-gradient(90deg, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.03) 52.69%, rgba(0,0,0,0.3) 100%)";
-            "linear-gradient(90deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.5) 52.69%, rgba(0,0,0,0.5) 100%)";
-          el.style.backdropFilter = "blur(30px)";
+          el.style.background = SCROLLED_BG;
+          el.style.backdropFilter = SCROLLED_BLUR;
         }
       }, 400);
     }
@@ -152,7 +176,13 @@ export default function Header({ navData }: { navData: NavData }) {
   }, [hideHeader, showHeader]);
 
   useEffect(() => {
-    const onScroll = () => {
+    const setPadding = (el: HTMLElement) => {
+      const padding = getHeaderPadding();
+      if (el.style.paddingTop !== padding) el.style.paddingTop = padding;
+      if (el.style.paddingBottom !== padding) el.style.paddingBottom = padding;
+    };
+
+    const update = () => {
       if (headerScrollLock.active) return;
       const currentY = window.scrollY;
       const diff = currentY - lastScrollY.current;
@@ -165,9 +195,7 @@ export default function Header({ navData }: { navData: NavData }) {
         setIsScrolled(false);
         el.style.background = "transparent";
         el.style.backdropFilter = "blur(0px)";
-        const padding = getHeaderPadding();
-        el.style.paddingTop = padding;
-        el.style.paddingBottom = padding;
+        setPadding(el);
         showHeader();
       } else if (diff > 0) {
         hideHeader();
@@ -175,18 +203,28 @@ export default function Header({ navData }: { navData: NavData }) {
         setIsScrolled(true);
         showHeader();
         if (!menuOpenRef.current) {
-          el.style.background =
-            "linear-gradient(90deg, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.5) 52.69%, rgba(0,0,0,0.5) 100%)";
-          el.style.backdropFilter = "blur(30px)";
+          el.style.background = SCROLLED_BG;
+          el.style.backdropFilter = SCROLLED_BLUR;
         }
-        const padding = getHeaderPadding();
-        el.style.paddingTop = padding;
-        el.style.paddingBottom = padding;
+        setPadding(el);
       }
     };
 
+    // Coalesce scroll events to one update per frame.
+    let rafId = 0;
+    const onScroll = () => {
+      if (rafId) return;
+      rafId = requestAnimationFrame(() => {
+        rafId = 0;
+        update();
+      });
+    };
+
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      if (rafId) cancelAnimationFrame(rafId);
+    };
   }, [hideHeader, showHeader]);
 
   useEffect(() => {
@@ -204,7 +242,7 @@ export default function Header({ navData }: { navData: NavData }) {
       el.style.pointerEvents = "none";
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
-          el.style.transition = "all 0.6s cubic-bezier(0.77,0,0.175,1)";
+          el.style.transition = HEADER_TRANSITION;
         });
       });
     }
@@ -228,7 +266,7 @@ export default function Header({ navData }: { navData: NavData }) {
       : "text-primary";
 
   return (
-    <>
+    <MotionConfig reducedMotion="user">
       <header
         ref={headerRef}
         className="pt-[30px] lg:pt-[50px]"
@@ -240,7 +278,7 @@ export default function Header({ navData }: { navData: NavData }) {
           zIndex: 1000,
           transform: "translateY(0%)",
           opacity: 1,
-          transition: "all 0.6s cubic-bezier(0.77,0,0.175,1)",
+          transition: HEADER_TRANSITION,
           pointerEvents: "auto",
         }}
       >
@@ -288,42 +326,36 @@ export default function Header({ navData }: { navData: NavData }) {
             animate={animateIn ? "visible" : "hidden"}
             variants={dropDown(0.18)}
           >
-            {/* Contact — hidden when xl search is open */}
-            <AnimatePresence>
-              {/* {!searchOpen && ( */}
-              <motion.div
-                initial={{ opacity: 0, x: 10 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 10 }}
-                transition={{ duration: 0.2 }}
+            {/* Contact */}
+            <motion.div
+              initial={{ opacity: 0, x: 10 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 10 }}
+              transition={{ duration: 0.2 }}
+            >
+              <Link
+                onClick={() => dropdownRef.current?.close()}
+                href="/contact-us"
               >
-                <Link
-                  onClick={() => dropdownRef.current?.close()}
-                  href="/contact-us"
-                >
-                  <button className="hidden md:flex justify-center items-center bg-primary text-secondary text-center leading-1 rounded-[50px] text-15 uppercase px-20 py-[3px] cursor-pointer 3xl:w-[109px] h-[30px] sm:h-8">
-                    Contact
-                  </button>
-                </Link>
-              </motion.div>
-              {/* )} */}
-            </AnimatePresence>
+                <button className="hidden md:flex justify-center items-center bg-primary text-secondary text-center leading-1 rounded-[50px] text-15 uppercase px-20 py-[3px] cursor-pointer 3xl:w-[109px] h-[30px] sm:h-8">
+                  Contact
+                </button>
+              </Link>
+            </motion.div>
 
-            {/* Phone icon — hidden when xl search is open */}
-            <AnimatePresence>
-              <motion.button
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.8 }}
-                transition={{ duration: 0.2 }}
-                className={`flex md:hidden items-center justify-center w-[30px] h-[30px] sm:w-8 sm:h-8 rounded-full border ${iconColorClass} cursor-pointer transition-colors duration-500`}
-              >
-                <PiPhoneLight
-                  strokeWidth={6}
-                  className="w-auto h-[15px] sm:h-[20px]"
-                />
-              </motion.button>
-            </AnimatePresence>
+            {/* Phone icon */}
+            <motion.button
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.8 }}
+              transition={{ duration: 0.2 }}
+              className={`flex md:hidden items-center justify-center w-[30px] h-[30px] sm:w-8 sm:h-8 rounded-full border ${iconColorClass} cursor-pointer transition-colors duration-500`}
+            >
+              <PiPhoneLight
+                strokeWidth={6}
+                className="w-auto h-[15px] sm:h-[20px]"
+              />
+            </motion.button>
 
             {/* ── Search ────────────────────────────────────────────────────── */}
             <div
@@ -559,7 +591,8 @@ export default function Header({ navData }: { navData: NavData }) {
         ref={dropdownRef}
         onOpenChange={setMenuOpen}
         navData={navData}
+        trapWithin={headerRef}
       />
-    </>
+    </MotionConfig>
   );
 }
