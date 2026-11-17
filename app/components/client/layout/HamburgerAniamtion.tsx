@@ -7,6 +7,7 @@ const CY = 16;
 const C_DARK = "#51463E";
 const C_TOP = "#F9F5F0";
 const C_MID = "#E2D3C3";
+const C_OPEN = "#FFFFFF";
 
 const HL = 22;
 
@@ -16,8 +17,9 @@ export default function MenuIcon({ open, dark = false }: { open: boolean; dark?:
   const tXform = `transform ${DUR} ${EASE} 60ms`;
 
   // When dark=true (career pages), resting color is C_DARK instead of light colors
-  const lineColor = open ? C_DARK : dark ? C_DARK : C_TOP;
-  const midColor  = open ? C_DARK : dark ? C_DARK : C_MID;
+  // Open state shows the close "X" over the dark menu overlay, so it goes light.
+  const lineColor = open ? C_OPEN : dark ? C_DARK : C_TOP;
+  const midColor  = open ? C_OPEN : dark ? C_DARK : C_MID;
 
   return (
     <svg

@@ -105,6 +105,7 @@ export async function GET() {
         contact: settings.contact,
         socials: settings.socials,
         header: {
+          image: settings.header.image || "",
           solutionsLabel: settings.header.solutionsLabel || "Solutions",
           systemsLabel: settings.header.systemsLabel || "Longevity Systems",
           industriesLabel:
@@ -115,6 +116,8 @@ export async function GET() {
           industries: headerIndustries,
         },
         footer: {
+          image: settings.footer.image || "",
+          imageAlt: settings.footer.imageAlt || "",
           solutionsLabel: settings.footer.solutionsLabel || "Solutions",
           systemsLabel: settings.footer.systemsLabel || "Longevity Systems",
           quickLinks: settings.footer.quickLinks,
@@ -156,12 +159,18 @@ export async function PATCH(request: NextRequest) {
     if (body.contact) settings.contact = body.contact;
 
     if (body.header?.navLinks) settings.header.navLinks = body.header.navLinks;
+    if (body.header?.image !== undefined)
+      settings.header.image = body.header.image;
     if (body.header?.solutionsLabel !== undefined)
       settings.header.solutionsLabel = body.header.solutionsLabel;
     if (body.header?.systemsLabel !== undefined)
       settings.header.systemsLabel = body.header.systemsLabel;
     if (body.header?.industriesLabel !== undefined)
       settings.header.industriesLabel = body.header.industriesLabel;
+    if (body.footer?.image !== undefined)
+      settings.footer.image = body.footer.image;
+    if (body.footer?.imageAlt !== undefined)
+      settings.footer.imageAlt = body.footer.imageAlt;
     if (body.footer?.quickLinks)
       settings.footer.quickLinks = body.footer.quickLinks;
     if (body.footer?.solutionsLabel !== undefined)

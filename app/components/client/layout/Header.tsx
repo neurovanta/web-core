@@ -214,13 +214,16 @@ export default function Header({ navData }: { navData: NavData }) {
     dropdownRef.current?.toggle();
   };
 
-  const iconColorClass =
-    menuOpen || (!isScrolled && isCareerPage)
+  // Menu overlay is dark, so icons go light while it's open.
+  const iconColorClass = menuOpen
+    ? "text-white border-white"
+    : !isScrolled && isCareerPage
       ? "text-secondary border-secondary"
       : "text-primary border-primary";
 
-  const iconTextClass =
-    menuOpen || (!isScrolled && isCareerPage)
+  const iconTextClass = menuOpen
+    ? "text-white"
+    : !isScrolled && isCareerPage
       ? "text-secondary"
       : "text-primary";
 

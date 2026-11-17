@@ -11,6 +11,8 @@ import { toast } from "sonner";
 import { useEffect, useState } from "react";
 import { RiEyeLine, RiEyeOffLine, RiDeleteBin6Line } from "react-icons/ri";
 import { useRouter } from "next/navigation";
+import AdminTabs from "@/app/components/admin/common/AdminTabs";
+import ViewOnSiteButton from "@/app/components/admin/common/ViewOnSiteButton";
 
 interface IndustriesMainForm {
   seo: { metaTitle: string; metaDescription: string; script: string };
@@ -61,6 +63,7 @@ export default function IndustriesMainPage() {
     name: "industries",
   });
 
+  const [activeTab, setActiveTab] = useState<"list" | "page">("list");
   const [confirmDialog, setConfirmDialog] = useState<{
     open: boolean;
     id: string;
@@ -156,7 +159,19 @@ export default function IndustriesMainPage() {
 
   return (
     <div className="flex flex-col gap-5">
-      <form className="flex flex-col gap-5" onSubmit={handleSubmit(onSubmit)}>
+      <AdminTabs
+        tabs={[
+          { key: "list", label: "Industries List", count: industries.length },
+          { key: "page", label: "Page" },
+        ]}
+        active={activeTab}
+        onChange={setActiveTab}
+      />
+
+      <form
+        className={`flex-col gap-5 ${activeTab === "page" ? "flex" : "hidden"}`}
+        onSubmit={handleSubmit(onSubmit)}
+      >
         {/* Banner Section */}
         <AdminItemContainer>
           <Label main>Banner Section</Label>
@@ -334,7 +349,7 @@ export default function IndustriesMainPage() {
       </form>
 
       {/* Industries List — outside form */}
-      <div className="bg-white border border-black/20 rounded-xl p-5 flex flex-col gap-4">
+      <div className={`bg-white border border-black/20 rounded-xl p-5 flex-col gap-4 ${activeTab === "list" ? "flex" : "hidden"}`}>
         <div className="flex items-center justify-between border-b border-black/20 pb-3">
           <Label className="text-base font-bold">Industries</Label>
           <Button
@@ -353,6 +368,7 @@ export default function IndustriesMainPage() {
             const id = (field as typeof field & { _id?: string })._id;
             const title = watch(`industries.${index}.thumbnailTitle`);
             const isHidden = watch(`industries.${index}.isHidden`);
+            const slug = watch(`industries.${index}.slug`);
             return (
               <div
                 key={field.id}
@@ -383,22 +399,28 @@ export default function IndustriesMainPage() {
                     </span>
                   </div>
 
-                  <div
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      id &&
-                        setConfirmDialog({
-                          open: true,
-                          id,
-                          index,
-                          label: title || `Industry ${index + 1}`,
-                        });
-                    }}
-                  >
-                    <RiDeleteBin6Line
-                      className="text-red-400 cursor-pointer hover:scale-120 transition-all"
-                      size={20}
+                  <div className="flex items-center gap-4">
+                    <ViewOnSiteButton
+                      href={slug ? `/industries/${slug}` : null}
+                      isHidden={isHidden}
                     />
+                    <div
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        id &&
+                          setConfirmDialog({
+                            open: true,
+                            id,
+                            index,
+                            label: title || `Industry ${index + 1}`,
+                          });
+                      }}
+                    >
+                      <RiDeleteBin6Line
+                        className="text-red-400 cursor-pointer hover:scale-120 transition-all"
+                        size={20}
+                      />
+                    </div>
                   </div>
                 </div>
               </div>

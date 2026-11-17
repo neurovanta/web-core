@@ -114,6 +114,7 @@ export const getGlobalNavItems = unstable_cache(
         contact: settings?.contact || {},
         socials: (settings?.socials || []).filter((s: any) => !s.isHidden),
 header: {
+  image: settings?.header?.image || "",
   solutionsLabel: settings?.header?.solutionsLabel || "Solutions",
   systemsLabel: settings?.header?.systemsLabel || "Longevity Systems",
   industriesLabel: settings?.header?.industriesLabel || "Industries We Serve",
@@ -125,6 +126,10 @@ header: {
   industries: headerIndustries,
 },
         footer: {
+          image: settings?.footer?.image || "",
+          imageAlt: settings?.footer?.imageAlt || "",
+          solutionsLabel: settings?.footer?.solutionsLabel || "Solutions",
+          systemsLabel: settings?.footer?.systemsLabel || "Longevity Systems",
           quickLinks: (settings?.footer?.quickLinks || []).filter(
             (q: any) => !q.isHidden,
           ),

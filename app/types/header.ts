@@ -59,6 +59,7 @@ export interface NavData {
   contact: NavContact;
   socials: NavSocial[];
   header: {
+    image?: string;
     solutionsLabel: string;
     systemsLabel: string;
     industriesLabel: string;
@@ -68,6 +69,8 @@ export interface NavData {
     industries: NavIndustry[];
   };
   footer: {
+    image?: string;
+    imageAlt?: string;
     solutionsLabel: string;
     systemsLabel: string;
     quickLinks: NavLink[];
