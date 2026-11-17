@@ -9,6 +9,8 @@ import BeginHerePage from "./sections/BeginHere";
 import { HomePageData } from "@/app/types/home";
 
 const Index = ({ data }: { data: HomePageData }) => {
+  const visibleCategories = data.categories.filter((cat) => !cat.isHidden);
+
   return (
     <>
       <div style={{ position: "relative" }}>
@@ -39,7 +41,7 @@ const Index = ({ data }: { data: HomePageData }) => {
       <TabsWithSlider
         data={{
           heading: data.home.fourthSection.title,
-          categories: data.categories.filter((cat) => !cat.isHidden).map((cat) => ({
+          categories: visibleCategories.map((cat) => ({
             label: cat.title,
             slides: cat.products.filter((p) => !p.isHidden).map((p) => ({
               image: p.thumbnailImage || "/assets/placeholder.png",
@@ -49,6 +51,12 @@ const Index = ({ data }: { data: HomePageData }) => {
             })),
           })),
         }}
+        initialIndex={Math.max(
+          0,
+          visibleCategories.findIndex(
+            (cat) => cat._id === data.home.fourthSection.defaultCategory,
+          ),
+        )}
         className="bg-white py-[65px] lg:py-120 3xl:py-150"
       />
       <HeroStats data={data.home.fifthSection} />

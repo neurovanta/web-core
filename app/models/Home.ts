@@ -57,6 +57,8 @@ const homeSchema = new mongoose.Schema({
   fourthSection: {
     isHidden: { type: Boolean, default: false },
     title: { type: String },
+    // _id of the Systems category shown first; empty → first visible category
+    defaultCategory: { type: String, default: "" },
   },
   fifthSection: {
     isHidden: { type: Boolean, default: false },

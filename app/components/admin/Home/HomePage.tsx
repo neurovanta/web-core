@@ -18,6 +18,12 @@ import { RiDeleteBinLine } from "react-icons/ri";
 //   products: { _id: string; thumbnailTitle: string }[];
 // }
 
+interface SystemsCategoryOption {
+  _id: string;
+  title: string;
+  isHidden: boolean;
+}
+
 interface SolutionOption {
   _id: string;
   thumbnailTitle: string;
@@ -51,6 +57,7 @@ interface HomeForm {
   fourthSection: {
     isHidden: boolean;
     title: string;
+    defaultCategory: string;
     // categories: string[];
     // products: string[];
   };
@@ -104,6 +111,9 @@ export default function HomePage() {
   // const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   // const [selectedProducts, setSelectedProducts] = useState<string[]>([]);
   const [solutions, setSolutions] = useState<SolutionOption[]>([]);
+  const [systemsCategories, setSystemsCategories] = useState<
+    SystemsCategoryOption[]
+  >([]);
 
   const {
     fields: buttons,
@@ -171,6 +181,17 @@ const fetchData = async () => {
         setValue("thirdSection", data.thirdSection);
         setValue("fourthSection.isHidden", data.fourthSection?.isHidden);
         setValue("fourthSection.title", data.fourthSection?.title);
+        setValue(
+          "fourthSection.defaultCategory",
+          data.fourthSection?.defaultCategory || "",
+        );
+        setSystemsCategories(
+          (categories || []).map((c: any) => ({
+            _id: String(c._id),
+            title: c.title,
+            isHidden: !!c.isHidden,
+          })),
+        );
         setValue("fifthSection", data.fifthSection);
         setValue("sixthSection", data.sixthSection);
         setValue("seventhSection", data.seventhSection);
@@ -559,6 +580,24 @@ const fetchData = async () => {
           <div className="p-5 flex flex-col gap-4">
             <Label className="font-bold">Title</Label>
             <Input {...register("fourthSection.title")} placeholder="Title" />
+            <Label className="font-bold">Initially Selected System</Label>
+            <select
+              value={watch("fourthSection.defaultCategory") || ""}
+              onChange={(e) =>
+                setValue("fourthSection.defaultCategory", e.target.value)
+              }
+              className="border border-black/10 rounded-lg p-2"
+            >
+              <option value="">First system (default)</option>
+              {/* Hidden systems aren't shown on the site, so they can't be picked */}
+              {systemsCategories
+                .filter((c) => !c.isHidden)
+                .map((c) => (
+                  <option key={c._id} value={c._id}>
+                    {c.title}
+                  </option>
+                ))}
+            </select>
             {/* <div className="flex flex-col gap-3 mt-2">
               {systemsCategories.length === 0 && (
                 <p className="text-sm text-black/40">
