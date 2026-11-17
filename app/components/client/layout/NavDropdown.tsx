@@ -24,6 +24,21 @@ import {
 } from "@/app/types/header";
 import { usePathname } from "next/navigation";
 
+/** Dimmed text with a white layer that wipes in left→right on parent `group` hover and fades out on leave. */
+function HoverFillText({ children }: { children: React.ReactNode }) {
+  return (
+    <span className="relative inline-block">
+      <span className="text-white/50">{children}</span>
+      <span
+        aria-hidden
+        className="absolute inset-0 text-white whitespace-nowrap opacity-0 [clip-path:inset(0_100%_0_0)] [transition:opacity_300ms_ease-out,clip-path_0s_linear_300ms] group-hover:opacity-100 group-hover:[clip-path:inset(0_0_0_0)] group-hover:[transition:opacity_0s,clip-path_380ms_ease-out]"
+      >
+        {children}
+      </span>
+    </span>
+  );
+}
+
 const LAYER_BG = ["#F9F5F0", "#E2D3C3", "#51463E"] as const;
 const STAGGER = 0.12;
 const DURATION = 0.8;
@@ -370,37 +385,47 @@ export const NavDropdown = forwardRef<NavDropdownHandle, NavDropdownProps>(
                           const isHovered = hoveredItem === item.label;
 
                           const NavLabel = (
-                            <span className="inline-flex items-center gap-20 3xl:gap-[30px] relative w-fit">
-                              <span
-                                className={`text-50 leading-[1.2] uppercase transition-colors duration-300 ${
-                                  anySubHovered && !isHovered
-                                    ? "text-white/20"
-                                    : "text-white"
-                                }`}
-                              >
-                                {item.label}
+                            <span className="inline-flex items-center gap-[clamp(20px,5vw,95px)] relative w-fit">
+                              <span className="relative text-50 leading-[1.2] uppercase">
+                                {/* Dimmed base */}
+                                <span className="text-white/20">{item.label}</span>
+                                {/* White layer: wipes in left→right, fades out */}
+                                <span
+                                  aria-hidden
+                                  className="absolute inset-0 text-white whitespace-nowrap"
+                                  style={
+                                    anySubHovered && !isHovered
+                                      ? {
+                                          opacity: 0,
+                                          clipPath: "inset(0 100% 0 0)",
+                                          transition:
+                                            "opacity 300ms ease-out, clip-path 0s linear 300ms",
+                                        }
+                                      : {
+                                          opacity: 1,
+                                          clipPath: "inset(0 0 0 0)",
+                                          transition:
+                                            "opacity 0s, clip-path 380ms ease-out",
+                                        }
+                                  }
+                                >
+                                  {item.label}
+                                </span>
                               </span>
 
                               {hasSubs && (
                                 <span
                                   aria-hidden
-                                  className={`hidden 2xl:flex items-center justify-center shrink-0 rounded-full bg-primary text-secondary w-[32px] h-[32px] 3xl:w-[44px] 3xl:h-[44px] transition-all duration-300 ${
+                                  className={`hidden 2xl:flex items-center justify-center shrink-0 rounded-full bg-primary text-secondary size-[clamp(32px,2.632vw,50px)] transition-all duration-300 ${
                                     isHovered
                                       ? "opacity-100 translate-x-0"
                                       : "opacity-0 -translate-x-2"
                                   }`}
                                 >
-                                  <ChevronRight className="w-4 h-4 3xl:w-5 3xl:h-5" strokeWidth={1.5} />
+                                  <ChevronRight className="size-[clamp(22px,1.895vw,36px)]" strokeWidth={1.5} />
                                 </span>
                               )}
 
-                              {!hasSubs && (
-                                <span
-                                  className={`hidden lg:block absolute bottom-[2px] md:bottom-[5px] left-0 h-[3px] bg-white transition-all duration-500 ease-out ${
-                                    isHovered ? "w-full" : "w-0"
-                                  }`}
-                                />
-                              )}
                             </span>
                           );
 
@@ -597,8 +622,8 @@ export const NavDropdown = forwardRef<NavDropdownHandle, NavDropdownProps>(
                           onClick={closeMenu}
                           className="group inline-flex flex-col w-fit relative md:block 2xl:hidden"
                         >
-                          <span className="text-[13px] sm:text-19 3xl:text-[20px] leading-[2.5] tracking-[-0.03em] text-white/50 group-hover:text-white transition-colors duration-300">
-                            Overview
+                          <span className="text-[13px] sm:text-19 3xl:text-[20px] leading-[2.5] tracking-[-0.03em]">
+                            <HoverFillText>Overview</HoverFillText>
                           </span>
                         </Link>
                       )}
@@ -618,8 +643,12 @@ export const NavDropdown = forwardRef<NavDropdownHandle, NavDropdownProps>(
                             }}
                             className="group inline-flex flex-col w-fit relative"
                           >
-                            <span className="text-[13px] sm:text-19 3xl:text-[20px] leading-[2.5] tracking-[-0.03em] text-white/50 group-hover:text-white transition-colors duration-300 capitalize">
-                              {sub.label.toLowerCase()}
+                            <span className="text-[13px] sm:text-19 3xl:text-[20px] leading-[2.5] tracking-[-0.03em]">
+                              <HoverFillText>
+                                {sub.label
+                                  .toLowerCase()
+                                  .replace(/(^|\s)\S/g, (c) => c.toUpperCase())}
+                              </HoverFillText>
                             </span>
                           </Link>
                         </motion.div>
