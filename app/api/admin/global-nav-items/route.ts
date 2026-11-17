@@ -105,6 +105,7 @@ export async function GET() {
         contact: settings.contact,
         socials: settings.socials,
         header: {
+          image: settings.header.image || "",
           solutionsLabel: settings.header.solutionsLabel || "Solutions",
           systemsLabel: settings.header.systemsLabel || "Longevity Systems",
           industriesLabel:
@@ -158,6 +159,8 @@ export async function PATCH(request: NextRequest) {
     if (body.contact) settings.contact = body.contact;
 
     if (body.header?.navLinks) settings.header.navLinks = body.header.navLinks;
+    if (body.header?.image !== undefined)
+      settings.header.image = body.header.image;
     if (body.header?.solutionsLabel !== undefined)
       settings.header.solutionsLabel = body.header.solutionsLabel;
     if (body.header?.systemsLabel !== undefined)

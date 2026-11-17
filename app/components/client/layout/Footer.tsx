@@ -157,21 +157,34 @@ export default function Footer({ navData }: { navData: NavData }) {
       <div className="relative z-10 container pt-[60px] md:pt-120 3xl:pt-[128px]">
         {/* ── Top row: logo + contact ── */}
         <div className="flex flex-col gap-y-30 sm:flex-row sm:items-start sm:justify-between">
+          {/* Logo: left-to-right clip-path reveal.
+              The in-view observer sits on the unclipped wrapper — a fully
+              clipped element has no visible area, so it would never trigger. */}
           <motion.div
-            variants={moveUp(0)}
             initial="hidden"
             whileInView="show"
-            viewport={{ once: true }}
+            viewport={{ once: true, amount: 0.5 }}
           >
-            <Link href="/" aria-label="Neuro Vanta home" className="block">
-              <Image
-                src="/assets/logos/footer-logo.svg"
-                alt="Neuro Vanta"
-                width={1717}
-                height={218}
-                className="w-[200px] md:w-[260px] xl:w-[320px] 3xl:w-[366px] h-auto"
-              />
-            </Link>
+            <motion.div
+              variants={{
+                hidden: { clipPath: "inset(0% 100% 0% 0%)" },
+                show: {
+                  clipPath: "inset(0% 0% 0% 0%)",
+                  transition: { duration: 1.4, ease: [0.77, 0, 0.175, 1] },
+                },
+              }}
+              className="will-change-[clip-path]"
+            >
+              <Link href="/" aria-label="Neuro Vanta home" className="block">
+                <Image
+                  src="/assets/logos/footer-logo.svg"
+                  alt="Neuro Vanta"
+                  width={1717}
+                  height={218}
+                  className="w-[200px] md:w-[260px] xl:w-[320px] 3xl:w-[366px] h-auto"
+                />
+              </Link>
+            </motion.div>
           </motion.div>
 
           <div className="text-white text-30 leading-[1.3] flex flex-col sm:items-start">

@@ -114,6 +114,7 @@ export const getGlobalNavItems = unstable_cache(
         contact: settings?.contact || {},
         socials: (settings?.socials || []).filter((s: any) => !s.isHidden),
 header: {
+  image: settings?.header?.image || "",
   solutionsLabel: settings?.header?.solutionsLabel || "Solutions",
   systemsLabel: settings?.header?.systemsLabel || "Longevity Systems",
   industriesLabel: settings?.header?.industriesLabel || "Industries We Serve",

@@ -10,12 +10,12 @@ import {
 } from "react";
 import Link from "next/link";
 import gsap from "gsap";
-import { moveLeft, moveUp } from "../animations/motionVarinats";
+import { moveUp } from "../animations/motionVarinats";
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
+import { ChevronRight } from "lucide-react";
 import {
   NavData,
-  NavSocial,
   NavLink,
   NavSolution,
   NavSystem,
@@ -296,6 +296,12 @@ export const NavDropdown = forwardRef<NavDropdownHandle, NavDropdownProps>(
       hoveredItem !== null &&
       !!navItems.find((it) => it.label === hoveredItem)?.subItems?.length;
 
+    const menuBgImage =
+      navData.header.image ||
+      navData.footer.image ||
+      "/assets/images/footer/footer-bg.jpg";
+    const menuBg = `linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url("${menuBgImage}") center / cover no-repeat, #000`;
+
     return (
       <div
         ref={wrapperRef}
@@ -332,14 +338,14 @@ export const NavDropdown = forwardRef<NavDropdownHandle, NavDropdownProps>(
             }}
             className="relative flex flex-col overflow-hidden"
             style={{
-              background: LAYER_BG[0],
+              background: menuBg,
               willChange: "transform",
               transform: "translateY(-100%)",
             }}
           >
             <div
               ref={contentRef}
-              className="flex flex-col w-full"
+              className="flex flex-col w-full text-white"
               style={{ opacity: 0 }}
             >
               {/* Header spacer */}
@@ -353,75 +359,48 @@ export const NavDropdown = forwardRef<NavDropdownHandle, NavDropdownProps>(
                   setActiveItem(null);
                 }}
               >
-                <div className="flex h-full border-t border-black/20">
-                  {/* ── Col 1: Social ── */}
-                  <div className="hidden xl:flex flex-col shrink-0 pb-60">
-                    <div className="mt-auto flex flex-col gap-20">
-                      {navData.socials
-                        .filter((s: NavSocial) => !s.isHidden)
-                        .map((s: NavSocial, i: number) => (
-                          <motion.div
-                            initial="hidden"
-                            whileInView="show"
-                            variants={moveLeft((i + 1) * 0.2)}
-                            key={i}
-                          >
-                            <a
-                              data-text={s.label}
-                              href={s.link}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-19 leading-[1.42] tracking-[-0.03em] contact-link hover:scale-105 transition-all duration-300"
-                              style={
-                                s.label === "Instagram"
-                                  ? {
-                                      background:
-                                        "linear-gradient(90deg, #4C66C7 0%, #F04D5A 35.1%, #FAD85C 66.83%, #C92AAA 100%)",
-                                      WebkitBackgroundClip: "text",
-                                      WebkitTextFillColor: "transparent",
-                                      backgroundClip: "text",
-                                    }
-                                  : s.label === "LinkedIn"
-                                    ? { color: "#2671AD" }
-                                    : s.label === "Youtube"
-                                      ? { color: "#D92935" }
-                                      : s.label === "Facebook"
-                                        ? { color: "#416FF0" }
-                                        : { color: "rgba(81,70,62,0.5)" }
-                              }
-                            >
-                              {s.label}
-                            </a>
-                          </motion.div>
-                        ))}
-                    </div>
-                  </div>
-
-                  {/* ── Col 2: Nav items ── */}
-                  <div className="flex flex-col justify-end md:justify-start 2xl:justify-end flex-1 min-w-0 pb-[30px] md:pb-50 xl:pl-225 3xl:pl-[264px]">
-                    <nav className="pt-[30px] sm:pt-60 3xl:pt-50 md:pr-20">
-                      <ul className="flex flex-col gap-[30px] 3xl:gap-40">
+                <div className="border-t border-white/20">
+                <div className="flex items-stretch md:gap-x-120 py-[30px] md:py-50 lg:py-120">
+                  {/* ── Col 1: Nav items ── */}
+                  <div className="flex flex-col flex-1 md:flex-none md:w-fit min-w-0">
+                    <nav>
+                      <ul className="flex flex-col gap-[30px] 3xl:gap-[35px]">
                         {navItems.map((item, i) => {
                           const hasSubs = !!item.subItems?.length;
                           const isHovered = hoveredItem === item.label;
 
                           const NavLabel = (
-                            <span className="inline-flex flex-col relative w-fit">
+                            <span className="inline-flex items-center gap-20 3xl:gap-[30px] relative w-fit">
                               <span
-                                className={`text-heading uppercase transition-colors duration-300 ${
+                                className={`text-50 leading-[1.2] uppercase transition-colors duration-300 ${
                                   anySubHovered && !isHovered
-                                    ? "text-secondary/40"
-                                    : "text-secondary"
+                                    ? "text-white/20"
+                                    : "text-white"
                                 }`}
                               >
                                 {item.label}
                               </span>
 
-                              <span
-                                className={`hidden lg:block absolute bottom-[2px] md:bottom-[5px] left-0 h-[3px] bg-secondary transition-all duration-500 ease-out ${
-                                  isHovered ? "w-full" : "w-0"
-                                }`}
-                              />
+                              {hasSubs && (
+                                <span
+                                  aria-hidden
+                                  className={`hidden 2xl:flex items-center justify-center shrink-0 rounded-full bg-primary text-secondary w-[32px] h-[32px] 3xl:w-[44px] 3xl:h-[44px] transition-all duration-300 ${
+                                    isHovered
+                                      ? "opacity-100 translate-x-0"
+                                      : "opacity-0 -translate-x-2"
+                                  }`}
+                                >
+                                  <ChevronRight className="w-4 h-4 3xl:w-5 3xl:h-5" strokeWidth={1.5} />
+                                </span>
+                              )}
+
+                              {!hasSubs && (
+                                <span
+                                  className={`hidden lg:block absolute bottom-[2px] md:bottom-[5px] left-0 h-[3px] bg-white transition-all duration-500 ease-out ${
+                                    isHovered ? "w-full" : "w-0"
+                                  }`}
+                                />
+                              )}
                             </span>
                           );
 
@@ -458,7 +437,7 @@ export const NavDropdown = forwardRef<NavDropdownHandle, NavDropdownProps>(
                                       alt="Chevron"
                                       width={13}
                                       height={13}
-                                      className="lg:hidden h-[8px] md:h-[10px] w-auto object-fill -rotate-90 opacity-40"
+                                      className="lg:hidden h-[8px] md:h-[10px] w-auto object-fill -rotate-90 opacity-60 brightness-0 invert"
                                     />
                                   </button>
 
@@ -498,12 +477,12 @@ export const NavDropdown = forwardRef<NavDropdownHandle, NavDropdownProps>(
                               duration: 0.55,
                             }}
                             className="md:hidden absolute inset-0 flex flex-col"
-                            style={{ background: LAYER_BG[0], zIndex: 10 }}
+                            style={{ background: menuBg, zIndex: 10 }}
                           >
                             {/* Back / title header */}
                             <div className="h-[100px] sm:h-[110px] shrink-0" />
                             <div className="container">
-                              <div className="w-full h-px bg-black/20 mb-[30px]" />
+                              <div className="w-full h-px bg-white/20 mb-[30px]" />
                               <div
                                 className="flex items-center gap-20 mb-[10px]"
                                 onClick={() => {
@@ -517,10 +496,10 @@ export const NavDropdown = forwardRef<NavDropdownHandle, NavDropdownProps>(
                                     alt="Chevron"
                                     width={13}
                                     height={13}
-                                    className="md:hidden h-[8px] w-auto object-fill rotate-90 opacity-40"
+                                    className="md:hidden h-[8px] w-auto object-fill rotate-90 opacity-60 brightness-0 invert"
                                   />
                                 </span>
-                                <span className="text-subHeading text-secondary">
+                                <span className="text-subHeading text-white">
                                   {mobileActiveItem.label}
                                 </span>
                               </div>
@@ -545,7 +524,7 @@ export const NavDropdown = forwardRef<NavDropdownHandle, NavDropdownProps>(
                                     }}
                                     className="group flex items-center py-[8px] relative"
                                   >
-                                    <span className="text-description text-secondary/80 capitalize">
+                                    <span className="text-description text-white/80 capitalize">
                                       Overview
                                     </span>
                                   </Link>
@@ -578,9 +557,9 @@ export const NavDropdown = forwardRef<NavDropdownHandle, NavDropdownProps>(
                                           alt="Chevron"
                                           width={13}
                                           height={13}
-                                          className="md:hidden h-[6px] w-auto object-fill -rotate-90 opacity-40"
+                                          className="md:hidden h-[6px] w-auto object-fill -rotate-90 opacity-60 brightness-0 invert"
                                         />
-                                        <span className="text-description text-secondary/80 capitalize">
+                                        <span className="text-description text-white/80 capitalize">
                                           {sub.label.toLowerCase()}
                                         </span>
                                       </div>
@@ -595,15 +574,13 @@ export const NavDropdown = forwardRef<NavDropdownHandle, NavDropdownProps>(
                     </nav>
                   </div>
 
-                  {/* ── Vertical divider ── */}
-                  <div className="hidden md:block w-px shrink-0 self-stretch border-l border-black/20" />
+                  {/* ── Vertical divider (same height as col 1) ── */}
+                  <div className="hidden md:block w-px shrink-0 self-stretch bg-white/20" />
 
-                  {/* ── Col 3: Sub-nav + Contact ── */}
-                  <div className="hidden md:flex flex-col lg:min-w-[380px] 3xl:w-[674px] shrink-0 pl-50 3xl:pl-80">
-                    {/* Sub-nav */}
-                    {/* Sub-nav */}
+                  {/* ── Col 2: Sub-nav (top-aligned with col 1) ── */}
+                  <div className="hidden md:flex flex-col flex-1 min-w-0 self-start">
                     <div
-                      className="pt-10 flex flex-col gap-20 3xl:gap-30"
+                      className="flex flex-col"
                       style={{
                         opacity: activeItem?.subItems ? 1 : 0,
                         transform: activeItem?.subItems
@@ -620,10 +597,9 @@ export const NavDropdown = forwardRef<NavDropdownHandle, NavDropdownProps>(
                           onClick={closeMenu}
                           className="group inline-flex flex-col w-fit relative md:block 2xl:hidden"
                         >
-                          <span className="text-description tracking-[-0.03em] text-secondary/50 group-hover:text-secondary transition-colors duration-300">
+                          <span className="text-[13px] sm:text-19 3xl:text-[20px] leading-[2.5] tracking-[-0.03em] text-white/50 group-hover:text-white transition-colors duration-300">
                             Overview
                           </span>
-                          <span className="absolute bottom-[2px] left-0 h-px w-0 bg-secondary transition-all duration-500 ease-out group-hover:w-full" />
                         </Link>
                       )}
 
@@ -642,132 +618,15 @@ export const NavDropdown = forwardRef<NavDropdownHandle, NavDropdownProps>(
                             }}
                             className="group inline-flex flex-col w-fit relative"
                           >
-                            <span className="text-description tracking-[-0.03em] text-secondary/50 group-hover:text-secondary transition-colors duration-300 capitalize">
+                            <span className="text-[13px] sm:text-19 3xl:text-[20px] leading-[2.5] tracking-[-0.03em] text-white/50 group-hover:text-white transition-colors duration-300 capitalize">
                               {sub.label.toLowerCase()}
                             </span>
-                            <span className="absolute bottom-[2px] left-0 h-px w-0 bg-secondary transition-all duration-500 ease-out group-hover:w-full" />
                           </Link>
                         </motion.div>
                       ))}
                     </div>
-
-                    {/* Contact — bottom-right */}
-                    <div className="mt-auto flex flex-col items-end pb-20 xl:pb-50 md:pt-80 2xl:pt-0">
-                      <a
-                        data-text={navData.contact.email}
-                        href={`mailto:${navData.contact.email}`}
-                        className="text-subHeading tracking-[-0.03em] contact-link"
-                      >
-                        {navData.contact.email}
-                      </a>
-                      <a
-                        data-text={navData.contact.phone}
-                        href={`tel:${navData.contact.phone}`}
-                        className="text-subHeading tracking-[-0.03em] contact-link"
-                      >
-                        {navData.contact.phone}
-                      </a>
-                    </div>
-
-                    <div className="flex xl:hidden gap-20 pb-50 justify-end">
-                      {navData.socials
-                        .filter((s: NavSocial) => !s.isHidden)
-                        .map((s: NavSocial, i: number) => (
-                          <motion.div
-                            initial="hidden"
-                            whileInView="show"
-                            variants={moveLeft((i + 1) * 0.2)}
-                            key={i}
-                          >
-                            <a
-                              data-text={s.label}
-                              href={s.link}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-19 leading-[1.42] tracking-[-0.03em] contact-link hover:scale-105 transition-all duration-300"
-                              style={
-                                s.label === "Instagram"
-                                  ? {
-                                      background:
-                                        "linear-gradient(90deg, #4C66C7 0%, #F04D5A 35.1%, #FAD85C 66.83%, #C92AAA 100%)",
-                                      WebkitBackgroundClip: "text",
-                                      WebkitTextFillColor: "transparent",
-                                      backgroundClip: "text",
-                                    }
-                                  : s.label === "LinkedIn"
-                                    ? { color: "#2671AD" }
-                                    : s.label === "Youtube"
-                                      ? { color: "#D92935" }
-                                      : s.label === "Facebook"
-                                        ? { color: "#416FF0" }
-                                        : { color: "rgba(81,70,62,0.5)" }
-                              }
-                            >
-                              {s.label}
-                            </a>
-                          </motion.div>
-                        ))}
-                    </div>
                   </div>
                 </div>
-              </div>
-
-              {/* Mobile footer: contact + social */}
-              <div className="md:hidden container flex flex-col">
-                <div className="w-full h-px bg-black/20 mb-[30px]" />
-                <div className="flex flex-col gap-[2px] mb-[9px] sm:mb-20">
-                  <a
-                    href={`mailto:${navData.contact.email}`}
-                    className="text-subHeading tracking-[-0.03em]"
-                  >
-                    {navData.contact.email}
-                  </a>
-                  <a
-                    href={`tel:${navData.contact.phone}`}
-                    className="text-subHeading tracking-[-0.03em]"
-                  >
-                    {navData.contact.phone}
-                  </a>
-                </div>
-
-                <div className="flex gap-[30px] mb-[30px] sm:pb-50">
-                  {navData.socials
-                    .filter((s: NavSocial) => !s.isHidden)
-                    .map((s: NavSocial, i: number) => (
-                      <motion.div
-                        initial="hidden"
-                        whileInView="show"
-                        variants={moveLeft((i + 1) * 0.2)}
-                        key={i}
-                      >
-                        <a
-                          data-text={s.label}
-                          href={s.link}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-19 leading-[1.42] tracking-[-0.03em] contact-link hover:scale-105 transition-all duration-300"
-                          style={
-                            s.label === "Instagram"
-                              ? {
-                                  background:
-                                    "linear-gradient(90deg, #4C66C7 0%, #F04D5A 35.1%, #FAD85C 66.83%, #C92AAA 100%)",
-                                  WebkitBackgroundClip: "text",
-                                  WebkitTextFillColor: "transparent",
-                                  backgroundClip: "text",
-                                }
-                              : s.label === "LinkedIn"
-                                ? { color: "#2671AD" }
-                                : s.label === "Youtube"
-                                  ? { color: "#D92935" }
-                                  : s.label === "Facebook"
-                                    ? { color: "#416FF0" }
-                                    : { color: "rgba(81,70,62,0.5)" }
-                          }
-                        >
-                          {s.label}
-                        </a>
-                      </motion.div>
-                    ))}
                 </div>
               </div>
             </div>

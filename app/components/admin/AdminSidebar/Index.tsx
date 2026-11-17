@@ -68,7 +68,7 @@ export default function AdminSidebar({ username }: { username: string | null }) 
   return (
     <aside
       className={cn(
-        "relative z-30 shrink-0 bg-white flex flex-col h-screen border-r border-border-color/60 shadow-[2px_0_16px_-8px_rgba(81,70,62,0.18)] transition-[width] duration-300 ease-out",
+        "relative z-[45] shrink-0 bg-white flex flex-col h-screen border-r border-border-color/60 shadow-[2px_0_16px_-8px_rgba(81,70,62,0.18)] transition-[width] duration-300 ease-out",
         collapsed ? "w-[84px]" : "w-[272px]",
       )}
     >
