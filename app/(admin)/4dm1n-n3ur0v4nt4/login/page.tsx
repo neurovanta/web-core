@@ -24,7 +24,7 @@ export default function AdminLogin() {
       const data = await res.json();
 
       if (data.success) {
-        window.location.href = "/admin";
+        window.location.href = "/4dm1n-n3ur0v4nt4";
         return;
       }
       toast.error(data.message);

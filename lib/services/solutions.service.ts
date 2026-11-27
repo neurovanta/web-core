@@ -27,7 +27,8 @@ export const getSolutionBySlug = (slug: string) =>
 
       const solution = solutionDoc.solutions.find((s: any) => s.slug === slug);
 
-      if (!solution) throw new Error(`Solution not found: ${slug}`);
+      // missing or hidden in the CMS → null, the page renders a 404
+      if (!solution || solution.isHidden) return null;
 
       return JSON.parse(JSON.stringify(solution));
     },

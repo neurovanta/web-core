@@ -5,6 +5,8 @@ import { Toaster } from "@/components/ui/sonner";
 export const metadata: Metadata = {
   title: "Neuro Vanta | Backend Console",
   description: "Neuro Vanta",
+  // the admin console must never appear in search results
+  robots: { index: false, follow: false },
 };
 
 export default function RootLayout({

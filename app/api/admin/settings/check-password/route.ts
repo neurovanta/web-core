@@ -45,10 +45,11 @@ export async function POST(request: NextRequest) {
   }
 }
 
+// Change password. The current password is verified here, in the same request,
+// so a session alone cannot change it.
 export async function PATCH(request: NextRequest) {
   try {
     await connectDB();
-    console.log("first");
     const isAdmin = await verifyAdmin(request);
     if (!isAdmin) {
       return NextResponse.json(
@@ -56,12 +57,37 @@ export async function PATCH(request: NextRequest) {
         { status: 401 },
       );
     }
-    const { newPassword } = await request.json();
+    const { currentPassword, newPassword } = await request.json();
+    if (typeof currentPassword !== "string" || !currentPassword) {
+      return NextResponse.json(
+        { message: "Current password is required", success: false },
+        { status: 400 },
+      );
+    }
+    if (typeof newPassword !== "string" || newPassword.length < 8) {
+      return NextResponse.json(
+        { message: "New password must be at least 8 characters", success: false },
+        { status: 400 },
+      );
+    }
     const user = await Admin.findOne({});
     if (!user) {
       return NextResponse.json(
         { message: "User not found", success: false },
         { status: 404 },
+      );
+    }
+    const isPasswordValid = await bcrypt.compare(currentPassword, user.password);
+    if (!isPasswordValid) {
+      return NextResponse.json(
+        { message: "Current password is incorrect", success: false },
+        { status: 400 },
+      );
+    }
+    if (await bcrypt.compare(newPassword, user.password)) {
+      return NextResponse.json(
+        { message: "New password must be different from the current one", success: false },
+        { status: 400 },
       );
     }
     user.password = await bcrypt.hash(newPassword, 10);
@@ -71,7 +97,7 @@ export async function PATCH(request: NextRequest) {
       { status: 200 },
     );
   } catch (error) {
-    console.log("Error changing password", error);
+    console.error("Error changing password", error);
     return NextResponse.json(
       { message: "Error changing password", success: false },
       { status: 500 },

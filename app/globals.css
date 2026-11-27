@@ -328,3 +328,29 @@ body {
 .purposes-swiper .swiper-slide-visible + .swiper-slide-visible .divider-line {
   display: block;
 }
+/* Admin sidebar: deep brand brown with a soft gold glow and a faint dot texture at the top */
+.nv-admin-sidebar {
+  background-color: #1c1714;
+  background-image:
+    radial-gradient(380px 240px at 50% -60px, rgba(191, 163, 115, 0.16), transparent 70%),
+    radial-gradient(420px 320px at 0% 100%, rgba(191, 163, 115, 0.06), transparent 70%),
+    linear-gradient(180deg, #2b231e 0%, #221c18 45%, #1a1512 100%);
+}
+.nv-admin-sidebar::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 220px;
+  pointer-events: none;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+  background-size: 16px 16px;
+  -webkit-mask-image: linear-gradient(180deg, #000, transparent);
+  mask-image: linear-gradient(180deg, #000, transparent);
+}
+.nv-admin-sidebar-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+}
+.nv-admin-sidebar-scroll:hover {
+  scrollbar-color: rgba(255, 255, 255, 0.22) transparent;
+}

@@ -59,11 +59,14 @@ export default function ContactForm() {
     }
     setIsSubmitting(true);
     try {
-      await sendContactEnquiryAction(data);
-      // toast.success("Enquiry sent successfully!");
+      const result = await sendContactEnquiryAction(data);
+      if (!result?.success) {
+        toast.error(result?.message || "Something went wrong. Please try again.");
+        return; // keep the form filled so the visitor can retry
+      }
       reset();
-      window.location.replace("thank-you");
       recaptchaRef.current?.reset();
+      window.location.replace("/thank-you");
     } catch (err) {
       toast.error("Something went wrong. Please try again.");
     } finally {

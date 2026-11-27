@@ -72,7 +72,11 @@ export default function BeginHerePage({
     }
     setIsSubmitting(true);
     try {
-      await sendHomeEnquiryAction(data);
+      const result = await sendHomeEnquiryAction(data);
+      if (!result?.success) {
+        toast.error(result?.message || "Something went wrong. Please try again.");
+        return; // keep the form filled so the visitor can retry
+      }
       toast.success("Enquiry sent successfully!");
       reset();
       recaptchaRef.current?.reset();

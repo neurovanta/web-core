@@ -46,7 +46,7 @@ export async function sendCareerEnquiryAction(formData: FormData) {
     await CareerEnquiry.create({
       firstName, lastName, email, phone,
       applyingFor, yearsOfExperience, additionalInfo,
-      attachment: filePath,
+      attachmentUrl: filePath, // model field is attachmentUrl (was saved as "attachment" and silently dropped)
     });
 
     const props: CareerEnquiryEmailProps = {
@@ -54,18 +54,27 @@ export async function sendCareerEnquiryAction(formData: FormData) {
       applyingFor, yearsOfExperience, additionalInfo,
     };
 
-    const toEmail = await getToEmail("career");
-    await sendMail<CareerEnquiryEmailProps>({
-      to: toEmail,
-      subject: `New Application from ${firstName} ${lastName}`,
-      template: CareerEnquiryEmail,
-      props,
-      attachments: attachment ? [attachment] : [],
-    });
+    // The application is saved at this point, so the visitor gets a success even if the
+    // notification email fails (it is logged; the application shows in Admin > Careers > Applications).
+    // Reporting it as a failure would make visitors resubmit and create duplicates.
+    try {
+      // Settings → "To email (Career)"
+      const toEmail = await getToEmail("career");
+      await sendMail<CareerEnquiryEmailProps>({
+        to: toEmail,
+        subject: `New Application from ${firstName} ${lastName}`,
+        template: CareerEnquiryEmail,
+        props,
+        attachments: attachment ? [attachment] : [],
+      });
+    } catch (mailError) {
+      console.error("Career application saved but notification email failed:", mailError);
+    }
 
     return { success: true, message: "Application sent successfully" };
-  } catch (error: any) {
+  } catch (error) {
     console.error("Career Action Error:", error);
-    return { success: false, message: error.message || "Something went wrong" };
+    // never send internal error text (DB / Dropbox / Resend details) to the visitor
+    return { success: false, message: "Something went wrong. Please try again." };
   }
 }

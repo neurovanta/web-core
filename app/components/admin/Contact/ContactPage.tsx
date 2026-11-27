@@ -2,11 +2,12 @@
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
 import { Controller, useForm } from "react-hook-form";
 import { ImageUploader } from "@/components/ui/image-uploader";
 import { Textarea } from "@/components/ui/textarea";
 import AdminItemContainer from "@/app/components/admin/common/AdminItemContainer";
+import AdminPageActions from "@/app/components/admin/common/AdminPageActions";
+import AdminSubmitButton from "@/app/components/admin/common/AdminSubmitButton";
 import { toast } from "sonner";
 import { useEffect } from "react";
 
@@ -35,7 +36,7 @@ interface ContactForm {
 }
 
 export default function ContactPage() {
-  const { register, handleSubmit, setValue, control, watch } =
+  const { register, handleSubmit, setValue, control, watch, formState: { isSubmitting } } =
     useForm<ContactForm>();
 
   const fetchData = async () => {
@@ -216,14 +217,9 @@ export default function ContactPage() {
           </div>
         </AdminItemContainer>
 
-        <div className="fixed top-4 right-8 z-50">
-          <Button
-            type="submit"
-            className="cursor-pointer border-2 border-white hover:text-white text-[14px] shadow-lg"
-          >
-            Page Submit
-          </Button>
-        </div>
+        <AdminPageActions>
+          <AdminSubmitButton saving={isSubmitting} />
+        </AdminPageActions>
       </form>
     </div>
   );

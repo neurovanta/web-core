@@ -20,20 +20,22 @@ export async function proxy(request: NextRequest) {
     "Content-Type, Authorization",
   );
 
-  // Define protected and public admin routes
-  const isLoginPage = path === "/admin/login";
-  const isProtectedRoute = path.startsWith("/admin") && !isLoginPage;
+  // admin console lives at /4dm1n-n3ur0v4nt4 (folder app/(admin)/4dm1n-n3ur0v4nt4); everything there except the login page needs a valid token
+  const isAdminRoute =
+    path === "/4dm1n-n3ur0v4nt4" || path.startsWith("/4dm1n-n3ur0v4nt4/");
+  const isLoginPage = path === "/4dm1n-n3ur0v4nt4/login";
+  const isProtectedRoute = isAdminRoute && !isLoginPage;
 
   const token = request.cookies.get("adminToken")?.value || "";
   const secret = new TextEncoder().encode(
     process.env.JWT_SECRET || "your-secret-key",
   );
 
-  // 🔹 1. If user is on login page and already has a valid token → redirect to /admin
+  // 🔹 1. If user is on login page and already has a valid token → redirect to the dashboard
   if (isLoginPage && token) {
     try {
       await jose.jwtVerify(token, secret);
-      return NextResponse.redirect(new URL("/admin", request.url));
+      return NextResponse.redirect(new URL("/4dm1n-n3ur0v4nt4", request.url));
     } catch {
       // invalid token — let them stay on login
     }
@@ -42,14 +44,14 @@ export async function proxy(request: NextRequest) {
   // 🔹 2. If user is on a protected route and no valid token → redirect to login
   if (isProtectedRoute) {
     if (!token) {
-      return NextResponse.redirect(new URL("/admin/login", request.url));
+      return NextResponse.redirect(new URL("/4dm1n-n3ur0v4nt4/login", request.url));
     }
 
     try {
       await jose.jwtVerify(token, secret);
       return NextResponse.next();
     } catch {
-      return NextResponse.redirect(new URL("/admin/login", request.url));
+      return NextResponse.redirect(new URL("/4dm1n-n3ur0v4nt4/login", request.url));
     }
   }
 
@@ -58,5 +60,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/api/:path*", "/admin/:path*"],
+  matcher: ["/api/:path*", "/4dm1n-n3ur0v4nt4/:path*"],
 };

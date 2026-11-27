@@ -33,6 +33,19 @@ export async function PATCH(request: NextRequest) {
     if (!isAdmin) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
+    // each field: one or more addresses, comma separated
+    const EMAIL = /^[^\s@,]+@[^\s@,]+\.[^\s@,]+$/;
+    for (const key of ["toEmailContact", "toEmailCareer", "toEmailHome"]) {
+      const value = typeof body[key] === "string" ? body[key].trim() : "";
+      const parts = value.split(",").map((p: string) => p.trim()).filter(Boolean);
+      if (!parts.length || !parts.every((p: string) => EMAIL.test(p))) {
+        return NextResponse.json(
+          { message: `Enter a valid email address for ${key.replace("toEmail", "")}` },
+          { status: 400 },
+        );
+      }
+      body[key] = parts.join(", ");
+    }
     await connectDB();
     const emails = await Email.findOneAndUpdate(
       {},

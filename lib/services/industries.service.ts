@@ -27,7 +27,8 @@ export const getIndustryBySlug = (slug: string) =>
 
       const found = doc.industries.find((i: any) => i.slug === slug);
 
-      if (!found) throw new Error(`Industry not found: ${slug}`);
+      // missing or hidden in the CMS → null, the page renders a 404
+      if (!found || found.isHidden) return null;
 
       return JSON.parse(JSON.stringify(found));
     },

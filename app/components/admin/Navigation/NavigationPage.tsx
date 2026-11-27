@@ -13,6 +13,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { ImageUploader } from "@/components/ui/image-uploader";
 import AdminTabs from "@/app/components/admin/common/AdminTabs";
+import AdminPageActions from "@/app/components/admin/common/AdminPageActions";
+import AdminSubmitButton from "@/app/components/admin/common/AdminSubmitButton";
 import { toast } from "sonner";
 import { RiDeleteBin6Line, RiEyeLine, RiEyeOffLine } from "react-icons/ri";
 import {
@@ -908,21 +910,9 @@ export default function GlobalSettingsPage() {
         </div>
 
         {/* Save */}
-        <div className="fixed top-4 right-8 z-50 flex items-center gap-3">
-          {isDirty && (
-            <span className="flex items-center gap-1.5 rounded-full bg-amber-50 px-3 py-1 text-[12px] font-medium text-amber-700 ring-1 ring-amber-200 shadow-sm">
-              <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
-              Unsaved changes
-            </span>
-          )}
-          <Button
-            type="submit"
-            disabled={isSaving}
-            className="cursor-pointer border-2 border-white hover:text-white text-[14px] shadow-lg disabled:opacity-70"
-          >
-            {isSaving ? "Saving…" : "Save Settings"}
-          </Button>
-        </div>
+        <AdminPageActions isDirty={isDirty}>
+          <AdminSubmitButton saving={isSaving} label="Save Settings" />
+        </AdminPageActions>
       </form>
 
       <ReorderNavLinksDialog
