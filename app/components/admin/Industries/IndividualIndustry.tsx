@@ -1,5 +1,6 @@
 "use client";
 
+import { slugify } from "@/lib/slug";
 import AdminLoadable from "@/app/components/admin/common/AdminLoadable";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -224,7 +225,10 @@ export default function IndividualIndustry({
               <Label className="font-bold">Slug</Label>
               <div className="flex gap-2">
                 <Input
-                  {...register("slug")}
+                  {...register("slug", {
+                    // clean as soon as the field is left: "Immersion Tubs" -> "immersion-tubs"
+                    onBlur: (e) => setValue("slug", slugify(e.target.value)),
+                  })}
                   placeholder="page-slug"
                   className="flex-1"
                 />
@@ -232,11 +236,7 @@ export default function IndividualIndustry({
                   type="button"
                   onClick={() => {
                     const title = watch("thumbnailTitle") || "";
-                    const slug = title
-                      .toLowerCase()
-                      .trim()
-                      .replace(/[^a-z0-9\s-]/g, "")
-                      .replace(/\s+/g, "-");
+                    const slug = slugify(title); // same rule as on save (lib/slug.ts)
                     setValue("slug", slug);
                   }}
                 >

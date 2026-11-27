@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { slugify } from "@/lib/slug";
 import connectDB from "@/lib/mongodb";
 import Industries from "@/app/models/industries";
 import { verifyAdmin } from "@/lib/verifyAdmin";
@@ -71,6 +72,8 @@ export async function PATCH(request: NextRequest) {
 
     await connectDB();
     const body = await request.json();
+    // store slugs URL-safe: "Immersion Tubs" -> "immersion-tubs"
+    if (typeof body.slug === "string") body.slug = slugify(body.slug);
     const id = request.nextUrl.searchParams.get("id");
 
     if (id) {
@@ -137,6 +140,8 @@ export async function POST(request: NextRequest) {
 
     await connectDB();
     const body = await request.json();
+    // store slugs URL-safe: "Immersion Tubs" -> "immersion-tubs"
+    if (typeof body.slug === "string") body.slug = slugify(body.slug);
 
     const doc = await Industries.findOne({});
     if (!doc) {

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import * as jose from "jose";
 import { PERMANENT_REDIRECTS } from "@/lib/redirects";
+import { decodeSlug } from "@/lib/slug";
 
 const ADMIN_BASE = "/4dm1n-n3ur0v4nt4";
 const ADMIN_LOGIN = `${ADMIN_BASE}/login`;
@@ -20,7 +21,7 @@ export async function proxy(request: NextRequest) {
   const { pathname, search } = request.nextUrl;
 
   // 1. Changed URLs (e.g. a slug renamed in the CMS): 301 to the new address, keeping the query string.
-  const redirectTo = PERMANENT_REDIRECTS[pathname];
+  const redirectTo = PERMANENT_REDIRECTS[decodeSlug(pathname)];
   if (redirectTo) {
     const url = new URL(redirectTo, request.url);
     url.search = search;
