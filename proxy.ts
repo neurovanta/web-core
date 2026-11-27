@@ -1,64 +1,56 @@
-import { NextResponse } from "next/server";
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import * as jose from "jose";
+import { PERMANENT_REDIRECTS } from "@/lib/redirects";
+import { decodeSlug } from "@/lib/slug";
+
+const ADMIN_BASE = "/4dm1n-n3ur0v4nt4";
+const ADMIN_LOGIN = `${ADMIN_BASE}/login`;
+
+const isValidToken = async (token: string | undefined) => {
+  if (!token) return false;
+  try {
+    const secret = new TextEncoder().encode(process.env.JWT_SECRET || "your-secret-key");
+    await jose.jwtVerify(token, secret);
+    return true;
+  } catch {
+    return false;
+  }
+};
 
 export async function proxy(request: NextRequest) {
-  const response = NextResponse.next();
-  const path = request.nextUrl.pathname;
+  const { pathname, search } = request.nextUrl;
 
-  // CORS headers
-  response.headers.set(
-    "Access-Control-Allow-Origin",
-    "https://docs-rho-wine.vercel.app",
-  );
-  response.headers.set(
-    "Access-Control-Allow-Methods",
-    "GET, POST, PUT, DELETE, OPTIONS",
-  );
-  response.headers.set(
-    "Access-Control-Allow-Headers",
-    "Content-Type, Authorization",
-  );
+  // 1. Changed URLs (e.g. a slug renamed in the CMS): 301 to the new address, keeping the query string.
+  const redirectTo = PERMANENT_REDIRECTS[decodeSlug(pathname)];
+  if (redirectTo) {
+    const url = new URL(redirectTo, request.url);
+    url.search = search;
+    return NextResponse.redirect(url, 301);
+  }
 
-  // admin console lives at /4dm1n-n3ur0v4nt4 (folder app/(admin)/4dm1n-n3ur0v4nt4); everything there except the login page needs a valid token
-  const isAdminRoute =
-    path === "/4dm1n-n3ur0v4nt4" || path.startsWith("/4dm1n-n3ur0v4nt4/");
-  const isLoginPage = path === "/4dm1n-n3ur0v4nt4/login";
-  const isProtectedRoute = isAdminRoute && !isLoginPage;
-
-  const token = request.cookies.get("adminToken")?.value || "";
-  const secret = new TextEncoder().encode(
-    process.env.JWT_SECRET || "your-secret-key",
-  );
-
-  // 🔹 1. If user is on login page and already has a valid token → redirect to the dashboard
-  if (isLoginPage && token) {
-    try {
-      await jose.jwtVerify(token, secret);
-      return NextResponse.redirect(new URL("/4dm1n-n3ur0v4nt4", request.url));
-    } catch {
-      // invalid token — let them stay on login
+  // 2. Admin console: every page except the login needs a valid token;
+  //    a signed-in admin opening the login page goes to the dashboard.
+  //    (API routes check the token themselves with verifyAdmin.)
+  const isAdmin = pathname === ADMIN_BASE || pathname.startsWith(`${ADMIN_BASE}/`);
+  if (isAdmin) {
+    const signedIn = await isValidToken(request.cookies.get("adminToken")?.value);
+    if (pathname === ADMIN_LOGIN) {
+      if (signedIn) return NextResponse.redirect(new URL(ADMIN_BASE, request.url));
+    } else if (!signedIn) {
+      return NextResponse.redirect(new URL(ADMIN_LOGIN, request.url));
     }
   }
 
-  // 🔹 2. If user is on a protected route and no valid token → redirect to login
-  if (isProtectedRoute) {
-    if (!token) {
-      return NextResponse.redirect(new URL("/4dm1n-n3ur0v4nt4/login", request.url));
-    }
-
-    try {
-      await jose.jwtVerify(token, secret);
-      return NextResponse.next();
-    } catch {
-      return NextResponse.redirect(new URL("/4dm1n-n3ur0v4nt4/login", request.url));
-    }
-  }
-
-  // Default (public routes)
-  return response;
+  return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/api/:path*", "/4dm1n-n3ur0v4nt4/:path*"],
+  matcher: [
+    // admin pages (auth guard)
+    "/4dm1n-n3ur0v4nt4/:path*",
+    // detail pages whose URLs can change (PERMANENT_REDIRECTS in lib/redirects.ts)
+    "/industries/:path*",
+    "/solutions/:path*",
+    "/longevity-systems/:path*",
+  ],
 };

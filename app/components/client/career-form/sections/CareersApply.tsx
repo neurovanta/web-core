@@ -27,6 +27,7 @@ export default function CareersApply() {
         {/* Left: Text content */}
         <div className={`flex flex-col ${isMobile ? "px-[16px]" : ""}`}>
           <AnimatedHeading
+            as="h1" // page title
             title={title}
             className="text-heading xl:mb-50 max-w-[15ch] sm:max-w-[14ch]"
           />

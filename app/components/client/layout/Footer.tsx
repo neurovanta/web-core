@@ -8,6 +8,7 @@ import { moveUp, moveUpV2 } from "../animations/motionVarinats";
 import Reveal from "../animations/RevealItemsOneByOneAnimation";
 import { AnimatePresence, motion } from "framer-motion";
 import { useState, useRef } from "react";
+import { useAutoplayActive } from "@/app/hooks/useAutoplayActive";
 import { useLenis } from "@/app/components/client/layout/LenisProvider";
 import { NavData } from "@/app/types/header";
 import { usePathname } from "next/navigation";
@@ -53,6 +54,9 @@ function Divider({ className = "" }: { className?: string }) {
 export default function Footer({ navData }: { navData: NavData }) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const footerRef = useRef<HTMLElement>(null);
+  // background drift runs only while the footer is on screen and the tab is visible
+  const bgPlaying = useAutoplayActive(footerRef);
   const pathname = usePathname();
   const { scrollTo } = useLenis();
 
@@ -143,14 +147,14 @@ export default function Footer({ navData }: { navData: NavData }) {
   );
 
   return (
-    <footer className="relative overflow-hidden bg-black text-white border-t border-white/30">
+    <footer ref={footerRef} className="relative overflow-hidden bg-black text-white border-t border-white/30">
       {/* ── Background image + overlay ── */}
       <Image
         src={navData.footer.image || "/assets/images/footer/footer-bg.jpg"}
         alt={navData.footer.imageAlt || ""}
         fill
         sizes="100vw"
-        className="object-cover object-center pointer-events-none select-none"
+        className={`bg-drift ${bgPlaying ? "is-playing" : ""} object-cover object-center pointer-events-none select-none`}
       />
       <div className="absolute inset-0" style={footerOverlay} aria-hidden />
 
@@ -222,9 +226,9 @@ export default function Footer({ navData }: { navData: NavData }) {
         <Divider className="mt-40 md:mt-70 3xl:mt-[69px]" />
 
         {/* ── Middle: address + menus ── */}
-        <div className="mt-40 md:mt-70 grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_repeat(3,auto)] gap-x-120 gap-y-40">
+        <div className="mt-40 md:mt-70 grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-[minmax(0,1fr)_repeat(3,auto)] gap-x-120 gap-y-40 xl:gap-y-60 2xl:gap-y-40">
           {/* Address + socials */}
-          <div className="flex flex-col gap-y-25 lg:gap-y-30">
+          <div className="flex flex-col gap-y-25 xl:gap-y-30">
             <SectionDescription
               text={navData.contact.address}
               className="text-white/70 text-19 leading-[1.42] whitespace-pre-line tracking-[-0.03em]"
@@ -233,7 +237,7 @@ export default function Footer({ navData }: { navData: NavData }) {
           </div>
 
           {/* Mobile accordion */}
-          <div className="lg:hidden border-t border-white/20">
+          <div className="xl:hidden border-t border-white/20">
             {footerMenus.map((menu, index) => (
               <Reveal
                 key={menu.heading}
@@ -244,7 +248,7 @@ export default function Footer({ navData }: { navData: NavData }) {
                   ref={(el) => {
                     itemRefs.current[index] = el;
                   }}
-                  className="border-b border-white/20"
+                  className={index < footerMenus.length - 1 ? "border-b border-white/20" : ""}
                 >
                   <button
                     type="button"
@@ -312,7 +316,7 @@ export default function Footer({ navData }: { navData: NavData }) {
               key={menu.heading}
               variants={moveUpV2}
               delayRange={i * 0.14}
-              className="hidden lg:block"
+              className="hidden xl:block"
             >
               <h3 className="text-white text-30 leading-[1.23] mb-40 tracking-[-0.031em]">
                 {menu.heading}
@@ -335,7 +339,7 @@ export default function Footer({ navData }: { navData: NavData }) {
           ))}
         </div>
 
-        <Divider className="mt-50 md:mt-80 2xl:mt-100" />
+        <Divider className="mt-[10px] xl:mt-80 2xl:mt-100" />
 
         {/* ── Copyright ── */}
         <motion.p

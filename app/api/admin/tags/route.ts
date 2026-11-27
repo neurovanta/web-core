@@ -31,7 +31,7 @@ export async function POST(request: NextRequest) {
       );
     }
   } catch (error) {
-    console.log("Error saving tag", error);
+    console.error("Error saving tag", error);
     return NextResponse.json(
       { message: "Failed to save tag" },
       { status: 500 },
@@ -45,7 +45,7 @@ export async function GET() {
     const tag = await Tag.findOne({});
     return NextResponse.json({ tag }, { status: 200 });
   } catch (error) {
-    console.log("Error fetching tag", error);
+    console.error("Error fetching tag", error);
     return NextResponse.json(
       { message: "Failed to fetch tag" },
       { status: 500 },

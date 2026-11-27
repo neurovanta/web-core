@@ -1,7 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
+import gsap from "gsap";
 import { motion, AnimatePresence } from "framer-motion";
 import { AnimatedHeading } from "@/app/components/client/animations/AnimateHeading";
 import Reveal from "@/app/components/client/animations/RevealItemsOneByOneAnimation";
@@ -20,52 +21,92 @@ interface TabsImageProps {
   };
 }
 
-// Outside TabsImage component
+// Straight vertical edge moving left → right: keeps everything right of --edge (%),
+// so GSAP only tweens one number.
+const WIPE_CLIP = "inset(0 0 0 calc(var(--edge) * 1%))";
+
+// Every tab image stays mounted (already decoded), stacked. On a new tab the current
+// image is clipped away from left to right behind a straight edge, uncovering the new one
+// underneath. A wipe still running stays on top of the one just started, so quick
+// hovers stack instead of flashing or jumping.
 const ImageWipe = ({
   className,
   tabs,
   activeIndex,
-  prevIndex,
 }: {
   className?: string;
   tabs: { title: string; image: string }[];
   activeIndex: number;
-  prevIndex: number;
-}) => (
-  <div className={className}>
-    <ElasticEffect />
+}) => {
+  const imagesRef = useRef<(HTMLImageElement | null)[]>([]);
+  const shownRef = useRef(activeIndex);
+  // Visibility is owned by GSAP after mount; the class only sets the starting state,
+  // so a re-render never hides the image that is still being wiped away.
+  const [initialIndex] = useState(activeIndex);
 
-    <Image
-      src={tabs[prevIndex].image}
-      alt="previous"
-      fill
-      className="object-cover pointer-events-none"
-    />
+  useEffect(() => {
+    const images = imagesRef.current;
+    const outgoing = images[shownRef.current];
+    const incoming = images[activeIndex];
+    if (shownRef.current === activeIndex || !outgoing || !incoming) return;
+    shownRef.current = activeIndex;
 
-    <AnimatePresence initial={false}>
-      <motion.div
-        key={activeIndex}
-        className="absolute inset-0"
-        initial={{ clipPath: "inset(0 100% 0 0)" }}
-        animate={{ clipPath: "inset(0 0% 0 0)" }}
-        transition={{ duration: 0.7, ease: [0.76, 0, 0.24, 1] }}
-      >
-        <Image
-          src={tabs[activeIndex].image}
-          alt={tabs[activeIndex].title}
-          fill
-          className="object-cover pointer-events-none"
-          priority
-        />
-      </motion.div>
-    </AnimatePresence>
-  </div>
-);
+    gsap.killTweensOf(incoming);
+    images.forEach((image) => {
+      if (!image || image === outgoing || image === incoming) return;
+      if (gsap.isTweening(image))
+        gsap.set(image, { zIndex: Number(image.style.zIndex) + 1 });
+      else gsap.set(image, { visibility: "hidden", zIndex: 0 });
+    });
+    gsap.set(incoming, { visibility: "visible", zIndex: 0 });
+    incoming.style.clipPath = "";
+
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      gsap.set(outgoing, { visibility: "hidden" });
+      return;
+    }
+    // set directly: GSAP would try to parse the var() inside the polygon
+    gsap.set(outgoing, { zIndex: 1 });
+    outgoing.style.clipPath = WIPE_CLIP;
+    gsap.fromTo(
+      outgoing,
+      { "--edge": 0 },
+      {
+        "--edge": 100,
+        duration: 1.2,
+        ease: "power2.inOut",
+        onComplete: () => {
+          gsap.set(outgoing, { visibility: "hidden", zIndex: 0 });
+          outgoing.style.clipPath = "";
+        },
+      },
+    );
+  }, [activeIndex]);
+
+  return (
+    <div className={className}>
+      <ElasticEffect />
+      <div className="absolute inset-0">
+        {tabs.map((tab, i) => (
+          <Image
+            key={`${tab.title}-${i}`}
+            ref={(el) => {
+              imagesRef.current[i] = el;
+            }}
+            src={tab.image}
+            alt={tab.title}
+            fill
+            className={`object-cover pointer-events-none ${i === initialIndex ? "" : "invisible"}`}
+          />
+        ))}
+      </div>
+    </div>
+  );
+};
 
 export default function TabsImage({ data }: TabsImageProps) {
   const { title, subtitle, tabs } = data;
   const [activeIndex, setActiveIndex] = useState(0);
-  const prevIndexRef = useRef(0); // ← tracks last confirmed active
 
   const half = Math.ceil(tabs.length / 2);
   const leftCol = tabs.slice(0, half);
@@ -73,7 +114,6 @@ export default function TabsImage({ data }: TabsImageProps) {
 
   const triggerTransition = (idx: number) => {
     if (idx === activeIndex) return;
-    prevIndexRef.current = activeIndex; // ← snapshot before changing
     setActiveIndex(idx);
   };
 
@@ -98,7 +138,6 @@ export default function TabsImage({ data }: TabsImageProps) {
               className="relative w-full aspect-4/3 lg:hidden overflow-hidden mb-[15px] max-[430px]:max-h-[224px] min-[431px]:max-h-[420px]"
               tabs={tabs}
               activeIndex={activeIndex}
-              prevIndex={prevIndexRef.current}
             />
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-30 3xl:gap-x-[33px]">
@@ -175,7 +214,6 @@ export default function TabsImage({ data }: TabsImageProps) {
             className="hidden lg:block relative w-full lg:flex-1 aspect-4/3 lg:aspect-auto lg:h-[420px] xl:h-[480px] 3xl:h-[578px] overflow-hidden"
             tabs={tabs}
             activeIndex={activeIndex}
-            prevIndex={prevIndexRef.current}
           />
         </div>
       </div>

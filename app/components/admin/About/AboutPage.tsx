@@ -1,5 +1,6 @@
 "use client";
 
+import AdminLoadable from "@/app/components/admin/common/AdminLoadable";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -10,7 +11,7 @@ import AdminItemContainer from "@/app/components/admin/common/AdminItemContainer
 import AdminPageActions from "@/app/components/admin/common/AdminPageActions";
 import AdminSubmitButton from "@/app/components/admin/common/AdminSubmitButton";
 import { toast } from "sonner";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { RiDeleteBinLine } from "react-icons/ri";
 
 interface AboutForm {
@@ -62,8 +63,14 @@ interface AboutForm {
 }
 
 export default function AboutPage() {
-  const { register, handleSubmit, setValue, control, watch, formState: { isSubmitting } } =
-    useForm<AboutForm>();
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    control,
+    watch,
+    formState: { isSubmitting },
+  } = useForm<AboutForm>();
 
   const {
     fields: secondItems,
@@ -112,8 +119,8 @@ export default function AboutPage() {
         const { message } = await res.json();
         toast.error(message);
       }
-    } catch (e) {
-      console.error(e);
+    } catch {
+      toast.error("Something went wrong. Please try again.");
     }
   };
 
@@ -130,457 +137,485 @@ export default function AboutPage() {
         const { message } = await res.json();
         toast.error(message);
       }
-    } catch (e) {
-      console.error(e);
+    } catch {
+      toast.error("Something went wrong. Please try again.");
     }
   };
 
+  // spinner until the page data has loaded
+  const [pageLoading, setPageLoading] = useState(true);
+
   useEffect(() => {
-    fetchData();
+    fetchData().finally(() => setPageLoading(false));
   }, []);
 
   return (
-    <div className="flex flex-col gap-5">
-      <form className="flex flex-col gap-5" onSubmit={handleSubmit(onSubmit)}>
-        {/* Banner Section */}
-        <AdminItemContainer>
-          <Label main>Banner Section</Label>
-          <div className="p-5 flex flex-col gap-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="flex flex-col gap-2">
-                <Label className="font-bold">Image</Label>
-                <Controller
-                  name="bannerSection.image"
-                  control={control}
-                  render={({ field }) => (
-                    <ImageUploader
-                      value={field.value}
-                      onChange={field.onChange}
-                    />
-                  )}
-                />
-                <Label className="font-bold">Alt Tag</Label>
-                <Input
-                  {...register("bannerSection.imageAlt")}
-                  placeholder="Alt Tag"
-                />
-              </div>
-              <div className="flex flex-col gap-2">
-                <Label className="font-bold">Title</Label>
-                <Input
-                  {...register("bannerSection.title")}
-                  placeholder="Title"
-                />
-              </div>
-            </div>
-          </div>
-        </AdminItemContainer>
-
-        {/* First Section */}
-        <AdminItemContainer>
-          <Label
-            main
-            isHidden={watch("firstSection.isHidden")}
-            onToggleHidden={() =>
-              setValue("firstSection.isHidden", !watch("firstSection.isHidden"))
-            }
-          >
-            First Section
-          </Label>
-          <div className="p-5 flex flex-col gap-4">
-            <Label className="font-bold">Title</Label>
-            <Input {...register("firstSection.title")} placeholder="Title" />
-            <Label className="font-bold">Subtitle</Label>
-            <Input
-              {...register("firstSection.subtitle")}
-              placeholder="Subtitle"
-            />
-            <Label className="font-bold">Description</Label>
-            <Textarea
-              {...register("firstSection.description")}
-              placeholder="Description"
-            />
-          </div>
-        </AdminItemContainer>
-
-        {/* Second Section */}
-        <AdminItemContainer>
-          <Label
-            main
-            isHidden={watch("secondSection.isHidden")}
-            onToggleHidden={() =>
-              setValue(
-                "secondSection.isHidden",
-                !watch("secondSection.isHidden"),
-              )
-            }
-          >
-            Second Section
-          </Label>
-          <div className="p-5 flex flex-col gap-4">
-            <Label className="font-bold">Title</Label>
-            <Input {...register("secondSection.title")} placeholder="Title" />
-            <div className="flex items-center justify-between mt-2">
-              <Label className="font-bold">Items</Label>
-              <Button
-                type="button"
-                addItem
-                onClick={() =>
-                  appendSecond({
-                    title: "",
-                    description: "",
-                    icon: "",
-                    iconAlt: "",
-                  })
-                }
-              >
-                + Add Item
-              </Button>
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              {secondItems.map((field, index) => (
-                <div
-                  key={field.id}
-                  className="border border-black/10 rounded-lg p-4 flex flex-col gap-3"
-                >
-                  <div className="flex items-center justify-between">
-                    <Label className="font-bold">Item {index + 1}</Label>
-                    <Button
-                      type="button"
-                      onClick={() => removeSecond(index)}
-                      className="text-red-500 hover:text-red-700"
-                    >
-                      <RiDeleteBinLine size={16} />
-                    </Button>
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="flex flex-col gap-2">
-                      <Label className="font-bold">Icon</Label>
-                      <Controller
-                        name={`secondSection.items.${index}.icon`}
-                        control={control}
-                        render={({ field }) => (
-                          <ImageUploader
-                            contain
-                            value={field.value}
-                            onChange={field.onChange}
-                          />
-                        )}
+    <AdminLoadable loading={pageLoading}>
+      <div className="flex flex-col gap-5">
+        <form className="flex flex-col gap-5" onSubmit={handleSubmit(onSubmit)}>
+          {/* Banner Section */}
+          <AdminItemContainer>
+            <Label
+              main
+              isHidden={watch("bannerSection.isHidden")}
+              onToggleHidden={() =>
+                setValue(
+                  "bannerSection.isHidden",
+                  !watch("bannerSection.isHidden"),
+                )
+              }
+            >
+              Banner Section
+            </Label>
+            <div className="p-5 flex flex-col gap-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="flex flex-col gap-2">
+                  <Label className="font-bold">Image</Label>
+                  <Controller
+                    name="bannerSection.image"
+                    control={control}
+                    render={({ field }) => (
+                      <ImageUploader
+                        value={field.value}
+                        onChange={field.onChange}
                       />
-                      <Label className="font-bold">Icon Alt</Label>
-                      <Input
-                        {...register(`secondSection.items.${index}.iconAlt`)}
-                        placeholder="Icon Alt"
-                      />
-                    </div>
-                    <div className="flex flex-col gap-2">
-                      <Label className="font-bold">Title</Label>
-                      <Input
-                        {...register(`secondSection.items.${index}.title`)}
-                        placeholder="Title"
-                      />
-                      <Label className="font-bold">Description</Label>
-                      <Textarea
-                        {...register(
-                          `secondSection.items.${index}.description`,
-                        )}
-                        placeholder="Description"
-                      />
-                    </div>
-                  </div>
+                    )}
+                  />
+                  <Label className="font-bold">Alt Tag</Label>
+                  <Input
+                    {...register("bannerSection.imageAlt")}
+                    placeholder="Alt Tag"
+                  />
                 </div>
-              ))}
-            </div>
-          </div>
-        </AdminItemContainer>
-
-        {/* Third Section */}
-        <AdminItemContainer>
-          <Label
-            main
-            isHidden={watch("thirdSection.isHidden")}
-            onToggleHidden={() =>
-              setValue("thirdSection.isHidden", !watch("thirdSection.isHidden"))
-            }
-          >
-            Third Section
-          </Label>
-          <div className="p-5 flex flex-col gap-4">
-            <Label className="font-bold">Title</Label>
-            <Input {...register("thirdSection.title")} placeholder="Title" />
-            <div className="flex items-center justify-between mt-2">
-              <Label className="font-bold">Items</Label>
-              <Button
-                type="button"
-                addItem
-                onClick={() =>
-                  appendThird({ title: "", icon: "", iconAlt: "" })
-                }
-              >
-                + Add Item
-              </Button>
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              {thirdItems.map((field, index) => (
-                <div
-                  key={field.id}
-                  className="border border-black/10 rounded-lg p-4 flex flex-col gap-3"
-                >
-                  <div className="flex items-center justify-between">
-                    <Label className="font-bold">Item {index + 1}</Label>
-                    <Button
-                      type="button"
-                      onClick={() => removeThird(index)}
-                      className="text-red-500 hover:text-red-700"
-                    >
-                      <RiDeleteBinLine size={16} />
-                    </Button>
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="flex flex-col gap-2">
-                      <Label className="font-bold">Icon</Label>
-                      <Controller
-                        name={`thirdSection.items.${index}.icon`}
-                        control={control}
-                        render={({ field }) => (
-                          <ImageUploader
-                            contain
-                            value={field.value}
-                            onChange={field.onChange}
-                          />
-                        )}
-                      />
-                      <Label className="font-bold">Icon Alt</Label>
-                      <Input
-                        {...register(`thirdSection.items.${index}.iconAlt`)}
-                        placeholder="Icon Alt"
-                      />
-                    </div>
-                    <div className="flex flex-col gap-2">
-                      <Label className="font-bold">Title</Label>
-                      <Input
-                        {...register(`thirdSection.items.${index}.title`)}
-                        placeholder="Title"
-                      />
-                    </div>
-                  </div>
+                <div className="flex flex-col gap-2">
+                  <Label className="font-bold">Title</Label>
+                  <Input
+                    {...register("bannerSection.title")}
+                    placeholder="Title"
+                  />
                 </div>
-              ))}
-            </div>
-          </div>
-        </AdminItemContainer>
-
-        {/* Fourth Section */}
-        <AdminItemContainer>
-          <Label
-            main
-            isHidden={watch("fourthSection.isHidden")}
-            onToggleHidden={() =>
-              setValue(
-                "fourthSection.isHidden",
-                !watch("fourthSection.isHidden"),
-              )
-            }
-          >
-            Fourth Section
-          </Label>
-          <div className="p-5 flex flex-col gap-4">
-            <Label className="font-bold">Title</Label>
-            <Input {...register("fourthSection.title")} placeholder="Title" />
-            <Label className="font-bold">Description</Label>
-            <Textarea
-              {...register("fourthSection.description")}
-              placeholder="Description"
-            />
-            <div className="flex items-center justify-between mt-2">
-              <Label className="font-bold">Items</Label>
-              <Button
-                type="button"
-                addItem
-                onClick={() =>
-                  appendFourth({ title: "", image: "", imageAlt: "" })
-                }
-              >
-                + Add Item
-              </Button>
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              {fourthItems.map((field, index) => (
-                <div
-                  key={field.id}
-                  className="border border-black/10 rounded-lg p-4 flex flex-col gap-3"
-                >
-                  <div className="flex items-center justify-between">
-                    <Label className="font-bold">Item {index + 1}</Label>
-                    <Button
-                      type="button"
-                      onClick={() => removeFourth(index)}
-                      className="text-red-500 hover:text-red-700"
-                    >
-                      <RiDeleteBinLine size={16} />
-                    </Button>
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="flex flex-col gap-2">
-                      <Label className="font-bold">Image</Label>
-                      <Controller
-                        name={`fourthSection.items.${index}.image`}
-                        control={control}
-                        render={({ field }) => (
-                          <ImageUploader
-                            value={field.value}
-                            onChange={field.onChange}
-                          />
-                        )}
-                      />
-                      <Label className="font-bold">Image Alt</Label>
-                      <Input
-                        {...register(`fourthSection.items.${index}.imageAlt`)}
-                        placeholder="Image Alt"
-                      />
-                    </div>
-                    <div className="flex flex-col gap-2">
-                      <Label className="font-bold">Title</Label>
-                      <Input
-                        {...register(`fourthSection.items.${index}.title`)}
-                        placeholder="Title"
-                      />
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </AdminItemContainer>
-
-        {/* Fifth Section */}
-        <AdminItemContainer>
-          <Label
-            main
-            isHidden={watch("fifthSection.isHidden")}
-            onToggleHidden={() =>
-              setValue("fifthSection.isHidden", !watch("fifthSection.isHidden"))
-            }
-          >
-            Fifth Section
-          </Label>
-          <div className="p-5 flex flex-col gap-4">
-            <Label className="font-bold">Title</Label>
-            <Input {...register("fifthSection.title")} placeholder="Title" />
-            <div className="flex items-center justify-between mt-2">
-              <Label className="font-bold">Items</Label>
-              <Button
-                type="button"
-                addItem
-                onClick={() => appendFifth({ image: "", imageAlt: "" })}
-              >
-                + Add Item
-              </Button>
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              {fifthItems.map((field, index) => (
-                <div
-                  key={field.id}
-                  className="border border-black/10 rounded-lg p-4 flex flex-col gap-3"
-                >
-                  <div className="flex items-center justify-between">
-                    <Label className="font-bold">Item {index + 1}</Label>
-                    <Button
-                      type="button"
-                      onClick={() => removeFifth(index)}
-                      className="text-red-500 hover:text-red-700"
-                    >
-                      <RiDeleteBinLine size={16} />
-                    </Button>
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="flex flex-col gap-2">
-                      <Label className="font-bold">Image</Label>
-                      <Controller
-                        name={`fifthSection.items.${index}.image`}
-                        control={control}
-                        render={({ field }) => (
-                          <ImageUploader
-                            value={field.value}
-                            onChange={field.onChange}
-                          />
-                        )}
-                      />
-                      <Label className="font-bold">Image Alt</Label>
-                      <Input
-                        {...register(`fifthSection.items.${index}.imageAlt`)}
-                        placeholder="Image Alt"
-                      />
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </AdminItemContainer>
-
-        {/* Sixth Section */}
-        <AdminItemContainer>
-          <Label
-            main
-            isHidden={watch("sixthSection.isHidden")}
-            onToggleHidden={() =>
-              setValue("sixthSection.isHidden", !watch("sixthSection.isHidden"))
-            }
-          >
-            Sixth Section
-          </Label>
-          <div className="p-5 flex flex-col gap-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="flex flex-col gap-2">
-                <Label className="font-bold">Image</Label>
-                <Controller
-                  name="sixthSection.image"
-                  control={control}
-                  render={({ field }) => (
-                    <ImageUploader
-                      value={field.value}
-                      onChange={field.onChange}
-                    />
-                  )}
-                />
-                <Label className="font-bold">Alt Tag</Label>
-                <Input
-                  {...register("sixthSection.imageAlt")}
-                  placeholder="Alt Tag"
-                />
-              </div>
-              <div className="flex flex-col gap-2">
-                <Label className="font-bold">Title</Label>
-                <Input
-                  {...register("sixthSection.title")}
-                  placeholder="Title"
-                />
               </div>
             </div>
-          </div>
-        </AdminItemContainer>
+          </AdminItemContainer>
 
-        {/* SEO */}
-        <AdminItemContainer>
-          <Label main>SEO</Label>
-          <div className="p-5 flex flex-col gap-4">
-            <Label className="font-bold">Meta Title</Label>
-            <Input {...register("seo.metaTitle")} placeholder="Meta Title" />
-            <Label className="font-bold">Meta Description</Label>
-            <Input
-              {...register("seo.metaDescription")}
-              placeholder="Meta Description"
-            />
-            <Label className="font-bold">Script</Label>
-            <Textarea {...register("seo.script")} placeholder="Script" />
-          </div>
-        </AdminItemContainer>
+          {/* First Section */}
+          <AdminItemContainer>
+            <Label
+              main
+              isHidden={watch("firstSection.isHidden")}
+              onToggleHidden={() =>
+                setValue(
+                  "firstSection.isHidden",
+                  !watch("firstSection.isHidden"),
+                )
+              }
+            >
+              First Section
+            </Label>
+            <div className="p-5 flex flex-col gap-4">
+              <Label className="font-bold">Title</Label>
+              <Input {...register("firstSection.title")} placeholder="Title" />
+              <Label className="font-bold">Subtitle</Label>
+              <Input
+                {...register("firstSection.subtitle")}
+                placeholder="Subtitle"
+              />
+              <Label className="font-bold">Description</Label>
+              <Textarea
+                {...register("firstSection.description")}
+                placeholder="Description"
+              />
+            </div>
+          </AdminItemContainer>
 
-        <AdminPageActions>
-          <AdminSubmitButton saving={isSubmitting} />
-        </AdminPageActions>
-      </form>
-    </div>
+          {/* Second Section */}
+          <AdminItemContainer>
+            <Label
+              main
+              isHidden={watch("secondSection.isHidden")}
+              onToggleHidden={() =>
+                setValue(
+                  "secondSection.isHidden",
+                  !watch("secondSection.isHidden"),
+                )
+              }
+            >
+              Second Section
+            </Label>
+            <div className="p-5 flex flex-col gap-4">
+              <Label className="font-bold">Title</Label>
+              <Input {...register("secondSection.title")} placeholder="Title" />
+              <div className="flex items-center justify-between mt-2">
+                <Label className="font-bold">Items</Label>
+                <Button
+                  type="button"
+                  addItem
+                  onClick={() =>
+                    appendSecond({
+                      title: "",
+                      description: "",
+                      icon: "",
+                      iconAlt: "",
+                    })
+                  }
+                >
+                  + Add Item
+                </Button>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                {secondItems.map((field, index) => (
+                  <div
+                    key={field.id}
+                    className="border border-black/10 rounded-lg p-4 flex flex-col gap-3"
+                  >
+                    <div className="flex items-center justify-between">
+                      <Label className="font-bold">Item {index + 1}</Label>
+                      <Button
+                        type="button"
+                        onClick={() => removeSecond(index)}
+                        className="text-red-500 hover:text-red-700"
+                      >
+                        <RiDeleteBinLine size={16} />
+                      </Button>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="flex flex-col gap-2">
+                        <Label className="font-bold">Icon</Label>
+                        <Controller
+                          name={`secondSection.items.${index}.icon`}
+                          control={control}
+                          render={({ field }) => (
+                            <ImageUploader
+                              contain
+                              value={field.value}
+                              onChange={field.onChange}
+                            />
+                          )}
+                        />
+                        <Label className="font-bold">Icon Alt</Label>
+                        <Input
+                          {...register(`secondSection.items.${index}.iconAlt`)}
+                          placeholder="Icon Alt"
+                        />
+                      </div>
+                      <div className="flex flex-col gap-2">
+                        <Label className="font-bold">Title</Label>
+                        <Input
+                          {...register(`secondSection.items.${index}.title`)}
+                          placeholder="Title"
+                        />
+                        <Label className="font-bold">Description</Label>
+                        <Textarea
+                          {...register(
+                            `secondSection.items.${index}.description`,
+                          )}
+                          placeholder="Description"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </AdminItemContainer>
+
+          {/* Third Section */}
+          <AdminItemContainer>
+            <Label
+              main
+              isHidden={watch("thirdSection.isHidden")}
+              onToggleHidden={() =>
+                setValue(
+                  "thirdSection.isHidden",
+                  !watch("thirdSection.isHidden"),
+                )
+              }
+            >
+              Third Section
+            </Label>
+            <div className="p-5 flex flex-col gap-4">
+              <Label className="font-bold">Title</Label>
+              <Input {...register("thirdSection.title")} placeholder="Title" />
+              <div className="flex items-center justify-between mt-2">
+                <Label className="font-bold">Items</Label>
+                <Button
+                  type="button"
+                  addItem
+                  onClick={() =>
+                    appendThird({ title: "", icon: "", iconAlt: "" })
+                  }
+                >
+                  + Add Item
+                </Button>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                {thirdItems.map((field, index) => (
+                  <div
+                    key={field.id}
+                    className="border border-black/10 rounded-lg p-4 flex flex-col gap-3"
+                  >
+                    <div className="flex items-center justify-between">
+                      <Label className="font-bold">Item {index + 1}</Label>
+                      <Button
+                        type="button"
+                        onClick={() => removeThird(index)}
+                        className="text-red-500 hover:text-red-700"
+                      >
+                        <RiDeleteBinLine size={16} />
+                      </Button>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="flex flex-col gap-2">
+                        <Label className="font-bold">Icon</Label>
+                        <Controller
+                          name={`thirdSection.items.${index}.icon`}
+                          control={control}
+                          render={({ field }) => (
+                            <ImageUploader
+                              contain
+                              value={field.value}
+                              onChange={field.onChange}
+                            />
+                          )}
+                        />
+                        <Label className="font-bold">Icon Alt</Label>
+                        <Input
+                          {...register(`thirdSection.items.${index}.iconAlt`)}
+                          placeholder="Icon Alt"
+                        />
+                      </div>
+                      <div className="flex flex-col gap-2">
+                        <Label className="font-bold">Title</Label>
+                        <Input
+                          {...register(`thirdSection.items.${index}.title`)}
+                          placeholder="Title"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </AdminItemContainer>
+
+          {/* Fourth Section */}
+          <AdminItemContainer>
+            <Label
+              main
+              isHidden={watch("fourthSection.isHidden")}
+              onToggleHidden={() =>
+                setValue(
+                  "fourthSection.isHidden",
+                  !watch("fourthSection.isHidden"),
+                )
+              }
+            >
+              Fourth Section
+            </Label>
+            <div className="p-5 flex flex-col gap-4">
+              <Label className="font-bold">Title</Label>
+              <Input {...register("fourthSection.title")} placeholder="Title" />
+              <Label className="font-bold">Description</Label>
+              <Textarea
+                {...register("fourthSection.description")}
+                placeholder="Description"
+              />
+              <div className="flex items-center justify-between mt-2">
+                <Label className="font-bold">Items</Label>
+                <Button
+                  type="button"
+                  addItem
+                  onClick={() =>
+                    appendFourth({ title: "", image: "", imageAlt: "" })
+                  }
+                >
+                  + Add Item
+                </Button>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                {fourthItems.map((field, index) => (
+                  <div
+                    key={field.id}
+                    className="border border-black/10 rounded-lg p-4 flex flex-col gap-3"
+                  >
+                    <div className="flex items-center justify-between">
+                      <Label className="font-bold">Item {index + 1}</Label>
+                      <Button
+                        type="button"
+                        onClick={() => removeFourth(index)}
+                        className="text-red-500 hover:text-red-700"
+                      >
+                        <RiDeleteBinLine size={16} />
+                      </Button>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="flex flex-col gap-2">
+                        <Label className="font-bold">Image</Label>
+                        <Controller
+                          name={`fourthSection.items.${index}.image`}
+                          control={control}
+                          render={({ field }) => (
+                            <ImageUploader
+                              value={field.value}
+                              onChange={field.onChange}
+                            />
+                          )}
+                        />
+                        <Label className="font-bold">Image Alt</Label>
+                        <Input
+                          {...register(`fourthSection.items.${index}.imageAlt`)}
+                          placeholder="Image Alt"
+                        />
+                      </div>
+                      <div className="flex flex-col gap-2">
+                        <Label className="font-bold">Title</Label>
+                        <Input
+                          {...register(`fourthSection.items.${index}.title`)}
+                          placeholder="Title"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </AdminItemContainer>
+
+          {/* Fifth Section */}
+          <AdminItemContainer>
+            <Label
+              main
+              isHidden={watch("fifthSection.isHidden")}
+              onToggleHidden={() =>
+                setValue(
+                  "fifthSection.isHidden",
+                  !watch("fifthSection.isHidden"),
+                )
+              }
+            >
+              Fifth Section
+            </Label>
+            <div className="p-5 flex flex-col gap-4">
+              <Label className="font-bold">Title</Label>
+              <Input {...register("fifthSection.title")} placeholder="Title" />
+              <div className="flex items-center justify-between mt-2">
+                <Label className="font-bold">Items</Label>
+                <Button
+                  type="button"
+                  addItem
+                  onClick={() => appendFifth({ image: "", imageAlt: "" })}
+                >
+                  + Add Item
+                </Button>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                {fifthItems.map((field, index) => (
+                  <div
+                    key={field.id}
+                    className="border border-black/10 rounded-lg p-4 flex flex-col gap-3"
+                  >
+                    <div className="flex items-center justify-between">
+                      <Label className="font-bold">Item {index + 1}</Label>
+                      <Button
+                        type="button"
+                        onClick={() => removeFifth(index)}
+                        className="text-red-500 hover:text-red-700"
+                      >
+                        <RiDeleteBinLine size={16} />
+                      </Button>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="flex flex-col gap-2">
+                        <Label className="font-bold">Image</Label>
+                        <Controller
+                          name={`fifthSection.items.${index}.image`}
+                          control={control}
+                          render={({ field }) => (
+                            <ImageUploader
+                              value={field.value}
+                              onChange={field.onChange}
+                            />
+                          )}
+                        />
+                        <Label className="font-bold">Image Alt</Label>
+                        <Input
+                          {...register(`fifthSection.items.${index}.imageAlt`)}
+                          placeholder="Image Alt"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </AdminItemContainer>
+
+          {/* Sixth Section */}
+          <AdminItemContainer>
+            <Label
+              main
+              isHidden={watch("sixthSection.isHidden")}
+              onToggleHidden={() =>
+                setValue(
+                  "sixthSection.isHidden",
+                  !watch("sixthSection.isHidden"),
+                )
+              }
+            >
+              Sixth Section
+            </Label>
+            <div className="p-5 flex flex-col gap-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="flex flex-col gap-2">
+                  <Label className="font-bold">Image</Label>
+                  <Controller
+                    name="sixthSection.image"
+                    control={control}
+                    render={({ field }) => (
+                      <ImageUploader
+                        value={field.value}
+                        onChange={field.onChange}
+                      />
+                    )}
+                  />
+                  <Label className="font-bold">Alt Tag</Label>
+                  <Input
+                    {...register("sixthSection.imageAlt")}
+                    placeholder="Alt Tag"
+                  />
+                </div>
+                <div className="flex flex-col gap-2">
+                  <Label className="font-bold">Title</Label>
+                  <Input
+                    {...register("sixthSection.title")}
+                    placeholder="Title"
+                  />
+                </div>
+              </div>
+            </div>
+          </AdminItemContainer>
+
+          {/* SEO */}
+          <AdminItemContainer>
+            <Label main>SEO</Label>
+            <div className="p-5 flex flex-col gap-4">
+              <Label className="font-bold">Meta Title</Label>
+              <Input {...register("seo.metaTitle")} placeholder="Meta Title" />
+              <Label className="font-bold">Meta Description</Label>
+              <Input
+                {...register("seo.metaDescription")}
+                placeholder="Meta Description"
+              />
+              <Label className="font-bold">Script</Label>
+              <Textarea {...register("seo.script")} placeholder="Script" />
+            </div>
+          </AdminItemContainer>
+
+          <AdminPageActions>
+            <AdminSubmitButton saving={isSubmitting} />
+          </AdminPageActions>
+        </form>
+      </div>
+    </AdminLoadable>
   );
 }

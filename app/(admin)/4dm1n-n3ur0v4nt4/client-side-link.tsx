@@ -47,8 +47,8 @@ function ClientSideLink({
       if (data.success) {
         window.location.href = "/4dm1n-n3ur0v4nt4/login";
       }
-    } catch (error) {
-      console.log(error);
+    } catch {
+      // network error: stay on the page
     }
   };
 

@@ -207,11 +207,11 @@ function TabPill({ label, active, onClick }: { label: string; active: boolean; o
 
 function HighlightItem({ icon, title }: { icon: string; title: string }) {
   return (
-    <div className="flex flex-col gap-[10px] sm:gap-[15px]">
+    <div className="flex flex-col gap-[8px] sm:gap-[10px]">
       <div className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 relative flex-shrink-0">
         <Image src={icon || "/assets/placeholder.png"} alt={title} fill className="object-contain" />
       </div>
-      <p className="text-description md:tracking-[-0.03em] max-w-[110px] sm:max-w-[152px]">{title}</p>
+      <p className="text-description md:tracking-[-0.03em] max-w-[110px] sm:max-w-none">{title}</p>
     </div>
   );
 }
@@ -223,7 +223,7 @@ export default function Discovery({ data }: { data: IndividualProduct["thirdSect
   return (
     <section className="overflow-hidden py-[65px] lg:py-120 3xl:py-150">
       <div className="container">
-        <div className="flex flex-col 2xl:flex-row 2xl:items-center gap-20 md:gap-40 2xl:gap-70 3xl:gap-[113px] border-b border-[#D7D7D7] pb-20 sm:pb-40 2xl:pb-120 3xl:pb-150">
+        <div className="flex flex-col 2xl:flex-row 2xl:items-center gap-20 md:gap-40 2xl:gap-50 3xl:gap-70 border-b border-[#D7D7D7] pb-20 sm:pb-40 2xl:pb-120 3xl:pb-150">
 
           {/* Left */}
           <div className="w-full flex flex-col">
@@ -267,7 +267,7 @@ export default function Discovery({ data }: { data: IndividualProduct["thirdSect
                 {tab.items.length > 0 && (
                   <>
                     <motion.div
-                      className="hidden 2xl:block w-full h-px bg-[#D7D7D7] my-40"
+                      className="hidden 2xl:block w-full h-px bg-[#D7D7D7] my-[calc(var(--space-40)-3px)]"
                       variants={moveUp(0.2)}
                       initial="hidden"
                       whileInView="show"
@@ -283,7 +283,7 @@ export default function Discovery({ data }: { data: IndividualProduct["thirdSect
                       >
                         Highlights
                       </motion.h3>
-                      <div className="grid grid-cols-3 gap-x-50 3xl:gap-x-80 gap-y-20">
+                      <div className="grid grid-cols-3 gap-x-30 3xl:gap-x-40 gap-y-20">
                         {tab.items.map((h, i) => (
                           <Reveal key={h._id} variants={moveUpV2} delayRange={i * 0.11}>
                             <HighlightItem icon={h.icon} title={h.title} />
@@ -305,7 +305,7 @@ export default function Discovery({ data }: { data: IndividualProduct["thirdSect
           {tab.items.length > 0 && (
             <div className="2xl:hidden pt-[10px]">
               <h3 className="text-subHeading tracking-[-0.03em] mb-20">Highlights</h3>
-              <div className="flex flex-wrap sm:grid sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-x-40 gap-y-20">
+              <div className="flex flex-wrap sm:grid sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-x-30 gap-y-20">
                 {tab.items.map((h, i) => (
                   <Reveal key={h._id} variants={moveUpV2} delayRange={i * 0.11}>
                     <HighlightItem icon={h.icon} title={h.title} />

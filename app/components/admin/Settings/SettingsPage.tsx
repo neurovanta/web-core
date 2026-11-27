@@ -173,8 +173,7 @@ const Settings = () => {
         } else {
           toast.error(await readMessage(emailRes, "Failed to load emails"));
         }
-      } catch (e) {
-        console.error(e);
+      } catch {
         toast.error("Failed to load settings");
       } finally {
         setLoading(false);
@@ -194,8 +193,7 @@ const Settings = () => {
       if (!res.ok) return void toast.error(await readMessage(res, "Failed to save scripts"));
       toast.success("Scripts saved");
       scripts.reset(data);
-    } catch (e) {
-      console.error(e);
+    } catch {
       toast.error("Something went wrong");
     }
   };
@@ -210,8 +208,7 @@ const Settings = () => {
       if (!res.ok) return void toast.error(await readMessage(res, "Failed to save emails"));
       toast.success("Notification emails saved");
       emails.reset(data);
-    } catch (e) {
-      console.error(e);
+    } catch {
       toast.error("Something went wrong");
     }
   };
@@ -227,8 +224,7 @@ const Settings = () => {
       toast.success(await readMessage(res, "Password changed"));
       password.reset();
       setVisible({ currentPassword: false, newPassword: false, confirmPassword: false });
-    } catch (e) {
-      console.error(e);
+    } catch {
       toast.error("Something went wrong");
     }
   };

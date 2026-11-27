@@ -452,7 +452,7 @@ export const NavDropdown = forwardRef<NavDropdownHandle, NavDropdownProps>(
       navData.header.image ||
       navData.footer.image ||
       "/assets/images/footer/footer-bg.jpg";
-    const menuBg = `linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url("${menuBgImage}") center / cover no-repeat, #000`;
+    const menuBg = `linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url("${menuBgImage}") center / cover no-repeat`;
 
     return (
       <div
@@ -489,13 +489,23 @@ export const NavDropdown = forwardRef<NavDropdownHandle, NavDropdownProps>(
             data-lenis-prevent
             className="relative flex flex-col overflow-x-hidden overflow-y-auto overscroll-contain max-h-dvh md:[@media(height<750px)]:h-[95svh]"
             style={{
-              background: menuBg,
+              background: "#000",
               transform: "translateY(-100%)",
             }}
           >
+            {/* Drifting background: pinned to the top of the scroll area (sticky, zero height)
+                and one screen tall, so it stays put while the menu scrolls. Runs only while open. */}
+            <div aria-hidden className="sticky top-0 h-0 shrink-0 pointer-events-none">
+              <div className="absolute top-0 left-0 w-full h-dvh overflow-hidden">
+                <div
+                  className={`bg-drift ${menuOpen ? "is-playing" : ""} absolute inset-0`}
+                  style={{ background: menuBg }}
+                />
+              </div>
+            </div>
             <div
               ref={contentRef}
-              className="flex flex-col w-full text-white md:min-h-0"
+              className="relative flex flex-col w-full text-white md:min-h-0"
               style={{ opacity: 0 }}
             >
               {/* Header spacer */}
@@ -518,14 +528,14 @@ export const NavDropdown = forwardRef<NavDropdownHandle, NavDropdownProps>(
                     style={navColFade}
                   >
                     <nav>
-                      <ul className="flex flex-col gap-[30px] 3xl:gap-[35px]">
+                      <ul className="flex flex-col gap-[22px] sm:gap-[30px] 3xl:gap-[35px]">
                         {navItems.map((item, i) => {
                           const hasSubs = !!item.subItems?.length;
                           const isHovered = hoveredItem === item.label;
 
                           const NavLabel = (
                             <span className="inline-flex items-center gap-[clamp(20px,5vw,95px)] relative w-fit">
-                              <span className="relative text-50 [@media(width>1440px)_and_(height<750px)]:text-[40px] leading-[1.2] uppercase">
+                              <span className="relative text-[length:clamp(20px,0.77vw_+_17.11px,25px)] lg:text-50 [@media(width>1440px)_and_(height<750px)]:text-[40px] leading-[1.2] uppercase">
                                 {/* Dimmed base */}
                                 <span className="text-white/20">{item.label}</span>
                                 {/* White layer: wipes in left→right, fades out */}
@@ -589,7 +599,7 @@ export const NavDropdown = forwardRef<NavDropdownHandle, NavDropdownProps>(
                                 <>
                                   {/* Below 2xl: button triggers mobile slide */}
                                   <button
-                                    className="2xl:hidden flex items-center justify-between w-full text-left"
+                                    className="2xl:hidden flex items-center justify-between gap-[20px] md:gap-[30px] w-full text-left"
                                     onClick={() => {
                                       layerRefs.current[0]?.scrollTo({ top: 0 });
                                       setMobileSubOpen(true);
@@ -642,7 +652,7 @@ export const NavDropdown = forwardRef<NavDropdownHandle, NavDropdownProps>(
                               duration: 0.55,
                             }}
                             className="md:hidden absolute inset-0 flex flex-col"
-                            style={{ background: menuBg, zIndex: 10 }}
+                            style={{ background: `${menuBg}, #000`, zIndex: 10 }}
                           >
                             {/* Back / title header */}
                             <div className="h-[100px] sm:h-[110px] shrink-0" />

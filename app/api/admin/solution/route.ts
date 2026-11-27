@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { slugify } from "@/lib/slug";
 import connectDB from "@/lib/mongodb";
 import Solution from "@/app/models/Solution";
 import { verifyAdmin } from "@/lib/verifyAdmin";
@@ -71,6 +72,8 @@ export async function PATCH(request: NextRequest) {
 
     await connectDB();
     const body = await request.json();
+    // store slugs URL-safe: "Immersion Tubs" -> "immersion-tubs"
+    if (typeof body.slug === "string") body.slug = slugify(body.slug);
     const id = request.nextUrl.searchParams.get("id");
 
     if (id) {
@@ -101,6 +104,9 @@ export async function PATCH(request: NextRequest) {
       );
     }
 
+    // Page save: the solutions list is managed item by item (add / edit / hide / delete have their own
+    // requests), so never overwrite it here - a stale copy from the page form would undo those changes.
+    delete body.solutions;
     const doc = await Solution.findOneAndUpdate({}, body, {
       upsert: true,
       new: true,
@@ -130,6 +136,8 @@ export async function POST(request: NextRequest) {
 
     await connectDB();
     const body = await request.json();
+    // store slugs URL-safe: "Immersion Tubs" -> "immersion-tubs"
+    if (typeof body.slug === "string") body.slug = slugify(body.slug);
 
     const doc = await Solution.findOne({});
     if (!doc) {

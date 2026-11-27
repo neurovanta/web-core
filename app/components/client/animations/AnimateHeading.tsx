@@ -488,6 +488,8 @@ interface AnimatedHeadingProps {
     | "stamp"
     | "unveil";
   delay?: number;
+  // Heading level. One <h1> per page (page banner / hero); section titles are <h2> (default).
+  as?: "h1" | "h2" | "h3";
 }
 
 export function AnimatedHeading({
@@ -495,6 +497,7 @@ export function AnimatedHeading({
   className = "",
   mode = "reveal",
   delay = 0,
+  as: Tag = "h2",
 }: AnimatedHeadingProps) {
   const ref = useRef<HTMLHeadingElement>(null);
   const isSingleWordBlade =
@@ -750,7 +753,7 @@ const tokens: Token[] = title.split(/(\n)/).flatMap<Token>((chunk) =>
   const wholeElModes = new Set(["unveil"]);
 
   return (
-    <h1 ref={ref} className={`text-heading ${className}`}>
+    <Tag ref={ref} className={`text-heading ${className}`}>
       {/* ── UNVEIL — plain text, h1 element animated directly ── */}
       {wholeElModes.has(mode)
         ? title
@@ -909,6 +912,6 @@ const tokens: Token[] = title.split(/(\n)/).flatMap<Token>((chunk) =>
 
               return null;
             })}
-    </h1>
+    </Tag>
   );
 }

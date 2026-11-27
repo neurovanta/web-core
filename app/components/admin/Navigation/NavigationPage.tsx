@@ -1,5 +1,6 @@
 "use client";
 
+import AdminLoadable from "@/app/components/admin/common/AdminLoadable";
 import { useEffect, useState } from "react";
 import {
   useFieldArray,
@@ -87,7 +88,10 @@ interface GlobalSettingsForm {
 type Tab = "general" | "header" | "footer";
 
 /* ─── Small UI pieces ─────────────────────────────────────────────── */
-const SOCIAL_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
+const SOCIAL_ICONS: Record<
+  string,
+  React.ComponentType<{ className?: string }>
+> = {
   facebook: FaFacebookF,
   instagram: FaInstagram,
   linkedin: FaLinkedinIn,
@@ -117,7 +121,9 @@ function EyeToggle({
     <button
       type="button"
       onClick={() => onChange(!value)}
-      title={value ? "Hidden on website: click to show" : "Visible: click to hide"}
+      title={
+        value ? "Hidden on website: click to show" : "Visible: click to hide"
+      }
       aria-label={value ? "Show item" : "Hide item"}
       className={cn(
         "flex h-8 w-8 shrink-0 items-center justify-center rounded-lg transition-colors cursor-pointer",
@@ -278,10 +284,7 @@ function ToggleList({
               control={control}
               name={`${name}.${index}.isHidden` as Path<GlobalSettingsForm>}
               render={({ field: f }) => (
-                <EyeToggle
-                  value={Boolean(f.value)}
-                  onChange={f.onChange}
-                />
+                <EyeToggle value={Boolean(f.value)} onChange={f.onChange} />
               )}
             />
             <span
@@ -374,8 +377,7 @@ export default function GlobalSettingsPage() {
           image: data.header.image ?? "",
           solutionsLabel: data.header.solutionsLabel ?? "Solutions",
           systemsLabel: data.header.systemsLabel ?? "Longevity Systems",
-          industriesLabel:
-            data.header.industriesLabel ?? "Industries We Serve",
+          industriesLabel: data.header.industriesLabel ?? "Industries We Serve",
           menuItems: data.header.menuItems ?? [],
           solutions: data.header.solutions ?? [],
           systems: data.header.systems ?? [],
@@ -421,8 +423,11 @@ export default function GlobalSettingsPage() {
     setIsSaving(false);
   };
 
+  // spinner until the page data has loaded
+  const [pageLoading, setPageLoading] = useState(true);
+
   useEffect(() => {
-    fetchData();
+    fetchData().finally(() => setPageLoading(false));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -446,490 +451,499 @@ export default function GlobalSettingsPage() {
     undefined;
 
   return (
-    <div className="flex flex-col gap-5">
-      <AdminTabs
-        tabs={[
-          { key: "general", label: "Contact & Socials" },
-          { key: "header", label: "Header", count: headerCount },
-          { key: "footer", label: "Footer" },
-        ]}
-        active={activeTab}
-        onChange={setActiveTab}
-      />
+    <AdminLoadable loading={pageLoading}>
+      <div className="flex flex-col gap-5">
+        <AdminTabs
+          tabs={[
+            { key: "general", label: "Contact & Socials" },
+            { key: "header", label: "Header", count: headerCount },
+            { key: "footer", label: "Footer" },
+          ]}
+          active={activeTab}
+          onChange={setActiveTab}
+        />
 
-      <form className="flex flex-col gap-5" onSubmit={handleSubmit(onSubmit)}>
-        {/* ════════════ General ════════════ */}
-        <div
-          className={cn(
-            "flex-col gap-5",
-            activeTab === "general" ? "flex" : "hidden",
-          )}
-        >
-          <Section
-            icon={Mail}
-            title="Contact Details"
-            description="Shown in the footer. Email and phone are also used for the header contact links."
-          >
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <label>
-                <FieldLabel>Email</FieldLabel>
-                <Input
-                  {...register("contact.email")}
-                  type="email"
-                  placeholder="mail@example.com"
-                />
-              </label>
-              <label>
-                <FieldLabel>Phone</FieldLabel>
-                <Input {...register("contact.phone")} placeholder="+971…" />
-              </label>
-              <label className="md:col-span-2">
-                <FieldLabel>Address (footer only)</FieldLabel>
-                <Textarea
-                  {...register("contact.address")}
-                  placeholder={"Company name\nBuilding, street\nCity, Country"}
-                  rows={3}
-                />
-                <span className="mt-1 block text-[11.5px] text-gray-400">
-                  Each new line is shown on its own line on the website.
-                </span>
-              </label>
-            </div>
-          </Section>
-
-          <Section
-            icon={Share2}
-            title="Social Media"
-            description="The label decides the icon and brand colour (Facebook, Instagram, LinkedIn, Youtube)."
-            badge={<VisibleBadge items={values.socials} />}
-            action={
-              <Button
-                type="button"
-                addItem
-                onClick={() =>
-                  appendSocial({ label: "", type: "", link: "", isHidden: false })
-                }
-              >
-                <Plus className="h-4 w-4" /> Add Social
-              </Button>
-            }
-          >
-            {socials.length === 0 ? (
-              <p className="rounded-xl border border-dashed border-border-color px-4 py-6 text-center text-sm text-gray-400">
-                No social links yet.
-              </p>
-            ) : (
-              <ul className="flex flex-col gap-2">
-                {socials.map((field, index) => {
-                  const hidden = values.socials?.[index]?.isHidden;
-                  return (
-                    <li
-                      key={field.id}
-                      className={cn(
-                        "flex items-center gap-3 rounded-xl border p-2.5",
-                        hidden
-                          ? "border-dashed border-gray-200 bg-gray-50/60"
-                          : "border-black/[0.08]",
-                      )}
-                    >
-                      <Controller
-                        control={control}
-                        name={`socials.${index}.isHidden`}
-                        render={({ field: f }) => (
-                          <EyeToggle value={f.value} onChange={f.onChange} />
-                        )}
-                      />
-                      <SocialIcon label={values.socials?.[index]?.label} />
-                      <Input
-                        {...register(`socials.${index}.label`)}
-                        placeholder="Facebook"
-                        className="w-[180px] shrink-0"
-                      />
-                      <Input
-                        {...register(`socials.${index}.link`)}
-                        placeholder="https://…"
-                        className="flex-1"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => removeSocial(index)}
-                        aria-label="Remove social link"
-                        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-red-400 transition-colors hover:bg-red-50 hover:text-red-600 cursor-pointer"
-                      >
-                        <RiDeleteBin6Line size={17} />
-                      </button>
-                    </li>
-                  );
-                })}
-              </ul>
+        <form className="flex flex-col gap-5" onSubmit={handleSubmit(onSubmit)}>
+          {/* ════════════ General ════════════ */}
+          <div
+            className={cn(
+              "flex-col gap-5",
+              activeTab === "general" ? "flex" : "hidden",
             )}
-          </Section>
-        </div>
-
-        {/* ════════════ Header ════════════ */}
-        <div
-          className={cn(
-            "flex-col gap-5",
-            activeTab === "header" ? "flex" : "hidden",
-          )}
-        >
-          <Section
-            icon={ListOrdered}
-            title="Header Menu"
-            description="Order and visibility of the main menu. Changes in the reorder dialog are saved immediately."
-            action={
-              <Button type="button" onClick={() => setReorderOpen(true)}>
-                Reorder / Edit Links
-              </Button>
-            }
           >
-            {(values.header?.menuItems ?? []).length === 0 ? (
-              <p className="text-sm text-gray-400">No menu items.</p>
-            ) : (
-              <ol className="flex flex-wrap gap-2">
-                {(values.header?.menuItems ?? []).map((item, i) => (
-                  <li
-                    key={item._id ?? i}
-                    className={cn(
-                      "flex items-center gap-2 rounded-full border py-1.5 pl-1.5 pr-3 text-[13px]",
-                      item.isHidden
-                        ? "border-dashed border-gray-200 text-gray-400"
-                        : "border-black/[0.08] bg-white text-secondary",
-                    )}
-                  >
-                    <span
-                      className={cn(
-                        "flex h-6 w-6 items-center justify-center rounded-full text-[11px] font-semibold",
-                        item.isHidden
-                          ? "bg-gray-100 text-gray-400"
-                          : "bg-secondary text-[#E2D3C3]",
-                      )}
-                    >
-                      {i + 1}
-                    </span>
-                    <span className={item.isHidden ? "line-through" : ""}>
-                      {item.kind === "link"
-                        ? item.label || "Untitled Link"
-                        : groupLabel(item.groupKey)}
-                    </span>
-                    {item.kind === "group" && (
-                      <span className="rounded-full bg-cream-bg px-1.5 text-[10px] font-medium uppercase tracking-wide text-secondary/60">
-                        Dropdown
-                      </span>
-                    )}
-                  </li>
-                ))}
-              </ol>
-            )}
-          </Section>
-
-          <Section
-            icon={ImageIcon}
-            title="Menu Background Image"
-            description="Shown behind the full-screen menu with a dark overlay. Leave empty to use the footer image."
-          >
-            <div className="max-w-xl">
-              <FieldLabel>Image</FieldLabel>
-              <Controller
-                name="header.image"
-                control={control}
-                render={({ field }) => (
-                  <ImageUploader
-                    value={field.value}
-                    onChange={field.onChange}
-                    recommendedDimension="2880 x 1620"
+            <Section
+              icon={Mail}
+              title="Contact Details"
+              description="Shown in the footer. Email and phone are also used for the header contact links."
+            >
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <label>
+                  <FieldLabel>Email</FieldLabel>
+                  <Input
+                    {...register("contact.email")}
+                    type="email"
+                    placeholder="mail@example.com"
                   />
-                )}
-              />
-            </div>
-          </Section>
-
-          <div className="grid grid-cols-1 xl:grid-cols-2 gap-5 items-start">
-            <Section
-              icon={Briefcase}
-              title="Solutions Dropdown"
-              badge={<VisibleBadge items={values.header?.solutions} />}
-              action={
-                <BulkVisibility
-                  name="header.solutions"
-                  items={values.header?.solutions}
-                  setValue={setValue}
-                />
-              }
-            >
-              <label className="mb-4 block">
-                <FieldLabel>Menu label</FieldLabel>
-                <Input
-                  {...register("header.solutionsLabel")}
-                  placeholder="Solutions"
-                />
-              </label>
-              <ToggleList
-                name="header.solutions"
-                fields={headerSolutions}
-                emptyText="No solutions found."
-                control={control}
-                watchItem={(i) => ({
-                  title: values.header?.solutions?.[i]?.thumbnailTitle,
-                  isHidden: values.header?.solutions?.[i]?.isHidden,
-                })}
-              />
+                </label>
+                <label>
+                  <FieldLabel>Phone</FieldLabel>
+                  <Input {...register("contact.phone")} placeholder="+971…" />
+                </label>
+                <label className="md:col-span-2">
+                  <FieldLabel>Address (footer only)</FieldLabel>
+                  <Textarea
+                    {...register("contact.address")}
+                    placeholder={
+                      "Company name\nBuilding, street\nCity, Country"
+                    }
+                    rows={3}
+                  />
+                  <span className="mt-1 block text-[11.5px] text-gray-400">
+                    Each new line is shown on its own line on the website.
+                  </span>
+                </label>
+              </div>
             </Section>
 
             <Section
-              icon={Layers}
-              title="Longevity Systems Dropdown"
-              badge={<VisibleBadge items={values.header?.systems} />}
+              icon={Share2}
+              title="Social Media"
+              description="The label decides the icon and brand colour (Facebook, Instagram, LinkedIn, Youtube)."
+              badge={<VisibleBadge items={values.socials} />}
               action={
-                <BulkVisibility
-                  name="header.systems"
-                  items={values.header?.systems}
-                  setValue={setValue}
-                />
+                <Button
+                  type="button"
+                  addItem
+                  onClick={() =>
+                    appendSocial({
+                      label: "",
+                      type: "",
+                      link: "",
+                      isHidden: false,
+                    })
+                  }
+                >
+                  <Plus className="h-4 w-4" /> Add Social
+                </Button>
               }
             >
-              <label className="mb-4 block">
-                <FieldLabel>Menu label</FieldLabel>
-                <Input
-                  {...register("header.systemsLabel")}
-                  placeholder="Longevity Systems"
-                />
-              </label>
-              <ToggleList
-                name="header.systems"
-                fields={headerSystems}
-                emptyText="No system categories found."
-                control={control}
-                watchItem={(i) => ({
-                  title: values.header?.systems?.[i]?.title,
-                  isHidden: values.header?.systems?.[i]?.isHidden,
-                })}
-              />
-            </Section>
-
-            <Section
-              icon={Factory}
-              title="Industries Dropdown"
-              badge={<VisibleBadge items={values.header?.industries} />}
-              action={
-                <BulkVisibility
-                  name="header.industries"
-                  items={values.header?.industries}
-                  setValue={setValue}
-                />
-              }
-            >
-              <label className="mb-4 block">
-                <FieldLabel>Menu label</FieldLabel>
-                <Input
-                  {...register("header.industriesLabel")}
-                  placeholder="Industries We Serve"
-                />
-              </label>
-              <ToggleList
-                name="header.industries"
-                fields={headerIndustries}
-                emptyText="No industries found."
-                control={control}
-                watchItem={(i) => ({
-                  title: values.header?.industries?.[i]?.thumbnailTitle,
-                  isHidden: values.header?.industries?.[i]?.isHidden,
-                })}
-              />
+              {socials.length === 0 ? (
+                <p className="rounded-xl border border-dashed border-border-color px-4 py-6 text-center text-sm text-gray-400">
+                  No social links yet.
+                </p>
+              ) : (
+                <ul className="flex flex-col gap-2">
+                  {socials.map((field, index) => {
+                    const hidden = values.socials?.[index]?.isHidden;
+                    return (
+                      <li
+                        key={field.id}
+                        className={cn(
+                          "flex items-center gap-3 rounded-xl border p-2.5",
+                          hidden
+                            ? "border-dashed border-gray-200 bg-gray-50/60"
+                            : "border-black/[0.08]",
+                        )}
+                      >
+                        <Controller
+                          control={control}
+                          name={`socials.${index}.isHidden`}
+                          render={({ field: f }) => (
+                            <EyeToggle value={f.value} onChange={f.onChange} />
+                          )}
+                        />
+                        <SocialIcon label={values.socials?.[index]?.label} />
+                        <Input
+                          {...register(`socials.${index}.label`)}
+                          placeholder="Facebook"
+                          className="w-[180px] shrink-0"
+                        />
+                        <Input
+                          {...register(`socials.${index}.link`)}
+                          placeholder="https://…"
+                          className="flex-1"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => removeSocial(index)}
+                          aria-label="Remove social link"
+                          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-red-400 transition-colors hover:bg-red-50 hover:text-red-600 cursor-pointer"
+                        >
+                          <RiDeleteBin6Line size={17} />
+                        </button>
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
             </Section>
           </div>
-        </div>
 
-        {/* ════════════ Footer ════════════ */}
-        <div
-          className={cn(
-            "flex-col gap-5",
-            activeTab === "footer" ? "flex" : "hidden",
-          )}
-        >
-          <Section
-            icon={ImageIcon}
-            title="Background Image"
-            description="Shown behind the footer with a dark overlay. Leave empty to use the default image."
+          {/* ════════════ Header ════════════ */}
+          <div
+            className={cn(
+              "flex-col gap-5",
+              activeTab === "header" ? "flex" : "hidden",
+            )}
           >
-            <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] gap-5">
-              <div>
+            <Section
+              icon={ListOrdered}
+              title="Header Menu"
+              description="Order and visibility of the main menu. Changes in the reorder dialog are saved immediately."
+              action={
+                <Button type="button" onClick={() => setReorderOpen(true)}>
+                  Reorder / Edit Links
+                </Button>
+              }
+            >
+              {(values.header?.menuItems ?? []).length === 0 ? (
+                <p className="text-sm text-gray-400">No menu items.</p>
+              ) : (
+                <ol className="flex flex-wrap gap-2">
+                  {(values.header?.menuItems ?? []).map((item, i) => (
+                    <li
+                      key={item._id ?? i}
+                      className={cn(
+                        "flex items-center gap-2 rounded-full border py-1.5 pl-1.5 pr-3 text-[13px]",
+                        item.isHidden
+                          ? "border-dashed border-gray-200 text-gray-400"
+                          : "border-black/[0.08] bg-white text-secondary",
+                      )}
+                    >
+                      <span
+                        className={cn(
+                          "flex h-6 w-6 items-center justify-center rounded-full text-[11px] font-semibold",
+                          item.isHidden
+                            ? "bg-gray-100 text-gray-400"
+                            : "bg-secondary text-[#E2D3C3]",
+                        )}
+                      >
+                        {i + 1}
+                      </span>
+                      <span className={item.isHidden ? "line-through" : ""}>
+                        {item.kind === "link"
+                          ? item.label || "Untitled Link"
+                          : groupLabel(item.groupKey)}
+                      </span>
+                      {item.kind === "group" && (
+                        <span className="rounded-full bg-cream-bg px-1.5 text-[10px] font-medium uppercase tracking-wide text-secondary/60">
+                          Dropdown
+                        </span>
+                      )}
+                    </li>
+                  ))}
+                </ol>
+              )}
+            </Section>
+
+            <Section
+              icon={ImageIcon}
+              title="Menu Background Image"
+              description="Shown behind the full-screen menu with a dark overlay. Leave empty to use the footer image."
+            >
+              <div className="max-w-xl">
                 <FieldLabel>Image</FieldLabel>
                 <Controller
-                  name="footer.image"
+                  name="header.image"
                   control={control}
                   render={({ field }) => (
                     <ImageUploader
                       value={field.value}
                       onChange={field.onChange}
-                      recommendedDimension="2880 x 1155"
+                      recommendedDimension="2880 x 1620"
                     />
                   )}
                 />
               </div>
-              <label>
-                <FieldLabel>Alt text</FieldLabel>
-                <Input
-                  {...register("footer.imageAlt")}
-                  placeholder="Describe the image"
-                />
-              </label>
-            </div>
-          </Section>
-
-          <div className="grid grid-cols-1 xl:grid-cols-2 gap-5 items-start">
-            <Section
-              icon={Briefcase}
-              title="Solutions Column"
-              badge={<VisibleBadge items={values.footer?.solutions} />}
-              action={
-                <BulkVisibility
-                  name="footer.solutions"
-                  items={values.footer?.solutions}
-                  setValue={setValue}
-                />
-              }
-            >
-              <label className="mb-4 block">
-                <FieldLabel>Column heading</FieldLabel>
-                <Input
-                  {...register("footer.solutionsLabel")}
-                  placeholder="Solutions"
-                />
-              </label>
-              <ToggleList
-                name="footer.solutions"
-                fields={footerSolutions}
-                emptyText="No solutions found."
-                control={control}
-                watchItem={(i) => ({
-                  title: values.footer?.solutions?.[i]?.thumbnailTitle,
-                  isHidden: values.footer?.solutions?.[i]?.isHidden,
-                })}
-              />
             </Section>
 
-            <Section
-              icon={Layers}
-              title="Longevity Systems Column"
-              badge={<VisibleBadge items={values.footer?.systems} />}
-              action={
-                <BulkVisibility
-                  name="footer.systems"
-                  items={values.footer?.systems}
-                  setValue={setValue}
+            <div className="grid grid-cols-1 xl:grid-cols-2 gap-5 items-start">
+              <Section
+                icon={Briefcase}
+                title="Solutions Dropdown"
+                badge={<VisibleBadge items={values.header?.solutions} />}
+                action={
+                  <BulkVisibility
+                    name="header.solutions"
+                    items={values.header?.solutions}
+                    setValue={setValue}
+                  />
+                }
+              >
+                <label className="mb-4 block">
+                  <FieldLabel>Menu label</FieldLabel>
+                  <Input
+                    {...register("header.solutionsLabel")}
+                    placeholder="Solutions"
+                  />
+                </label>
+                <ToggleList
+                  name="header.solutions"
+                  fields={headerSolutions}
+                  emptyText="No solutions found."
+                  control={control}
+                  watchItem={(i) => ({
+                    title: values.header?.solutions?.[i]?.thumbnailTitle,
+                    isHidden: values.header?.solutions?.[i]?.isHidden,
+                  })}
                 />
+              </Section>
+
+              <Section
+                icon={Layers}
+                title="Longevity Systems Dropdown"
+                badge={<VisibleBadge items={values.header?.systems} />}
+                action={
+                  <BulkVisibility
+                    name="header.systems"
+                    items={values.header?.systems}
+                    setValue={setValue}
+                  />
+                }
+              >
+                <label className="mb-4 block">
+                  <FieldLabel>Menu label</FieldLabel>
+                  <Input
+                    {...register("header.systemsLabel")}
+                    placeholder="Longevity Systems"
+                  />
+                </label>
+                <ToggleList
+                  name="header.systems"
+                  fields={headerSystems}
+                  emptyText="No system categories found."
+                  control={control}
+                  watchItem={(i) => ({
+                    title: values.header?.systems?.[i]?.title,
+                    isHidden: values.header?.systems?.[i]?.isHidden,
+                  })}
+                />
+              </Section>
+
+              <Section
+                icon={Factory}
+                title="Industries Dropdown"
+                badge={<VisibleBadge items={values.header?.industries} />}
+                action={
+                  <BulkVisibility
+                    name="header.industries"
+                    items={values.header?.industries}
+                    setValue={setValue}
+                  />
+                }
+              >
+                <label className="mb-4 block">
+                  <FieldLabel>Menu label</FieldLabel>
+                  <Input
+                    {...register("header.industriesLabel")}
+                    placeholder="Industries We Serve"
+                  />
+                </label>
+                <ToggleList
+                  name="header.industries"
+                  fields={headerIndustries}
+                  emptyText="No industries found."
+                  control={control}
+                  watchItem={(i) => ({
+                    title: values.header?.industries?.[i]?.thumbnailTitle,
+                    isHidden: values.header?.industries?.[i]?.isHidden,
+                  })}
+                />
+              </Section>
+            </div>
+          </div>
+
+          {/* ════════════ Footer ════════════ */}
+          <div
+            className={cn(
+              "flex-col gap-5",
+              activeTab === "footer" ? "flex" : "hidden",
+            )}
+          >
+            <Section
+              icon={ImageIcon}
+              title="Background Image"
+              description="Shown behind the footer with a dark overlay. Leave empty to use the default image."
+            >
+              <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] gap-5">
+                <div>
+                  <FieldLabel>Image</FieldLabel>
+                  <Controller
+                    name="footer.image"
+                    control={control}
+                    render={({ field }) => (
+                      <ImageUploader
+                        value={field.value}
+                        onChange={field.onChange}
+                        recommendedDimension="2880 x 1155"
+                      />
+                    )}
+                  />
+                </div>
+                <label>
+                  <FieldLabel>Alt text</FieldLabel>
+                  <Input
+                    {...register("footer.imageAlt")}
+                    placeholder="Describe the image"
+                  />
+                </label>
+              </div>
+            </Section>
+
+            <div className="grid grid-cols-1 xl:grid-cols-2 gap-5 items-start">
+              <Section
+                icon={Briefcase}
+                title="Solutions Column"
+                badge={<VisibleBadge items={values.footer?.solutions} />}
+                action={
+                  <BulkVisibility
+                    name="footer.solutions"
+                    items={values.footer?.solutions}
+                    setValue={setValue}
+                  />
+                }
+              >
+                <label className="mb-4 block">
+                  <FieldLabel>Column heading</FieldLabel>
+                  <Input
+                    {...register("footer.solutionsLabel")}
+                    placeholder="Solutions"
+                  />
+                </label>
+                <ToggleList
+                  name="footer.solutions"
+                  fields={footerSolutions}
+                  emptyText="No solutions found."
+                  control={control}
+                  watchItem={(i) => ({
+                    title: values.footer?.solutions?.[i]?.thumbnailTitle,
+                    isHidden: values.footer?.solutions?.[i]?.isHidden,
+                  })}
+                />
+              </Section>
+
+              <Section
+                icon={Layers}
+                title="Longevity Systems Column"
+                badge={<VisibleBadge items={values.footer?.systems} />}
+                action={
+                  <BulkVisibility
+                    name="footer.systems"
+                    items={values.footer?.systems}
+                    setValue={setValue}
+                  />
+                }
+              >
+                <label className="mb-4 block">
+                  <FieldLabel>Column heading</FieldLabel>
+                  <Input
+                    {...register("footer.systemsLabel")}
+                    placeholder="Longevity Systems"
+                  />
+                </label>
+                <ToggleList
+                  name="footer.systems"
+                  fields={footerSystems}
+                  emptyText="No system categories found."
+                  control={control}
+                  watchItem={(i) => ({
+                    title: values.footer?.systems?.[i]?.title,
+                    isHidden: values.footer?.systems?.[i]?.isHidden,
+                  })}
+                />
+              </Section>
+            </div>
+
+            <Section
+              icon={Link2}
+              title="Quick Links Column"
+              description="Use a path like /about-us for site pages, or a full URL for external links."
+              badge={<VisibleBadge items={values.footer?.quickLinks} />}
+              action={
+                <Button
+                  type="button"
+                  addItem
+                  onClick={() =>
+                    appendQuickLink({ label: "", link: "", isHidden: false })
+                  }
+                >
+                  <Plus className="h-4 w-4" /> Add Quick Link
+                </Button>
               }
             >
-              <label className="mb-4 block">
-                <FieldLabel>Column heading</FieldLabel>
-                <Input
-                  {...register("footer.systemsLabel")}
-                  placeholder="Longevity Systems"
-                />
-              </label>
-              <ToggleList
-                name="footer.systems"
-                fields={footerSystems}
-                emptyText="No system categories found."
-                control={control}
-                watchItem={(i) => ({
-                  title: values.footer?.systems?.[i]?.title,
-                  isHidden: values.footer?.systems?.[i]?.isHidden,
-                })}
-              />
+              {quickLinks.length === 0 ? (
+                <p className="rounded-xl border border-dashed border-border-color px-4 py-6 text-center text-sm text-gray-400">
+                  No quick links yet.
+                </p>
+              ) : (
+                <ul className="flex flex-col gap-2">
+                  {quickLinks.map((field, index) => {
+                    const hidden = values.footer?.quickLinks?.[index]?.isHidden;
+                    return (
+                      <li
+                        key={field.id}
+                        className={cn(
+                          "flex items-center gap-3 rounded-xl border p-2.5",
+                          hidden
+                            ? "border-dashed border-gray-200 bg-gray-50/60"
+                            : "border-black/[0.08]",
+                        )}
+                      >
+                        <Controller
+                          control={control}
+                          name={`footer.quickLinks.${index}.isHidden`}
+                          render={({ field: f }) => (
+                            <EyeToggle value={f.value} onChange={f.onChange} />
+                          )}
+                        />
+                        <Input
+                          {...register(`footer.quickLinks.${index}.label`)}
+                          placeholder="About Neuro Vanta"
+                          className="flex-1"
+                        />
+                        <Input
+                          {...register(`footer.quickLinks.${index}.link`)}
+                          placeholder="/about-us"
+                          className="flex-1"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => removeQuickLink(index)}
+                          aria-label="Remove quick link"
+                          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-red-400 transition-colors hover:bg-red-50 hover:text-red-600 cursor-pointer"
+                        >
+                          <RiDeleteBin6Line size={17} />
+                        </button>
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
             </Section>
           </div>
 
-          <Section
-            icon={Link2}
-            title="Quick Links Column"
-            description="Use a path like /about-us for site pages, or a full URL for external links."
-            badge={<VisibleBadge items={values.footer?.quickLinks} />}
-            action={
-              <Button
-                type="button"
-                addItem
-                onClick={() =>
-                  appendQuickLink({ label: "", link: "", isHidden: false })
-                }
-              >
-                <Plus className="h-4 w-4" /> Add Quick Link
-              </Button>
-            }
-          >
-            {quickLinks.length === 0 ? (
-              <p className="rounded-xl border border-dashed border-border-color px-4 py-6 text-center text-sm text-gray-400">
-                No quick links yet.
-              </p>
-            ) : (
-              <ul className="flex flex-col gap-2">
-                {quickLinks.map((field, index) => {
-                  const hidden = values.footer?.quickLinks?.[index]?.isHidden;
-                  return (
-                    <li
-                      key={field.id}
-                      className={cn(
-                        "flex items-center gap-3 rounded-xl border p-2.5",
-                        hidden
-                          ? "border-dashed border-gray-200 bg-gray-50/60"
-                          : "border-black/[0.08]",
-                      )}
-                    >
-                      <Controller
-                        control={control}
-                        name={`footer.quickLinks.${index}.isHidden`}
-                        render={({ field: f }) => (
-                          <EyeToggle value={f.value} onChange={f.onChange} />
-                        )}
-                      />
-                      <Input
-                        {...register(`footer.quickLinks.${index}.label`)}
-                        placeholder="About Neuro Vanta"
-                        className="flex-1"
-                      />
-                      <Input
-                        {...register(`footer.quickLinks.${index}.link`)}
-                        placeholder="/about-us"
-                        className="flex-1"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => removeQuickLink(index)}
-                        aria-label="Remove quick link"
-                        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-red-400 transition-colors hover:bg-red-50 hover:text-red-600 cursor-pointer"
-                      >
-                        <RiDeleteBin6Line size={17} />
-                      </button>
-                    </li>
-                  );
-                })}
-              </ul>
-            )}
-          </Section>
-        </div>
+          {/* Save */}
+          <AdminPageActions isDirty={isDirty}>
+            <AdminSubmitButton saving={isSaving} label="Save Settings" />
+          </AdminPageActions>
+        </form>
 
-        {/* Save */}
-        <AdminPageActions isDirty={isDirty}>
-          <AdminSubmitButton saving={isSaving} label="Save Settings" />
-        </AdminPageActions>
-      </form>
-
-      <ReorderNavLinksDialog
-        open={reorderOpen}
-        onClose={() => setReorderOpen(false)}
-        menuItems={values.header?.menuItems ?? []}
-        labels={{
-          solutions: values.header?.solutionsLabel || "Solutions",
-          systems: values.header?.systemsLabel || "Longevity Systems",
-          industries: values.header?.industriesLabel || "Industries We Serve",
-        }}
-        // The dialog saves on its own, so make the result the new baseline
-        // (keeps it out of "unsaved changes").
-        onSaved={(items) =>
-          resetField("header.menuItems", { defaultValue: items })
-        }
-      />
-    </div>
+        <ReorderNavLinksDialog
+          open={reorderOpen}
+          onClose={() => setReorderOpen(false)}
+          menuItems={values.header?.menuItems ?? []}
+          labels={{
+            solutions: values.header?.solutionsLabel || "Solutions",
+            systems: values.header?.systemsLabel || "Longevity Systems",
+            industries: values.header?.industriesLabel || "Industries We Serve",
+          }}
+          // The dialog saves on its own, so make the result the new baseline
+          // (keeps it out of "unsaved changes").
+          onSaved={(items) =>
+            resetField("header.menuItems", { defaultValue: items })
+          }
+        />
+      </div>
+    </AdminLoadable>
   );
 }

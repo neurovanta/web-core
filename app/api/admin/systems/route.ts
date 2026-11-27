@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { slugify } from "@/lib/slug";
 import connectDB from "@/lib/mongodb";
 import Systems from "@/app/models/Systems";
 import { verifyAdmin } from "@/lib/verifyAdmin";
@@ -97,6 +98,8 @@ export async function PATCH(request: NextRequest) {
 
     await connectDB();
     const body = await request.json();
+    // store slugs URL-safe: "Immersion Tubs" -> "immersion-tubs"
+    if (typeof body.slug === "string") body.slug = slugify(body.slug);
     const id = request.nextUrl.searchParams.get("id"); // product id
     const categoryId = request.nextUrl.searchParams.get("categoryId");
 
@@ -151,8 +154,15 @@ export async function PATCH(request: NextRequest) {
       );
     }
 
-    // Update main systems doc
-    const updated = await Systems.findOneAndUpdate({}, body, {
+    // Update main systems doc.
+    // secondSection.categories (and their products) are managed through their own requests; the page form
+    // can hold a stale copy, so only secondSection's own fields are set (dot paths) and categories are kept.
+    if (body.secondSection && typeof body.secondSection === "object") {
+      const { categories: _ignored, ...secondFields } = body.secondSection; // eslint-disable-line @typescript-eslint/no-unused-vars
+      delete body.secondSection;
+      for (const [k, v] of Object.entries(secondFields)) body[`secondSection.${k}`] = v;
+    }
+    const updated = await Systems.findOneAndUpdate({}, { $set: body }, {
       upsert: true,
       new: true,
     });
@@ -180,6 +190,8 @@ export async function POST(request: NextRequest) {
 
     await connectDB();
     const body = await request.json();
+    // store slugs URL-safe: "Immersion Tubs" -> "immersion-tubs"
+    if (typeof body.slug === "string") body.slug = slugify(body.slug);
     const categoryId = request.nextUrl.searchParams.get("categoryId");
 
     let doc = await Systems.findOne({});

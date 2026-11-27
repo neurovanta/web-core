@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { elevatingWellnessData } from "../data";
 import { AnimatedHeading } from "../../animations/AnimateHeading";
 import Reveal from "../../animations/RevealItemsOneByOneAnimation";
@@ -21,15 +21,48 @@ export default function ElevatingWellness({
   const heading = data.title;
 
   const [activeIndex, setActiveIndex] = useState(0);
-  const [reloadKeys, setReloadKeys] = useState<Record<number, number>>({});
+  const [playKey, setPlayKey] = useState(0);
+  // src of the icon on screen: a fresh in-memory copy (blob: URL) once the icon is downloaded
+  const [iconSrc, setIconSrc] = useState<string>(industries[0]?.homeAnimatedIcon ?? "");
+  const blobsRef = useRef<Record<number, Blob>>({});
+  const currentUrlRef = useRef<string | null>(null);
+
+  // The animated SVG icons live on Dropbox (~1s+ per request). Download each one once, up front,
+  // and keep it in memory; hovering then shows it instantly instead of waiting on the network.
+  useEffect(() => {
+    let cancelled = false;
+    industries.forEach((industry, index) => {
+      const url = industry.homeAnimatedIcon;
+      if (!url) return;
+      fetch(url)
+        .then((res) => (res.ok ? res.blob() : Promise.reject(res.status)))
+        .then((blob) => {
+          if (!cancelled) blobsRef.current[index] = blob;
+        })
+        .catch(() => {
+          /* falls back to the direct URL */
+        });
+    });
+    return () => {
+      cancelled = true;
+      if (currentUrlRef.current) URL.revokeObjectURL(currentUrlRef.current);
+    };
+  }, [industries]);
+
+  const showIcon = (index: number) => {
+    // a new blob: URL per hover makes the browser load a fresh SVG document, so its
+    // animation starts from the beginning - without another network request
+    const blob = blobsRef.current[index];
+    if (currentUrlRef.current) URL.revokeObjectURL(currentUrlRef.current);
+    currentUrlRef.current = blob ? URL.createObjectURL(blob) : null;
+    setIconSrc(currentUrlRef.current ?? industries[index]?.homeAnimatedIcon ?? "");
+  };
 
   const handleActivate = (index: number) => {
     if (index === activeIndex) return;
     setActiveIndex(index);
-    setReloadKeys((prev) => ({
-      ...prev,
-      [index]: (prev[index] ?? 0) + 1,
-    }));
+    setPlayKey((k) => k + 1);
+    showIcon(index);
   };
 
   return (
@@ -49,14 +82,18 @@ export default function ElevatingWellness({
             transition={{ duration: 0.6 }}
             className="hidden xl:flex items-center justify-center"
           >
-            <Image
-              key={`${activeIndex}-${reloadKeys[activeIndex] ?? 0}`}
-              src={`${industries[activeIndex].homeAnimatedIcon}?v=${reloadKeys[activeIndex] ?? 0}`}
-              alt={industries[activeIndex].thumbnailTitle}
-              width={500}
-              height={500}
-              className="object-contain xl:h-[290px] 3xl:h-[366px] w-auto"
-            />
+            {iconSrc && (
+              // plain <img>: the src is an in-memory blob: URL (see showIcon)
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                key={playKey}
+                src={iconSrc}
+                alt={industries[activeIndex]?.thumbnailTitle ?? ""}
+                width={500}
+                height={500}
+                className="object-contain xl:h-[290px] 3xl:h-[366px] w-auto"
+              />
+            )}
           </motion.div>
 
           {/* Mobile / Tablet */}

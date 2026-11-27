@@ -80,8 +80,7 @@ export default function EnquiriesList({ config }: { config: EnquiriesConfig }) {
       const data = await res.json();
       if (res.ok) setList(data.data ?? []);
       else toast.error(data.message || "Failed to load enquiries");
-    } catch (error) {
-      console.error(error);
+    } catch {
       toast.error("Failed to load enquiries");
     } finally {
       setLoaded(true);
@@ -104,8 +103,7 @@ export default function EnquiriesList({ config }: { config: EnquiriesConfig }) {
       if (!res.ok) return void toast.error(data.message || "Failed to delete enquiry");
       toast.success(data.message || "Enquiry deleted");
       setList((prev) => prev.filter((e) => e._id !== id));
-    } catch (error) {
-      console.error(error);
+    } catch {
       toast.error("Failed to delete enquiry");
     } finally {
       setDeletingId(null);

@@ -83,6 +83,7 @@ export default function InnerBanner({
       <div className="absolute bottom-[60px] md:bottom-20 left-0 right-0 z-10 flex flex-col items-center gap-[15px] sm:gap-20 md:gap-50 container">
         <div className={maxWTitle}>
           <AnimatedHeading
+            as="h1" // page title
             title={data.title.replace(/\\n/g, "\n")}
             className="text-white text-center text-60 3xl:text-70 leading-[1.26666] md:leading-[1.142] whitespace-pre-line"
             mode="blade"

@@ -98,7 +98,6 @@ export function FileUploader({
         const filePath = `/uploads/file/${Date.now()}${file.name}`;
         const uploadResult = await uploadToDropbox(file, filePath);
         setFileName(file.name);
-        console.log(file.size)
         onChange(uploadResult, file.name, formatBytes(file.size));
       } catch (err) {
         setError(err instanceof Error ? err.message : "Failed to upload file");
