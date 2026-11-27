@@ -10,6 +10,7 @@ import { SectionDescription } from "../../animations/SectionDescription";
 import Reveal from "../../animations/RevealItemsOneByOneAnimation";
 import { moveUpV2 } from "../../animations/motionVarinats";
 import { HomeType } from "@/app/types/home";
+import { useAutoplayActive } from "@/app/hooks/useAutoplayActive";
 
 export type Slide = {
   number: string;
@@ -40,6 +41,9 @@ export default function WellnessSlider({
 
   const { items: slides } = data;
   const swiperRef = useRef<SwiperType | null>(null);
+  const sectionRef = useRef<HTMLElement>(null);
+  // Off-screen or background tab → autoplay pauses (no timers, no re-renders).
+  const isPlaying = useAutoplayActive(sectionRef);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const settleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   // ↓ NEW: prevents onSlideChange from hijacking activeIndex on programmatic scrolls
@@ -146,11 +150,15 @@ export default function WellnessSlider({
   }, [slides.length, ensureVisible]);
 
   useEffect(() => {
+    if (!isPlaying) {
+      if (timerRef.current) clearTimeout(timerRef.current);
+      return;
+    }
     startAutoplay();
     return () => {
       if (timerRef.current) clearTimeout(timerRef.current);
     };
-  }, [activeIndex, startAutoplay]);
+  }, [activeIndex, startAutoplay, isPlaying]);
 
   useEffect(() => {
     return () => {
@@ -193,6 +201,7 @@ export default function WellnessSlider({
   return (
     // <section className="relative w-full h-[90vh] sm:h-[80vh] xl:h-[92vh] overflow-hidden">
     <section
+      ref={sectionRef}
       onTouchStart={handleSectionTouchStart}
       onTouchEnd={handleSectionTouchEnd}
       className="relative w-full h-svh overflow-hidden"
@@ -323,7 +332,8 @@ export default function WellnessSlider({
                                 "linear-gradient(90deg, #E2D3C3 0%, rgba(226, 211, 195, 0.1) 100%)",
                             }}
                           />
-                          {isActive && (
+                          {/* Unmounted while paused, so on resume the bar restarts in sync with the fresh timer */}
+                          {isActive && isPlaying && (
                             <div
                               key={`progress-${activeIndex}`}
                               className="absolute inset-0 origin-left"

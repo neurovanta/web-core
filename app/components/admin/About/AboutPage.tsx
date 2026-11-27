@@ -119,8 +119,8 @@ export default function AboutPage() {
         const { message } = await res.json();
         toast.error(message);
       }
-    } catch (e) {
-      console.error(e);
+    } catch {
+      toast.error("Something went wrong. Please try again.");
     }
   };
 
@@ -137,8 +137,8 @@ export default function AboutPage() {
         const { message } = await res.json();
         toast.error(message);
       }
-    } catch (e) {
-      console.error(e);
+    } catch {
+      toast.error("Something went wrong. Please try again.");
     }
   };
 

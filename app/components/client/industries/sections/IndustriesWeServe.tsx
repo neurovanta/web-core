@@ -30,7 +30,21 @@ interface IndustryItem {
   href: string;
 }
 
-// ─── Desktop Card (unchanged) ─────────────────────────────────────────────────
+// ─── Desktop Card ─────────────────────────────────────────────────────────────
+
+// Expanded content: title → description → button rise in one by one while the
+// card widens. The block is laid out at the final EXPANDED_W from the first
+// frame (the card's overflow-hidden clips it), so text never re-wraps mid-animation.
+const EASE_OUT: [number, number, number, number] = [0.22, 1, 0.36, 1];
+const expandedContainer = {
+  hidden: {},
+  show: { transition: { delayChildren: 0.3, staggerChildren: 0.12 } },
+  exit: { opacity: 0, transition: { duration: 0.12 } },
+};
+const expandedItem = {
+  hidden: { opacity: 0, y: 24 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: EASE_OUT } },
+};
 
 const IndustryCard = ({
   item,
@@ -86,7 +100,9 @@ const IndustryCard = ({
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.25 }}
-          className="absolute bottom-0 left-0 right-0 pl-20 pr-[15px] py-40"
+          className="absolute bottom-0 left-0 pl-20 pr-[15px] py-40"
+          // fixed width: no re-wrap while the card shrinks back
+          style={{ width: COLLAPSED_W }}
         >
           <p className="text-white text-description">{item.title}</p>
         </motion.div>
@@ -97,20 +113,28 @@ const IndustryCard = ({
       {isActive && (
         <motion.div
           key="expanded"
-          initial={{ opacity: 0, y: 18 }}
-          animate={{
-            opacity: 1,
-            y: 0,
-            transition: { duration: 0.4, delay: 0.2 },
-          }}
-          exit={{ opacity: 0, y: 0, transition: { duration: 0.08 } }}
-          className="absolute bottom-0 left-0 right-0 p-40 flex flex-col"
+          variants={expandedContainer}
+          initial="hidden"
+          animate="show"
+          exit="exit"
+          className="absolute bottom-0 left-0 p-40 flex flex-col items-start"
+          style={{ width: EXPANDED_W }}
         >
-          <h3 className="text-white text-subHeading mb-20">{item.title}</h3>
-          <p className="text-white text-description mb-50">
+          <motion.h3
+            variants={expandedItem}
+            className="text-white text-subHeading mb-20"
+          >
+            {item.title}
+          </motion.h3>
+          <motion.p
+            variants={expandedItem}
+            className="text-white text-description mb-50"
+          >
             {item.description}
-          </p>
-          <CustomButton label={item.btnTitle} href={item.href} variant={1} />
+          </motion.p>
+          <motion.div variants={expandedItem}>
+            <CustomButton label={item.btnTitle} href={item.href} variant={1} />
+          </motion.div>
         </motion.div>
       )}
     </AnimatePresence>

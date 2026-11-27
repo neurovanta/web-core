@@ -37,7 +37,7 @@ export async function POST(request: NextRequest) {
       { status: 200 },
     );
   } catch (error) {
-    console.log("Error checking password", error);
+    console.error("Error checking password", error);
     return NextResponse.json(
       { message: "Error checking password", success: false },
       { status: 500 },

@@ -12,6 +12,7 @@ import { motion } from "framer-motion";
 import { ElasticEffect } from "../../animations/ElasticEffect";
 import SliderNavButton from "../../common/SliderButton";
 import { HomeType } from "@/app/types/home";
+import { useAutoplayActive } from "@/app/hooks/useAutoplayActive";
 
 export type WhySlide = {
   icon: string;
@@ -131,6 +132,9 @@ export default function WhySection({
 
   const { title } = data;
   const swiperRef = useRef<SwiperType | null>(null);
+  const sectionRef = useRef<HTMLElement>(null);
+  // Off-screen or background tab → autoplay pauses (no timers, no re-renders).
+  const isPlaying = useAutoplayActive(sectionRef);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isHoveringRef = useRef(false);
   // ↓ NEW: flag to suppress onSlideChange during programmatic scrolls
@@ -210,11 +214,15 @@ export default function WhySection({
   }, [slides.length, ensureVisible]);
 
   useEffect(() => {
+    if (!isPlaying) {
+      if (timerRef.current) clearTimeout(timerRef.current);
+      return;
+    }
     startAutoplay();
     return () => {
       if (timerRef.current) clearTimeout(timerRef.current);
     };
-  }, [activeIndex, startAutoplay]);
+  }, [activeIndex, startAutoplay, isPlaying]);
 
   const handleSlideHover = (index: number) => {
     setActiveIndex(index);
@@ -229,11 +237,11 @@ export default function WhySection({
 
   const handleMouseLeave = () => {
     isHoveringRef.current = false;
-    startAutoplay();
+    if (isPlaying) startAutoplay();
   };
 
   return (
-    <section className="relative w-full bg-primary py-[60px] sm:py-0 sm:pt-120 overflow-hidden">
+    <section ref={sectionRef} className="relative w-full bg-primary py-[60px] sm:py-0 sm:pt-120 overflow-hidden">
       <ElasticEffect />
       <div className="container flex flex-col sm:flex-row justify-between items-start">
         <AnimatedHeading
@@ -298,13 +306,14 @@ export default function WhySection({
             0: { slidesPerView: 1 },
             640: { slidesPerView: 2 },
             1024: { slidesPerView: 3 },
-            1280: { slidesPerView: 4 },
+            1440: { slidesPerView: 4 },
           }}
         >
           {slides.map((slide, index) => (
-            <SwiperSlide key={index}>
-              <Reveal variants={moveUpV2} delayRange={index * 0.14}>
-                <div className="!min-h-[230px] sm:!h-[400px] xl:!h-[520px] 3xl:!h-[571px]">
+            <SwiperSlide key={index} className="!h-auto">
+              <Reveal variants={moveUpV2} delayRange={index * 0.14} className="h-full">
+                {/* min-height, not fixed: long descriptions grow the card instead of being clipped */}
+                <div className="h-full min-h-[230px] sm:min-h-[400px] xl:min-h-[520px] 3xl:min-h-[571px]">
                   <SlideCard
                     slide={slide}
                     index={index}

@@ -354,3 +354,28 @@ body {
 .nv-admin-sidebar-scroll:hover {
   scrollbar-color: rgba(255, 255, 255, 0.22) transparent;
 }
+
+/* Background drift (footer, menu): slow, visible scale + pan, forever.
+   Paused by default; the component adds .is-playing only while the image can be
+   seen (footer in view / menu open), so it costs nothing off-screen. */
+@keyframes bg-drift {
+  0% {
+    transform: scale(1.08) translate3d(-2.5%, 1%, 0);
+  }
+  100% {
+    transform: scale(1.16) translate3d(2.5%, -2%, 0);
+  }
+}
+.bg-drift {
+  transform: scale(1.08) translate3d(-2.5%, 1%, 0);
+  animation: bg-drift 16s ease-in-out infinite alternate paused;
+}
+.bg-drift.is-playing {
+  animation-play-state: running;
+  will-change: transform;
+}
+@media (prefers-reduced-motion: reduce) {
+  .bg-drift {
+    animation: none;
+  }
+}

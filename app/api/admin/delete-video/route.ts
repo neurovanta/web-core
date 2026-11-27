@@ -14,7 +14,6 @@ export async function POST(request: NextRequest) {
         });
 
         if (deleteVideo) {
-            console.log("Deleted:", filePath);
             return NextResponse.json({ message: "Video deleted", success: true })
         } else {
             return NextResponse.json({ message: "Video deletion failed", success: false })

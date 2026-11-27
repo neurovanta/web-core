@@ -14,8 +14,7 @@ export async function verifyAdmin(request: NextRequest) {
     );
     await jose.jwtVerify(token, secret);
     return true;
-  } catch (error) {
-    console.log(error);
+  } catch {
     return false;
   }
 }
