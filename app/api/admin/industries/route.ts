@@ -103,6 +103,9 @@ export async function PATCH(request: NextRequest) {
       );
     }
 
+    // Page save: the industries list is managed item by item (add / edit / hide / delete have their own
+    // requests), so never overwrite it here - a stale copy from the page form would undo those changes.
+    delete body.industries;
     const doc = await Industries.findOneAndUpdate({}, body, {
       upsert: true,
       new: true,

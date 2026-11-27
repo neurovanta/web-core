@@ -629,7 +629,11 @@ export default function TabsWithSlider({
         </Swiper>
       </div>
 
-      <div className="flex items-center gap-[10px] pt-20 w-full justify-center shrink-0 md:hidden">
+      <div
+        // same left inset as the slides, so the arrows line up with the page container
+        style={{ paddingLeft: inset }}
+        className="flex items-center gap-[10px] pt-20 w-full justify-start shrink-0 md:hidden"
+      >
         <SliderNavButton
           direction="prev"
           disabled={prevDisabled}

@@ -182,11 +182,19 @@ export default function Header({ navData }: { navData: NavData }) {
       if (el.style.paddingBottom !== padding) el.style.paddingBottom = padding;
     };
 
+    // Distance scrolled in the current direction; small jitters (Safari toolbar resize,
+    // smooth-scroll settling) must not flip the header, so hide/show need a little travel.
+    let travel = 0;
+    const HIDE_AFTER = 8; // px down
+    const SHOW_AFTER = 4; // px up
+
     const update = () => {
       if (headerScrollLock.active) return;
       const currentY = window.scrollY;
       const diff = currentY - lastScrollY.current;
       lastScrollY.current = currentY;
+      if (diff === 0) return;
+      travel = Math.sign(diff) === Math.sign(travel) ? travel + diff : diff;
 
       const el = headerRef.current;
       if (!el) return;
@@ -197,9 +205,9 @@ export default function Header({ navData }: { navData: NavData }) {
         el.style.backdropFilter = "blur(0px)";
         setPadding(el);
         showHeader();
-      } else if (diff > 0) {
-        hideHeader();
-      } else {
+      } else if (travel > 0) {
+        if (travel >= HIDE_AFTER) hideHeader();
+      } else if (travel <= -SHOW_AFTER) {
         setIsScrolled(true);
         showHeader();
         if (!menuOpenRef.current) {
@@ -210,19 +218,44 @@ export default function Header({ navData }: { navData: NavData }) {
       }
     };
 
-    // Coalesce scroll events to one update per frame.
+    // Coalesce scroll events to one update per frame. A pending frame that never runs
+    // (Safari / background tabs can drop requestAnimationFrame callbacks) must not block
+    // scrolling forever - that left the header stuck hidden after a page was open a while.
     let rafId = 0;
+    let rafAt = 0;
     const onScroll = () => {
-      if (rafId) return;
+      const now = performance.now();
+      if (rafId && now - rafAt < 100) return;
+      if (rafId) cancelAnimationFrame(rafId); // stale frame: drop it and schedule a new one
+      rafAt = now;
       rafId = requestAnimationFrame(() => {
         rafId = 0;
         update();
       });
     };
 
+    // Back from another tab / app, or restored from the back-forward cache:
+    // forget any pending frame and re-sync, showing the header near the top.
+    const resync = () => {
+      if (rafId) cancelAnimationFrame(rafId);
+      rafId = 0;
+      travel = 0;
+      lastScrollY.current = window.scrollY;
+      if (window.scrollY <= 10) showHeader();
+    };
+    const onVisibility = () => {
+      if (document.visibilityState === "visible") resync();
+    };
+
     window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("pageshow", resync);
+    window.addEventListener("focus", resync);
+    document.addEventListener("visibilitychange", onVisibility);
     return () => {
       window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("pageshow", resync);
+      window.removeEventListener("focus", resync);
+      document.removeEventListener("visibilitychange", onVisibility);
       if (rafId) cancelAnimationFrame(rafId);
     };
   }, [hideHeader, showHeader]);
@@ -286,7 +319,7 @@ export default function Header({ navData }: { navData: NavData }) {
         <div className="flex items-center justify-between w-full container">
           {/* ── Left — Hamburger ────────────────────────────────────────────── */}
           <motion.div
-            className="w-[30%] flex items-center"
+            className="w-[30%] max-[359px]:w-auto max-[359px]:shrink-0 flex items-center"
             initial="hidden"
             animate={animateIn ? "visible" : "hidden"}
             variants={dropDown(0.18)}
@@ -303,7 +336,7 @@ export default function Header({ navData }: { navData: NavData }) {
 
           {/* ── Centre — Logo ───────────────────────────────────────────────── */}
           <motion.div
-            className="w-[40%] flex justify-center items-center cursor-pointer"
+            className="w-[40%] max-[359px]:w-auto max-[359px]:flex-1 max-[359px]:min-w-0 max-[359px]:px-3 flex justify-center items-center cursor-pointer"
             initial="hidden"
             animate={animateIn ? "visible" : "hidden"}
             variants={dropDown(0)}
@@ -314,14 +347,14 @@ export default function Header({ navData }: { navData: NavData }) {
                 alt="Logo"
                 width={500}
                 height={150}
-                className="max-w-[158px] sm:max-w-[200px] md:max-w-[220px] lg:max-w-none h-[20px] sm:h-[40px] pointer-events-none select-none"
+                className="max-w-[158px] max-[359px]:max-w-[128px] sm:max-w-[200px] md:max-w-[220px] lg:max-w-none h-[20px] max-[359px]:h-[16px] sm:h-[40px] pointer-events-none select-none"
               />
             </Link>
           </motion.div>
 
           {/* ── Right — Contact + Search ─────────────────────────────────────── */}
           <motion.div
-            className="w-[30%] flex items-center justify-end gap-[11px] md:gap-[6px]"
+            className="w-[30%] max-[359px]:w-auto max-[359px]:shrink-0 flex items-center justify-end gap-[11px] max-[359px]:gap-[7px] md:gap-[6px]"
             initial="hidden"
             animate={animateIn ? "visible" : "hidden"}
             variants={dropDown(0.18)}
@@ -349,11 +382,11 @@ export default function Header({ navData }: { navData: NavData }) {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.8 }}
               transition={{ duration: 0.2 }}
-              className={`flex md:hidden items-center justify-center w-[30px] h-[30px] sm:w-8 sm:h-8 rounded-full border ${iconColorClass} cursor-pointer transition-colors duration-500`}
+              className={`flex md:hidden items-center justify-center w-[30px] h-[30px] max-[359px]:w-[27px] max-[359px]:h-[27px] sm:w-8 sm:h-8 rounded-full border ${iconColorClass} cursor-pointer transition-colors duration-500`}
             >
               <PiPhoneLight
                 strokeWidth={6}
-                className="w-auto h-[15px] sm:h-[20px]"
+                className="w-auto h-[15px] max-[359px]:h-[13px] sm:h-[20px]"
               />
             </motion.button>
 
@@ -365,7 +398,7 @@ export default function Header({ navData }: { navData: NavData }) {
               {/* ── BELOW xl: icon toggles between search & close ────────────── */}
               <button
                 onClick={searchOpen ? closeSearch : openSearch}
-                className={`xl:hidden flex items-center justify-center w-[30px] h-[30px] sm:w-8 sm:h-8 rounded-full border ${iconColorClass} cursor-pointer transition-colors duration-500`}
+                className={`xl:hidden flex items-center justify-center w-[30px] h-[30px] max-[359px]:w-[27px] max-[359px]:h-[27px] sm:w-8 sm:h-8 rounded-full border ${iconColorClass} cursor-pointer transition-colors duration-500`}
                 aria-label={searchOpen ? "Close search" : "Open search"}
               >
                 <AnimatePresence mode="wait">

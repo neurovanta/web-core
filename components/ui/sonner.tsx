@@ -7,29 +7,30 @@ import {
   OctagonXIcon,
   TriangleAlertIcon,
 } from "lucide-react"
-import { useTheme } from "next-themes"
 import { Toaster as Sonner, type ToasterProps } from "sonner"
 
 const Toaster = ({ ...props }: ToasterProps) => {
-  const { theme = "system" } = useTheme()
-
   return (
     <Sonner
-      theme={theme as ToasterProps["theme"]}
+      // fixed look: the app defines no shadcn theme tokens (--popover etc.), which left the toast transparent
+      theme="light"
       className="toaster group "
+      toastOptions={{
+        style: { boxShadow: "0 12px 32px -12px rgba(28, 23, 20, 0.55)" },
+      }}
       icons={{
-        success: <CircleCheckIcon className="size-4" />,
-        info: <InfoIcon className="size-4" />,
-        warning: <TriangleAlertIcon className="size-4" />,
-        error: <OctagonXIcon className="size-4" />,
+        success: <CircleCheckIcon className="size-4 text-emerald-400" />,
+        info: <InfoIcon className="size-4 text-[#BFA373]" />,
+        warning: <TriangleAlertIcon className="size-4 text-amber-400" />,
+        error: <OctagonXIcon className="size-4 text-red-400" />,
         loading: <Loader2Icon className="size-4 animate-spin" />,
       }}
       style={
         {
-          "--normal-bg": "var(--popover)",
-          "--normal-text": "var(--popover-foreground)",
-          "--normal-border": "var(--border)",
-          "--border-radius": "var(--radius)",
+          "--normal-bg": "#2b231e",
+          "--normal-text": "#ffffff",
+          "--normal-border": "rgba(191, 163, 115, 0.35)",
+          "--border-radius": "14px",
         } as React.CSSProperties
       }
       {...props}

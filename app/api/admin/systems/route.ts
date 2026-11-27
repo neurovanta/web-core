@@ -151,8 +151,15 @@ export async function PATCH(request: NextRequest) {
       );
     }
 
-    // Update main systems doc
-    const updated = await Systems.findOneAndUpdate({}, body, {
+    // Update main systems doc.
+    // secondSection.categories (and their products) are managed through their own requests; the page form
+    // can hold a stale copy, so only secondSection's own fields are set (dot paths) and categories are kept.
+    if (body.secondSection && typeof body.secondSection === "object") {
+      const { categories: _ignored, ...secondFields } = body.secondSection; // eslint-disable-line @typescript-eslint/no-unused-vars
+      delete body.secondSection;
+      for (const [k, v] of Object.entries(secondFields)) body[`secondSection.${k}`] = v;
+    }
+    const updated = await Systems.findOneAndUpdate({}, { $set: body }, {
       upsert: true,
       new: true,
     });

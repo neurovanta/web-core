@@ -1,5 +1,6 @@
 "use client";
 
+import AdminLoadable from "@/app/components/admin/common/AdminLoadable";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Controller, useForm } from "react-hook-form";
@@ -9,7 +10,7 @@ import AdminItemContainer from "@/app/components/admin/common/AdminItemContainer
 import AdminPageActions from "@/app/components/admin/common/AdminPageActions";
 import AdminSubmitButton from "@/app/components/admin/common/AdminSubmitButton";
 import { toast } from "sonner";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 interface ContactForm {
   seo: { metaTitle: string; metaDescription: string; script: string };
@@ -36,8 +37,14 @@ interface ContactForm {
 }
 
 export default function ContactPage() {
-  const { register, handleSubmit, setValue, control, watch, formState: { isSubmitting } } =
-    useForm<ContactForm>();
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    control,
+    watch,
+    formState: { isSubmitting },
+  } = useForm<ContactForm>();
 
   const fetchData = async () => {
     try {
@@ -75,152 +82,171 @@ export default function ContactPage() {
     }
   };
 
+  // spinner until the page data has loaded
+  const [pageLoading, setPageLoading] = useState(true);
+
   useEffect(() => {
-    fetchData();
+    fetchData().finally(() => setPageLoading(false));
   }, []);
 
   return (
-    <div className="flex flex-col gap-5">
-      <form className="flex flex-col gap-5" onSubmit={handleSubmit(onSubmit)}>
-        {/* Banner Section */}
-        <AdminItemContainer>
-          <Label main>Banner Section</Label>
-          <div className="p-5 flex flex-col gap-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="flex flex-col gap-2">
-                <Label className="font-bold">Image</Label>
-                <Controller
-                  name="bannerSection.image"
-                  control={control}
-                  render={({ field }) => (
-                    <ImageUploader
-                      value={field.value}
-                      onChange={field.onChange}
-                    />
-                  )}
-                />
-                <Label className="font-bold">Alt Tag</Label>
-                <Input
-                  {...register("bannerSection.imageAlt")}
-                  placeholder="Alt Tag"
-                />
-              </div>
-              <div className="flex flex-col gap-2">
-                <Label className="font-bold">Title</Label>
-                <Input
-                  {...register("bannerSection.title")}
-                  placeholder="Title"
-                />
-              </div>
-            </div>
-          </div>
-        </AdminItemContainer>
-
-        {/* First Section */}
-        <AdminItemContainer>
-          <Label
-            main
-            isHidden={watch("firstSection.isHidden")}
-            onToggleHidden={() =>
-              setValue("firstSection.isHidden", !watch("firstSection.isHidden"))
-            }
-          >
-            First Section
-          </Label>
-          <div className="p-5 flex flex-col gap-4">
-            <Label className="font-bold">Title</Label>
-            <Input {...register("firstSection.title")} placeholder="Title" />
-            <Label className="font-bold">Description</Label>
-            <Textarea
-              {...register("firstSection.description")}
-              placeholder="Description"
-            />
-
-            <div className="border border-black/10 rounded-lg p-4 flex flex-col gap-3 mt-2">
-              <Label className="font-bold">Office</Label>
+    <AdminLoadable loading={pageLoading}>
+      <div className="flex flex-col gap-5">
+        <form className="flex flex-col gap-5" onSubmit={handleSubmit(onSubmit)}>
+          {/* Banner Section */}
+          <AdminItemContainer>
+            <Label
+              main
+              isHidden={watch("bannerSection.isHidden")}
+              onToggleHidden={() =>
+                setValue(
+                  "bannerSection.isHidden",
+                  !watch("bannerSection.isHidden"),
+                )
+              }
+            >
+              Banner Section
+            </Label>
+            <div className="p-5 flex flex-col gap-4">
               <div className="grid grid-cols-2 gap-4">
                 <div className="flex flex-col gap-2">
-                  <Label className="font-bold">Office Title</Label>
-                  <Input
-                    {...register("firstSection.office.title")}
-                    placeholder="Office Title"
+                  <Label className="font-bold">Image</Label>
+                  <Controller
+                    name="bannerSection.image"
+                    control={control}
+                    render={({ field }) => (
+                      <ImageUploader
+                        value={field.value}
+                        onChange={field.onChange}
+                      />
+                    )}
                   />
-                  <Label className="font-bold">Address</Label>
-                  <Textarea
-                    {...register("firstSection.office.address")}
-                    placeholder="Address"
-                  />
-                  <Label className="font-bold">Direction Label</Label>
+                  <Label className="font-bold">Alt Tag</Label>
                   <Input
-                    {...register("firstSection.office.directionLabel")}
-                    placeholder="Get Directions"
-                  />
-                  <Label className="font-bold">Direction URL</Label>
-                  <Input
-                    {...register("firstSection.office.directionHref")}
-                    placeholder="https://maps.google.com/..."
+                    {...register("bannerSection.imageAlt")}
+                    placeholder="Alt Tag"
                   />
                 </div>
                 <div className="flex flex-col gap-2">
-                  <Label className="font-bold">Email</Label>
+                  <Label className="font-bold">Title</Label>
                   <Input
-                    {...register("firstSection.office.mail")}
-                    placeholder="info@example.com"
-                  />
-                  <Label className="font-bold">Phone</Label>
-                  <Input
-                    {...register("firstSection.office.phone")}
-                    placeholder="+1 234 567 890"
+                    {...register("bannerSection.title")}
+                    placeholder="Title"
                   />
                 </div>
               </div>
             </div>
-          </div>
-        </AdminItemContainer>
+          </AdminItemContainer>
 
-        {/* Second Section — Map */}
-        <AdminItemContainer>
-          <Label
-            main
-            isHidden={watch("secondSection.isHidden")}
-            onToggleHidden={() =>
-              setValue(
-                "secondSection.isHidden",
-                !watch("secondSection.isHidden"),
-              )
-            }
-          >
-            Second Section — Map
-          </Label>
-          <div className="p-5 flex flex-col gap-4">
-            <Label className="font-bold">Map Embed URL</Label>
-            <Input
-              {...register("secondSection.map")}
-              placeholder="https://maps.google.com/embed?..."
-            />
-          </div>
-        </AdminItemContainer>
+          {/* First Section */}
+          <AdminItemContainer>
+            <Label
+              main
+              isHidden={watch("firstSection.isHidden")}
+              onToggleHidden={() =>
+                setValue(
+                  "firstSection.isHidden",
+                  !watch("firstSection.isHidden"),
+                )
+              }
+            >
+              First Section
+            </Label>
+            <div className="p-5 flex flex-col gap-4">
+              <Label className="font-bold">Title</Label>
+              <Input {...register("firstSection.title")} placeholder="Title" />
+              <Label className="font-bold">Description</Label>
+              <Textarea
+                {...register("firstSection.description")}
+                placeholder="Description"
+              />
 
-        {/* SEO */}
-        <AdminItemContainer>
-          <Label main>SEO</Label>
-          <div className="p-5 flex flex-col gap-4">
-            <Label className="font-bold">Meta Title</Label>
-            <Input {...register("seo.metaTitle")} placeholder="Meta Title" />
-            <Label className="font-bold">Meta Description</Label>
-            <Input
-              {...register("seo.metaDescription")}
-              placeholder="Meta Description"
-            />
-            <Label className="font-bold">Script</Label>
-            <Textarea {...register("seo.script")} placeholder="Script" />
-          </div>
-        </AdminItemContainer>
+              <div className="border border-black/10 rounded-lg p-4 flex flex-col gap-3 mt-2">
+                <Label className="font-bold">Office</Label>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="flex flex-col gap-2">
+                    <Label className="font-bold">Office Title</Label>
+                    <Input
+                      {...register("firstSection.office.title")}
+                      placeholder="Office Title"
+                    />
+                    <Label className="font-bold">Address</Label>
+                    <Textarea
+                      {...register("firstSection.office.address")}
+                      placeholder="Address"
+                    />
+                    <Label className="font-bold">Direction Label</Label>
+                    <Input
+                      {...register("firstSection.office.directionLabel")}
+                      placeholder="Get Directions"
+                    />
+                    <Label className="font-bold">Direction URL</Label>
+                    <Input
+                      {...register("firstSection.office.directionHref")}
+                      placeholder="https://maps.google.com/..."
+                    />
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <Label className="font-bold">Email</Label>
+                    <Input
+                      {...register("firstSection.office.mail")}
+                      placeholder="info@example.com"
+                    />
+                    <Label className="font-bold">Phone</Label>
+                    <Input
+                      {...register("firstSection.office.phone")}
+                      placeholder="+1 234 567 890"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </AdminItemContainer>
 
-        <AdminPageActions>
-          <AdminSubmitButton saving={isSubmitting} />
-        </AdminPageActions>
-      </form>
-    </div>
+          {/* Second Section — Map */}
+          <AdminItemContainer>
+            <Label
+              main
+              isHidden={watch("secondSection.isHidden")}
+              onToggleHidden={() =>
+                setValue(
+                  "secondSection.isHidden",
+                  !watch("secondSection.isHidden"),
+                )
+              }
+            >
+              Second Section — Map
+            </Label>
+            <div className="p-5 flex flex-col gap-4">
+              <Label className="font-bold">Map Embed URL</Label>
+              <Input
+                {...register("secondSection.map")}
+                placeholder="https://maps.google.com/embed?..."
+              />
+            </div>
+          </AdminItemContainer>
+
+          {/* SEO */}
+          <AdminItemContainer>
+            <Label main>SEO</Label>
+            <div className="p-5 flex flex-col gap-4">
+              <Label className="font-bold">Meta Title</Label>
+              <Input {...register("seo.metaTitle")} placeholder="Meta Title" />
+              <Label className="font-bold">Meta Description</Label>
+              <Input
+                {...register("seo.metaDescription")}
+                placeholder="Meta Description"
+              />
+              <Label className="font-bold">Script</Label>
+              <Textarea {...register("seo.script")} placeholder="Script" />
+            </div>
+          </AdminItemContainer>
+
+          <AdminPageActions>
+            <AdminSubmitButton saving={isSubmitting} />
+          </AdminPageActions>
+        </form>
+      </div>
+    </AdminLoadable>
   );
 }
