@@ -136,7 +136,7 @@ active:cursor-grabbing
 select-none
 h-[244px] sm:h-[380px] md:h-[500px] lg:h-[620px]
 xl:h-[748px]
-mt-[30px] md:mt-0
+mt-[55px] sm:mt-[30px] md:mt-0
 3xl:mt-[13px]
 "
         onPointerDown={onPointerDown}

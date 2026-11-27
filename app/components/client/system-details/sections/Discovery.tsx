@@ -211,7 +211,7 @@ function HighlightItem({ icon, title }: { icon: string; title: string }) {
       <div className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10 relative flex-shrink-0">
         <Image src={icon || "/assets/placeholder.png"} alt={title} fill className="object-contain" />
       </div>
-      <p className="text-description md:tracking-[-0.03em] max-w-[110px] sm:max-w-none">{title}</p>
+      <p className="text-description md:tracking-[-0.03em]">{title}</p>
     </div>
   );
 }
@@ -305,7 +305,7 @@ export default function Discovery({ data }: { data: IndividualProduct["thirdSect
           {tab.items.length > 0 && (
             <div className="2xl:hidden pt-[10px]">
               <h3 className="text-subHeading tracking-[-0.03em] mb-20">Highlights</h3>
-              <div className="flex flex-wrap sm:grid sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-x-30 gap-y-20">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 gap-x-30 gap-y-20">
                 {tab.items.map((h, i) => (
                   <Reveal key={h._id} variants={moveUpV2} delayRange={i * 0.11}>
                     <HighlightItem icon={h.icon} title={h.title} />

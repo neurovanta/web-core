@@ -90,7 +90,7 @@ export default function InnerBanner({
           />
         </div>
 
-        <div ref={breadcrumbRef}>
+        <div ref={breadcrumbRef} className="w-full max-w-full">
           <Breadcrumb />
         </div>
       </div>
