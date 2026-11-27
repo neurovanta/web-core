@@ -377,18 +377,25 @@ export default function Header({ navData }: { navData: NavData }) {
             </motion.div>
 
             {/* Phone icon */}
-            <motion.button
+            <motion.div
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.8 }}
               transition={{ duration: 0.2 }}
-              className={`flex md:hidden items-center justify-center w-[30px] h-[30px] max-[359px]:w-[27px] max-[359px]:h-[27px] sm:w-8 sm:h-8 rounded-full border ${iconColorClass} cursor-pointer transition-colors duration-500`}
+              className="flex md:hidden"
             >
-              <PiPhoneLight
-                strokeWidth={6}
-                className="w-auto h-[15px] max-[359px]:h-[13px] sm:h-[20px]"
-              />
-            </motion.button>
+              <Link
+                href="/contact-us"
+                aria-label="Contact us"
+                onClick={() => dropdownRef.current?.close()}
+                className={`flex items-center justify-center w-[30px] h-[30px] max-[359px]:w-[27px] max-[359px]:h-[27px] sm:w-8 sm:h-8 rounded-full border ${iconColorClass} cursor-pointer transition-colors duration-500`}
+              >
+                <PiPhoneLight
+                  strokeWidth={6}
+                  className="w-auto h-[15px] max-[359px]:h-[13px] sm:h-[20px]"
+                />
+              </Link>
+            </motion.div>
 
             {/* ── Search ────────────────────────────────────────────────────── */}
             <div

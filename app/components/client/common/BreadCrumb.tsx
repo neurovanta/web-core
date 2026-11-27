@@ -23,19 +23,23 @@ export default function Breadcrumb() {
       aria-label="Breadcrumb"
       className="xl:h-[50px] flex justify-center items-center"
     >
-      <ol className="flex items-center">
+      <ol className="flex items-center min-w-0 max-w-full">
         {crumbs.map((crumb, index) => {
           const isLast = index === crumbs.length - 1;
           const isClickable = !isLast && EXISTING_PAGES.includes(crumb.href);
 
           return (
-            <li key={index} className="flex items-center tracking-[-0.03em] capitalize">
+            <li
+              key={index}
+              className={`flex items-center tracking-[-0.03em] capitalize whitespace-nowrap ${isLast ? "min-w-0" : "shrink-0"}`}
+              title={isLast ? crumb.label : undefined}
+            >
               {index > 0 && (
-                <span className="inline-block rounded-full mx-[10px] bg-[#D9D9D9] w-[7px] h-[7px]" />
+                <span className="inline-block shrink-0 rounded-full mx-[10px] bg-[#D9D9D9] w-[7px] h-[7px]" />
               )}
 
               {isLast ? (
-                <span className="font-semibold text-description text-[#D9D9D9]">
+                <span className="block truncate font-semibold text-description text-[#D9D9D9]">
                   {crumb.label}
                 </span>
               ) : isClickable ? (
