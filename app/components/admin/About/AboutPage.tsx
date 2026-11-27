@@ -7,6 +7,8 @@ import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { ImageUploader } from "@/components/ui/image-uploader";
 import { Textarea } from "@/components/ui/textarea";
 import AdminItemContainer from "@/app/components/admin/common/AdminItemContainer";
+import AdminPageActions from "@/app/components/admin/common/AdminPageActions";
+import AdminSubmitButton from "@/app/components/admin/common/AdminSubmitButton";
 import { toast } from "sonner";
 import { useEffect } from "react";
 import { RiDeleteBinLine } from "react-icons/ri";
@@ -60,7 +62,7 @@ interface AboutForm {
 }
 
 export default function AboutPage() {
-  const { register, handleSubmit, setValue, control, watch } =
+  const { register, handleSubmit, setValue, control, watch, formState: { isSubmitting } } =
     useForm<AboutForm>();
 
   const {
@@ -259,6 +261,7 @@ export default function AboutPage() {
                         control={control}
                         render={({ field }) => (
                           <ImageUploader
+                            contain
                             value={field.value}
                             onChange={field.onChange}
                           />
@@ -341,6 +344,7 @@ export default function AboutPage() {
                         control={control}
                         render={({ field }) => (
                           <ImageUploader
+                            contain
                             value={field.value}
                             onChange={field.onChange}
                           />
@@ -573,14 +577,9 @@ export default function AboutPage() {
           </div>
         </AdminItemContainer>
 
-        <div className="fixed top-4 right-8 z-50">
-          <Button
-            type="submit"
-            className="cursor-pointer border-2 border-white hover:text-white text-[14px] shadow-lg"
-          >
-            Page Submit
-          </Button>
-        </div>
+        <AdminPageActions>
+          <AdminSubmitButton saving={isSubmitting} />
+        </AdminPageActions>
       </form>
     </div>
   );

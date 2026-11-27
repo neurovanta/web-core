@@ -13,11 +13,13 @@ interface ImageUploaderProps {
   className?: string;
   deleteAfterUpload?: boolean;
   isLogo?: boolean;
+  // icons / illustrations: show the whole image (object-contain) instead of cropping it
+  contain?: boolean;
   multiple?: boolean;
   recommendedDimension?: string;
 }
 
-export function ImageUploader({ value, onChange, className, deleteAfterUpload = false, isLogo = false, multiple = false, recommendedDimension}: ImageUploaderProps) {
+export function ImageUploader({ value, onChange, className, deleteAfterUpload = false, isLogo = false, contain = false, multiple = false, recommendedDimension}: ImageUploaderProps) {
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [localImageUrl, setLocalImageUrl] = useState<string | null>(null);
@@ -135,7 +137,7 @@ export function ImageUploader({ value, onChange, className, deleteAfterUpload = 
     <div className={cn("space-y-4 w-full", className)}>
       {displayUrl && isUploadComplete ? (
         <div className={`relative w-full max-w-[300px] aspect-[4/3] overflow-hidden rounded-lg border border-black/20 ${isLogo ? "max-w-[100px] h-[100px] bg-black" : "max-w-[300px]"}`}>
-          <Image src={value ? value : displayUrl} alt="Uploaded image" className={isLogo ? "object-contain p-2 bg-black" : "object-cover"} fill />
+          <Image src={value ? value : displayUrl} alt="Uploaded image" className={isLogo ? "object-contain p-2 bg-black" : contain ? "object-contain p-6" : "object-cover"} fill />
           <Button
             type="button"
             variant="destructive"

@@ -7,6 +7,9 @@ import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { ImageUploader } from "@/components/ui/image-uploader";
 import { Textarea } from "@/components/ui/textarea";
 import AdminItemContainer from "@/app/components/admin/common/AdminItemContainer";
+import AdminPageActions from "@/app/components/admin/common/AdminPageActions";
+import AdminSubmitButton from "@/app/components/admin/common/AdminSubmitButton";
+import AdminVisitLink from "@/app/components/admin/common/AdminVisitLink";
 import { toast } from "sonner";
 import { useEffect } from "react";
 import { RiDeleteBinLine } from "react-icons/ri";
@@ -76,7 +79,7 @@ export default function IndividualIndustry({
     setValue,
     watch,
     control,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<IndividualIndustryForm>();
 
   const {
@@ -137,7 +140,7 @@ export default function IndividualIndustry({
       if (res.ok) {
         const { message } = await res.json();
         toast.success(message);
-        if (createMode) router.push("/admin/industries");
+        if (createMode) router.push("/4dm1n-n3ur0v4nt4/industries");
       } else {
         const { message } = await res.json();
         toast.error(message);
@@ -153,6 +156,7 @@ export default function IndividualIndustry({
 
   return (
     <div className="flex flex-col gap-5">
+      <AdminVisitLink href={!createMode && watch("slug") ? `/industries/${watch("slug")}` : null} />
       <form className="flex flex-col gap-5" onSubmit={handleSubmit(onSubmit)}>
         {/* Banner */}
         <AdminItemContainer>
@@ -284,6 +288,7 @@ export default function IndividualIndustry({
                 control={control}
                 render={({ field }) => (
                   <ImageUploader
+                    contain
                     value={field.value}
                     onChange={field.onChange}
                   />
@@ -318,6 +323,7 @@ export default function IndividualIndustry({
                 control={control}
                 render={({ field }) => (
                   <ImageUploader
+                    contain
                     value={field.value}
                     onChange={field.onChange}
                   />
@@ -498,6 +504,7 @@ export default function IndividualIndustry({
                       control={control}
                       render={({ field }) => (
                         <ImageUploader
+                          contain
                           value={field.value}
                           onChange={field.onChange}
                           isLogo
@@ -642,14 +649,9 @@ export default function IndividualIndustry({
           </div>
         </AdminItemContainer>
 
-        <div className="fixed top-4 right-8 z-50">
-          <Button
-            type="submit"
-            className="cursor-pointer border-2 border-white hover:text-white text-[14px] shadow-lg"
-          >
-            {createMode ? "Create Industry" : "Save Changes"}
-          </Button>
-        </div>
+        <AdminPageActions>
+          <AdminSubmitButton saving={isSubmitting} label={createMode ? "Create Industry" : "Save Changes"} savingLabel={createMode ? "Creating" : "Saving"} />
+        </AdminPageActions>
       </form>
     </div>
   );

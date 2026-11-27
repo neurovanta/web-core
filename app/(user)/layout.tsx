@@ -7,6 +7,7 @@ import AppShell from "../components/client/layout/AppShell";
 import HeaderServer from "../components/client/layout/HeaderServer";
 import FooterServer from "../components/client/layout/FooterServer";
 import { Toaster } from "sonner";
+import { SITE_URL } from "@/lib/seo";
 
 const dmSans = DM_Sans({
   variable: "--font-dm-sans",
@@ -15,6 +16,8 @@ const dmSans = DM_Sans({
 });
 
 export const metadata: Metadata = {
+  // makes page canonicals (alternates.canonical) absolute; set NEXT_PUBLIC_SITE_URL per environment
+  ...(SITE_URL ? { metadataBase: new URL(SITE_URL) } : {}),
   title: "Neuro Vanta",
   description: "Neuro Vanta",
 };

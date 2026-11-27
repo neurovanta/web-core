@@ -8,6 +8,8 @@ import { ImageUploader } from "@/components/ui/image-uploader";
 import { VideoUploader } from "@/components/ui/video-uploader";
 import { Textarea } from "@/components/ui/textarea";
 import AdminItemContainer from "@/app/components/admin/common/AdminItemContainer";
+import AdminPageActions from "@/app/components/admin/common/AdminPageActions";
+import AdminSubmitButton from "@/app/components/admin/common/AdminSubmitButton";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
 import { RiDeleteBinLine } from "react-icons/ri";
@@ -103,7 +105,7 @@ interface HomeForm {
 }
 
 export default function HomePage() {
-  const { register, handleSubmit, setValue, control, watch } =
+  const { register, handleSubmit, setValue, control, watch, formState: { isSubmitting } } =
     useForm<HomeForm>();
   // const [systemsCategories, setSystemsCategories] = useState<SystemsCategory[]>(
   //   [],
@@ -728,6 +730,7 @@ const fetchData = async () => {
                         control={control}
                         render={({ field }) => (
                           <ImageUploader
+                            contain
                             value={field.value}
                             onChange={field.onChange}
                           />
@@ -813,6 +816,7 @@ const fetchData = async () => {
                         control={control}
                         render={({ field }) => (
                           <ImageUploader
+                            contain
                             value={field.value}
                             onChange={field.onChange}
                           />
@@ -901,6 +905,7 @@ const fetchData = async () => {
                         control={control}
                         render={({ field }) => (
                           <ImageUploader
+                            contain
                             value={field.value}
                             onChange={field.onChange}
                           />
@@ -969,11 +974,11 @@ const fetchData = async () => {
                       + Add Logo
                     </Button>
                   </div>
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-5 gap-4">
                     {fields.map((field, index) => (
                       <div
                         key={field.id}
-                        className="border border-black/10 rounded-lg p-4 flex flex-col gap-3"
+                        className="border border-black/10 rounded-lg p-3 flex min-w-0 flex-col gap-3"
                       >
                         <div className="flex items-center justify-between">
                           <Label className="font-bold">Logo {index + 1}</Label>
@@ -985,7 +990,7 @@ const fetchData = async () => {
                             <RiDeleteBinLine size={16} />
                           </Button>
                         </div>
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="flex flex-col gap-3">
                           <div className="flex flex-col gap-2">
                             <Label className="font-bold">Image</Label>
                             <Controller
@@ -993,6 +998,7 @@ const fetchData = async () => {
                               control={control}
                               render={({ field }) => (
                                 <ImageUploader
+                                  contain
                                   value={field.value}
                                   onChange={field.onChange}
                                 />
@@ -1054,14 +1060,9 @@ const fetchData = async () => {
           </div>
         </AdminItemContainer>
 
-        <div className="fixed top-4 right-8 z-50">
-          <Button
-            type="submit"
-            className="cursor-pointer border-2 border-white hover:text-white text-[14px] shadow-lg"
-          >
-            Page Submit
-          </Button>
-        </div>
+        <AdminPageActions>
+          <AdminSubmitButton saving={isSubmitting} />
+        </AdminPageActions>
       </form>
     </div>
   );

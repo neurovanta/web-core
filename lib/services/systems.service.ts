@@ -27,10 +27,14 @@ export const getSystemProductBySlug = (slug: string) =>
 
       for (const cat of doc.secondSection.categories) {
         const found = cat.products.find((p: any) => p.slug === slug);
-        if (found) return JSON.parse(JSON.stringify(found));
+        if (found) {
+          // hidden product or hidden category → null, the page renders a 404
+          if (found.isHidden || cat.isHidden) return null;
+          return JSON.parse(JSON.stringify(found));
+        }
       }
 
-      throw new Error(`Product not found: ${slug}`);
+      return null;
     },
     ["System-product-slug", slug],
     { tags: ["Systems"] },

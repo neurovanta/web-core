@@ -50,7 +50,7 @@ export default function AdminSidebar({ username }: { username: string | null }) 
     try {
       const res = await fetch("/api/admin/logout", { method: "POST" });
       const data = await res.json();
-      if (data.success) window.location.href = "/admin/login";
+      if (data.success) window.location.href = "/4dm1n-n3ur0v4nt4/login";
     } catch (error) {
       console.log(error);
     }
@@ -68,7 +68,7 @@ export default function AdminSidebar({ username }: { username: string | null }) 
   return (
     <aside
       className={cn(
-        "relative z-[45] shrink-0 bg-white flex flex-col h-screen border-r border-border-color/60 shadow-[2px_0_16px_-8px_rgba(81,70,62,0.18)] transition-[width] duration-300 ease-out",
+        "nv-admin-sidebar relative z-[45] shrink-0 flex flex-col h-screen shadow-[8px_0_30px_-12px_rgba(28,23,20,0.55)] transition-[width] duration-300 ease-out",
         collapsed ? "w-[84px]" : "w-[272px]",
       )}
     >
@@ -78,7 +78,7 @@ export default function AdminSidebar({ username }: { username: string | null }) 
         onClick={toggle}
         aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
         title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-        className="absolute -right-3 top-9 z-40 flex h-6 w-6 items-center justify-center rounded-full border border-border-color bg-white text-secondary/60 shadow-sm transition-all hover:scale-110 hover:text-secondary cursor-pointer"
+        className="absolute -right-3 top-9 z-40 flex h-6 w-6 items-center justify-center rounded-full border border-white/15 bg-[#2b231e] text-white/70 shadow-md transition-all hover:scale-110 hover:bg-[#BFA373] hover:text-[#1c1714] cursor-pointer"
       >
         {collapsed ? (
           <ChevronsRight className="h-3.5 w-3.5" />
@@ -88,10 +88,9 @@ export default function AdminSidebar({ username }: { username: string | null }) 
       </button>
 
       {/* Brand */}
-      <div className="relative overflow-hidden border-b border-border-color/60">
-        <div className="pointer-events-none absolute -top-16 -right-10 h-36 w-36 rounded-full bg-[#BFA373]/15 blur-2xl" />
+      <div className="relative overflow-hidden border-b border-white/10">
         <Link
-          href="/admin"
+          href="/4dm1n-n3ur0v4nt4"
           className={cn(
             "relative flex flex-col items-center gap-2.5 pt-7 pb-5",
             collapsed ? "px-3" : "px-6",
@@ -108,9 +107,9 @@ export default function AdminSidebar({ username }: { username: string | null }) 
                 alt="Neuro Vanta"
                 width={170}
                 height={60}
-                className="h-auto w-[160px]"
+                className="h-auto w-[160px] brightness-125"
               />
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-cream-bg px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-secondary/60 ring-1 ring-border-color/50">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-white/[0.06] px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-white/60 ring-1 ring-white/15">
                 <span className="h-1.5 w-1.5 rounded-full bg-[#BFA373]" />
                 Admin Console
               </span>
@@ -126,7 +125,7 @@ export default function AdminSidebar({ username }: { username: string | null }) 
             rel="noopener noreferrer"
             title="View website"
             className={cn(
-              "group flex items-center justify-center gap-2 rounded-xl border border-border-color/70 bg-white py-2 text-[13px] font-medium text-secondary/80 transition-all hover:border-[#BFA373] hover:bg-cream-bg hover:text-secondary",
+              "group flex items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/[0.04] py-2 text-[13px] font-medium text-white/75 transition-all hover:border-[#BFA373]/60 hover:bg-white/[0.08] hover:text-white",
               collapsed ? "px-0" : "px-3",
             )}
           >
@@ -139,7 +138,7 @@ export default function AdminSidebar({ username }: { username: string | null }) 
       {/* Navigation */}
       <nav
         className={cn(
-          "flex-1 px-3 py-4 flex flex-col gap-0.5 [scrollbar-width:thin]",
+          "nv-admin-sidebar-scroll relative flex-1 px-3 py-4 flex flex-col gap-0.5",
           // A scroll container would clip the hover tooltips in icon-only mode.
           collapsed ? "overflow-visible" : "overflow-y-auto",
         )}
@@ -148,25 +147,28 @@ export default function AdminSidebar({ username }: { username: string | null }) 
       </nav>
 
       {/* Profile + logout */}
-      <div className="border-t border-border-color/60 p-3">
+      <div className="relative border-t border-white/10 p-3">
         <div
           className={cn(
-            "flex items-center gap-3 rounded-xl bg-cream-bg/70 ring-1 ring-border-color/40",
+            "flex items-center gap-3 rounded-xl bg-white/[0.05] ring-1 ring-white/10 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]",
             collapsed ? "flex-col p-2" : "p-2.5",
           )}
         >
           <span
             title={collapsed ? displayName : undefined}
-            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-secondary text-[12px] font-semibold text-[#E2D3C3] ring-2 ring-white"
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#C9B6AC] to-[#BFA373] text-[12px] font-semibold text-[#1c1714] ring-2 ring-white/15"
           >
             {initials}
           </span>
           {!collapsed && (
             <div className="min-w-0 flex-1">
-              <p className="truncate text-[13px] font-semibold text-secondary">
+              <p className="truncate text-[13px] font-semibold text-white">
                 {displayName}
               </p>
-              <p className="text-[11px] text-gray-500">Administrator</p>
+              <p className="flex items-center gap-1.5 text-[11px] text-white/55">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                Administrator
+              </p>
             </div>
           )}
           <button
@@ -174,7 +176,7 @@ export default function AdminSidebar({ username }: { username: string | null }) 
             onClick={handleLogout}
             aria-label="Log out"
             title="Log out"
-            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-gray-500 transition-colors hover:bg-red-50 hover:text-red-600 cursor-pointer"
+            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-white/55 transition-colors hover:bg-red-500/15 hover:text-red-300 cursor-pointer"
           >
             <LogOut className="h-4 w-4" />
           </button>

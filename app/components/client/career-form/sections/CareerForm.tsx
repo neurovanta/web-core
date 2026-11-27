@@ -76,7 +76,10 @@ const onSubmit = async (data: CareerEnquiryFormValues) => {
     if (file) formData.append("attachment", file);
 
     const result = await sendCareerEnquiryAction(formData);
-    if (!result.success) throw new Error(result.message);
+    if (!result?.success) {
+      toast.error(result?.message || "Something went wrong. Please try again.");
+      return; // keep the form filled so the visitor can retry
+    }
     toast.success("Application submitted successfully!");
     reset();
     setSelectedFileName(null);

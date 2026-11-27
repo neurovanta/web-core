@@ -21,7 +21,7 @@ import HomeEnquiry from "@/app/models/HomeEnquiry";
 import ContactEnquiry from "@/app/models/ContactEnquiry";
 import CareerEnquiry from "@/app/models/CareerEnquiry";
 
-const ADMIN = "/admin";
+const ADMIN = "/4dm1n-n3ur0v4nt4";
 const DAY_MS = 24 * 60 * 60 * 1000;
 const TIME_ZONE = "Asia/Dubai";
 const CHART_DAYS = 14;

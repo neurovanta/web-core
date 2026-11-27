@@ -3,7 +3,7 @@ import { uploadToDropbox } from "@/lib/connectDropbox";
 import { verifyAdmin } from "@/lib/verifyAdmin";
 
 export async function POST(request: NextRequest) {
-  const isAdmin = verifyAdmin(request);
+  const isAdmin = await verifyAdmin(request); // await: an un-awaited promise is always truthy
   if (!isAdmin) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }

@@ -7,6 +7,8 @@ import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { ImageUploader } from "@/components/ui/image-uploader";
 import { Textarea } from "@/components/ui/textarea";
 import AdminItemContainer from "@/app/components/admin/common/AdminItemContainer";
+import AdminPageActions from "@/app/components/admin/common/AdminPageActions";
+import AdminSubmitButton from "@/app/components/admin/common/AdminSubmitButton";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
 import { RiEyeLine, RiEyeOffLine, RiDeleteBin6Line } from "react-icons/ri";
@@ -55,7 +57,7 @@ export default function IndustriesMainPage() {
     setValue,
     control,
     watch,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<IndustriesMainForm>();
 
   const { fields: industries, remove: removeIndustry } = useFieldArray({
@@ -338,14 +340,9 @@ export default function IndustriesMainPage() {
           </div>
         </AdminItemContainer>
 
-        <div className="fixed top-4 right-8 z-50">
-          <Button
-            type="submit"
-            className="cursor-pointer border-2 border-white hover:text-white text-[14px] shadow-lg"
-          >
-            Page Submit
-          </Button>
-        </div>
+        <AdminPageActions>
+          <AdminSubmitButton saving={isSubmitting} />
+        </AdminPageActions>
       </form>
 
       {/* Industries List — outside form */}
@@ -354,7 +351,7 @@ export default function IndustriesMainPage() {
           <Label className="text-base font-bold">Industries</Label>
           <Button
             type="button"
-            onClick={() => router.push("/admin/industries/new")}
+            onClick={() => router.push("/4dm1n-n3ur0v4nt4/industries/new")}
             addItem
           >
             + Add Industry
@@ -373,7 +370,7 @@ export default function IndustriesMainPage() {
               <div
                 key={field.id}
                 className="flex items-center justify-between border border-black/10 rounded-md px-4 py-3 hover:shadow-sm transition-all cursor-pointer"
-                onClick={() => id && router.push(`/admin/industries/${id}`)}
+                onClick={() => id && router.push(`/4dm1n-n3ur0v4nt4/industries/${id}`)}
               >
                 <div className="flex gap-3 justify-between w-full">
                   <div className="flex items-center gap-3">
