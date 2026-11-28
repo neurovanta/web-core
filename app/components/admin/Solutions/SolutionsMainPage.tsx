@@ -8,6 +8,7 @@ import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { ImageUploader } from "@/components/ui/image-uploader";
 import { Textarea } from "@/components/ui/textarea";
 import AdminItemContainer from "@/app/components/admin/common/AdminItemContainer";
+import SixImageLayoutEditor from "./SixImageLayoutEditor";
 import AdminPageActions from "@/app/components/admin/common/AdminPageActions";
 import { guardNavigation } from "@/app/components/admin/common/UnsavedLeaveGuard";
 import { useUnsavedChanges } from "@/app/components/admin/common/useUnsavedChanges";
@@ -242,28 +243,32 @@ export default function SolutionMainPage() {
             </Label>
             <div className="p-5 flex flex-col gap-4">
               <div className="grid grid-cols-2 gap-4">
-                <div className="flex flex-col gap-2">
-                  <Label className="font-bold">Image</Label>
-                  <Controller
-                    name="bannerSection.image"
-                    control={control}
-                    render={({ field }) => (
-                      <ImageUploader
-                        value={field.value}
-                        onChange={field.onChange}
-                      />
+                <div className="flex flex-col gap-4">
+                  <div className="flex flex-col gap-2">
+                    <Label className="font-bold">Image</Label>
+                    <Controller
+                      name="bannerSection.image"
+                      control={control}
+                      render={({ field }) => (
+                        <ImageUploader
+                          value={field.value}
+                          onChange={field.onChange}
+                        />
+                      )}
+                    />
+                    {errors.bannerSection?.image && (
+                      <p className="text-red-500">
+                        {errors.bannerSection.image.message}
+                      </p>
                     )}
-                  />
-                  {errors.bannerSection?.image && (
-                    <p className="text-red-500">
-                      {errors.bannerSection.image.message}
-                    </p>
-                  )}
-                  <Label className="font-bold">Alt Tag</Label>
-                  <Input
-                    {...register("bannerSection.imageAlt")}
-                    placeholder="Alt Tag"
-                  />
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <Label className="font-bold">Alt Tag</Label>
+                    <Input
+                      {...register("bannerSection.imageAlt")}
+                      placeholder="Alt Tag"
+                    />
+                  </div>
                 </div>
                 <div className="flex flex-col gap-2">
                   <Label className="font-bold">Title</Label>
@@ -292,35 +297,43 @@ export default function SolutionMainPage() {
             </Label>
             <div className="p-5 flex flex-col gap-4">
               <div className="grid grid-cols-2 gap-4">
-                <div className="flex flex-col gap-2">
-                  <Label className="font-bold">Image</Label>
-                  <Controller
-                    name="firstSection.image"
-                    control={control}
-                    render={({ field }) => (
-                      <ImageUploader
-                        value={field.value}
-                        onChange={field.onChange}
-                      />
-                    )}
-                  />
-                  <Label className="font-bold">Alt Tag</Label>
-                  <Input
-                    {...register("firstSection.imageAlt")}
-                    placeholder="Alt Tag"
-                  />
+                <div className="flex flex-col gap-4">
+                  <div className="flex flex-col gap-2">
+                    <Label className="font-bold">Image</Label>
+                    <Controller
+                      name="firstSection.image"
+                      control={control}
+                      render={({ field }) => (
+                        <ImageUploader
+                          value={field.value}
+                          onChange={field.onChange}
+                        />
+                      )}
+                    />
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <Label className="font-bold">Alt Tag</Label>
+                    <Input
+                      {...register("firstSection.imageAlt")}
+                      placeholder="Alt Tag"
+                    />
+                  </div>
                 </div>
-                <div className="flex flex-col gap-2">
-                  <Label className="font-bold">Title</Label>
-                  <Input
-                    {...register("firstSection.title")}
-                    placeholder="Title"
-                  />
-                  <Label className="font-bold">Description</Label>
-                  <Textarea
-                    {...register("firstSection.description")}
-                    placeholder="Description"
-                  />
+                <div className="flex flex-col gap-4">
+                  <div className="flex flex-col gap-2">
+                    <Label className="font-bold">Title</Label>
+                    <Input
+                      {...register("firstSection.title")}
+                      placeholder="Title"
+                    />
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <Label className="font-bold">Description</Label>
+                    <Textarea
+                      {...register("firstSection.description")}
+                      placeholder="Description"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -341,63 +354,78 @@ export default function SolutionMainPage() {
               Third Section
             </Label>
             <div className="p-5 flex flex-col gap-4">
-              <Label className="font-bold">Title</Label>
-              <Input {...register("thirdSection.title")} placeholder="Title" />
-              <Label className="font-bold">Description</Label>
-              <Textarea
-                {...register("thirdSection.description")}
-                placeholder="Description"
-              />
-              <Label className="font-bold">Items</Label>
-              <div className="border border-black/20 p-2 rounded-md flex flex-col gap-4">
-                {thirdItems.map((field, index) => (
-                  <div
-                    key={field.id}
-                    className="grid grid-cols-2 gap-2 relative border-b border-black/20 pb-4"
-                  >
-                    <div className="absolute top-2 right-2">
-                      <RiDeleteBinLine
-                        className="cursor-pointer text-red-600"
-                        onClick={() => removeThird(index)}
-                      />
-                    </div>
-                    <div className="flex flex-col gap-2">
-                      <Label className="font-bold">Image</Label>
-                      <Controller
-                        name={`thirdSection.items.${index}.image`}
-                        control={control}
-                        render={({ field }) => (
-                          <ImageUploader
-                            value={field.value}
-                            onChange={field.onChange}
+              <div className="flex flex-col gap-2">
+                <Label className="font-bold">Title</Label>
+                <Input
+                  {...register("thirdSection.title")}
+                  placeholder="Title"
+                />
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label className="font-bold">Description</Label>
+                <Textarea
+                  {...register("thirdSection.description")}
+                  placeholder="Description"
+                />
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label className="font-bold">Items</Label>
+                <div className="grid grid-cols-2 xl:grid-cols-4 gap-4">
+                  {thirdItems.map((field, index) => (
+                    <div
+                      key={field.id}
+                      className="relative flex flex-col gap-4 rounded-xl border border-border-color/60 bg-cream-bg/50 p-4 pt-11"
+                    >
+                      <div className="absolute top-4 right-4">
+                        <RiDeleteBinLine
+                          className="cursor-pointer text-red-600"
+                          onClick={() => removeThird(index)}
+                        />
+                      </div>
+                      <div className="flex flex-col gap-4">
+                        <div className="flex flex-col gap-2">
+                          <Label className="font-bold">Image</Label>
+                          <Controller
+                            name={`thirdSection.items.${index}.image`}
+                            control={control}
+                            render={({ field }) => (
+                              <ImageUploader
+                                value={field.value}
+                                onChange={field.onChange}
+                              />
+                            )}
                           />
-                        )}
-                      />
-                      <Label className="font-bold">Alt Tag</Label>
-                      <Input
-                        {...register(`thirdSection.items.${index}.imageAlt`)}
-                        placeholder="Alt Tag"
-                      />
+                        </div>
+                        <div className="flex flex-col gap-2">
+                          <Label className="font-bold">Alt Tag</Label>
+                          <Input
+                            {...register(
+                              `thirdSection.items.${index}.imageAlt`,
+                            )}
+                            placeholder="Alt Tag"
+                          />
+                        </div>
+                      </div>
+                      <div className="flex flex-col gap-2">
+                        <Label className="font-bold">Title</Label>
+                        <Input
+                          {...register(`thirdSection.items.${index}.title`)}
+                          placeholder="Title"
+                        />
+                      </div>
                     </div>
-                    <div className="flex flex-col gap-2">
-                      <Label className="font-bold">Title</Label>
-                      <Input
-                        {...register(`thirdSection.items.${index}.title`)}
-                        placeholder="Title"
-                      />
-                    </div>
+                  ))}
+                  <div className="col-span-full flex justify-end">
+                    <Button
+                      type="button"
+                      addItem
+                      onClick={() =>
+                        appendThird({ title: "", image: "", imageAlt: "" })
+                      }
+                    >
+                      Add Item
+                    </Button>
                   </div>
-                ))}
-                <div className="flex justify-end">
-                  <Button
-                    type="button"
-                    addItem
-                    onClick={() =>
-                      appendThird({ title: "", image: "", imageAlt: "" })
-                    }
-                  >
-                    Add Item
-                  </Button>
                 </div>
               </div>
             </div>
@@ -418,56 +446,31 @@ export default function SolutionMainPage() {
               Fourth Section
             </Label>
             <div className="p-5 flex flex-col gap-4">
-              <Label className="font-bold">Title</Label>
-              <Input {...register("fourthSection.title")} placeholder="Title" />
-              <Label className="font-bold">Description</Label>
-              <Textarea
-                {...register("fourthSection.description")}
-                placeholder="Description"
-              />
-              <Label className="font-bold">Items</Label>
-              <div className="border border-black/20 p-2 rounded-md flex flex-col gap-4">
-                {fourthItems.map((field, index) => (
-                  <div
-                    key={field.id}
-                    className="relative border-b border-black/20 pb-4"
-                  >
-                    <div className="absolute top-2 right-2">
-                      <RiDeleteBinLine
-                        className="cursor-pointer text-red-600"
-                        onClick={() => removeFourth(index)}
-                      />
-                    </div>
-                    <div className="flex flex-col gap-2 w-1/2">
-                      <Label className="font-bold">Image</Label>
-                      <Controller
-                        name={`fourthSection.items.${index}.image`}
-                        control={control}
-                        render={({ field }) => (
-                          <ImageUploader
-                            value={field.value}
-                            onChange={field.onChange}
-                          />
-                        )}
-                      />
-                      <Label className="font-bold">Alt Tag</Label>
-                      <Input
-                        {...register(`fourthSection.items.${index}.imageAlt`)}
-                        placeholder="Alt Tag"
-                      />
-                    </div>
-                  </div>
-                ))}
-                <div className="flex justify-end">
-                  <Button
-                    type="button"
-                    addItem
-                    onClick={() => appendFourth({ image: "", imageAlt: "" })}
-                  >
-                    Add Item
-                  </Button>
-                </div>
+              <div className="flex flex-col gap-2">
+                <Label className="font-bold">Title</Label>
+                <Input
+                  {...register("fourthSection.title")}
+                  placeholder="Title"
+                />
               </div>
+              <div className="flex flex-col gap-2">
+                <Label className="font-bold">Description</Label>
+                <Textarea
+                  {...register("fourthSection.description")}
+                  placeholder="Description"
+                />
+              </div>
+              <SixImageLayoutEditor
+                name="fourthSection.items"
+                fields={fourthItems}
+                items={watch("fourthSection.items") ?? []}
+                title={watch("fourthSection.title")}
+                description={watch("fourthSection.description")}
+                control={control}
+                register={register}
+                onAdd={() => appendFourth({ image: "", imageAlt: "" })}
+                onRemove={removeFourth}
+              />
             </div>
           </AdminItemContainer>
 
@@ -486,25 +489,34 @@ export default function SolutionMainPage() {
               Fifth Section
             </Label>
             <div className="p-5 flex flex-col gap-4">
-              <Label className="font-bold">Title</Label>
-              <Input {...register("fifthSection.title")} placeholder="Title" />
               <div className="flex flex-col gap-2">
-                <Label className="font-bold">Image</Label>
-                <Controller
-                  name="fifthSection.image"
-                  control={control}
-                  render={({ field }) => (
-                    <ImageUploader
-                      value={field.value}
-                      onChange={field.onChange}
-                    />
-                  )}
-                />
-                <Label className="font-bold">Alt Tag</Label>
+                <Label className="font-bold">Title</Label>
                 <Input
-                  {...register("fifthSection.imageAlt")}
-                  placeholder="Alt Tag"
+                  {...register("fifthSection.title")}
+                  placeholder="Title"
                 />
+              </div>
+              <div className="flex flex-col gap-4">
+                <div className="flex flex-col gap-2">
+                  <Label className="font-bold">Image</Label>
+                  <Controller
+                    name="fifthSection.image"
+                    control={control}
+                    render={({ field }) => (
+                      <ImageUploader
+                        value={field.value}
+                        onChange={field.onChange}
+                      />
+                    )}
+                  />
+                </div>
+                <div className="flex flex-col gap-2">
+                  <Label className="font-bold">Alt Tag</Label>
+                  <Input
+                    {...register("fifthSection.imageAlt")}
+                    placeholder="Alt Tag"
+                  />
+                </div>
               </div>
             </div>
           </AdminItemContainer>
@@ -512,16 +524,27 @@ export default function SolutionMainPage() {
           {/* SEO */}
           <AdminItemContainer>
             <Label main>SEO</Label>
-            <div className="p-5 flex flex-col gap-2">
-              <Label className="font-bold">Meta Title</Label>
-              <Input {...register("seo.metaTitle")} placeholder="Meta Title" />
-              <Label className="font-bold">Meta Description</Label>
-              <Input
-                {...register("seo.metaDescription")}
-                placeholder="Meta Description"
-              />
-              <Label className="font-bold">Script</Label>
-              <Textarea {...register("seo.script")} placeholder="Script" />
+            <div className="p-5 flex flex-col gap-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="flex flex-col gap-2">
+                  <Label className="font-bold">Meta Title</Label>
+                  <Input
+                    {...register("seo.metaTitle")}
+                    placeholder="Meta Title"
+                  />
+                </div>
+                <div className="flex flex-col gap-2">
+                  <Label className="font-bold">Meta Description</Label>
+                  <Input
+                    {...register("seo.metaDescription")}
+                    placeholder="Meta Description"
+                  />
+                </div>
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label className="font-bold">Script</Label>
+                <Textarea {...register("seo.script")} placeholder="Script" />
+              </div>
             </div>
           </AdminItemContainer>
 

@@ -293,23 +293,27 @@ export default function CareersPage() {
             </Label>
             <div className="p-5 flex flex-col gap-4">
               <div className="grid grid-cols-2 gap-4">
-                <div className="flex flex-col gap-2">
-                  <Label className="font-bold">Image</Label>
-                  <Controller
-                    name="bannerSection.image"
-                    control={control}
-                    render={({ field }) => (
-                      <ImageUploader
-                        value={field.value}
-                        onChange={field.onChange}
-                      />
-                    )}
-                  />
-                  <Label className="font-bold">Alt Tag</Label>
-                  <Input
-                    {...register("bannerSection.imageAlt")}
-                    placeholder="Alt Tag"
-                  />
+                <div className="flex flex-col gap-4">
+                  <div className="flex flex-col gap-2">
+                    <Label className="font-bold">Image</Label>
+                    <Controller
+                      name="bannerSection.image"
+                      control={control}
+                      render={({ field }) => (
+                        <ImageUploader
+                          value={field.value}
+                          onChange={field.onChange}
+                        />
+                      )}
+                    />
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <Label className="font-bold">Alt Tag</Label>
+                    <Input
+                      {...register("bannerSection.imageAlt")}
+                      placeholder="Alt Tag"
+                    />
+                  </div>
                 </div>
                 <div className="flex flex-col gap-2">
                   <Label className="font-bold">Title</Label>
@@ -338,35 +342,43 @@ export default function CareersPage() {
             </Label>
             <div className="p-5 flex flex-col gap-4">
               <div className="grid grid-cols-2 gap-4">
-                <div className="flex flex-col gap-2">
-                  <Label className="font-bold">Image</Label>
-                  <Controller
-                    name="firstSection.image"
-                    control={control}
-                    render={({ field }) => (
-                      <ImageUploader
-                        value={field.value}
-                        onChange={field.onChange}
-                      />
-                    )}
-                  />
-                  <Label className="font-bold">Alt Tag</Label>
-                  <Input
-                    {...register("firstSection.imageAlt")}
-                    placeholder="Alt Tag"
-                  />
+                <div className="flex flex-col gap-4">
+                  <div className="flex flex-col gap-2">
+                    <Label className="font-bold">Image</Label>
+                    <Controller
+                      name="firstSection.image"
+                      control={control}
+                      render={({ field }) => (
+                        <ImageUploader
+                          value={field.value}
+                          onChange={field.onChange}
+                        />
+                      )}
+                    />
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <Label className="font-bold">Alt Tag</Label>
+                    <Input
+                      {...register("firstSection.imageAlt")}
+                      placeholder="Alt Tag"
+                    />
+                  </div>
                 </div>
-                <div className="flex flex-col gap-2">
-                  <Label className="font-bold">Title</Label>
-                  <Input
-                    {...register("firstSection.title")}
-                    placeholder="Title"
-                  />
-                  <Label className="font-bold">Description</Label>
-                  <Textarea
-                    {...register("firstSection.description")}
-                    placeholder="Description"
-                  />
+                <div className="flex flex-col gap-4">
+                  <div className="flex flex-col gap-2">
+                    <Label className="font-bold">Title</Label>
+                    <Input
+                      {...register("firstSection.title")}
+                      placeholder="Title"
+                    />
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <Label className="font-bold">Description</Label>
+                    <Textarea
+                      {...register("firstSection.description")}
+                      placeholder="Description"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -387,18 +399,29 @@ export default function CareersPage() {
               Second Section — Open Positions
             </Label>
             <div className="p-5 flex flex-col gap-4">
-              <Label className="font-bold">Title</Label>
-              <Input {...register("secondSection.title")} placeholder="Title" />
-              <Label className="font-bold">Contact Label</Label>
-              <Input
-                {...register("secondSection.contactLabel")}
-                placeholder="Or Contact With"
-              />
-              <Label className="font-bold">Contact Email</Label>
-              <Input
-                {...register("secondSection.contactEmail")}
-                placeholder="info@example.com"
-              />
+              <div className="grid grid-cols-2 gap-4">
+                <div className="flex flex-col gap-2">
+                  <Label className="font-bold">Title</Label>
+                  <Input
+                    {...register("secondSection.title")}
+                    placeholder="Title"
+                  />
+                </div>
+                <div className="flex flex-col gap-2">
+                  <Label className="font-bold">Contact Label</Label>
+                  <Input
+                    {...register("secondSection.contactLabel")}
+                    placeholder="Or Contact With"
+                  />
+                </div>
+                <div className="flex flex-col gap-2">
+                  <Label className="font-bold">Contact Email</Label>
+                  <Input
+                    {...register("secondSection.contactEmail")}
+                    placeholder="info@example.com"
+                  />
+                </div>
+              </div>
             </div>
           </AdminItemContainer>
 
@@ -417,13 +440,20 @@ export default function CareersPage() {
               Third Section
             </Label>
             <div className="p-5 flex flex-col gap-4">
-              <Label className="font-bold">Title</Label>
-              <Input {...register("thirdSection.title")} placeholder="Title" />
-              <Label className="font-bold">Description</Label>
-              <Textarea
-                {...register("thirdSection.description")}
-                placeholder="Description"
-              />
+              <div className="flex flex-col gap-2">
+                <Label className="font-bold">Title</Label>
+                <Input
+                  {...register("thirdSection.title")}
+                  placeholder="Title"
+                />
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label className="font-bold">Description</Label>
+                <Textarea
+                  {...register("thirdSection.description")}
+                  placeholder="Description"
+                />
+              </div>
               <div className="flex items-center justify-between mt-2 border border-black/10 rounded-lg p-4 shadow-md">
                 <Label className="font-bold">Items</Label>
                 <Button
@@ -438,7 +468,7 @@ export default function CareersPage() {
                 {thirdItems.map((field, index) => (
                   <div
                     key={field.id}
-                    className="border border-black/10 rounded-lg p-4 flex flex-col gap-3"
+                    className="rounded-xl border border-border-color/60 bg-cream-bg/50 p-4 flex flex-col gap-4"
                   >
                     <div className="flex items-center justify-between">
                       <Label className="font-bold">Item {index + 1}</Label>
@@ -451,23 +481,29 @@ export default function CareersPage() {
                       </Button>
                     </div>
                     <div className="grid grid-cols-2 gap-4">
-                      <div className="flex flex-col gap-2">
-                        <Label className="font-bold">Image</Label>
-                        <Controller
-                          name={`thirdSection.items.${index}.image`}
-                          control={control}
-                          render={({ field }) => (
-                            <ImageUploader
-                              value={field.value}
-                              onChange={field.onChange}
-                            />
-                          )}
-                        />
-                        <Label className="font-bold">Image Alt</Label>
-                        <Input
-                          {...register(`thirdSection.items.${index}.imageAlt`)}
-                          placeholder="Image Alt"
-                        />
+                      <div className="flex flex-col gap-4">
+                        <div className="flex flex-col gap-2">
+                          <Label className="font-bold">Image</Label>
+                          <Controller
+                            name={`thirdSection.items.${index}.image`}
+                            control={control}
+                            render={({ field }) => (
+                              <ImageUploader
+                                value={field.value}
+                                onChange={field.onChange}
+                              />
+                            )}
+                          />
+                        </div>
+                        <div className="flex flex-col gap-2">
+                          <Label className="font-bold">Image Alt</Label>
+                          <Input
+                            {...register(
+                              `thirdSection.items.${index}.imageAlt`,
+                            )}
+                            placeholder="Image Alt"
+                          />
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -480,15 +516,26 @@ export default function CareersPage() {
           <AdminItemContainer>
             <Label main>SEO</Label>
             <div className="p-5 flex flex-col gap-4">
-              <Label className="font-bold">Meta Title</Label>
-              <Input {...register("seo.metaTitle")} placeholder="Meta Title" />
-              <Label className="font-bold">Meta Description</Label>
-              <Input
-                {...register("seo.metaDescription")}
-                placeholder="Meta Description"
-              />
-              <Label className="font-bold">Script</Label>
-              <Textarea {...register("seo.script")} placeholder="Script" />
+              <div className="grid grid-cols-2 gap-4">
+                <div className="flex flex-col gap-2">
+                  <Label className="font-bold">Meta Title</Label>
+                  <Input
+                    {...register("seo.metaTitle")}
+                    placeholder="Meta Title"
+                  />
+                </div>
+                <div className="flex flex-col gap-2">
+                  <Label className="font-bold">Meta Description</Label>
+                  <Input
+                    {...register("seo.metaDescription")}
+                    placeholder="Meta Description"
+                  />
+                </div>
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label className="font-bold">Script</Label>
+                <Textarea {...register("seo.script")} placeholder="Script" />
+              </div>
             </div>
           </AdminItemContainer>
 
