@@ -9,6 +9,7 @@ import CareerEnquiry from "@/app/models/CareerEnquiry";
 import connectDB from "../../mongodb";
 import { getToEmail } from "@/lib/services/getToMail.service";
 import { uploadToDropbox } from "@/lib/connectDropbox";
+import { slugify } from "@/lib/slug";
 
 export async function sendCareerEnquiryAction(formData: FormData) {
   try {
@@ -39,7 +40,9 @@ export async function sendCareerEnquiryAction(formData: FormData) {
 
 
       const filename = `${Date.now()}-${resume.name}`;
-      filePath = await uploadToDropbox(resume, `/resume/${applyingFor}/${filename}`);
+      // job titles can contain "/" (e.g. "UI/UX Designer"); keep the Dropbox folder flat
+      const folder = slugify(applyingFor || "") || "general";
+      filePath = await uploadToDropbox(resume, `/resume/${folder}/${filename}`);
     }
 
     await connectDB();

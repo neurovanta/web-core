@@ -5,14 +5,16 @@ import { PiPhoneLight } from "react-icons/pi";
 import { IoClose } from "react-icons/io5";
 import { motion, AnimatePresence, MotionConfig } from "framer-motion";
 import { useAppShell } from "./AppShell";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { NavDropdown, NavDropdownHandle } from "./NavDropdown";
 import Image from "next/image";
 import MenuIcon from "./HamburgerAniamtion";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { NavData } from "@/app/types/header";
 import { headerScrollLock } from "@/lib/headerScrollLock";
+import { useSiteSearch } from "@/app/hooks/useSiteSearch";
+import { SearchItem } from "@/app/types/search";
 
 const dropDown = (delay: number) => ({
   hidden: { y: -22, opacity: 0 },
@@ -27,14 +29,51 @@ const dropDown = (delay: number) => ({
   },
 });
 
-const MOCK_RESULTS = [
-  { label: "About Neuro Vanta", href: "/about-us" },
-  { label: "Our Systems", href: "/systems" },
-  { label: "Industries", href: "/industries" },
-  { label: "Careers", href: "/careers" },
-  { label: "Contact Us", href: "/contact-us" },
-  { label: "Solutions", href: "/solutions" },
-];
+// Shared result rows for the xl+ dropdown and the below-xl panel.
+function SearchResults({
+  results,
+  emptyText,
+  onSelect,
+  desktop = false,
+}: {
+  results: SearchItem[];
+  emptyText: string | null;
+  onSelect: () => void;
+  desktop?: boolean;
+}) {
+  return (
+    <div className="bg-black/90 backdrop-blur-[20px] rounded-[12px] py-2">
+      {results.length === 0 && emptyText && (
+        <p className="px-5 py-3 text-white/70 text-sm">{emptyText}</p>
+      )}
+      {results.map((result, i) => (
+        <motion.div
+          key={result.href}
+          initial={{ opacity: 0, y: desktop ? -6 : -4 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: i * 0.04, duration: 0.2 }}
+        >
+          <Link
+            href={result.href}
+            onClick={onSelect}
+            className={`flex items-center gap-3 px-4 py-3 text-white text-sm hover:bg-white/10 transition-colors duration-200 mx-1 ${desktop ? "rounded-lg group" : "rounded-[12px]"}`}
+          >
+            <IoSearch className="w-3.5 h-3.5 opacity-80 shrink-0" />
+            <span
+              data-text={desktop ? result.title : undefined}
+              className={`min-w-0 flex-1 truncate ${desktop ? "contact-link" : ""}`}
+            >
+              {result.title}
+            </span>
+            <span className="shrink-0 text-[11px] uppercase tracking-[0.06em] text-white/50">
+              {result.type}
+            </span>
+          </Link>
+        </motion.div>
+      ))}
+    </div>
+  );
+}
 
 const getHeaderPadding = () => {
   return window.innerWidth < 1024 ? "30px" : "50px";
@@ -64,6 +103,7 @@ export default function Header({ navData }: { navData: NavData }) {
   const searchInputRef = useRef<HTMLInputElement>(null);
   const mobileSearchInputRef = useRef<HTMLInputElement>(null);
   const searchContainerRef = useRef<HTMLDivElement>(null);
+  const mobileSearchPanelRef = useRef<HTMLDivElement>(null);
   const searchFocusTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const bgRestoreTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -76,20 +116,29 @@ export default function Header({ navData }: { navData: NavData }) {
   );
 
   const pathname = usePathname();
+  const router = useRouter();
   const isCareerPage = pathname.startsWith("/careers/");
 
-  const filteredResults = useMemo(
-    () =>
-      MOCK_RESULTS.filter(
-        (r) =>
-          searchQuery.trim().length > 0 &&
-          r.label.toLowerCase().includes(searchQuery.toLowerCase()),
-      ),
-    [searchQuery],
-  );
+  const {
+    results: filteredResults,
+    status: searchStatus,
+    load: loadSearch,
+  } = useSiteSearch(searchQuery);
+
+  // Message for a typed query with nothing to list; null keeps the panel closed.
+  const searchEmptyText =
+    searchQuery.trim().length < 2
+      ? null
+      : searchStatus === "ready"
+        ? "No results found"
+        : searchStatus === "error"
+          ? "Search is unavailable right now"
+          : null;
+  const showSearchResults = filteredResults.length > 0 || searchEmptyText !== null;
 
   const openSearch = () => {
     setSearchOpen(true);
+    loadSearch();
     // focus the right input depending on viewport
     if (searchFocusTimer.current) clearTimeout(searchFocusTimer.current);
     searchFocusTimer.current = setTimeout(() => {
@@ -107,13 +156,23 @@ export default function Header({ navData }: { navData: NavData }) {
     setSearchQuery("");
   }, []);
 
+  const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Escape") closeSearch();
+    if (e.key === "Enter" && filteredResults[0]) {
+      router.push(filteredResults[0].href);
+      closeSearch();
+    }
+  };
+
   // Close on outside click
   useEffect(() => {
     if (!searchOpen) return;
     const handleClick = (e: MouseEvent) => {
+      const target = e.target as Node;
       if (
         searchContainerRef.current &&
-        !searchContainerRef.current.contains(e.target as Node)
+        !searchContainerRef.current.contains(target) &&
+        !mobileSearchPanelRef.current?.contains(target)
       ) {
         closeSearch();
       }
@@ -465,7 +524,7 @@ export default function Header({ navData }: { navData: NavData }) {
                       type="text"
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      onKeyDown={(e) => e.key === "Escape" && closeSearch()}
+                      onKeyDown={handleSearchKeyDown}
                       placeholder="Search..."
                       className="flex-1 bg-transparent text-sm outline-none placeholder-current min-w-0 pr-1"
                     />
@@ -501,7 +560,7 @@ export default function Header({ navData }: { navData: NavData }) {
 
               {/* ── xl+ results dropdown (anchored to inline bar) ─────────────── */}
               <AnimatePresence>
-                {searchOpen && filteredResults.length > 0 && (
+                {searchOpen && showSearchResults && (
                   <motion.div
                     initial={{ height: 0, opacity: 0 }}
                     animate={{ height: "auto", opacity: 1 }}
@@ -510,30 +569,12 @@ export default function Header({ navData }: { navData: NavData }) {
                     className="hidden xl:block border border-white/20 absolute top-full mt-2 right-0 max-w-[370px] 2xl:max-w-[500px] min-w-[280px] overflow-hidden rounded-[12px]"
                     style={{ zIndex: 1001 }}
                   >
-                    <div className="bg-black/90 backdrop-blur-[20px] rounded-[12px] py-2">
-                      {filteredResults.map((result, i) => (
-                        <motion.div
-                          key={result.href}
-                          initial={{ opacity: 0, y: -6 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: i * 0.04, duration: 0.2 }}
-                        >
-                          <Link
-                            href={result.href}
-                            onClick={closeSearch}
-                            className="flex items-center gap-3 px-4 py-3 text-white text-sm hover:bg-white/10 transition-colors duration-200 rounded-lg mx-1 group"
-                          >
-                            <IoSearch className="w-3.5 h-3.5 opacity-80 shrink-0" />
-                            <span
-                              data-text={result.label}
-                              className="contact-link"
-                            >
-                              {result.label}
-                            </span>
-                          </Link>
-                        </motion.div>
-                      ))}
-                    </div>
+                    <SearchResults
+                      desktop
+                      results={filteredResults}
+                      emptyText={searchEmptyText}
+                      onSelect={closeSearch}
+                    />
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -551,7 +592,10 @@ export default function Header({ navData }: { navData: NavData }) {
               exit={{ opacity: 0 }}
               // transition={{ duration: 0.3, ease: [0.33, 1, 0.68, 1] }}
             >
-              <div className="container pb-4 pt-3 flex flex-col items-end gap-2">
+              <div
+                ref={mobileSearchPanelRef}
+                className="container pb-4 pt-3 flex flex-col items-end gap-2"
+              >
                 {/* Pill — width: 0 → 300 spring from right */}
                 <motion.div
                   initial={{ scaleX: 0, opacity: 0 }}
@@ -582,7 +626,7 @@ export default function Header({ navData }: { navData: NavData }) {
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    onKeyDown={(e) => e.key === "Escape" && closeSearch()}
+                    onKeyDown={handleSearchKeyDown}
                     placeholder="Search..."
                     className={`flex-1 bg-transparent text-sm outline-none placeholder-current min-w-0 ${iconTextClass}`}
                   />
@@ -590,7 +634,7 @@ export default function Header({ navData }: { navData: NavData }) {
 
                 {/* Results — in normal flow, same 300px width, shutter down */}
                 <AnimatePresence>
-                  {filteredResults.length > 0 && (
+                  {showSearchResults && (
                     <motion.div
                       initial={{ height: 0, opacity: 0 }}
                       animate={{ height: "auto", opacity: 1 }}
@@ -599,25 +643,11 @@ export default function Header({ navData }: { navData: NavData }) {
                       className="w-[300px] overflow-hidden rounded-[12px]"
                       style={{ zIndex: 1001 }}
                     >
-                      <div className="bg-black/90 backdrop-blur-[20px] rounded-[12px] py-2">
-                        {filteredResults.map((result, i) => (
-                          <motion.div
-                            key={result.href}
-                            initial={{ opacity: 0, y: -4 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: i * 0.04, duration: 0.2 }}
-                          >
-                            <Link
-                              href={result.href}
-                              onClick={closeSearch}
-                              className="flex items-center gap-3 px-4 py-3 text-white text-sm hover:bg-white/10 transition-colors duration-200 rounded-[12px] mx-1"
-                            >
-                              <IoSearch className="w-3.5 h-3.5 opacity-80 shrink-0" />
-                              <span>{result.label}</span>
-                            </Link>
-                          </motion.div>
-                        ))}
-                      </div>
+                      <SearchResults
+                        results={filteredResults}
+                        emptyText={searchEmptyText}
+                        onSelect={closeSearch}
+                      />
                     </motion.div>
                   )}
                 </AnimatePresence>

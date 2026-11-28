@@ -8,6 +8,7 @@ import { Controller, useForm } from "react-hook-form";
 import { ImageUploader } from "@/components/ui/image-uploader";
 import { Textarea } from "@/components/ui/textarea";
 import AdminItemContainer from "@/app/components/admin/common/AdminItemContainer";
+import AdminTabs from "@/app/components/admin/common/AdminTabs";
 import AdminPageActions from "@/app/components/admin/common/AdminPageActions";
 import AdminSubmitButton from "@/app/components/admin/common/AdminSubmitButton";
 import { toast } from "sonner";
@@ -94,6 +95,8 @@ export default function SystemsMainPage() {
     watch,
     formState: { errors, isSubmitting },
   } = useForm<SystemsMainForm>();
+
+  const [activeTab, setActiveTab] = useState<"list" | "page">("list");
 
   const fetchData = async () => {
     try {
@@ -300,7 +303,23 @@ export default function SystemsMainPage() {
   return (
     <AdminLoadable loading={pageLoading}>
       <div className="flex flex-col gap-5">
-        <form className="flex flex-col gap-5" onSubmit={handleSubmit(onSubmit)}>
+        <AdminTabs
+          tabs={[
+            {
+              key: "list",
+              label: "Systems",
+              count: categories.reduce((n, c) => n + c.products.length, 0),
+            },
+            { key: "page", label: "Page" },
+          ]}
+          active={activeTab}
+          onChange={setActiveTab}
+        />
+
+        <form
+          className={`flex-col gap-5 ${activeTab === "page" ? "flex" : "hidden"}`}
+          onSubmit={handleSubmit(onSubmit)}
+        >
           {/* Banner Section */}
           <AdminItemContainer>
             <Label
@@ -398,303 +417,6 @@ export default function SystemsMainPage() {
                 {...register("secondSection.description")}
                 placeholder="Description"
               />
-              {/* Categories & products: saved immediately through their own API calls, not by the page Save button */}
-              <div className="mt-2 flex flex-col gap-4 border-t border-black/10 pt-5">
-                <div className="flex flex-wrap items-end justify-between gap-3">
-                  <div className="flex flex-col gap-1">
-                    <Label className="font-bold">Categories & Products</Label>
-                    <p className="text-[12.5px] text-secondary/60">
-                      {categories.length}{" "}
-                      {categories.length === 1 ? "category" : "categories"} ·{" "}
-                      {categories.reduce((n, c) => n + c.products.length, 0)}{" "}
-                      products. Changes here (add, rename, hide, delete) are
-                      saved straight away.
-                    </p>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => setCategoryDialog({ open: true, title: "" })}
-                    className={addBtn}
-                  >
-                    <Plus className="h-4 w-4" />
-                    Add Category
-                  </button>
-                </div>
-
-                {categories.length === 0 && (
-                  <div className="flex flex-col items-center gap-2 rounded-xl border border-dashed border-border-color/80 bg-cream-bg/50 px-6 py-10 text-center text-sm text-secondary/60">
-                    <FolderPlus className="h-7 w-7 text-secondary/30" />
-                    No categories yet. Add one to start listing products.
-                  </div>
-                )}
-
-                {categories.map((cat, catIndex) => (
-                  <div
-                    key={cat._id}
-                    className={cn(
-                      "overflow-hidden rounded-xl border bg-white transition-colors",
-                      cat.isHidden
-                        ? "border-border-color/50"
-                        : "border-border-color/70",
-                    )}
-                  >
-                    {/* Category header */}
-                    <div className="flex items-center justify-between gap-3 border-b border-border-color/50 bg-cream-bg/70 px-4 py-3">
-                      <div className="flex min-w-0 items-center gap-3">
-                        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-secondary text-[12px] font-semibold text-white">
-                          {catIndex + 1}
-                        </span>
-                        <div className="flex min-w-0 flex-col">
-                          <span
-                            className={cn(
-                              "truncate text-[14.5px] font-semibold",
-                              cat.isHidden
-                                ? "text-secondary/50"
-                                : "text-secondary",
-                            )}
-                          >
-                            {cat.title || "Untitled Category"}
-                          </span>
-                          <span className="text-[12px] text-secondary/55">
-                            {cat.products.length}{" "}
-                            {cat.products.length === 1 ? "product" : "products"}
-                            {cat.isHidden && " · hidden on the website"}
-                          </span>
-                        </div>
-                      </div>
-
-                      <div className="flex shrink-0 items-center gap-1.5">
-                        <button
-                          type="button"
-                          title={
-                            cat.isHidden
-                              ? "Hidden on the website - click to show"
-                              : "Visible on the website - click to hide"
-                          }
-                          aria-label={
-                            cat.isHidden ? "Show category" : "Hide category"
-                          }
-                          onClick={(e) =>
-                            cat._id &&
-                            toggleCategoryVisibility(e, cat._id, cat.isHidden)
-                          }
-                          className={cn(
-                            iconBtn,
-                            cat.isHidden
-                              ? "border-border-color/70 bg-white text-gray-400 hover:text-gray-600"
-                              : "border-emerald-200 bg-emerald-50 text-emerald-700 hover:border-emerald-300",
-                          )}
-                        >
-                          {cat.isHidden ? (
-                            <RiEyeOffLine size={16} />
-                          ) : (
-                            <RiEyeLine size={16} />
-                          )}
-                        </button>
-                        <button
-                          type="button"
-                          title="Rename category"
-                          aria-label="Rename category"
-                          onClick={() =>
-                            cat._id &&
-                            setEditDialog({
-                              open: true,
-                              categoryId: cat._id,
-                              title: cat.title,
-                            })
-                          }
-                          className={cn(
-                            iconBtn,
-                            "border-border-color/70 bg-white text-secondary/70 hover:border-secondary/40 hover:text-secondary",
-                          )}
-                        >
-                          <RiPencilLine size={16} />
-                        </button>
-                        <button
-                          type="button"
-                          title="Delete category"
-                          aria-label="Delete category"
-                          onClick={() =>
-                            cat._id &&
-                            setConfirmDialog({
-                              open: true,
-                              type: "category",
-                              id: cat._id,
-                              label: cat.title || "this category",
-                            })
-                          }
-                          className={cn(
-                            iconBtn,
-                            "border-border-color/70 bg-white text-red-400 hover:border-red-200 hover:bg-red-50 hover:text-red-600",
-                          )}
-                        >
-                          <RiDeleteBin6Line size={16} />
-                        </button>
-                        <span
-                          aria-hidden
-                          className="mx-1 h-6 w-px bg-border-color/70"
-                        />
-                        <button
-                          type="button"
-                          onClick={async () => {
-                            try {
-                              const res = await fetch(
-                                `/api/admin/systems?categoryId=${cat._id}`,
-                                {
-                                  method: "POST",
-                                  headers: {
-                                    "Content-Type": "application/json",
-                                  },
-                                  body: JSON.stringify({
-                                    thumbnailTitle: "New Product",
-                                    isHidden: false,
-                                  }),
-                                },
-                              );
-                              if (res.ok) {
-                                await fetchData();
-                                toast.success("Product added");
-                              } else {
-                                const { message } = await res.json();
-                                toast.error(message);
-                              }
-                            } catch {
-                              toast.error("Something went wrong");
-                            }
-                          }}
-                          className={addBtnSmall}
-                        >
-                          <Plus className="h-3.5 w-3.5" />
-                          Add Product
-                        </button>
-                      </div>
-                    </div>
-
-                    {/* Products list */}
-                    {cat.products.length === 0 ? (
-                      <p className="px-4 py-5 text-center text-[13px] text-secondary/50">
-                        No products in this category yet.
-                      </p>
-                    ) : (
-                      <ul className="divide-y divide-border-color/40">
-                        {cat.products.map((product, productIndex) => (
-                          <li
-                            key={product._id}
-                            role="button"
-                            tabIndex={0}
-                            title="Edit product"
-                            onClick={() =>
-                              product._id &&
-                              router.push(
-                                `/4dm1n-n3ur0v4nt4/systems/${product._id}`,
-                              )
-                            }
-                            onKeyDown={(e) => {
-                              if (e.target !== e.currentTarget) return;
-                              if (
-                                (e.key === "Enter" || e.key === " ") &&
-                                product._id
-                              ) {
-                                e.preventDefault();
-                                router.push(
-                                  `/4dm1n-n3ur0v4nt4/systems/${product._id}`,
-                                );
-                              }
-                            }}
-                            className="group flex cursor-pointer items-center justify-between gap-3 px-4 py-2.5 transition-colors hover:bg-cream-bg/60 focus-visible:bg-cream-bg/60 focus-visible:outline-none"
-                          >
-                            <div className="flex min-w-0 items-center gap-3">
-                              <span className="w-5 shrink-0 text-right text-[12px] tabular-nums text-secondary/40">
-                                {productIndex + 1}
-                              </span>
-                              <button
-                                type="button"
-                                title={
-                                  product.isHidden
-                                    ? "Hidden on the website - click to show"
-                                    : "Visible on the website - click to hide"
-                                }
-                                aria-label={
-                                  product.isHidden
-                                    ? "Show product"
-                                    : "Hide product"
-                                }
-                                onClick={(e) =>
-                                  product._id &&
-                                  cat._id &&
-                                  toggleProductVisibility(
-                                    e,
-                                    product._id,
-                                    product.isHidden,
-                                    cat._id,
-                                  )
-                                }
-                                className={cn(
-                                  iconBtnSmall,
-                                  product.isHidden
-                                    ? "text-gray-400 hover:bg-gray-100 hover:text-gray-600"
-                                    : "text-emerald-600 hover:bg-emerald-50",
-                                )}
-                              >
-                                {product.isHidden ? (
-                                  <RiEyeOffLine size={16} />
-                                ) : (
-                                  <RiEyeLine size={16} />
-                                )}
-                              </button>
-                              <span
-                                className={cn(
-                                  "truncate text-[14px]",
-                                  product.isHidden
-                                    ? "text-secondary/45"
-                                    : "font-medium text-secondary",
-                                )}
-                              >
-                                {product.thumbnailTitle || "Untitled Product"}
-                              </span>
-                              {product.isHidden && (
-                                <span className="shrink-0 rounded-full bg-gray-100 px-2 py-0.5 text-[11px] font-medium text-gray-500">
-                                  Hidden
-                                </span>
-                              )}
-                            </div>
-                            <div className="flex shrink-0 items-center gap-1">
-                              <span className="flex items-center gap-1 pr-1 text-[12.5px] font-medium text-secondary/0 transition-colors group-hover:text-secondary/70">
-                                Edit
-                                <ChevronRight className="h-4 w-4" />
-                              </span>
-                              <button
-                                type="button"
-                                title="Delete product"
-                                aria-label="Delete product"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  if (product._id && cat._id)
-                                    setConfirmDialog({
-                                      open: true,
-                                      type: "product",
-                                      id: product._id,
-                                      categoryId: cat._id,
-                                      label:
-                                        product.thumbnailTitle ||
-                                        "this product",
-                                    });
-                                }}
-                                className={cn(
-                                  iconBtnSmall,
-                                  "text-red-400 hover:bg-red-50 hover:text-red-600",
-                                )}
-                              >
-                                <RiDeleteBin6Line size={16} />
-                              </button>
-                            </div>
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                  </div>
-                ))}
-              </div>
             </div>
           </AdminItemContainer>
 
@@ -763,6 +485,308 @@ export default function SystemsMainPage() {
             <AdminSubmitButton saving={isSubmitting} />
           </AdminPageActions>
         </form>
+
+        {/* Categories & products — outside the form; saved through their own requests */}
+        <div className={activeTab === "list" ? "" : "hidden"}>
+          <AdminItemContainer>
+            {/* Categories & products: saved immediately through their own API calls, not by the page Save button */}
+            <div className="p-5 flex flex-col gap-4">
+              <div className="flex flex-wrap items-end justify-between gap-3">
+                <div className="flex flex-col gap-1">
+                  <Label className="font-bold">Categories & Products</Label>
+                  <p className="text-[12.5px] text-secondary/60">
+                    {categories.length}{" "}
+                    {categories.length === 1 ? "category" : "categories"} ·{" "}
+                    {categories.reduce((n, c) => n + c.products.length, 0)}{" "}
+                    products. Changes here (add, rename, hide, delete) are saved
+                    straight away.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setCategoryDialog({ open: true, title: "" })}
+                  className={addBtn}
+                >
+                  <Plus className="h-4 w-4" />
+                  Add Category
+                </button>
+              </div>
+
+              {categories.length === 0 && (
+                <div className="flex flex-col items-center gap-2 rounded-xl border border-dashed border-border-color/80 bg-cream-bg/50 px-6 py-10 text-center text-sm text-secondary/60">
+                  <FolderPlus className="h-7 w-7 text-secondary/30" />
+                  No categories yet. Add one to start listing products.
+                </div>
+              )}
+
+              {categories.map((cat, catIndex) => (
+                <div
+                  key={cat._id}
+                  className={cn(
+                    "overflow-hidden rounded-xl border bg-white transition-colors",
+                    cat.isHidden
+                      ? "border-border-color/50"
+                      : "border-border-color/70",
+                  )}
+                >
+                  {/* Category header */}
+                  <div className="flex items-center justify-between gap-3 border-b border-border-color/50 bg-cream-bg/70 px-4 py-3">
+                    <div className="flex min-w-0 items-center gap-3">
+                      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-secondary text-[12px] font-semibold text-white">
+                        {catIndex + 1}
+                      </span>
+                      <div className="flex min-w-0 flex-col">
+                        <span
+                          className={cn(
+                            "truncate text-[14.5px] font-semibold",
+                            cat.isHidden
+                              ? "text-secondary/50"
+                              : "text-secondary",
+                          )}
+                        >
+                          {cat.title || "Untitled Category"}
+                        </span>
+                        <span className="text-[12px] text-secondary/55">
+                          {cat.products.length}{" "}
+                          {cat.products.length === 1 ? "product" : "products"}
+                          {cat.isHidden && " · hidden on the website"}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="flex shrink-0 items-center gap-1.5">
+                      <button
+                        type="button"
+                        title={
+                          cat.isHidden
+                            ? "Hidden on the website - click to show"
+                            : "Visible on the website - click to hide"
+                        }
+                        aria-label={
+                          cat.isHidden ? "Show category" : "Hide category"
+                        }
+                        onClick={(e) =>
+                          cat._id &&
+                          toggleCategoryVisibility(e, cat._id, cat.isHidden)
+                        }
+                        className={cn(
+                          iconBtn,
+                          cat.isHidden
+                            ? "border-border-color/70 bg-white text-gray-400 hover:text-gray-600"
+                            : "border-emerald-200 bg-emerald-50 text-emerald-700 hover:border-emerald-300",
+                        )}
+                      >
+                        {cat.isHidden ? (
+                          <RiEyeOffLine size={16} />
+                        ) : (
+                          <RiEyeLine size={16} />
+                        )}
+                      </button>
+                      <button
+                        type="button"
+                        title="Rename category"
+                        aria-label="Rename category"
+                        onClick={() =>
+                          cat._id &&
+                          setEditDialog({
+                            open: true,
+                            categoryId: cat._id,
+                            title: cat.title,
+                          })
+                        }
+                        className={cn(
+                          iconBtn,
+                          "border-border-color/70 bg-white text-secondary/70 hover:border-secondary/40 hover:text-secondary",
+                        )}
+                      >
+                        <RiPencilLine size={16} />
+                      </button>
+                      <button
+                        type="button"
+                        title="Delete category"
+                        aria-label="Delete category"
+                        onClick={() =>
+                          cat._id &&
+                          setConfirmDialog({
+                            open: true,
+                            type: "category",
+                            id: cat._id,
+                            label: cat.title || "this category",
+                          })
+                        }
+                        className={cn(
+                          iconBtn,
+                          "border-border-color/70 bg-white text-red-400 hover:border-red-200 hover:bg-red-50 hover:text-red-600",
+                        )}
+                      >
+                        <RiDeleteBin6Line size={16} />
+                      </button>
+                      <span
+                        aria-hidden
+                        className="mx-1 h-6 w-px bg-border-color/70"
+                      />
+                      <button
+                        type="button"
+                        onClick={async () => {
+                          try {
+                            const res = await fetch(
+                              `/api/admin/systems?categoryId=${cat._id}`,
+                              {
+                                method: "POST",
+                                headers: {
+                                  "Content-Type": "application/json",
+                                },
+                                body: JSON.stringify({
+                                  thumbnailTitle: "New Product",
+                                  isHidden: false,
+                                }),
+                              },
+                            );
+                            if (res.ok) {
+                              await fetchData();
+                              toast.success("Product added");
+                            } else {
+                              const { message } = await res.json();
+                              toast.error(message);
+                            }
+                          } catch {
+                            toast.error("Something went wrong");
+                          }
+                        }}
+                        className={addBtnSmall}
+                      >
+                        <Plus className="h-3.5 w-3.5" />
+                        Add Product
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Products list */}
+                  {cat.products.length === 0 ? (
+                    <p className="px-4 py-5 text-center text-[13px] text-secondary/50">
+                      No products in this category yet.
+                    </p>
+                  ) : (
+                    <ul className="divide-y divide-border-color/40">
+                      {cat.products.map((product, productIndex) => (
+                        <li
+                          key={product._id}
+                          role="button"
+                          tabIndex={0}
+                          title="Edit product"
+                          onClick={() =>
+                            product._id &&
+                            router.push(
+                              `/4dm1n-n3ur0v4nt4/systems/${product._id}`,
+                            )
+                          }
+                          onKeyDown={(e) => {
+                            if (e.target !== e.currentTarget) return;
+                            if (
+                              (e.key === "Enter" || e.key === " ") &&
+                              product._id
+                            ) {
+                              e.preventDefault();
+                              router.push(
+                                `/4dm1n-n3ur0v4nt4/systems/${product._id}`,
+                              );
+                            }
+                          }}
+                          className="group flex cursor-pointer items-center justify-between gap-3 px-4 py-2.5 transition-colors hover:bg-cream-bg/60 focus-visible:bg-cream-bg/60 focus-visible:outline-none"
+                        >
+                          <div className="flex min-w-0 items-center gap-3">
+                            <span className="w-5 shrink-0 text-right text-[12px] tabular-nums text-secondary/40">
+                              {productIndex + 1}
+                            </span>
+                            <button
+                              type="button"
+                              title={
+                                product.isHidden
+                                  ? "Hidden on the website - click to show"
+                                  : "Visible on the website - click to hide"
+                              }
+                              aria-label={
+                                product.isHidden
+                                  ? "Show product"
+                                  : "Hide product"
+                              }
+                              onClick={(e) =>
+                                product._id &&
+                                cat._id &&
+                                toggleProductVisibility(
+                                  e,
+                                  product._id,
+                                  product.isHidden,
+                                  cat._id,
+                                )
+                              }
+                              className={cn(
+                                iconBtnSmall,
+                                product.isHidden
+                                  ? "text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+                                  : "text-emerald-600 hover:bg-emerald-50",
+                              )}
+                            >
+                              {product.isHidden ? (
+                                <RiEyeOffLine size={16} />
+                              ) : (
+                                <RiEyeLine size={16} />
+                              )}
+                            </button>
+                            <span
+                              className={cn(
+                                "truncate text-[14px]",
+                                product.isHidden
+                                  ? "text-secondary/45"
+                                  : "font-medium text-secondary",
+                              )}
+                            >
+                              {product.thumbnailTitle || "Untitled Product"}
+                            </span>
+                            {product.isHidden && (
+                              <span className="shrink-0 rounded-full bg-gray-100 px-2 py-0.5 text-[11px] font-medium text-gray-500">
+                                Hidden
+                              </span>
+                            )}
+                          </div>
+                          <div className="flex shrink-0 items-center gap-1">
+                            <span className="flex items-center gap-1 pr-1 text-[12.5px] font-medium text-secondary/0 transition-colors group-hover:text-secondary/70">
+                              Edit
+                              <ChevronRight className="h-4 w-4" />
+                            </span>
+                            <button
+                              type="button"
+                              title="Delete product"
+                              aria-label="Delete product"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                if (product._id && cat._id)
+                                  setConfirmDialog({
+                                    open: true,
+                                    type: "product",
+                                    id: product._id,
+                                    categoryId: cat._id,
+                                    label:
+                                      product.thumbnailTitle || "this product",
+                                  });
+                              }}
+                              className={cn(
+                                iconBtnSmall,
+                                "text-red-400 hover:bg-red-50 hover:text-red-600",
+                              )}
+                            >
+                              <RiDeleteBin6Line size={16} />
+                            </button>
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              ))}
+            </div>
+          </AdminItemContainer>
+        </div>
 
         {categoryDialog.open && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">

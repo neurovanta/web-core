@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-const EXISTING_PAGES = ["/", "/about-us", "/solutions", "/industries", "/systems", "/careers"];
+const EXISTING_PAGES = ["/", "/about-us", "/solutions", "/industries", "/longevity-systems", "/experience", "/careers", "/contact-us"];
 
 export default function Breadcrumb() {
   const pathname = usePathname();

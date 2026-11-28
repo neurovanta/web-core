@@ -12,7 +12,12 @@ import AdminPageActions from "@/app/components/admin/common/AdminPageActions";
 import AdminSubmitButton from "@/app/components/admin/common/AdminSubmitButton";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
-import { RiDeleteBinLine, RiEyeLine, RiEyeOffLine } from "react-icons/ri";
+import { RiDeleteBin6Line, RiEyeLine, RiEyeOffLine } from "react-icons/ri";
+import { ChevronRight, Clock, Inbox, MapPin, Plus, Tag } from "lucide-react";
+import { cn } from "@/lib/utils";
+
+const iconBtn =
+  "inline-flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary/20";
 import AdminTabs from "@/app/components/admin/common/AdminTabs";
 
 interface Job {
@@ -64,6 +69,12 @@ export default function CareersPage() {
   } = useForm<CareersForm>();
   const [jobs, setJobs] = useState<Job[]>([]);
   const [activeTab, setActiveTab] = useState<"jobs" | "page">("jobs");
+  const [deleteDialog, setDeleteDialog] = useState({
+    open: false,
+    id: "",
+    label: "",
+  });
+  const hiddenJobs = jobs.filter((j) => j.isHidden).length;
   const [jobDialog, setJobDialog] = useState<{
     open: boolean;
     mode: "add" | "edit";
@@ -193,8 +204,7 @@ export default function CareersPage() {
     }
   };
 
-  const deleteJob = async (e: React.MouseEvent, id: string) => {
-    e.stopPropagation();
+  const deleteJob = async (id: string) => {
     try {
       const res = await fetch(`/api/admin/careers?id=${id}`, {
         method: "DELETE",
@@ -432,7 +442,7 @@ export default function CareersPage() {
                         onClick={() => removeThird(index)}
                         className="text-red-500 hover:text-red-700"
                       >
-                        <RiDeleteBinLine size={16} />
+                        <RiDeleteBin6Line size={16} />
                       </Button>
                     </div>
                     <div className="grid grid-cols-2 gap-4">
@@ -482,63 +492,201 @@ export default function CareersPage() {
           </AdminPageActions>
         </form>
 
-        {/* Jobs list — outside form */}
+        {/* Jobs list — outside form; actions save through their own requests */}
         <div
-          className={`bg-white border border-black/20 rounded-xl p-5 flex-col gap-4 ${activeTab === "jobs" ? "flex" : "hidden"}`}
+          className={cn(
+            "flex-col overflow-hidden rounded-2xl border border-border-color/50 bg-white shadow-[0_1px_2px_rgba(81,70,62,0.05),0_10px_30px_-14px_rgba(81,70,62,0.16)]",
+            activeTab === "jobs" ? "flex" : "hidden",
+          )}
         >
-          <div className="flex items-center justify-between border-b border-black/20 pb-3">
-            <Label className="text-base font-bold">Jobs</Label>
-            <Button type="button" addItem onClick={openAddDialog}>
-              + Add Job
-            </Button>
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border-color/50 px-6 py-4">
+            <div className="flex flex-col gap-0.5">
+              <h2 className="text-[16px] font-semibold text-secondary">Jobs</h2>
+              <p className="text-[12.5px] text-secondary/60">
+                {jobs.length} {jobs.length === 1 ? "job" : "jobs"}
+                {hiddenJobs > 0 && ` · ${hiddenJobs} hidden`} · click a row to
+                edit. Show / hide and delete save straight away.
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={openAddDialog}
+              className="inline-flex h-10 cursor-pointer items-center gap-1.5 rounded-full bg-secondary px-4 text-[13.5px] font-medium text-white shadow-[0_6px_16px_-8px_rgba(81,70,62,0.8)] transition-colors hover:bg-[#3f3630] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-secondary/20"
+            >
+              <Plus className="h-4 w-4" />
+              Add Job
+            </button>
           </div>
-          <div className="grid grid-cols-2 gap-5">
-            {jobs.length === 0 && (
-              <p className="text-sm text-black/40">No jobs added yet.</p>
-            )}
-            {jobs.map((job) => (
-              <div
-                key={job._id}
-                className="flex items-center justify-between border border-black/10 rounded-md px-4 py-3 hover:shadow-sm transition-all cursor-pointer"
-                onClick={() => openEditDialog(job)}
-              >
-                <div className="flex items-center gap-3">
-                  <div
-                    onClick={(e) =>
-                      job._id && toggleJobVisibility(e, job._id, job.isHidden)
-                    }
+
+          {jobs.length === 0 ? (
+            <div className="flex flex-col items-center gap-2 px-6 py-12 text-center text-sm text-secondary/60">
+              <Inbox className="h-8 w-8 text-secondary/30" />
+              No jobs yet. Add one to list it on the careers page.
+            </div>
+          ) : (
+            <ul className="divide-y divide-border-color/40">
+              {jobs.map((job, index) => {
+                const label = job.designation || "Untitled position";
+                return (
+                  <li
+                    key={job._id ?? index}
+                    role="button"
+                    tabIndex={0}
+                    title="Edit job"
+                    onClick={() => openEditDialog(job)}
+                    onKeyDown={(e) => {
+                      if (e.target !== e.currentTarget) return;
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        openEditDialog(job);
+                      }
+                    }}
+                    className="group flex cursor-pointer items-center justify-between gap-4 px-6 py-3.5 transition-colors hover:bg-cream-bg/60 focus-visible:bg-cream-bg/60 focus-visible:outline-none"
                   >
-                    {job.isHidden ? (
-                      <RiEyeOffLine
-                        className="text-gray-400 cursor-pointer hover:scale-110 transition-all"
-                        size={22}
-                      />
-                    ) : (
-                      <RiEyeLine
-                        className="text-green-600 cursor-pointer hover:scale-110 transition-all"
-                        size={22}
-                      />
-                    )}
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="text-sm font-medium">
-                      {job.designation || "Untitled Position"}
-                    </span>
-                    <span className="text-xs text-black/40">
-                      {[job.type, job.location].filter(Boolean).join(" • ")}
-                    </span>
-                  </div>
-                </div>
-                <div onClick={(e) => job._id && deleteJob(e, job._id)}>
-                  <RiDeleteBinLine
-                    className="text-red-400 cursor-pointer hover:text-red-600 hover:scale-110 transition-all"
-                    size={22}
-                  />
-                </div>
-              </div>
-            ))}
-          </div>
+                    <div className="flex min-w-0 items-center gap-3.5">
+                      <span className="w-5 shrink-0 text-right text-[12px] tabular-nums text-secondary/40">
+                        {index + 1}
+                      </span>
+
+                      <button
+                        type="button"
+                        title={
+                          job.isHidden
+                            ? "Hidden on the website - click to show"
+                            : "Visible on the website - click to hide"
+                        }
+                        aria-label={
+                          job.isHidden ? `Show ${label}` : `Hide ${label}`
+                        }
+                        onClick={(e) =>
+                          job._id &&
+                          toggleJobVisibility(e, job._id, job.isHidden)
+                        }
+                        className={cn(
+                          iconBtn,
+                          "border",
+                          job.isHidden
+                            ? "border-border-color/70 bg-white text-gray-400 hover:text-gray-600"
+                            : "border-emerald-200 bg-emerald-50 text-emerald-700 hover:border-emerald-300",
+                        )}
+                      >
+                        {job.isHidden ? (
+                          <RiEyeOffLine size={16} />
+                        ) : (
+                          <RiEyeLine size={16} />
+                        )}
+                      </button>
+
+                      <div className="flex min-w-0 flex-col gap-1">
+                        <div className="flex min-w-0 items-center gap-2">
+                          <span
+                            className={cn(
+                              "truncate text-[14.5px]",
+                              job.isHidden
+                                ? "text-secondary/50"
+                                : "font-medium text-secondary",
+                            )}
+                          >
+                            {label}
+                          </span>
+                          {job.isHidden && (
+                            <span className="shrink-0 rounded-full bg-gray-100 px-2 py-0.5 text-[11px] font-medium text-gray-500">
+                              Hidden
+                            </span>
+                          )}
+                        </div>
+                        <div className="flex min-w-0 flex-wrap items-center gap-1.5 text-[12px] text-secondary/60">
+                          {job.type && (
+                            <span className="inline-flex items-center gap-1 rounded-full bg-cream-bg px-2 py-0.5">
+                              <Clock className="h-3 w-3" />
+                              {job.type}
+                            </span>
+                          )}
+                          {job.location && (
+                            <span className="inline-flex items-center gap-1 rounded-full bg-cream-bg px-2 py-0.5">
+                              <MapPin className="h-3 w-3" />
+                              {job.location}
+                            </span>
+                          )}
+                          {job.label && (
+                            <span className="inline-flex items-center gap-1 rounded-full bg-cream-bg px-2 py-0.5">
+                              <Tag className="h-3 w-3" />
+                              {job.label}
+                            </span>
+                          )}
+                          {!job.type && !job.location && !job.label && (
+                            <span className="text-amber-600">
+                              No type or location yet - add them in the editor
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex shrink-0 items-center gap-1">
+                      <span className="hidden items-center gap-1 pr-2 text-[12.5px] font-medium text-secondary/0 transition-colors group-hover:text-secondary/70 sm:flex">
+                        Edit
+                        <ChevronRight className="h-4 w-4" />
+                      </span>
+                      <button
+                        type="button"
+                        title="Delete job"
+                        aria-label={`Delete ${label}`}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (job._id)
+                            setDeleteDialog({ open: true, id: job._id, label });
+                        }}
+                        className={cn(
+                          iconBtn,
+                          "text-red-400 hover:bg-red-50 hover:text-red-600",
+                        )}
+                      >
+                        <RiDeleteBin6Line size={16} />
+                      </button>
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
         </div>
+
+        {deleteDialog.open && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+            <div className="bg-white rounded-xl shadow-xl p-6 w-full max-w-sm flex flex-col gap-4">
+              <h2 className="text-sm font-bold">Delete Job</h2>
+              <p className="text-sm text-black/60">
+                Are you sure you want to delete{" "}
+                <span className="font-semibold text-black">
+                  {deleteDialog.label}
+                </span>
+                ?
+              </p>
+              <div className="flex justify-end gap-2">
+                <Button
+                  type="button"
+                  onClick={() =>
+                    setDeleteDialog({ open: false, id: "", label: "" })
+                  }
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="button"
+                  className="bg-red-500 hover:bg-red-600 text-white"
+                  onClick={async () => {
+                    await deleteJob(deleteDialog.id);
+                    setDeleteDialog({ open: false, id: "", label: "" });
+                  }}
+                >
+                  Delete
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
+
         {jobDialog.open && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
             <div className="bg-white rounded-xl shadow-xl p-6 w-full max-w-md flex flex-col gap-4">
