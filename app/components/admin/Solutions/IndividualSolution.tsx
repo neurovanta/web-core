@@ -10,6 +10,7 @@ import { ImageUploader } from "@/components/ui/image-uploader";
 import { Textarea } from "@/components/ui/textarea";
 import AdminItemContainer from "@/app/components/admin/common/AdminItemContainer";
 import AdminPageActions from "@/app/components/admin/common/AdminPageActions";
+import { useUnsavedChanges } from "@/app/components/admin/common/useUnsavedChanges";
 import AdminSubmitButton from "@/app/components/admin/common/AdminSubmitButton";
 import AdminVisitLink from "@/app/components/admin/common/AdminVisitLink";
 import { toast } from "sonner";
@@ -82,8 +83,10 @@ export default function IndividualSolution({
     setValue,
     watch,
     control,
+    getValues,
     formState: { errors, isSubmitting },
   } = useForm<IndividualSolutionForm>();
+  const { isDirty, markClean, changes } = useUnsavedChanges(control, getValues);
 
   const {
     fields: secondItems,
@@ -102,7 +105,10 @@ export default function IndividualSolution({
   } = useFieldArray({ control, name: "fifthSection.items" });
 
   const fetchData = async () => {
-    if (createMode) return;
+    if (createMode) {
+      markClean();
+      return;
+    }
     try {
       const res = await fetch(`/api/admin/solution?id=${id}`);
       if (res.ok) {
@@ -124,6 +130,7 @@ export default function IndividualSolution({
         setValue("fifthSection", data.fifthSection);
         setValue("fifthSection.items", data.fifthSection?.items || []);
         setValue("sixthSection", data.sixthSection);
+        markClean();
       } else {
         const { message } = await res.json();
         toast.error(message);
@@ -145,6 +152,7 @@ export default function IndividualSolution({
       if (res.ok) {
         const { message } = await res.json();
         toast.success(message);
+        markClean();
         if (createMode) router.push("/4dm1n-n3ur0v4nt4/solutions");
       } else {
         const { message } = await res.json();
@@ -661,7 +669,7 @@ export default function IndividualSolution({
             </div>
           </AdminItemContainer>
 
-          <AdminPageActions>
+          <AdminPageActions isDirty={isDirty} changes={changes}>
             <AdminSubmitButton
               saving={isSubmitting}
               label={createMode ? "Create Solution" : "Save Changes"}

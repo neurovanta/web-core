@@ -9,6 +9,8 @@ import { ImageUploader } from "@/components/ui/image-uploader";
 import { Textarea } from "@/components/ui/textarea";
 import AdminItemContainer from "@/app/components/admin/common/AdminItemContainer";
 import AdminPageActions from "@/app/components/admin/common/AdminPageActions";
+import { guardNavigation } from "@/app/components/admin/common/UnsavedLeaveGuard";
+import { useUnsavedChanges } from "@/app/components/admin/common/useUnsavedChanges";
 import AdminSubmitButton from "@/app/components/admin/common/AdminSubmitButton";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
@@ -66,9 +68,19 @@ export default function SolutionMainPage() {
     handleSubmit,
     setValue,
     control,
+    getValues,
     watch,
     formState: { errors, isSubmitting },
   } = useForm<SolutionMainForm>();
+  const { isDirty, markClean, changes } = useUnsavedChanges(
+    control,
+    getValues,
+    { ignore: ["solutions"] },
+  );
+  // opens an editor, asking first if the Page tab has unsaved edits
+  const openEditor = (href: string) => {
+    if (!guardNavigation(href)) router.push(href);
+  };
 
   const {
     fields: solutions,
@@ -109,6 +121,7 @@ export default function SolutionMainPage() {
         setValue("fourthSection", data.fourthSection);
         setValue("fourthSection.items", data.fourthSection?.items || []);
         setValue("fifthSection", data.fifthSection);
+        markClean();
       } else {
         const { message } = await res.json();
         toast.error(message);
@@ -127,6 +140,7 @@ export default function SolutionMainPage() {
       if (res.ok) {
         const { message } = await res.json();
         toast.success(message);
+        markClean();
       } else {
         const { message } = await res.json();
         toast.error(message);
@@ -511,7 +525,7 @@ export default function SolutionMainPage() {
             </div>
           </AdminItemContainer>
 
-          <AdminPageActions>
+          <AdminPageActions isDirty={isDirty} changes={changes}>
             <AdminSubmitButton saving={isSubmitting} />
           </AdminPageActions>
         </form>
@@ -529,8 +543,8 @@ export default function SolutionMainPage() {
             slug: watch(`solutions.${index}.slug`),
             isHidden: watch(`solutions.${index}.isHidden`),
           }))}
-          onAdd={() => router.push("/4dm1n-n3ur0v4nt4/solutions/new")}
-          onOpen={(id) => router.push(`/4dm1n-n3ur0v4nt4/solutions/${id}`)}
+          onAdd={() => openEditor("/4dm1n-n3ur0v4nt4/solutions/new")}
+          onOpen={(id) => openEditor(`/4dm1n-n3ur0v4nt4/solutions/${id}`)}
           onToggleVisibility={toggleSolutionVisibility}
           onDelete={(id, index, label) =>
             setConfirmDialog({ open: true, id, label })

@@ -9,6 +9,8 @@ import { ImageUploader } from "@/components/ui/image-uploader";
 import { Textarea } from "@/components/ui/textarea";
 import AdminItemContainer from "@/app/components/admin/common/AdminItemContainer";
 import AdminPageActions from "@/app/components/admin/common/AdminPageActions";
+import { guardNavigation } from "@/app/components/admin/common/UnsavedLeaveGuard";
+import { useUnsavedChanges } from "@/app/components/admin/common/useUnsavedChanges";
 import AdminSubmitButton from "@/app/components/admin/common/AdminSubmitButton";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
@@ -57,9 +59,19 @@ export default function IndustriesMainPage() {
     handleSubmit,
     setValue,
     control,
+    getValues,
     watch,
     formState: { errors, isSubmitting },
   } = useForm<IndustriesMainForm>();
+  const { isDirty, markClean, changes } = useUnsavedChanges(
+    control,
+    getValues,
+    { ignore: ["industries"] },
+  );
+  // opens an editor, asking first if the Page tab has unsaved edits
+  const openEditor = (href: string) => {
+    if (!guardNavigation(href)) router.push(href);
+  };
 
   const { fields: industries, remove: removeIndustry } = useFieldArray({
     control,
@@ -85,6 +97,7 @@ export default function IndustriesMainPage() {
         setValue("secondSection", data.secondSection);
         setValue("industries", data.industries);
         setValue("thirdSection", data.thirdSection);
+        markClean();
       } else {
         const { message } = await res.json();
         toast.error(message);
@@ -103,6 +116,7 @@ export default function IndustriesMainPage() {
       if (res.ok) {
         const { message } = await res.json();
         toast.success(message);
+        markClean();
       } else {
         const { message } = await res.json();
         toast.error(message);
@@ -361,7 +375,7 @@ export default function IndustriesMainPage() {
             </div>
           </AdminItemContainer>
 
-          <AdminPageActions>
+          <AdminPageActions isDirty={isDirty} changes={changes}>
             <AdminSubmitButton saving={isSubmitting} />
           </AdminPageActions>
         </form>
@@ -379,8 +393,8 @@ export default function IndustriesMainPage() {
             slug: watch(`industries.${index}.slug`),
             isHidden: watch(`industries.${index}.isHidden`),
           }))}
-          onAdd={() => router.push("/4dm1n-n3ur0v4nt4/industries/new")}
-          onOpen={(id) => router.push(`/4dm1n-n3ur0v4nt4/industries/${id}`)}
+          onAdd={() => openEditor("/4dm1n-n3ur0v4nt4/industries/new")}
+          onOpen={(id) => openEditor(`/4dm1n-n3ur0v4nt4/industries/${id}`)}
           onToggleVisibility={toggleIndustryVisibility}
           onDelete={(id, index, label) =>
             setConfirmDialog({ open: true, id, index, label })

@@ -9,6 +9,7 @@ import { ImageUploader } from "@/components/ui/image-uploader";
 import { Textarea } from "@/components/ui/textarea";
 import AdminItemContainer from "@/app/components/admin/common/AdminItemContainer";
 import AdminPageActions from "@/app/components/admin/common/AdminPageActions";
+import { useUnsavedChanges } from "@/app/components/admin/common/useUnsavedChanges";
 import AdminSubmitButton from "@/app/components/admin/common/AdminSubmitButton";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
@@ -64,9 +65,11 @@ export default function CareersPage() {
     handleSubmit,
     setValue,
     control,
+    getValues,
     watch,
     formState: { isSubmitting },
   } = useForm<CareersForm>();
+  const { isDirty, markClean, changes } = useUnsavedChanges(control, getValues);
   const [jobs, setJobs] = useState<Job[]>([]);
   const [activeTab, setActiveTab] = useState<"jobs" | "page">("jobs");
   const [deleteDialog, setDeleteDialog] = useState({
@@ -120,6 +123,7 @@ export default function CareersPage() {
         setJobs(data.secondSection?.jobs || []);
 
         replaceThird(data.thirdSection?.items || []);
+        markClean();
       } else {
         const { message } = await res.json();
         toast.error(message);
@@ -138,6 +142,7 @@ export default function CareersPage() {
       if (res.ok) {
         const { message } = await res.json();
         toast.success(message);
+        markClean();
       } else {
         const { message } = await res.json();
         toast.error(message);
@@ -487,7 +492,7 @@ export default function CareersPage() {
             </div>
           </AdminItemContainer>
 
-          <AdminPageActions>
+          <AdminPageActions isDirty={isDirty} changes={changes}>
             <AdminSubmitButton saving={isSubmitting} />
           </AdminPageActions>
         </form>

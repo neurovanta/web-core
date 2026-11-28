@@ -10,6 +10,7 @@ import { VideoUploader } from "@/components/ui/video-uploader";
 import { Textarea } from "@/components/ui/textarea";
 import AdminItemContainer from "@/app/components/admin/common/AdminItemContainer";
 import AdminPageActions from "@/app/components/admin/common/AdminPageActions";
+import { useUnsavedChanges } from "@/app/components/admin/common/useUnsavedChanges";
 import AdminSubmitButton from "@/app/components/admin/common/AdminSubmitButton";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
@@ -111,9 +112,11 @@ export default function HomePage() {
     handleSubmit,
     setValue,
     control,
+    getValues,
     watch,
     formState: { isSubmitting },
   } = useForm<HomeForm>();
+  const { isDirty, markClean, changes } = useUnsavedChanges(control, getValues);
   // const [systemsCategories, setSystemsCategories] = useState<SystemsCategory[]>(
   //   [],
   // );
@@ -215,6 +218,7 @@ export default function HomePage() {
         replaceRow1(data.eighthSection?.row1 || []);
         replaceRow2(data.eighthSection?.row2 || []);
         replaceRow3(data.eighthSection?.row3 || []);
+        markClean();
       } else {
         const { message } = await res.json();
         toast.error(message);
@@ -254,6 +258,7 @@ export default function HomePage() {
       if (res.ok) {
         const { message } = await res.json();
         toast.success(message);
+        markClean();
       } else {
         const { message } = await res.json();
         toast.error(message);
@@ -1101,7 +1106,7 @@ export default function HomePage() {
             </div>
           </AdminItemContainer>
 
-          <AdminPageActions>
+          <AdminPageActions isDirty={isDirty} changes={changes}>
             <AdminSubmitButton saving={isSubmitting} />
           </AdminPageActions>
         </form>

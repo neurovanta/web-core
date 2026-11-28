@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useSiteSearch } from "@/app/hooks/useSiteSearch";
+import { guardNavigation } from "./UnsavedLeaveGuard";
 import { SearchItemType } from "@/app/types/search";
 
 const TYPE_ICON: Record<SearchItemType, LucideIcon> = {
@@ -93,7 +94,8 @@ export default function AdminSearch({ collapsed }: { collapsed: boolean }) {
 
   const go = (href: string) => {
     closePalette();
-    router.push(href);
+    // with unsaved edits on the current page, confirm before leaving
+    if (!guardNavigation(href)) router.push(href);
   };
 
   const onInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {

@@ -10,6 +10,8 @@ import { Textarea } from "@/components/ui/textarea";
 import AdminItemContainer from "@/app/components/admin/common/AdminItemContainer";
 import AdminTabs from "@/app/components/admin/common/AdminTabs";
 import AdminPageActions from "@/app/components/admin/common/AdminPageActions";
+import { guardNavigation } from "@/app/components/admin/common/UnsavedLeaveGuard";
+import { useUnsavedChanges } from "@/app/components/admin/common/useUnsavedChanges";
 import AdminSubmitButton from "@/app/components/admin/common/AdminSubmitButton";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
@@ -92,9 +94,15 @@ export default function SystemsMainPage() {
     handleSubmit,
     setValue,
     control,
+    getValues,
     watch,
     formState: { errors, isSubmitting },
   } = useForm<SystemsMainForm>();
+  const { isDirty, markClean, changes } = useUnsavedChanges(control, getValues);
+  // opens an editor, asking first if the Page tab has unsaved edits
+  const openEditor = (href: string) => {
+    if (!guardNavigation(href)) router.push(href);
+  };
 
   const [activeTab, setActiveTab] = useState<"list" | "page">("list");
 
@@ -109,6 +117,7 @@ export default function SystemsMainPage() {
         setValue("secondSection", data.secondSection);
         setValue("thirdSection", data.thirdSection);
         setCategories(data.secondSection?.categories || []);
+        markClean();
       } else {
         const { message } = await res.json();
         toast.error(message);
@@ -127,6 +136,7 @@ export default function SystemsMainPage() {
       if (res.ok) {
         const { message } = await res.json();
         toast.success(message);
+        markClean();
       } else {
         const { message } = await res.json();
         toast.error(message);
@@ -481,7 +491,7 @@ export default function SystemsMainPage() {
             </div>
           </AdminItemContainer>
 
-          <AdminPageActions>
+          <AdminPageActions isDirty={isDirty} changes={changes}>
             <AdminSubmitButton saving={isSubmitting} />
           </AdminPageActions>
         </form>
@@ -676,7 +686,7 @@ export default function SystemsMainPage() {
                           title="Edit product"
                           onClick={() =>
                             product._id &&
-                            router.push(
+                            openEditor(
                               `/4dm1n-n3ur0v4nt4/systems/${product._id}`,
                             )
                           }
@@ -687,7 +697,7 @@ export default function SystemsMainPage() {
                               product._id
                             ) {
                               e.preventDefault();
-                              router.push(
+                              openEditor(
                                 `/4dm1n-n3ur0v4nt4/systems/${product._id}`,
                               );
                             }

@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import { ImageUploader } from "@/components/ui/image-uploader";
 import AdminTabs from "@/app/components/admin/common/AdminTabs";
 import AdminPageActions from "@/app/components/admin/common/AdminPageActions";
+import { useUnsavedChanges } from "@/app/components/admin/common/useUnsavedChanges";
 import AdminSubmitButton from "@/app/components/admin/common/AdminSubmitButton";
 import { toast } from "sonner";
 import { RiDeleteBin6Line, RiEyeLine, RiEyeOffLine } from "react-icons/ri";
@@ -321,8 +322,9 @@ export default function GlobalSettingsPage() {
     watch,
     reset,
     resetField,
-    formState: { isDirty },
+    getValues,
   } = useForm<GlobalSettingsForm>();
+  const { isDirty, markClean, changes } = useUnsavedChanges(control, getValues);
 
   const {
     fields: socials,
@@ -365,7 +367,7 @@ export default function GlobalSettingsPage() {
         return;
       }
       const { data } = await res.json();
-      // reset() sets the baseline, so "unsaved changes" tracks edits only.
+      // markClean() below snapshots these values, so "unsaved changes" tracks edits only.
       reset({
         contact: {
           email: data.contact?.email ?? "",
@@ -393,6 +395,7 @@ export default function GlobalSettingsPage() {
           systems: data.footer.systems ?? [],
         },
       });
+      markClean();
     } catch {
       toast.error("Something went wrong");
     }
@@ -413,6 +416,7 @@ export default function GlobalSettingsPage() {
       if (res.ok) {
         toast.success("Settings saved");
         reset(data);
+        markClean();
       } else {
         const { message } = await res.json();
         toast.error(message);
@@ -430,14 +434,6 @@ export default function GlobalSettingsPage() {
     fetchData().finally(() => setPageLoading(false));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  // Warn before leaving the page with unsaved edits.
-  useEffect(() => {
-    if (!isDirty) return;
-    const onBeforeUnload = (e: BeforeUnloadEvent) => e.preventDefault();
-    window.addEventListener("beforeunload", onBeforeUnload);
-    return () => window.removeEventListener("beforeunload", onBeforeUnload);
-  }, [isDirty]);
 
   const groupLabel = (key?: MenuItem["groupKey"]) =>
     key === "solutions"
@@ -923,7 +919,7 @@ export default function GlobalSettingsPage() {
           </div>
 
           {/* Save */}
-          <AdminPageActions isDirty={isDirty}>
+          <AdminPageActions isDirty={isDirty} changes={changes}>
             <AdminSubmitButton saving={isSaving} label="Save Settings" />
           </AdminPageActions>
         </form>

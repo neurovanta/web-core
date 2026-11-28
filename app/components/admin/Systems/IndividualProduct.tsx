@@ -10,6 +10,7 @@ import { ImageUploader } from "@/components/ui/image-uploader";
 import { Textarea } from "@/components/ui/textarea";
 import AdminItemContainer from "@/app/components/admin/common/AdminItemContainer";
 import AdminPageActions from "@/app/components/admin/common/AdminPageActions";
+import { useUnsavedChanges } from "@/app/components/admin/common/useUnsavedChanges";
 import AdminSubmitButton from "@/app/components/admin/common/AdminSubmitButton";
 import AdminVisitLink from "@/app/components/admin/common/AdminVisitLink";
 import { toast } from "sonner";
@@ -78,8 +79,10 @@ export default function IndividualProduct({
     setValue,
     watch,
     control,
+    getValues,
     formState: { errors, isSubmitting },
   } = useForm<IndividualProductForm>();
+  const { isDirty, markClean, changes } = useUnsavedChanges(control, getValues);
 
   const {
     fields: secondItems,
@@ -106,7 +109,10 @@ export default function IndividualProduct({
   } = useFieldArray({ control, name: "fourthSection.items" });
 
   const fetchData = async () => {
-    if (createMode) return;
+    if (createMode) {
+      markClean();
+      return;
+    }
     try {
       const res = await fetch(`/api/admin/systems?id=${id}`);
       if (res.ok) {
@@ -126,6 +132,7 @@ export default function IndividualProduct({
         setValue("thirdSection.itemsTwo", data.thirdSection?.itemsTwo || []);
         setValue("fourthSection", data.fourthSection);
         setValue("fourthSection.items", data.fourthSection?.items || []);
+        markClean();
       } else {
         const { message } = await res.json();
         toast.error(message);
@@ -147,6 +154,7 @@ export default function IndividualProduct({
       if (res.ok) {
         const { message } = await res.json();
         toast.success(message);
+        markClean();
         if (createMode) router.push("/4dm1n-n3ur0v4nt4/systems");
       } else {
         const { message } = await res.json();
@@ -597,7 +605,7 @@ export default function IndividualProduct({
             </div>
           </AdminItemContainer>
 
-          <AdminPageActions>
+          <AdminPageActions isDirty={isDirty} changes={changes}>
             <AdminSubmitButton
               saving={isSubmitting}
               label={createMode ? "Create Product" : "Save Changes"}

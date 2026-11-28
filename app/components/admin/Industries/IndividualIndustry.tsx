@@ -10,6 +10,7 @@ import { ImageUploader } from "@/components/ui/image-uploader";
 import { Textarea } from "@/components/ui/textarea";
 import AdminItemContainer from "@/app/components/admin/common/AdminItemContainer";
 import AdminPageActions from "@/app/components/admin/common/AdminPageActions";
+import { useUnsavedChanges } from "@/app/components/admin/common/useUnsavedChanges";
 import AdminSubmitButton from "@/app/components/admin/common/AdminSubmitButton";
 import AdminVisitLink from "@/app/components/admin/common/AdminVisitLink";
 import { toast } from "sonner";
@@ -81,8 +82,10 @@ export default function IndividualIndustry({
     setValue,
     watch,
     control,
+    getValues,
     formState: { errors, isSubmitting },
   } = useForm<IndividualIndustryForm>();
+  const { isDirty, markClean, changes } = useUnsavedChanges(control, getValues);
 
   const {
     fields: secondItems,
@@ -97,7 +100,10 @@ export default function IndividualIndustry({
   } = useFieldArray({ control, name: "thirdSection.items" });
 
   const fetchData = async () => {
-    if (createMode) return;
+    if (createMode) {
+      markClean();
+      return;
+    }
     try {
       const res = await fetch(`/api/admin/industries?id=${id}`);
       if (res.ok) {
@@ -121,6 +127,7 @@ export default function IndividualIndustry({
         setValue("thirdSection.items", data.thirdSection?.items || []);
         setValue("fourthSection", data.fourthSection);
         setValue("fifthSection", data.fifthSection);
+        markClean();
       } else {
         const { message } = await res.json();
         toast.error(message);
@@ -142,6 +149,7 @@ export default function IndividualIndustry({
       if (res.ok) {
         const { message } = await res.json();
         toast.success(message);
+        markClean();
         if (createMode) router.push("/4dm1n-n3ur0v4nt4/industries");
       } else {
         const { message } = await res.json();
@@ -674,7 +682,7 @@ export default function IndividualIndustry({
             </div>
           </AdminItemContainer>
 
-          <AdminPageActions>
+          <AdminPageActions isDirty={isDirty} changes={changes}>
             <AdminSubmitButton
               saving={isSubmitting}
               label={createMode ? "Create Industry" : "Save Changes"}
