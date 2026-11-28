@@ -84,8 +84,8 @@ export function SectionDescription({
 
             const inner = document.createElement("span");
             inner.className = "sd-line-inner";
-            inner.style.setProperty("--del", `${delay + li * 0.18}s`);
-            inner.style.setProperty("--dur", "0.9s");
+            inner.style.setProperty("--del", `${delay + li * 0.12}s`);
+            inner.style.setProperty("--dur", "0.7s");
             inner.textContent = lineText;
 
             wrap.appendChild(inner);

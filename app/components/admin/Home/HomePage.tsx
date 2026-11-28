@@ -1203,7 +1203,7 @@ export default function HomePage() {
           <AdminItemContainer>
             <Label main>SEO</Label>
             <div className="p-5 flex flex-col gap-4">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="flex flex-col gap-4">
                 <div className="flex flex-col gap-2">
                   <Label className="font-bold">Meta Title</Label>
                   <Input
@@ -1213,9 +1213,10 @@ export default function HomePage() {
                 </div>
                 <div className="flex flex-col gap-2">
                   <Label className="font-bold">Meta Description</Label>
-                  <Input
+                  <Textarea
                     {...register("seo.metaDescription")}
                     placeholder="Meta Description"
+                    className="min-h-[72px]"
                   />
                 </div>
               </div>

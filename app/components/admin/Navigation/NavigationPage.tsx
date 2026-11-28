@@ -48,7 +48,7 @@ import { cn } from "@/lib/utils";
 type Toggleable = { isHidden: boolean };
 
 interface GlobalSettingsForm {
-  contact: { email: string; phone: string; address: string };
+  contact: { email: string; phone: string; address: string; addressLink: string };
   socials: { label: string; type: string; link: string; isHidden: boolean }[];
   header: {
     image: string;
@@ -373,6 +373,7 @@ export default function GlobalSettingsPage() {
           email: data.contact?.email ?? "",
           phone: data.contact?.phone ?? "",
           address: data.contact?.address ?? "",
+          addressLink: data.contact?.addressLink ?? "",
         },
         socials: data.socials ?? [],
         header: {
@@ -496,6 +497,17 @@ export default function GlobalSettingsPage() {
                   />
                   <span className="mt-1 block text-[11.5px] text-gray-400">
                     Each new line is shown on its own line on the website.
+                  </span>
+                </label>
+                <label className="md:col-span-2">
+                  <FieldLabel>Address Link (optional)</FieldLabel>
+                  <Input
+                    {...register("contact.addressLink")}
+                    type="url"
+                    placeholder="https://maps.google.com/…"
+                  />
+                  <span className="mt-1 block text-[11.5px] text-gray-400">
+                    When set, clicking the address in the footer opens this link in a new tab. Leave empty for plain text.
                   </span>
                 </label>
               </div>

@@ -117,6 +117,7 @@ export default function HeroStats({ data }: HeroStatsProps) {
                 text={data.description}
                 className="text-19 leading-[1.47] text-secondary sm:tracking-[-0.03em]"
                 as="p"
+                delay={0.2}
               />
             </div>
           </div>

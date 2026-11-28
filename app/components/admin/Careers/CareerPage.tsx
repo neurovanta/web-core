@@ -77,7 +77,7 @@ export default function CareersPage() {
   } = useForm<CareersForm>();
   const { isDirty, markClean, changes } = useUnsavedChanges(control, getValues);
   const [jobs, setJobs] = useState<Job[]>([]);
-  const [activeTab, setActiveTab] = useState<"jobs" | "page">("jobs");
+  const [activeTab, setActiveTab] = useState<"jobs" | "page">("page");
   const [deleteDialog, setDeleteDialog] = useState({
     open: false,
     id: "",
@@ -277,8 +277,8 @@ export default function CareersPage() {
       <div className="flex flex-col gap-5">
         <AdminTabs
           tabs={[
-            { key: "jobs", label: "Jobs", count: jobs.length },
             { key: "page", label: "Page" },
+            { key: "jobs", label: "Jobs", count: jobs.length },
           ]}
           active={activeTab}
           onChange={setActiveTab}
@@ -559,7 +559,7 @@ export default function CareersPage() {
           <AdminItemContainer>
             <Label main>SEO</Label>
             <div className="p-5 flex flex-col gap-4">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="flex flex-col gap-4">
                 <div className="flex flex-col gap-2">
                   <Label className="font-bold">Meta Title</Label>
                   <Input
@@ -569,9 +569,10 @@ export default function CareersPage() {
                 </div>
                 <div className="flex flex-col gap-2">
                   <Label className="font-bold">Meta Description</Label>
-                  <Input
+                  <Textarea
                     {...register("seo.metaDescription")}
                     placeholder="Meta Description"
+                    className="min-h-[72px]"
                   />
                 </div>
               </div>

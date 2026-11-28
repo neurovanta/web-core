@@ -38,6 +38,8 @@ export interface NavContact {
   email: string;
   phone: string;
   address: string;
+  // optional external link (e.g. Google Maps); the address opens it in a new tab
+  addressLink?: string;
 }
 
 export interface MenuItemData {

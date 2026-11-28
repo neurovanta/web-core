@@ -487,7 +487,7 @@ export const NavDropdown = forwardRef<NavDropdownHandle, NavDropdownProps>(
               layerRefs.current[0] = el;
             }}
             data-lenis-prevent
-            className="relative flex flex-col overflow-x-hidden overflow-y-auto overscroll-contain max-h-dvh md:[@media(height<750px)]:h-[95svh]"
+            className="relative flex flex-col overflow-x-hidden overflow-y-auto overscroll-contain max-h-dvh max-md:min-h-[75svh] md:[@media(height<750px)]:h-[95svh]"
             style={{
               background: "#000",
               transform: "translateY(-100%)",
@@ -505,7 +505,7 @@ export const NavDropdown = forwardRef<NavDropdownHandle, NavDropdownProps>(
             </div>
             <div
               ref={contentRef}
-              className="relative flex flex-col w-full text-white md:min-h-0"
+              className="relative flex flex-col flex-1 w-full text-white min-h-0"
               style={{ opacity: 0 }}
             >
               {/* Header spacer */}
@@ -513,19 +513,19 @@ export const NavDropdown = forwardRef<NavDropdownHandle, NavDropdownProps>(
 
               {/* Body */}
               <div
-                className="flex-1 container md:min-h-0 md:flex md:flex-col"
+                className="flex-1 container min-h-0 flex flex-col"
                 onMouseLeave={() => {
                   setHoveredItem(null);
                   setActiveItem(null);
                 }}
               >
-                <div className="border-t border-white/20 md:flex md:flex-col md:min-h-0">
-                <div className="flex items-stretch md:gap-x-120 py-[30px] md:py-50 lg:py-80 3xl:py-120 md:min-h-0">
+                <div className="border-t border-white/20 flex flex-col min-h-0">
+                <div className="flex items-stretch md:gap-x-120 py-[30px] md:py-50 lg:py-80 3xl:py-120 min-h-0">
                   {/* ── Col 1: Nav items ── */}
                   <div
                     ref={navColRef}
-                    className="flex flex-col flex-1 md:flex-none md:w-fit min-w-0 md:min-h-0 md:overflow-y-auto md:overscroll-contain"
-                    style={navColFade}
+                    className="flex flex-col flex-1 md:flex-none md:w-fit min-w-0 min-h-0 overflow-y-auto overscroll-contain"
+                    style={mobileSubOpen ? undefined : navColFade}
                   >
                     <nav>
                       <ul className="flex flex-col gap-[22px] sm:gap-[30px] 3xl:gap-[35px]">
@@ -656,10 +656,10 @@ export const NavDropdown = forwardRef<NavDropdownHandle, NavDropdownProps>(
                           >
                             {/* Back / title header */}
                             <div className="h-[100px] sm:h-[110px] shrink-0" />
-                            <div className="container">
-                              <div className="w-full h-px bg-white/20 mb-[30px]" />
+                            <div className="container flex-1 min-h-0 flex flex-col">
+                              <div className="w-full h-px bg-white/20 mb-[30px] shrink-0" />
                               <div
-                                className="flex items-center gap-20 mb-[10px]"
+                                className="flex items-center gap-20 mb-[10px] shrink-0"
                                 onClick={() => {
                                   setMobileSubOpen(false);
                                   setMobileActiveItem(null);
@@ -680,7 +680,7 @@ export const NavDropdown = forwardRef<NavDropdownHandle, NavDropdownProps>(
                               </div>
 
                               {/* Sub items */}
-                              <div className="flex flex-col pl-[36px]">
+                              <div className="flex flex-col pl-[36px] flex-1 min-h-0 overflow-y-auto overscroll-contain pb-[30px]">
                                 <motion.div
                                   initial={{ opacity: 0, y: 14 }}
                                   animate={{ opacity: 1, y: 0 }}

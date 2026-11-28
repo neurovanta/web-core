@@ -364,21 +364,44 @@ export default function MoreThanSolutions({
   const mobileSlotRefs = useRef<(HTMLDivElement | null)[]>([]);
   const titleRef = useRef<HTMLHeadingElement>(null);
   const descRef = useRef<HTMLParagraphElement>(null);
-  const [ready, setReady] = useState(false);
+  // null until measured on the client; the animation is built only after that
+  const [imgSize, setImgSize] = useState<{ w: number; h: number } | null>(
+    null,
+  );
+  const ready = imgSize !== null;
+  const { w: IMG_W, h: IMG_H } = imgSize ?? IMG_SIZES.xs;
 
-  const [{ w: IMG_W, h: IMG_H }, setImgSize] = useState<{
-    w: number;
-    h: number;
-  }>(IMG_SIZES.xs);
-
+  // Image size follows the viewport; re-checked on resize (debounced) so the
+  // stack and slots never keep a stale size after rotating / resizing.
   useEffect(() => {
-    const w = window.innerWidth;
-    if (w >= 1600) setImgSize(IMG_SIZES["3xl"]);
-    else if (w >= 1536) setImgSize(IMG_SIZES["2xl"]);
-    else if (w >= 1024) setImgSize(IMG_SIZES.lg);
-    else if (w >= 768) setImgSize(IMG_SIZES.md);
-    else if (w >= 640) setImgSize(IMG_SIZES.sm);
-    setReady(true);
+    const pick = () => {
+      const w = window.innerWidth;
+      const size =
+        w >= 1600
+          ? IMG_SIZES["3xl"]
+          : w >= 1536
+            ? IMG_SIZES["2xl"]
+            : w >= 1024
+              ? IMG_SIZES.lg
+              : w >= 768
+                ? IMG_SIZES.md
+                : w >= 640
+                  ? IMG_SIZES.sm
+                  : IMG_SIZES.xs;
+      setImgSize((prev) => (prev?.w === size.w ? prev : size));
+    };
+    const raf = requestAnimationFrame(pick);
+    let t: ReturnType<typeof setTimeout>;
+    const onResize = () => {
+      clearTimeout(t);
+      t = setTimeout(pick, 150);
+    };
+    window.addEventListener("resize", onResize);
+    return () => {
+      cancelAnimationFrame(raf);
+      clearTimeout(t);
+      window.removeEventListener("resize", onResize);
+    };
   }, []);
 
   useGSAP(
@@ -389,75 +412,106 @@ export default function MoreThanSolutions({
       const imgs = imgRefs.current.filter(
         (el): el is HTMLDivElement => el !== null,
       );
-      const isMobile = window.innerWidth < 640;
-      const slots = (isMobile ? mobileSlotRefs : slotRefs).current.filter(
-        (el): el is HTMLDivElement => el !== null,
-      );
+      if (!section || !stack || imgs.length !== 6) return;
 
-      if (!section || !stack || imgs.length !== 6 || slots.length !== 6) return;
-
-      // ── Initial stacked transforms ──
-      imgs.forEach((img, i) => {
-        gsap.set(img, {
-          rotation: STACK_CONFIG[i].rotation,
-          x: STACK_CONFIG[i].dx,
-          y: STACK_CONFIG[i].dy,
-          transformOrigin: "center center",
-          willChange: "transform",
-        });
-      });
-
-      // ── Hide text initially ──
-      gsap.set([titleRef.current, descRef.current], { autoAlpha: 0, y: 22 });
-
-      // ── Compute slot→stack deltas (refreshed on resize) ──
-      const getDeltas = () => {
-        const sr = stack.getBoundingClientRect();
-        const scx = sr.left + sr.width / 2;
-        const scy = sr.top + sr.height / 2;
-        return slots.map((slot) => {
-          const r = slot.getBoundingClientRect();
-          return {
-            x: r.left + r.width / 2 - scx,
-            y: r.top + r.height / 2 - scy,
-          };
-        });
-      };
-
-      // ── Main timeline ──
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: section,
-          start: "top 60%",
-          end: "top 5%",
-          scrub: 4,
-          invalidateOnRefresh: true,
+      // Rebuilt when crossing the mobile/desktop slot layouts, so images never
+      // aim at the hidden (display: none, 0×0) set of slots.
+      const mm = gsap.matchMedia();
+      mm.add(
+        {
+          mobile: "(max-width: 639px)",
+          desktop: "(min-width: 640px)",
+          reduce: "(prefers-reduced-motion: reduce)",
         },
-      });
+        (ctx) => {
+          const { mobile, reduce } = ctx.conditions as {
+            mobile: boolean;
+            reduce: boolean;
+          };
+          const slots = (mobile ? mobileSlotRefs : slotRefs).current.filter(
+            (el): el is HTMLDivElement => el !== null,
+          );
+          if (slots.length !== 6) return;
+          const text = [titleRef.current, descRef.current];
 
-      // Text fades in during first phase
-      tl.to(
-        [titleRef.current, descRef.current],
-        { autoAlpha: 1, y: 0, duration: 0.7, stagger: 0.8, ease: "power2.out" },
-        0,
+          // Slot centre relative to the stack centre (re-measured on refresh).
+          const delta = (i: number, axis: "x" | "y") => {
+            const sr = stack.getBoundingClientRect();
+            const r = slots[i].getBoundingClientRect();
+            return axis === "x"
+              ? r.left + r.width / 2 - (sr.left + sr.width / 2)
+              : r.top + r.height / 2 - (sr.top + sr.height / 2);
+          };
+
+          if (reduce) {
+            imgs.forEach((img, i) =>
+              gsap.set(img, {
+                rotation: 0,
+                x: () => delta(i, "x"),
+                y: () => delta(i, "y"),
+              }),
+            );
+            return;
+          }
+
+          imgs.forEach((img, i) =>
+            gsap.set(img, {
+              rotation: STACK_CONFIG[i].rotation,
+              x: STACK_CONFIG[i].dx,
+              y: STACK_CONFIG[i].dy,
+              transformOrigin: "center center",
+              force3D: true,
+            }),
+          );
+          gsap.set(text, { autoAlpha: 0, y: 22 });
+
+          // Lenis already smooths the scroll, so a light scrub keeps the spread
+          // tied to the wheel instead of lagging ~4s behind it.
+          const tl = gsap.timeline({
+            defaults: { ease: "sine.inOut" },
+            scrollTrigger: {
+              trigger: section,
+              // starts once the stacked cards are fully in view
+              start: "top 60%",
+              end: "top 0%",
+              scrub: 1.2,
+              invalidateOnRefresh: true,
+            },
+          });
+
+          // Images peel off one after another and glide to their slots.
+          imgs.forEach((img, i) => {
+            tl.to(
+              img,
+              {
+                rotation: 0,
+                x: () => delta(i, "x"),
+                y: () => delta(i, "y"),
+                duration: 1,
+              },
+              i * 0.07,
+            );
+          });
+
+          // Text rises in while the images open up around it, landing with them.
+          tl.to(
+            text,
+            { autoAlpha: 1, y: 0, duration: 0.6, stagger: 0.2, ease: "power2.out" },
+            0.45,
+          );
+
+          // will-change only while the spread is in progress
+          tl.eventCallback("onUpdate", () => {
+            const active = tl.progress() > 0 && tl.progress() < 1;
+            imgs.forEach((img) => {
+              img.style.willChange = active ? "transform" : "";
+            });
+          });
+        },
       );
-
-      // Each image peels off and flies to its grid slot
-      imgs.forEach((img, i) => {
-        tl.to(
-          img,
-          {
-            rotation: 0,
-            x: () => getDeltas()[i].x,
-            y: () => getDeltas()[i].y,
-            duration: 0.8,
-            ease: "power3.inOut",
-          },
-          0.05 + i * 0.04,
-        );
-      });
+      return () => mm.revert();
     },
-    { scope: sectionRef, dependencies: [ready] },
+    { scope: sectionRef, dependencies: [ready, IMG_W] },
   );
 
   return (

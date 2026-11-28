@@ -5,6 +5,7 @@ const globalNavItemsSchema = new mongoose.Schema({
     email: { type: String },
     phone: { type: String },
     address: { type: String },
+    addressLink: { type: String },
   },
   socials: {
     type: [
