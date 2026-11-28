@@ -8,6 +8,7 @@ import {
   ChevronsRight,
   ExternalLink,
   LogOut,
+  UserRound,
 } from "lucide-react";
 import AdminNavbar from "@/app/components/admin/AdminNavbar/Index";
 import AdminSearch from "@/app/components/admin/common/AdminSearch";
@@ -58,13 +59,6 @@ export default function AdminSidebar({ username }: { username: string | null }) 
   };
 
   const displayName = username || "Admin";
-  const initials =
-    displayName
-      .split(/[\s._-]+/)
-      .filter(Boolean)
-      .slice(0, 2)
-      .map((w) => w[0]?.toUpperCase())
-      .join("") || "A";
 
   return (
     <aside
@@ -159,8 +153,9 @@ export default function AdminSidebar({ username }: { username: string | null }) 
           <span
             title={collapsed ? displayName : undefined}
             className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#C9B6AC] to-[#BFA373] text-[12px] font-semibold text-[#1c1714] ring-2 ring-white/15"
+            aria-hidden={!collapsed}
           >
-            {initials}
+            <UserRound className="h-[18px] w-[18px]" strokeWidth={1.75} />
           </span>
           {!collapsed && (
             <div className="min-w-0 flex-1">
