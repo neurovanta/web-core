@@ -7,6 +7,7 @@ import { moveUp, moveUpV2 } from "../../animations/motionVarinats";
 import CustomButton from "@/app/components/client/common/CustomButton";
 import { motion } from "framer-motion";
 import { Careers } from "@/app/types/career";
+import { slugify } from "@/lib/slug";
 
 export default function OpenPositions({ data }: { data: Careers["secondSection"] }) {
   const { title, contactEmail, contactLabel, jobs } = data;
@@ -64,7 +65,7 @@ export default function OpenPositions({ data }: { data: Careers["secondSection"]
                 <div>
                   <CustomButton
                     label={"Apply Job"}
-                    href={`/careers/${pos.designation.replace(/\s+/g, "-")}`}
+                    href={`/careers/${slugify(pos.designation)}`}
                     variant={2}
                   />
                 </div>

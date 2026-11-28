@@ -1,9 +1,10 @@
 import CareersApply from "./sections/CareersApply";
+import { ApplyingForProps } from "./sections/CareerForm";
 
-const Index = () => {
+const Index = (props: ApplyingForProps) => {
   return (
     <>
-      <CareersApply />
+      <CareersApply {...props} />
     </>
   );
 };

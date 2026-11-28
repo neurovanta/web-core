@@ -1,6 +1,6 @@
 "use client";
 
-import CareersForm from "../sections/CareerForm";
+import CareersForm, { ApplyingForProps } from "../sections/CareerForm";
 import { careersFormData } from "../data";
 import { AnimatedHeading } from "../../animations/AnimateHeading";
 import { SectionDescription } from "../../animations/SectionDescription";
@@ -8,7 +8,7 @@ import { motion } from "framer-motion";
 import { moveUp } from "../../animations/motionVarinats";
 import { useState, useEffect } from "react";
 
-export default function CareersApply() {
+export default function CareersApply(props: ApplyingForProps) {
   const { title, subtitle, description } = careersFormData;
     const [isMobile, setIsMobile] = useState(false);
 
@@ -50,7 +50,7 @@ export default function CareersApply() {
           variants={moveUp(0.2)}
           className="flex-1 max-w-[1021px]"
         >
-          <CareersForm />
+          <CareersForm {...props} />
         </motion.div>
       </div>
     </section>

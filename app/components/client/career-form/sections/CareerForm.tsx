@@ -18,7 +18,16 @@ import { sendCareerEnquiryAction } from "@/lib/mail/actions/sendCareerEnquiryAct
 import { toast } from "sonner";
 import ReCAPTCHA from "react-google-recaptcha";
 
-export default function CareersForm() {
+export interface ApplyingForProps {
+  applyingForOptions: { label: string; value: string }[];
+  // preselected position, e.g. from /careers/<job-slug>
+  defaultApplyingFor?: string;
+}
+
+export default function CareersForm({
+  applyingForOptions,
+  defaultApplyingFor = "",
+}: ApplyingForProps) {
   const [selectedFileName, setSelectedFileName] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const recaptchaRef = useRef<ReCAPTCHA>(null);
@@ -37,7 +46,7 @@ export default function CareersForm() {
       lastName: "",
       email: "",
       phone: "",
-      applyingFor: "",
+      applyingFor: defaultApplyingFor,
       yearsOfExperience: "",
       additionalInfo: "",
     },
@@ -90,7 +99,7 @@ const onSubmit = async (data: CareerEnquiryFormValues) => {
   }
 };
 
-  const { applyingForOptions, attachment } = careersFormData;
+  const { attachment } = careersFormData;
 
   return (
     <div className="bg-primary px-[16px] py-[60px] sm:p-50 w-full">
@@ -160,6 +169,7 @@ const onSubmit = async (data: CareerEnquiryFormValues) => {
             registration={register("applyingFor", {
               required: "Please select a position",
             })}
+            error={errors.applyingFor?.message}
             value={watchedValues.applyingFor}
           />
           <FloatingInput
