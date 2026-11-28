@@ -10,6 +10,11 @@ import { motion } from "framer-motion";
 import { moveUp } from "../../animations/motionVarinats";
 import { useState, useEffect, useRef } from "react";
 import { HomeType } from "@/app/types/home";
+import {
+  HOME_ENQUIRY_FORM_DEFAULTS,
+  toSelectOptions,
+  withDefaults,
+} from "@/lib/cmsDefaults";
 import ReCAPTCHA from "react-google-recaptcha";
 import {
   HomeEnquiryFormValues,
@@ -19,19 +24,21 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { sendHomeEnquiryAction } from "@/lib/mail/actions/sendHomeEnquiryAction";
 import { toast } from "sonner";
 
-const COMPANY_OPTIONS = [
-  { value: "individual", label: "Individual" },
-  { value: "startup", label: "Startup" },
-  { value: "smb", label: "Small / Medium Business" },
-  { value: "enterprise", label: "Enterprise" },
-  { value: "nonprofit", label: "Non-profit" },
-];
-
 export default function BeginHerePage({
   data,
 }: {
   data: HomeType["ninthSection"];
 }) {
+  // CMS → Home → Ninth Section; unsaved fields show the original text
+  const form = withDefaults(
+    {
+      companyOptions: data.companyOptions,
+      detailsLabel: data.detailsLabel,
+      submitLabel: data.submitLabel,
+    },
+    HOME_ENQUIRY_FORM_DEFAULTS,
+  );
+  const companyOptions = toSelectOptions(form.companyOptions);
   const {
     register,
     handleSubmit,
@@ -129,7 +136,7 @@ export default function BeginHerePage({
             <FloatingSelect
               id="forCompany"
               label="For Company*"
-              options={COMPANY_OPTIONS}
+              options={companyOptions}
               registration={register("forCompany", {
                 required: "For company is required",
               })}
@@ -185,7 +192,7 @@ export default function BeginHerePage({
             <FloatingTextarea
               id="details"
               rows={isMobile ? 3 : 4}
-              label="Details about your description"
+              label={form.detailsLabel}
               registration={register("details")}
               error={errors.details?.message}
               value={watchedValues.details}
@@ -207,7 +214,7 @@ export default function BeginHerePage({
             variants={moveUp(0.22)}
           >
             <CustomButton
-              label={isSubmitting ? "SUBMITTING..." : "Send"}
+              label={isSubmitting ? "SUBMITTING..." : form.submitLabel}
               href={undefined}
               variant={3}
               onClick={handleSubmit(onSubmit)}

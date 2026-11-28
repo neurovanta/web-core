@@ -9,7 +9,13 @@ import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import { ContactType } from "@/app/types/contact";
 
-export default function Main({ data }: { data: ContactType["firstSection"] }) {
+export default function Main({
+  data,
+  form,
+}: {
+  data: ContactType["firstSection"];
+  form?: ContactType["formSection"];
+}) {
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -108,7 +114,7 @@ export default function Main({ data }: { data: ContactType["firstSection"] }) {
           variants={moveUp(0.2)}
           className="flex-1"
         >
-          <ContactForm />
+          <ContactForm form={form} />
         </motion.div>
       </div>
     </section>

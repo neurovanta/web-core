@@ -1,7 +1,6 @@
-import CareersApply from "./sections/CareersApply";
-import { ApplyingForProps } from "./sections/CareerForm";
+import CareersApply, { CareersApplyProps } from "./sections/CareersApply";
 
-const Index = (props: ApplyingForProps) => {
+const Index = (props: CareersApplyProps) => {
   return (
     <>
       <CareersApply {...props} />

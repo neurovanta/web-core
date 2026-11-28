@@ -3,6 +3,7 @@ import { careersFormData } from "@/app/components/client/career-form/data";
 import { getCareers } from "@/lib/services/careers.service";
 import { decodeSlug, slugify } from "@/lib/slug";
 import { CareerJob } from "@/app/types/career";
+import { CAREERS_APPLY_DEFAULTS, withDefaults } from "@/lib/cmsDefaults";
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -12,13 +13,15 @@ const page = async ({ params }: Props) => {
   const slug = decodeSlug((await params).id);
 
   let jobs: CareerJob[] = [];
+  let intro = CAREERS_APPLY_DEFAULTS;
   try {
     const careers = await getCareers();
+    intro = withDefaults(careers.applySection, CAREERS_APPLY_DEFAULTS);
     jobs = (careers.secondSection?.jobs ?? []).filter(
       (job: CareerJob) => !job.isHidden && job.designation?.trim(),
     );
   } catch {
-    // careers document missing: fall back to the static options
+    // careers document missing: fall back to the static options and intro
   }
 
   const options = jobs.length
@@ -29,6 +32,7 @@ const page = async ({ params }: Props) => {
 
   return (
     <Index
+      intro={intro}
       applyingForOptions={options}
       defaultApplyingFor={selected?.designation ?? ""}
     />

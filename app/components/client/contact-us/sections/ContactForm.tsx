@@ -5,7 +5,12 @@ import { FloatingInput } from "@/app/components/client/common/form/FloatingInput
 import { FloatingSelect } from "@/app/components/client/common/form/FloatingSelect";
 import { FloatingTextarea } from "@/app/components/client/common/form/FloatingTextarea";
 import CustomButton from "@/app/components/client/common/CustomButton";
-import { contactUsData } from "../data";
+import {
+  CONTACT_FORM_DEFAULTS,
+  toSelectOptions,
+  withDefaults,
+} from "@/lib/cmsDefaults";
+import { ContactType } from "@/app/types/contact";
 import { AnimatedHeading } from "../../animations/AnimateHeading";
 import { useEffect, useState } from "react";
 import {
@@ -18,8 +23,14 @@ import { toast } from "sonner";
 import { sendContactEnquiryAction } from "@/lib/mail/actions/sendContactEnquiryAction";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-export default function ContactForm() {
-  const { form } = contactUsData;
+export default function ContactForm({
+  form: stored,
+}: {
+  form?: ContactType["formSection"];
+}) {
+  // CMS → Contact → Contact Form; unsaved fields show the original text
+  const form = withDefaults(stored, CONTACT_FORM_DEFAULTS);
+  const serviceOptions = toSelectOptions(form.serviceOptions);
 
   const {
     register,
@@ -116,7 +127,7 @@ export default function ContactForm() {
           <FloatingSelect
             id="serviceRequired"
             label="Service Required *"
-            options={form.serviceOptions}
+            options={serviceOptions}
             registration={register("serviceRequired", {
               required: "Please select a service",
             })}

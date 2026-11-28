@@ -10,7 +10,9 @@ const Index = ({ data }: { data: ContactType }) => {
       {isShown(data.bannerSection) && (
         <InnerBanner data={data.bannerSection} maxWTitle="max-w-[85ch]" />
       )}
-      {isShown(data.firstSection) && <Main data={data.firstSection} />}
+      {isShown(data.firstSection) && (
+        <Main data={data.firstSection} form={data.formSection} />
+      )}
       {isShown(data.secondSection) && <ContactMap data={data.secondSection} />}
     </>
   );
