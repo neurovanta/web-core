@@ -2,7 +2,10 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useAdminVisitLink } from "@/app/components/admin/common/AdminVisitLink";
+import {
+  useAdminPageTitle,
+  useAdminVisitLink,
+} from "@/app/components/admin/common/AdminVisitLink";
 import {
   ArrowUpRight,
   Briefcase,
@@ -30,9 +33,24 @@ const SECTIONS: Record<
 > = {
   home: { label: "Home", icon: Home, site: "/" },
   about: { label: "About", icon: Info, site: "/about-us" },
-  solutions: { label: "Solutions", icon: Briefcase, singular: "Solution", site: "/solutions" },
-  systems: { label: "Systems", icon: Layers, singular: "System", site: "/longevity-systems" },
-  industries: { label: "Industries", icon: Factory, singular: "Industry", site: "/industries" },
+  solutions: {
+    label: "Solutions",
+    icon: Briefcase,
+    singular: "Solution",
+    site: "/solutions",
+  },
+  systems: {
+    label: "Systems",
+    icon: Layers,
+    singular: "System",
+    site: "/longevity-systems",
+  },
+  industries: {
+    label: "Industries",
+    icon: Factory,
+    singular: "Industry",
+    site: "/industries",
+  },
   experience: { label: "Experience", icon: Star, site: "/experience" },
   careers: { label: "Careers", icon: GraduationCap, site: "/careers" },
   contact: { label: "Contact", icon: Phone, site: "/contact-us" },
@@ -60,7 +78,8 @@ const getCrumbs = (segments: string[]): string[] => {
 
   if (!second) return crumbs;
   if (second === "new") crumbs.push(`New ${section?.singular ?? "Item"}`);
-  else if (ID_PATTERN.test(second)) crumbs.push(`Edit ${section?.singular ?? "Item"}`);
+  else if (ID_PATTERN.test(second))
+    crumbs.push(`Edit ${section?.singular ?? "Item"}`);
   else crumbs.push(humanize(second));
 
   return crumbs;
@@ -71,14 +90,21 @@ const getCrumbs = (segments: string[]): string[] => {
 const AdminPageHeader = () => {
   const pathname = usePathname() ?? "";
   const pageVisitHref = useAdminVisitLink();
+  // editors (solution, industry, system) set the name of the item being edited
+  const itemTitle = useAdminPageTitle();
   const segments = getSegments(pathname);
   const isDashboard = segments.length === 0;
   const crumbs = getCrumbs(segments);
   const section = SECTIONS[segments[0] ?? ""];
-  const Icon = isDashboard ? LayoutDashboard : (section?.icon ?? LayoutDashboard);
-  const title = isDashboard ? "Dashboard" : crumbs[crumbs.length - 1];
+  const Icon = isDashboard
+    ? LayoutDashboard
+    : (section?.icon ?? LayoutDashboard);
+  const title = isDashboard
+    ? "Dashboard"
+    : (itemTitle ?? crumbs[crumbs.length - 1]);
   // detail editors set their own URL; section pages link to their public page
-  const visitHref = pageVisitHref ?? (segments.length === 1 ? section?.site : undefined);
+  const visitHref =
+    pageVisitHref ?? (segments.length === 1 ? section?.site : undefined);
 
   return (
     <header className="relative flex h-[88px] shrink-0 items-center border-b border-border-color/40 bg-white/85 px-8 shadow-[0_6px_20px_-16px_rgba(81,70,62,0.3)] backdrop-blur-xl backdrop-saturate-150">
@@ -122,10 +148,17 @@ const AdminPageHeader = () => {
               {crumbs.map((crumb, index) => {
                 const last = index === crumbs.length - 1;
                 return (
-                  <span key={`${crumb}-${index}`} className="flex min-w-0 items-center gap-1.5">
+                  <span
+                    key={`${crumb}-${index}`}
+                    className="flex min-w-0 items-center gap-1.5"
+                  >
                     <ChevronRight className="h-3 w-3 shrink-0 text-border-color" />
                     <span
-                      className={last ? "truncate text-secondary" : "truncate text-secondary/55"}
+                      className={
+                        last
+                          ? "truncate text-secondary"
+                          : "truncate text-secondary/55"
+                      }
                       aria-current={last ? "page" : undefined}
                     >
                       {crumb}
@@ -137,7 +170,10 @@ const AdminPageHeader = () => {
           )}
 
           <div className="flex min-w-0 items-center gap-3">
-            <h1 className="truncate text-[22px] font-semibold leading-none tracking-tight text-secondary">
+            <h1
+              title={title}
+              className="max-w-[min(55vw,720px)] truncate text-[22px] font-semibold leading-none tracking-tight text-secondary"
+            >
               {title}
             </h1>
             {visitHref && (
