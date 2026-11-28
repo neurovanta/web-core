@@ -663,6 +663,10 @@ export const NavDropdown = forwardRef<NavDropdownHandle, NavDropdownProps>(
                                 onClick={() => {
                                   setMobileSubOpen(false);
                                   setMobileActiveItem(null);
+                                  // A tap fires mouseenter on touch devices, so the
+                                  // tapped item would stay highlighted after going back.
+                                  setHoveredItem(null);
+                                  setActiveItem(null);
                                 }}
                               >
                                 <span className="">
