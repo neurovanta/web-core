@@ -1,5 +1,6 @@
 import { cookies } from "next/headers";
 import * as jose from "jose";
+import { getJwtSecret } from "@/lib/jwtSecret";
 import connectDB from "@/lib/mongodb";
 import Admin from "@/app/models/Admin";
 
@@ -12,9 +13,8 @@ export async function getCurrentAdminName(): Promise<string | null> {
     const token = (await cookies()).get("adminToken")?.value;
     if (!token) return null;
 
-    const secret = new TextEncoder().encode(
-      process.env.JWT_SECRET || "your-secret-key",
-    );
+    const secret = getJwtSecret();
+    if (!secret) return null;
     const { payload } = await jose.jwtVerify(token, secret);
     if (!payload.userId) return null;
 
