@@ -109,7 +109,7 @@ export async function PATCH(request: NextRequest) {
     delete body.solutions;
     const doc = await Solution.findOneAndUpdate({}, body, {
       upsert: true,
-      new: true,
+      returnDocument: "after",
     });
 
     revalidateTag("Solutions", "default");

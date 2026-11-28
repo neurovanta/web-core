@@ -54,7 +54,7 @@ export async function PATCH(request: NextRequest) {
         toEmailCareer: body.toEmailCareer,
         toEmailHome: body.toEmailHome,
       },
-      { upsert: true, new: true },
+      { upsert: true, returnDocument: "after" },
     );
     if (!emails) {
       return NextResponse.json(

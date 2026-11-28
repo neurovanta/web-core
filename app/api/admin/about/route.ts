@@ -39,7 +39,7 @@ export async function PATCH(request: NextRequest) {
 
     const updated = await About.findOneAndUpdate({}, body, {
       upsert: true,
-      new: true,
+      returnDocument: "after",
     });
 
     revalidateTag("About", "default");

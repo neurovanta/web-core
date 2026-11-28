@@ -164,7 +164,7 @@ export async function PATCH(request: NextRequest) {
     }
     const updated = await Systems.findOneAndUpdate({}, { $set: body }, {
       upsert: true,
-      new: true,
+      returnDocument: "after",
     });
     revalidateTag("Systems", "default");
     revalidateTag("Home", "default");

@@ -111,7 +111,7 @@ export async function PATCH(request: NextRequest) {
     delete body.industries;
     const doc = await Industries.findOneAndUpdate({}, body, {
       upsert: true,
-      new: true,
+      returnDocument: "after",
     });
 
     revalidateTag("Industries", "default");

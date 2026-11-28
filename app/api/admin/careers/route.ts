@@ -80,7 +80,7 @@ export async function PATCH(request: NextRequest) {
     const updated = await Careers.findOneAndUpdate(
       {},
       { $set: flatSet },
-      { upsert: true, new: true },
+      { upsert: true, returnDocument: "after" },
     );
 
     revalidateTag("Careers", "default");
