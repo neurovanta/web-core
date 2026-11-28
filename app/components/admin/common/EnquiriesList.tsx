@@ -304,7 +304,7 @@ export default function EnquiriesList({ config }: { config: EnquiriesConfig }) {
                           <DialogTrigger title="View enquiry" className={cn(iconBtn, "hover:bg-primary/40 hover:text-secondary")}>
                             <Eye className="h-4 w-4" />
                           </DialogTrigger>
-                          <DialogContent className="bg-white sm:max-w-2xl">
+                          <DialogContent hideClose className="bg-white sm:max-w-2xl">
                             <DialogHeader>
                               <DialogTitle className="text-secondary">
                                 {kind === "career" ? "Application" : "Enquiry"} from {nameOf(e)}
@@ -371,7 +371,7 @@ export default function EnquiriesList({ config }: { config: EnquiriesConfig }) {
                           >
                             {deletingId === e._id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
                           </DialogTrigger>
-                          <DialogContent className="bg-white">
+                          <DialogContent hideClose className="bg-white">
                             <DialogHeader>
                               <DialogTitle className="text-secondary">
                                 Delete the {kind === "career" ? "application" : "enquiry"} from {nameOf(e)}?

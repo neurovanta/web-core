@@ -10,6 +10,8 @@ import { Textarea } from "@/components/ui/textarea";
 import AdminItemContainer from "@/app/components/admin/common/AdminItemContainer";
 import AdminTabs from "@/app/components/admin/common/AdminTabs";
 import AdminPageActions from "@/app/components/admin/common/AdminPageActions";
+import { guardNavigation } from "@/app/components/admin/common/UnsavedLeaveGuard";
+import { useUnsavedChanges } from "@/app/components/admin/common/useUnsavedChanges";
 import AdminSubmitButton from "@/app/components/admin/common/AdminSubmitButton";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
@@ -92,9 +94,15 @@ export default function SystemsMainPage() {
     handleSubmit,
     setValue,
     control,
+    getValues,
     watch,
     formState: { errors, isSubmitting },
   } = useForm<SystemsMainForm>();
+  const { isDirty, markClean, changes } = useUnsavedChanges(control, getValues);
+  // opens an editor, asking first if the Page tab has unsaved edits
+  const openEditor = (href: string) => {
+    if (!guardNavigation(href)) router.push(href);
+  };
 
   const [activeTab, setActiveTab] = useState<"list" | "page">("list");
 
@@ -109,6 +117,7 @@ export default function SystemsMainPage() {
         setValue("secondSection", data.secondSection);
         setValue("thirdSection", data.thirdSection);
         setCategories(data.secondSection?.categories || []);
+        markClean();
       } else {
         const { message } = await res.json();
         toast.error(message);
@@ -127,6 +136,7 @@ export default function SystemsMainPage() {
       if (res.ok) {
         const { message } = await res.json();
         toast.success(message);
+        markClean();
       } else {
         const { message } = await res.json();
         toast.error(message);
@@ -336,23 +346,27 @@ export default function SystemsMainPage() {
             </Label>
             <div className="p-5 flex flex-col gap-4">
               <div className="grid grid-cols-2 gap-4">
-                <div className="flex flex-col gap-2">
-                  <Label className="font-bold">Image</Label>
-                  <Controller
-                    name="bannerSection.image"
-                    control={control}
-                    render={({ field }) => (
-                      <ImageUploader
-                        value={field.value}
-                        onChange={field.onChange}
-                      />
-                    )}
-                  />
-                  <Label className="font-bold">Alt Tag</Label>
-                  <Input
-                    {...register("bannerSection.imageAlt")}
-                    placeholder="Alt Tag"
-                  />
+                <div className="flex flex-col gap-4">
+                  <div className="flex flex-col gap-2">
+                    <Label className="font-bold">Image</Label>
+                    <Controller
+                      name="bannerSection.image"
+                      control={control}
+                      render={({ field }) => (
+                        <ImageUploader
+                          value={field.value}
+                          onChange={field.onChange}
+                        />
+                      )}
+                    />
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <Label className="font-bold">Alt Tag</Label>
+                    <Input
+                      {...register("bannerSection.imageAlt")}
+                      placeholder="Alt Tag"
+                    />
+                  </div>
                 </div>
                 <div className="flex flex-col gap-2">
                   <Label className="font-bold">Title</Label>
@@ -380,18 +394,29 @@ export default function SystemsMainPage() {
               First Section
             </Label>
             <div className="p-5 flex flex-col gap-4">
-              <Label className="font-bold">Title</Label>
-              <Input {...register("firstSection.title")} placeholder="Title" />
-              <Label className="font-bold">Sub Title</Label>
-              <Input
-                {...register("firstSection.subTitle")}
-                placeholder="Sub Title"
-              />
-              <Label className="font-bold">Description</Label>
-              <Textarea
-                {...register("firstSection.description")}
-                placeholder="Description"
-              />
+              <div className="grid grid-cols-2 gap-4">
+                <div className="flex flex-col gap-2">
+                  <Label className="font-bold">Title</Label>
+                  <Input
+                    {...register("firstSection.title")}
+                    placeholder="Title"
+                  />
+                </div>
+                <div className="flex flex-col gap-2">
+                  <Label className="font-bold">Sub Title</Label>
+                  <Input
+                    {...register("firstSection.subTitle")}
+                    placeholder="Sub Title"
+                  />
+                </div>
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label className="font-bold">Description</Label>
+                <Textarea
+                  {...register("firstSection.description")}
+                  placeholder="Description"
+                />
+              </div>
             </div>
           </AdminItemContainer>
 
@@ -410,13 +435,20 @@ export default function SystemsMainPage() {
               Second Section
             </Label>
             <div className="p-5 flex flex-col gap-4">
-              <Label className="font-bold">Title</Label>
-              <Input {...register("secondSection.title")} placeholder="Title" />
-              <Label className="font-bold">Description</Label>
-              <Textarea
-                {...register("secondSection.description")}
-                placeholder="Description"
-              />
+              <div className="flex flex-col gap-2">
+                <Label className="font-bold">Title</Label>
+                <Input
+                  {...register("secondSection.title")}
+                  placeholder="Title"
+                />
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label className="font-bold">Description</Label>
+                <Textarea
+                  {...register("secondSection.description")}
+                  placeholder="Description"
+                />
+              </div>
             </div>
           </AdminItemContainer>
 
@@ -436,23 +468,27 @@ export default function SystemsMainPage() {
             </Label>
             <div className="p-5 flex flex-col gap-4">
               <div className="grid grid-cols-2 gap-4">
-                <div className="flex flex-col gap-2">
-                  <Label className="font-bold">Image</Label>
-                  <Controller
-                    name="thirdSection.image"
-                    control={control}
-                    render={({ field }) => (
-                      <ImageUploader
-                        value={field.value}
-                        onChange={field.onChange}
-                      />
-                    )}
-                  />
-                  <Label className="font-bold">Alt Tag</Label>
-                  <Input
-                    {...register("thirdSection.imageAlt")}
-                    placeholder="Alt Tag"
-                  />
+                <div className="flex flex-col gap-4">
+                  <div className="flex flex-col gap-2">
+                    <Label className="font-bold">Image</Label>
+                    <Controller
+                      name="thirdSection.image"
+                      control={control}
+                      render={({ field }) => (
+                        <ImageUploader
+                          value={field.value}
+                          onChange={field.onChange}
+                        />
+                      )}
+                    />
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <Label className="font-bold">Alt Tag</Label>
+                    <Input
+                      {...register("thirdSection.imageAlt")}
+                      placeholder="Alt Tag"
+                    />
+                  </div>
                 </div>
                 <div className="flex flex-col gap-2">
                   <Label className="font-bold">Title</Label>
@@ -469,19 +505,30 @@ export default function SystemsMainPage() {
           <AdminItemContainer>
             <Label main>SEO</Label>
             <div className="p-5 flex flex-col gap-4">
-              <Label className="font-bold">Meta Title</Label>
-              <Input {...register("seo.metaTitle")} placeholder="Meta Title" />
-              <Label className="font-bold">Meta Description</Label>
-              <Input
-                {...register("seo.metaDescription")}
-                placeholder="Meta Description"
-              />
-              <Label className="font-bold">Script</Label>
-              <Textarea {...register("seo.script")} placeholder="Script" />
+              <div className="grid grid-cols-2 gap-4">
+                <div className="flex flex-col gap-2">
+                  <Label className="font-bold">Meta Title</Label>
+                  <Input
+                    {...register("seo.metaTitle")}
+                    placeholder="Meta Title"
+                  />
+                </div>
+                <div className="flex flex-col gap-2">
+                  <Label className="font-bold">Meta Description</Label>
+                  <Input
+                    {...register("seo.metaDescription")}
+                    placeholder="Meta Description"
+                  />
+                </div>
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label className="font-bold">Script</Label>
+                <Textarea {...register("seo.script")} placeholder="Script" />
+              </div>
             </div>
           </AdminItemContainer>
 
-          <AdminPageActions>
+          <AdminPageActions isDirty={isDirty} changes={changes}>
             <AdminSubmitButton saving={isSubmitting} />
           </AdminPageActions>
         </form>
@@ -676,7 +723,7 @@ export default function SystemsMainPage() {
                           title="Edit product"
                           onClick={() =>
                             product._id &&
-                            router.push(
+                            openEditor(
                               `/4dm1n-n3ur0v4nt4/systems/${product._id}`,
                             )
                           }
@@ -687,7 +734,7 @@ export default function SystemsMainPage() {
                               product._id
                             ) {
                               e.preventDefault();
-                              router.push(
+                              openEditor(
                                 `/4dm1n-n3ur0v4nt4/systems/${product._id}`,
                               );
                             }

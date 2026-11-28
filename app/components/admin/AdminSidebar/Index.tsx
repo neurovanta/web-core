@@ -176,6 +176,7 @@ export default function AdminSidebar({ username }: { username: string | null }) 
           <button
             type="button"
             onClick={handleLogout}
+            data-unsaved-guard
             aria-label="Log out"
             title="Log out"
             className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-white/55 transition-colors hover:bg-red-500/15 hover:text-red-300 cursor-pointer"

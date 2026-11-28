@@ -9,6 +9,8 @@ import { ImageUploader } from "@/components/ui/image-uploader";
 import { Textarea } from "@/components/ui/textarea";
 import AdminItemContainer from "@/app/components/admin/common/AdminItemContainer";
 import AdminPageActions from "@/app/components/admin/common/AdminPageActions";
+import { guardNavigation } from "@/app/components/admin/common/UnsavedLeaveGuard";
+import { useUnsavedChanges } from "@/app/components/admin/common/useUnsavedChanges";
 import AdminSubmitButton from "@/app/components/admin/common/AdminSubmitButton";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
@@ -57,9 +59,19 @@ export default function IndustriesMainPage() {
     handleSubmit,
     setValue,
     control,
+    getValues,
     watch,
     formState: { errors, isSubmitting },
   } = useForm<IndustriesMainForm>();
+  const { isDirty, markClean, changes } = useUnsavedChanges(
+    control,
+    getValues,
+    { ignore: ["industries"] },
+  );
+  // opens an editor, asking first if the Page tab has unsaved edits
+  const openEditor = (href: string) => {
+    if (!guardNavigation(href)) router.push(href);
+  };
 
   const { fields: industries, remove: removeIndustry } = useFieldArray({
     control,
@@ -85,6 +97,7 @@ export default function IndustriesMainPage() {
         setValue("secondSection", data.secondSection);
         setValue("industries", data.industries);
         setValue("thirdSection", data.thirdSection);
+        markClean();
       } else {
         const { message } = await res.json();
         toast.error(message);
@@ -103,6 +116,7 @@ export default function IndustriesMainPage() {
       if (res.ok) {
         const { message } = await res.json();
         toast.success(message);
+        markClean();
       } else {
         const { message } = await res.json();
         toast.error(message);
@@ -194,23 +208,27 @@ export default function IndustriesMainPage() {
             </Label>
             <div className="p-5 flex flex-col gap-4">
               <div className="grid grid-cols-2 gap-4">
-                <div className="flex flex-col gap-2">
-                  <Label className="font-bold">Image</Label>
-                  <Controller
-                    name="bannerSection.image"
-                    control={control}
-                    render={({ field }) => (
-                      <ImageUploader
-                        value={field.value}
-                        onChange={field.onChange}
-                      />
-                    )}
-                  />
-                  <Label className="font-bold">Alt Tag</Label>
-                  <Input
-                    {...register("bannerSection.imageAlt")}
-                    placeholder="Alt Tag"
-                  />
+                <div className="flex flex-col gap-4">
+                  <div className="flex flex-col gap-2">
+                    <Label className="font-bold">Image</Label>
+                    <Controller
+                      name="bannerSection.image"
+                      control={control}
+                      render={({ field }) => (
+                        <ImageUploader
+                          value={field.value}
+                          onChange={field.onChange}
+                        />
+                      )}
+                    />
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <Label className="font-bold">Alt Tag</Label>
+                    <Input
+                      {...register("bannerSection.imageAlt")}
+                      placeholder="Alt Tag"
+                    />
+                  </div>
                 </div>
                 <div className="flex flex-col gap-2">
                   <Label className="font-bold">Title</Label>
@@ -239,35 +257,43 @@ export default function IndustriesMainPage() {
             </Label>
             <div className="p-5 flex flex-col gap-4">
               <div className="grid grid-cols-2 gap-4">
-                <div className="flex flex-col gap-2">
-                  <Label className="font-bold">Image</Label>
-                  <Controller
-                    name="firstSection.image"
-                    control={control}
-                    render={({ field }) => (
-                      <ImageUploader
-                        value={field.value}
-                        onChange={field.onChange}
-                      />
-                    )}
-                  />
-                  <Label className="font-bold">Alt Tag</Label>
-                  <Input
-                    {...register("firstSection.imageAlt")}
-                    placeholder="Alt Tag"
-                  />
+                <div className="flex flex-col gap-4">
+                  <div className="flex flex-col gap-2">
+                    <Label className="font-bold">Image</Label>
+                    <Controller
+                      name="firstSection.image"
+                      control={control}
+                      render={({ field }) => (
+                        <ImageUploader
+                          value={field.value}
+                          onChange={field.onChange}
+                        />
+                      )}
+                    />
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <Label className="font-bold">Alt Tag</Label>
+                    <Input
+                      {...register("firstSection.imageAlt")}
+                      placeholder="Alt Tag"
+                    />
+                  </div>
                 </div>
-                <div className="flex flex-col gap-2">
-                  <Label className="font-bold">Title</Label>
-                  <Input
-                    {...register("firstSection.title")}
-                    placeholder="Title"
-                  />
-                  <Label className="font-bold">Description</Label>
-                  <Textarea
-                    {...register("firstSection.description")}
-                    placeholder="Description"
-                  />
+                <div className="flex flex-col gap-4">
+                  <div className="flex flex-col gap-2">
+                    <Label className="font-bold">Title</Label>
+                    <Input
+                      {...register("firstSection.title")}
+                      placeholder="Title"
+                    />
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <Label className="font-bold">Description</Label>
+                    <Textarea
+                      {...register("firstSection.description")}
+                      placeholder="Description"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -316,23 +342,27 @@ export default function IndustriesMainPage() {
             </Label>
             <div className="p-5 flex flex-col gap-4">
               <div className="grid grid-cols-2 gap-4">
-                <div className="flex flex-col gap-2">
-                  <Label className="font-bold">Image</Label>
-                  <Controller
-                    name="thirdSection.image"
-                    control={control}
-                    render={({ field }) => (
-                      <ImageUploader
-                        value={field.value}
-                        onChange={field.onChange}
-                      />
-                    )}
-                  />
-                  <Label className="font-bold">Alt Tag</Label>
-                  <Input
-                    {...register("thirdSection.imageAlt")}
-                    placeholder="Alt Tag"
-                  />
+                <div className="flex flex-col gap-4">
+                  <div className="flex flex-col gap-2">
+                    <Label className="font-bold">Image</Label>
+                    <Controller
+                      name="thirdSection.image"
+                      control={control}
+                      render={({ field }) => (
+                        <ImageUploader
+                          value={field.value}
+                          onChange={field.onChange}
+                        />
+                      )}
+                    />
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <Label className="font-bold">Alt Tag</Label>
+                    <Input
+                      {...register("thirdSection.imageAlt")}
+                      placeholder="Alt Tag"
+                    />
+                  </div>
                 </div>
                 <div className="flex flex-col gap-2">
                   <Label className="font-bold">Title</Label>
@@ -349,19 +379,30 @@ export default function IndustriesMainPage() {
           <AdminItemContainer>
             <Label main>SEO</Label>
             <div className="p-5 flex flex-col gap-4">
-              <Label className="font-bold">Meta Title</Label>
-              <Input {...register("seo.metaTitle")} placeholder="Meta Title" />
-              <Label className="font-bold">Meta Description</Label>
-              <Input
-                {...register("seo.metaDescription")}
-                placeholder="Meta Description"
-              />
-              <Label className="font-bold">Script</Label>
-              <Textarea {...register("seo.script")} placeholder="Script" />
+              <div className="grid grid-cols-2 gap-4">
+                <div className="flex flex-col gap-2">
+                  <Label className="font-bold">Meta Title</Label>
+                  <Input
+                    {...register("seo.metaTitle")}
+                    placeholder="Meta Title"
+                  />
+                </div>
+                <div className="flex flex-col gap-2">
+                  <Label className="font-bold">Meta Description</Label>
+                  <Input
+                    {...register("seo.metaDescription")}
+                    placeholder="Meta Description"
+                  />
+                </div>
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label className="font-bold">Script</Label>
+                <Textarea {...register("seo.script")} placeholder="Script" />
+              </div>
             </div>
           </AdminItemContainer>
 
-          <AdminPageActions>
+          <AdminPageActions isDirty={isDirty} changes={changes}>
             <AdminSubmitButton saving={isSubmitting} />
           </AdminPageActions>
         </form>
@@ -379,8 +420,8 @@ export default function IndustriesMainPage() {
             slug: watch(`industries.${index}.slug`),
             isHidden: watch(`industries.${index}.isHidden`),
           }))}
-          onAdd={() => router.push("/4dm1n-n3ur0v4nt4/industries/new")}
-          onOpen={(id) => router.push(`/4dm1n-n3ur0v4nt4/industries/${id}`)}
+          onAdd={() => openEditor("/4dm1n-n3ur0v4nt4/industries/new")}
+          onOpen={(id) => openEditor(`/4dm1n-n3ur0v4nt4/industries/${id}`)}
           onToggleVisibility={toggleIndustryVisibility}
           onDelete={(id, index, label) =>
             setConfirmDialog({ open: true, id, index, label })

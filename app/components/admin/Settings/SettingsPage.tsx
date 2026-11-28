@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { Code2, Eye, EyeOff, KeyRound, Loader2, Mail, ShieldCheck } from "lucide-react";
@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import UnsavedLeaveGuard from "@/app/components/admin/common/UnsavedLeaveGuard";
 
 interface ScriptsForm {
   headerScript: string;
@@ -147,6 +148,27 @@ const Settings = () => {
     newPassword: false,
     confirmPassword: false,
   });
+  // Unsaved edits (reset() after load/save sets each form's baseline): warn on
+  // reload / tab close and confirm before leaving through the admin.
+  const scriptsDirty = scripts.formState.isDirty;
+  const emailsDirty = emails.formState.isDirty;
+  const unsavedSections = [
+    emailsDirty && "Notification Emails",
+    scriptsDirty && "Tracking Scripts",
+  ].filter(Boolean) as string[];
+  const isDirty = unsavedSections.length > 0;
+  const noActionsRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    if (!isDirty) return;
+    const warn = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+      e.returnValue = "";
+    };
+    window.addEventListener("beforeunload", warn);
+    return () => window.removeEventListener("beforeunload", warn);
+  }, [isDirty]);
+
   const toggleVisible = (field: keyof PasswordForm) =>
     setVisible((prev) => ({ ...prev, [field]: !prev[field] }));
 
@@ -243,6 +265,12 @@ const Settings = () => {
 
   return (
     <div className="grid grid-cols-1 items-start gap-5 xl:grid-cols-[1.4fr_1fr]">
+      {/* renders only a portal dialog, no grid cell */}
+      <UnsavedLeaveGuard
+        active={isDirty}
+        sections={unsavedSections}
+        actionsRef={noActionsRef}
+      />
       <div className="flex flex-col gap-5">
         {/* Notification emails */}
         <form onSubmit={emails.handleSubmit(saveEmails)} noValidate>

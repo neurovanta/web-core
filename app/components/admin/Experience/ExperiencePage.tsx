@@ -9,6 +9,7 @@ import { ImageUploader } from "@/components/ui/image-uploader";
 import { Textarea } from "@/components/ui/textarea";
 import AdminItemContainer from "@/app/components/admin/common/AdminItemContainer";
 import AdminPageActions from "@/app/components/admin/common/AdminPageActions";
+import { useUnsavedChanges } from "@/app/components/admin/common/useUnsavedChanges";
 import AdminSubmitButton from "@/app/components/admin/common/AdminSubmitButton";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
@@ -55,9 +56,11 @@ export default function ExperiencePage() {
     handleSubmit,
     setValue,
     control,
+    getValues,
     watch,
     formState: { isSubmitting },
   } = useForm<ExperienceForm>();
+  const { isDirty, markClean, changes } = useUnsavedChanges(control, getValues);
 
   const {
     fields: thirdItems,
@@ -79,6 +82,7 @@ export default function ExperiencePage() {
         setValue("fourthSection", data.fourthSection);
 
         replaceThird(data.thirdSection?.items || []);
+        markClean();
       } else {
         const { message } = await res.json();
         toast.error(message);
@@ -97,6 +101,7 @@ export default function ExperiencePage() {
       if (res.ok) {
         const { message } = await res.json();
         toast.success(message);
+        markClean();
       } else {
         const { message } = await res.json();
         toast.error(message);
@@ -133,23 +138,27 @@ export default function ExperiencePage() {
             </Label>
             <div className="p-5 flex flex-col gap-4">
               <div className="grid grid-cols-2 gap-4">
-                <div className="flex flex-col gap-2">
-                  <Label className="font-bold">Image</Label>
-                  <Controller
-                    name="bannerSection.image"
-                    control={control}
-                    render={({ field }) => (
-                      <ImageUploader
-                        value={field.value}
-                        onChange={field.onChange}
-                      />
-                    )}
-                  />
-                  <Label className="font-bold">Alt Tag</Label>
-                  <Input
-                    {...register("bannerSection.imageAlt")}
-                    placeholder="Alt Tag"
-                  />
+                <div className="flex flex-col gap-4">
+                  <div className="flex flex-col gap-2">
+                    <Label className="font-bold">Image</Label>
+                    <Controller
+                      name="bannerSection.image"
+                      control={control}
+                      render={({ field }) => (
+                        <ImageUploader
+                          value={field.value}
+                          onChange={field.onChange}
+                        />
+                      )}
+                    />
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <Label className="font-bold">Alt Tag</Label>
+                    <Input
+                      {...register("bannerSection.imageAlt")}
+                      placeholder="Alt Tag"
+                    />
+                  </div>
                 </div>
                 <div className="flex flex-col gap-2">
                   <Label className="font-bold">Title</Label>
@@ -177,18 +186,29 @@ export default function ExperiencePage() {
               First Section
             </Label>
             <div className="p-5 flex flex-col gap-4">
-              <Label className="font-bold">Title</Label>
-              <Input {...register("firstSection.title")} placeholder="Title" />
-              <Label className="font-bold">Subtitle</Label>
-              <Input
-                {...register("firstSection.subtitle")}
-                placeholder="Subtitle"
-              />
-              <Label className="font-bold">Description</Label>
-              <Textarea
-                {...register("firstSection.description")}
-                placeholder="Description"
-              />
+              <div className="grid grid-cols-2 gap-4">
+                <div className="flex flex-col gap-2">
+                  <Label className="font-bold">Title</Label>
+                  <Input
+                    {...register("firstSection.title")}
+                    placeholder="Title"
+                  />
+                </div>
+                <div className="flex flex-col gap-2">
+                  <Label className="font-bold">Subtitle</Label>
+                  <Input
+                    {...register("firstSection.subtitle")}
+                    placeholder="Subtitle"
+                  />
+                </div>
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label className="font-bold">Description</Label>
+                <Textarea
+                  {...register("firstSection.description")}
+                  placeholder="Description"
+                />
+              </div>
             </div>
           </AdminItemContainer>
 
@@ -208,40 +228,50 @@ export default function ExperiencePage() {
             </Label>
             <div className="p-5 flex flex-col gap-4">
               <div className="grid grid-cols-2 gap-4">
-                <div className="flex flex-col gap-2">
-                  <Label className="font-bold">Image</Label>
-                  <Controller
-                    name="secondSection.image"
-                    control={control}
-                    render={({ field }) => (
-                      <ImageUploader
-                        value={field.value}
-                        onChange={field.onChange}
-                      />
-                    )}
-                  />
-                  <Label className="font-bold">Alt Tag</Label>
-                  <Input
-                    {...register("secondSection.imageAlt")}
-                    placeholder="Alt Tag"
-                  />
+                <div className="flex flex-col gap-4">
+                  <div className="flex flex-col gap-2">
+                    <Label className="font-bold">Image</Label>
+                    <Controller
+                      name="secondSection.image"
+                      control={control}
+                      render={({ field }) => (
+                        <ImageUploader
+                          value={field.value}
+                          onChange={field.onChange}
+                        />
+                      )}
+                    />
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <Label className="font-bold">Alt Tag</Label>
+                    <Input
+                      {...register("secondSection.imageAlt")}
+                      placeholder="Alt Tag"
+                    />
+                  </div>
                 </div>
-                <div className="flex flex-col gap-2">
-                  <Label className="font-bold">Title</Label>
-                  <Input
-                    {...register("secondSection.title")}
-                    placeholder="Title"
-                  />
-                  <Label className="font-bold">Subtitle</Label>
-                  <Input
-                    {...register("secondSection.subtitle")}
-                    placeholder="Subtitle"
-                  />
-                  <Label className="font-bold">Description</Label>
-                  <Textarea
-                    {...register("secondSection.description")}
-                    placeholder="Description"
-                  />
+                <div className="flex flex-col gap-4">
+                  <div className="flex flex-col gap-2">
+                    <Label className="font-bold">Title</Label>
+                    <Input
+                      {...register("secondSection.title")}
+                      placeholder="Title"
+                    />
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <Label className="font-bold">Subtitle</Label>
+                    <Input
+                      {...register("secondSection.subtitle")}
+                      placeholder="Subtitle"
+                    />
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <Label className="font-bold">Description</Label>
+                    <Textarea
+                      {...register("secondSection.description")}
+                      placeholder="Description"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -262,8 +292,13 @@ export default function ExperiencePage() {
               Third Section
             </Label>
             <div className="p-5 flex flex-col gap-4">
-              <Label className="font-bold">Title</Label>
-              <Input {...register("thirdSection.title")} placeholder="Title" />
+              <div className="flex flex-col gap-2">
+                <Label className="font-bold">Title</Label>
+                <Input
+                  {...register("thirdSection.title")}
+                  placeholder="Title"
+                />
+              </div>
               <div className="flex items-center justify-between mt-2 border border-black/10 rounded-lg p-4 shadow-md">
                 <Label className="font-bold">Items</Label>
                 <Button
@@ -278,7 +313,7 @@ export default function ExperiencePage() {
                 {thirdItems.map((field, index) => (
                   <div
                     key={field.id}
-                    className="border border-black/10 rounded-lg p-4 flex flex-col gap-3"
+                    className="rounded-xl border border-border-color/60 bg-cream-bg/50 p-4 flex flex-col gap-4"
                   >
                     <div className="flex items-center justify-between">
                       <Label className="font-bold">Item {index + 1}</Label>
@@ -290,16 +325,20 @@ export default function ExperiencePage() {
                         <RiDeleteBinLine size={16} />
                       </Button>
                     </div>
-                    <Label className="font-bold">Title</Label>
-                    <Input
-                      {...register(`thirdSection.items.${index}.title`)}
-                      placeholder="Title"
-                    />
-                    <Label className="font-bold">Description</Label>
-                    <Textarea
-                      {...register(`thirdSection.items.${index}.description`)}
-                      placeholder="Description"
-                    />
+                    <div className="flex flex-col gap-2">
+                      <Label className="font-bold">Title</Label>
+                      <Input
+                        {...register(`thirdSection.items.${index}.title`)}
+                        placeholder="Title"
+                      />
+                    </div>
+                    <div className="flex flex-col gap-2">
+                      <Label className="font-bold">Description</Label>
+                      <Textarea
+                        {...register(`thirdSection.items.${index}.description`)}
+                        placeholder="Description"
+                      />
+                    </div>
                   </div>
                 ))}
               </div>
@@ -322,23 +361,27 @@ export default function ExperiencePage() {
             </Label>
             <div className="p-5 flex flex-col gap-4">
               <div className="grid grid-cols-2 gap-4">
-                <div className="flex flex-col gap-2">
-                  <Label className="font-bold">Image</Label>
-                  <Controller
-                    name="fourthSection.image"
-                    control={control}
-                    render={({ field }) => (
-                      <ImageUploader
-                        value={field.value}
-                        onChange={field.onChange}
-                      />
-                    )}
-                  />
-                  <Label className="font-bold">Alt Tag</Label>
-                  <Input
-                    {...register("fourthSection.imageAlt")}
-                    placeholder="Alt Tag"
-                  />
+                <div className="flex flex-col gap-4">
+                  <div className="flex flex-col gap-2">
+                    <Label className="font-bold">Image</Label>
+                    <Controller
+                      name="fourthSection.image"
+                      control={control}
+                      render={({ field }) => (
+                        <ImageUploader
+                          value={field.value}
+                          onChange={field.onChange}
+                        />
+                      )}
+                    />
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <Label className="font-bold">Alt Tag</Label>
+                    <Input
+                      {...register("fourthSection.imageAlt")}
+                      placeholder="Alt Tag"
+                    />
+                  </div>
                 </div>
                 <div className="flex flex-col gap-2">
                   <Label className="font-bold">Title</Label>
@@ -355,19 +398,30 @@ export default function ExperiencePage() {
           <AdminItemContainer>
             <Label main>SEO</Label>
             <div className="p-5 flex flex-col gap-4">
-              <Label className="font-bold">Meta Title</Label>
-              <Input {...register("seo.metaTitle")} placeholder="Meta Title" />
-              <Label className="font-bold">Meta Description</Label>
-              <Input
-                {...register("seo.metaDescription")}
-                placeholder="Meta Description"
-              />
-              <Label className="font-bold">Script</Label>
-              <Textarea {...register("seo.script")} placeholder="Script" />
+              <div className="grid grid-cols-2 gap-4">
+                <div className="flex flex-col gap-2">
+                  <Label className="font-bold">Meta Title</Label>
+                  <Input
+                    {...register("seo.metaTitle")}
+                    placeholder="Meta Title"
+                  />
+                </div>
+                <div className="flex flex-col gap-2">
+                  <Label className="font-bold">Meta Description</Label>
+                  <Input
+                    {...register("seo.metaDescription")}
+                    placeholder="Meta Description"
+                  />
+                </div>
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label className="font-bold">Script</Label>
+                <Textarea {...register("seo.script")} placeholder="Script" />
+              </div>
             </div>
           </AdminItemContainer>
 
-          <AdminPageActions>
+          <AdminPageActions isDirty={isDirty} changes={changes}>
             <AdminSubmitButton saving={isSubmitting} />
           </AdminPageActions>
         </form>

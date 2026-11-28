@@ -8,6 +8,7 @@ import { ImageUploader } from "@/components/ui/image-uploader";
 import { Textarea } from "@/components/ui/textarea";
 import AdminItemContainer from "@/app/components/admin/common/AdminItemContainer";
 import AdminPageActions from "@/app/components/admin/common/AdminPageActions";
+import { useUnsavedChanges } from "@/app/components/admin/common/useUnsavedChanges";
 import AdminSubmitButton from "@/app/components/admin/common/AdminSubmitButton";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
@@ -42,9 +43,11 @@ export default function ContactPage() {
     handleSubmit,
     setValue,
     control,
+    getValues,
     watch,
     formState: { isSubmitting },
   } = useForm<ContactForm>();
+  const { isDirty, markClean, changes } = useUnsavedChanges(control, getValues);
 
   const fetchData = async () => {
     try {
@@ -55,6 +58,7 @@ export default function ContactPage() {
         setValue("bannerSection", data.bannerSection);
         setValue("firstSection", data.firstSection);
         setValue("secondSection", data.secondSection);
+        markClean();
       } else {
         const { message } = await res.json();
         toast.error(message);
@@ -73,6 +77,7 @@ export default function ContactPage() {
       if (res.ok) {
         const { message } = await res.json();
         toast.success(message);
+        markClean();
       } else {
         const { message } = await res.json();
         toast.error(message);
@@ -109,23 +114,27 @@ export default function ContactPage() {
             </Label>
             <div className="p-5 flex flex-col gap-4">
               <div className="grid grid-cols-2 gap-4">
-                <div className="flex flex-col gap-2">
-                  <Label className="font-bold">Image</Label>
-                  <Controller
-                    name="bannerSection.image"
-                    control={control}
-                    render={({ field }) => (
-                      <ImageUploader
-                        value={field.value}
-                        onChange={field.onChange}
-                      />
-                    )}
-                  />
-                  <Label className="font-bold">Alt Tag</Label>
-                  <Input
-                    {...register("bannerSection.imageAlt")}
-                    placeholder="Alt Tag"
-                  />
+                <div className="flex flex-col gap-4">
+                  <div className="flex flex-col gap-2">
+                    <Label className="font-bold">Image</Label>
+                    <Controller
+                      name="bannerSection.image"
+                      control={control}
+                      render={({ field }) => (
+                        <ImageUploader
+                          value={field.value}
+                          onChange={field.onChange}
+                        />
+                      )}
+                    />
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <Label className="font-bold">Alt Tag</Label>
+                    <Input
+                      {...register("bannerSection.imageAlt")}
+                      placeholder="Alt Tag"
+                    />
+                  </div>
                 </div>
                 <div className="flex flex-col gap-2">
                   <Label className="font-bold">Title</Label>
@@ -153,50 +162,69 @@ export default function ContactPage() {
               First Section
             </Label>
             <div className="p-5 flex flex-col gap-4">
-              <Label className="font-bold">Title</Label>
-              <Input {...register("firstSection.title")} placeholder="Title" />
-              <Label className="font-bold">Description</Label>
-              <Textarea
-                {...register("firstSection.description")}
-                placeholder="Description"
-              />
+              <div className="flex flex-col gap-2">
+                <Label className="font-bold">Title</Label>
+                <Input
+                  {...register("firstSection.title")}
+                  placeholder="Title"
+                />
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label className="font-bold">Description</Label>
+                <Textarea
+                  {...register("firstSection.description")}
+                  placeholder="Description"
+                />
+              </div>
 
-              <div className="border border-black/10 rounded-lg p-4 flex flex-col gap-3 mt-2">
+              <div className="rounded-xl border border-border-color/60 bg-cream-bg/50 p-4 flex flex-col gap-4 mt-2">
                 <Label className="font-bold">Office</Label>
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="flex flex-col gap-2">
-                    <Label className="font-bold">Office Title</Label>
-                    <Input
-                      {...register("firstSection.office.title")}
-                      placeholder="Office Title"
-                    />
-                    <Label className="font-bold">Address</Label>
-                    <Textarea
-                      {...register("firstSection.office.address")}
-                      placeholder="Address"
-                    />
-                    <Label className="font-bold">Direction Label</Label>
-                    <Input
-                      {...register("firstSection.office.directionLabel")}
-                      placeholder="Get Directions"
-                    />
-                    <Label className="font-bold">Direction URL</Label>
-                    <Input
-                      {...register("firstSection.office.directionHref")}
-                      placeholder="https://maps.google.com/..."
-                    />
+                  <div className="flex flex-col gap-4">
+                    <div className="flex flex-col gap-2">
+                      <Label className="font-bold">Office Title</Label>
+                      <Input
+                        {...register("firstSection.office.title")}
+                        placeholder="Office Title"
+                      />
+                    </div>
+                    <div className="flex flex-col gap-2">
+                      <Label className="font-bold">Address</Label>
+                      <Textarea
+                        {...register("firstSection.office.address")}
+                        placeholder="Address"
+                      />
+                    </div>
+                    <div className="flex flex-col gap-2">
+                      <Label className="font-bold">Direction Label</Label>
+                      <Input
+                        {...register("firstSection.office.directionLabel")}
+                        placeholder="Get Directions"
+                      />
+                    </div>
+                    <div className="flex flex-col gap-2">
+                      <Label className="font-bold">Direction URL</Label>
+                      <Input
+                        {...register("firstSection.office.directionHref")}
+                        placeholder="https://maps.google.com/..."
+                      />
+                    </div>
                   </div>
-                  <div className="flex flex-col gap-2">
-                    <Label className="font-bold">Email</Label>
-                    <Input
-                      {...register("firstSection.office.mail")}
-                      placeholder="info@example.com"
-                    />
-                    <Label className="font-bold">Phone</Label>
-                    <Input
-                      {...register("firstSection.office.phone")}
-                      placeholder="+1 234 567 890"
-                    />
+                  <div className="flex flex-col gap-4">
+                    <div className="flex flex-col gap-2">
+                      <Label className="font-bold">Email</Label>
+                      <Input
+                        {...register("firstSection.office.mail")}
+                        placeholder="info@example.com"
+                      />
+                    </div>
+                    <div className="flex flex-col gap-2">
+                      <Label className="font-bold">Phone</Label>
+                      <Input
+                        {...register("firstSection.office.phone")}
+                        placeholder="+1 234 567 890"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -230,19 +258,30 @@ export default function ContactPage() {
           <AdminItemContainer>
             <Label main>SEO</Label>
             <div className="p-5 flex flex-col gap-4">
-              <Label className="font-bold">Meta Title</Label>
-              <Input {...register("seo.metaTitle")} placeholder="Meta Title" />
-              <Label className="font-bold">Meta Description</Label>
-              <Input
-                {...register("seo.metaDescription")}
-                placeholder="Meta Description"
-              />
-              <Label className="font-bold">Script</Label>
-              <Textarea {...register("seo.script")} placeholder="Script" />
+              <div className="grid grid-cols-2 gap-4">
+                <div className="flex flex-col gap-2">
+                  <Label className="font-bold">Meta Title</Label>
+                  <Input
+                    {...register("seo.metaTitle")}
+                    placeholder="Meta Title"
+                  />
+                </div>
+                <div className="flex flex-col gap-2">
+                  <Label className="font-bold">Meta Description</Label>
+                  <Input
+                    {...register("seo.metaDescription")}
+                    placeholder="Meta Description"
+                  />
+                </div>
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label className="font-bold">Script</Label>
+                <Textarea {...register("seo.script")} placeholder="Script" />
+              </div>
             </div>
           </AdminItemContainer>
 
-          <AdminPageActions>
+          <AdminPageActions isDirty={isDirty} changes={changes}>
             <AdminSubmitButton saving={isSubmitting} />
           </AdminPageActions>
         </form>
