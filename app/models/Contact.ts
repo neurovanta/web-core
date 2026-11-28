@@ -29,6 +29,15 @@ const contactSchema = new mongoose.Schema({
     isHidden: { type: Boolean, default: false },
     map: { type: String },
   },
+  // enquiry form on the contact page
+  formSection: {
+    title: { type: String },
+    submitLabel: { type: String },
+    serviceOptions: {
+      type: [{ label: { type: String } }],
+      default: undefined,
+    },
+  },
 });
 
 export default mongoose.models.Contact ||

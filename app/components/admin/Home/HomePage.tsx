@@ -12,6 +12,8 @@ import AdminItemContainer from "@/app/components/admin/common/AdminItemContainer
 import AdminPageActions from "@/app/components/admin/common/AdminPageActions";
 import { useUnsavedChanges } from "@/app/components/admin/common/useUnsavedChanges";
 import AdminSubmitButton from "@/app/components/admin/common/AdminSubmitButton";
+import OptionListEditor from "@/app/components/admin/common/OptionListEditor";
+import { HOME_ENQUIRY_FORM_DEFAULTS, withDefaults } from "@/lib/cmsDefaults";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
 import { RiDeleteBinLine } from "react-icons/ri";
@@ -103,6 +105,9 @@ interface HomeForm {
     isHidden: boolean;
     title: string;
     subtitle: string;
+    companyOptions: { label: string }[];
+    detailsLabel: string;
+    submitLabel: string;
   };
 }
 
@@ -208,7 +213,24 @@ export default function HomePage() {
         setValue("sixthSection", data.sixthSection);
         setValue("seventhSection", data.seventhSection);
         setValue("eighthSection", data.eighthSection);
-        setValue("ninthSection", data.ninthSection);
+        setValue("ninthSection.isHidden", data.ninthSection?.isHidden);
+        setValue("ninthSection.title", data.ninthSection?.title);
+        setValue("ninthSection.subtitle", data.ninthSection?.subtitle);
+        // never-saved form fields show the text the site currently uses
+        const enquiryForm = withDefaults(
+          {
+            companyOptions: data.ninthSection?.companyOptions,
+            detailsLabel: data.ninthSection?.detailsLabel,
+            submitLabel: data.ninthSection?.submitLabel,
+          },
+          HOME_ENQUIRY_FORM_DEFAULTS,
+        );
+        setValue(
+          "ninthSection.companyOptions",
+          enquiryForm.companyOptions.map(({ label }) => ({ label })),
+        );
+        setValue("ninthSection.detailsLabel", enquiryForm.detailsLabel);
+        setValue("ninthSection.submitLabel", enquiryForm.submitLabel);
 
         replaceButtons(data.firstSection?.buttons || []);
         replaceSecond(data.secondSection?.items || []);
@@ -1151,6 +1173,29 @@ export default function HomePage() {
                   placeholder="Subtitle"
                 />
               </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="flex flex-col gap-2">
+                  <Label className="font-bold">Details Field Label</Label>
+                  <Input
+                    {...register("ninthSection.detailsLabel")}
+                    placeholder="Details Field Label"
+                  />
+                </div>
+                <div className="flex flex-col gap-2">
+                  <Label className="font-bold">Submit Button Label</Label>
+                  <Input
+                    {...register("ninthSection.submitLabel")}
+                    placeholder="Submit Button Label"
+                  />
+                </div>
+              </div>
+              <OptionListEditor
+                name="ninthSection.companyOptions"
+                label="Company Options"
+                hint="Options in the form's company dropdown; the chosen one is shown in the enquiry email."
+                control={control}
+                register={register}
+              />
             </div>
           </AdminItemContainer>
 

@@ -68,6 +68,9 @@ export interface HomeType {
     isHidden: boolean;
     title: string;
     subtitle: string;
+    companyOptions?: { label: string }[];
+    detailsLabel?: string;
+    submitLabel?: string;
   };
 }
 

@@ -1,8 +1,5 @@
+// Heading / subtitle / description now come from the CMS (see lib/cmsDefaults.ts).
 export const careersFormData = {
-  title: "YOUR NEXT CHAPTER STARTS HERE.",
-  subtitle: "We are always looking for talented, driven individuals who want to be part of something that matters.",
-  description:
-    "At Neurovanta, you will work on projects that are genuinely changing the way the world approaches wellness and longevity. We value expertise, integrity, and a high standard of work. If that resonates with you, we would like to hear from you. ",
   applyingForOptions: [
     { label: "UI/UX Designer", value: "ui-ux-designer" },
     { label: "Frontend Developer", value: "frontend-developer" },

@@ -10,6 +10,8 @@ import AdminItemContainer from "@/app/components/admin/common/AdminItemContainer
 import AdminPageActions from "@/app/components/admin/common/AdminPageActions";
 import { useUnsavedChanges } from "@/app/components/admin/common/useUnsavedChanges";
 import AdminSubmitButton from "@/app/components/admin/common/AdminSubmitButton";
+import OptionListEditor from "@/app/components/admin/common/OptionListEditor";
+import { CONTACT_FORM_DEFAULTS, withDefaults } from "@/lib/cmsDefaults";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
 
@@ -35,6 +37,11 @@ interface ContactForm {
     };
   };
   secondSection: { isHidden: boolean; map: string };
+  formSection: {
+    title: string;
+    submitLabel: string;
+    serviceOptions: { label: string }[];
+  };
 }
 
 export default function ContactPage() {
@@ -58,6 +65,14 @@ export default function ContactPage() {
         setValue("bannerSection", data.bannerSection);
         setValue("firstSection", data.firstSection);
         setValue("secondSection", data.secondSection);
+        // never-saved fields show the text the site currently uses
+        const form = withDefaults(data.formSection, CONTACT_FORM_DEFAULTS);
+        setValue("formSection.title", form.title);
+        setValue("formSection.submitLabel", form.submitLabel);
+        setValue(
+          "formSection.serviceOptions",
+          form.serviceOptions.map(({ label }) => ({ label })),
+        );
         markClean();
       } else {
         const { message } = await res.json();
@@ -250,6 +265,36 @@ export default function ContactPage() {
               <Input
                 {...register("secondSection.map")}
                 placeholder="https://maps.google.com/embed?..."
+              />
+            </div>
+          </AdminItemContainer>
+
+          {/* Contact form */}
+          <AdminItemContainer>
+            <Label main>Contact Form</Label>
+            <div className="p-5 flex flex-col gap-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="flex flex-col gap-2">
+                  <Label className="font-bold">Form Title</Label>
+                  <Input
+                    {...register("formSection.title")}
+                    placeholder="Form Title"
+                  />
+                </div>
+                <div className="flex flex-col gap-2">
+                  <Label className="font-bold">Submit Button Label</Label>
+                  <Input
+                    {...register("formSection.submitLabel")}
+                    placeholder="Submit Button Label"
+                  />
+                </div>
+              </div>
+              <OptionListEditor
+                name="formSection.serviceOptions"
+                label="Enquiry Types"
+                hint="Options in the form's service dropdown; the chosen one is shown in the enquiry email."
+                control={control}
+                register={register}
               />
             </div>
           </AdminItemContainer>

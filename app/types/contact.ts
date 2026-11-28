@@ -24,6 +24,11 @@ export interface ContactType {
       phone: string;
     };
   };
+  formSection?: {
+    title?: string;
+    submitLabel?: string;
+    serviceOptions?: { label: string }[];
+  };
   secondSection: {
     isHidden: boolean;
     map: string;

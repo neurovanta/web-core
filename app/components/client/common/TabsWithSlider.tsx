@@ -17,6 +17,7 @@ import { ElasticEffect } from "../animations/ElasticEffect";
 import SliderNavButton from "./SliderButton";
 import { useLenis } from "../layout/LenisProvider";
 import { headerScrollLock } from "@/lib/headerScrollLock";
+import { useAutoplayActive } from "@/app/hooks/useAutoplayActive";
 
 export type TabsWithSliderSlide = {
   image: string;
@@ -204,6 +205,17 @@ export default function TabsWithSlider({
   const slotRefs = useRef<(HTMLDivElement | null)[]>([]);
   const sectionRef = useRef<HTMLElement>(null);
   const { scrollTo, ready } = useLenis();
+
+  // Autoplay only while the section is on screen and the tab is visible.
+  const autoplayActive = useAutoplayActive(sectionRef);
+  const autoplayActiveRef = useRef(autoplayActive);
+  useEffect(() => {
+    autoplayActiveRef.current = autoplayActive;
+    const autoplay = swiperRef.current?.autoplay;
+    if (!autoplay) return;
+    if (autoplayActive) autoplay.start();
+    else autoplay.stop();
+  }, [autoplayActive]);
 
   const [leftCol, rightCol] = splitColumns(data.categories);
 
@@ -531,6 +543,8 @@ export default function TabsWithSlider({
           modules={[Autoplay]}
           onSwiper={(swiper) => {
             swiperRef.current = swiper;
+            // Swiper starts autoplay on init; hold it until the section is visible
+            if (!autoplayActiveRef.current) swiper.autoplay?.stop();
           }}
           slidesPerView={1.47}
           spaceBetween={15}
@@ -629,11 +643,7 @@ export default function TabsWithSlider({
         </Swiper>
       </div>
 
-      <div
-        // same left inset as the slides, so the arrows line up with the page container
-        style={{ paddingLeft: inset }}
-        className="flex items-center gap-[10px] pt-20 w-full justify-start shrink-0 md:hidden"
-      >
+      <div className="flex items-center gap-[10px] pt-20 w-full justify-center shrink-0 md:hidden">
         <SliderNavButton
           direction="prev"
           disabled={prevDisabled}

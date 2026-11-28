@@ -145,6 +145,13 @@ const homeSchema = new mongoose.Schema({
     isHidden: { type: Boolean, default: false },
     title: { type: String },
     subtitle: { type: String },
+    // "Begin Here" enquiry form
+    companyOptions: {
+      type: [{ label: { type: String } }],
+      default: undefined,
+    },
+    detailsLabel: { type: String },
+    submitLabel: { type: String },
   },
 });
 

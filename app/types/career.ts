@@ -34,6 +34,11 @@ export interface Careers {
     contactEmail: string;
     jobs: CareerJob[];
   };
+  applySection?: {
+    title?: string;
+    subtitle?: string;
+    description?: string;
+  };
   thirdSection: {
     isHidden: boolean;
     title: string;

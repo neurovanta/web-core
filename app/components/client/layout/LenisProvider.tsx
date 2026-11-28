@@ -170,16 +170,38 @@ lenisRef.current = lenis;
 
     lenis.on("scroll", ScrollTrigger.update);
 
+    // Lenis caches the page height and only re-measures when the <html> box resizes.
+    // Height that changes without that (late images, transformed/revealed content)
+    // leaves a stale limit, so the page stops short of the footer. When the scroll
+    // reaches the cached end, compare with the real height and re-measure if needed.
+    const healLimit = () => {
+      if (lenis.scroll < lenis.limit - 2) return;
+      const real =
+        document.documentElement.scrollHeight - window.innerHeight;
+      if (Math.abs(real - lenis.limit) > 1) lenis.resize();
+    };
+    lenis.on("scroll", healLimit);
+
     const resizeTimer = setTimeout(() => {
       lenis.resize();
       ScrollTrigger.refresh();
     }, 300);
+
+    // all images / fonts done → final measurement
+    const onLoad = () => {
+      lenis.resize();
+      ScrollTrigger.refresh();
+    };
+    if (document.readyState === "complete") onLoad();
+    else window.addEventListener("load", onLoad, { once: true });
 
     setReady(true);
 
     return () => {
       gsap.ticker.remove(gsapRafCallback);
       lenis.off("scroll", ScrollTrigger.update);
+      lenis.off("scroll", healLimit);
+      window.removeEventListener("load", onLoad);
       clearTimeout(resizeTimer);
       lenis.destroy();
     };
@@ -205,6 +227,8 @@ useEffect(() => {
     );
 
     Promise.all([document.fonts.ready, ...imagePromises]).then(() => {
+      // re-measure Lenis too, not only ScrollTrigger, or its scroll limit stays stale
+      lenisRef.current?.resize();
       ScrollTrigger.refresh();
     });
 

@@ -18,14 +18,5 @@ export const contactUsData = {
     phone: "+97143332175",
   },
 
-  form: {
-    title: "General Inquiry",
-    serviceOptions: [
-      { label: "General", value: "general" },
-      { label: "Career Opportunities", value: "career" },
-      { label: "Investor Inquiries", value: "investor" },
-      { label: "Supplier Partnerships", value: "supplier" },
-    ],
-    submitLabel: "SUBMIT INQUIRY",
-  },
+  // enquiry form text now comes from the CMS (see lib/cmsDefaults.ts)
 };

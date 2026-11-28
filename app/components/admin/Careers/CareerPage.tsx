@@ -16,6 +16,7 @@ import { useEffect, useState } from "react";
 import { RiDeleteBin6Line, RiEyeLine, RiEyeOffLine } from "react-icons/ri";
 import { ChevronRight, Clock, Inbox, MapPin, Plus, Tag } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { CAREERS_APPLY_DEFAULTS, withDefaults } from "@/lib/cmsDefaults";
 
 const iconBtn =
   "inline-flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-secondary/20";
@@ -56,6 +57,11 @@ interface CareersForm {
     title: string;
     description: string;
     items: { image: string; imageAlt: string }[];
+  };
+  applySection: {
+    title: string;
+    subtitle: string;
+    description: string;
   };
 }
 
@@ -123,6 +129,11 @@ export default function CareersPage() {
         setJobs(data.secondSection?.jobs || []);
 
         replaceThird(data.thirdSection?.items || []);
+        // never-saved fields show the text the site currently uses
+        setValue(
+          "applySection",
+          withDefaults(data.applySection, CAREERS_APPLY_DEFAULTS),
+        );
         markClean();
       } else {
         const { message } = await res.json();
@@ -464,7 +475,7 @@ export default function CareersPage() {
                   + Add Item
                 </Button>
               </div>
-              <div className="flex flex-col gap-4">
+              <div className="grid grid-cols-2 xl:grid-cols-4 gap-4">
                 {thirdItems.map((field, index) => (
                   <div
                     key={field.id}
@@ -480,7 +491,7 @@ export default function CareersPage() {
                         <RiDeleteBin6Line size={16} />
                       </Button>
                     </div>
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="flex flex-col gap-4">
                       <div className="flex flex-col gap-4">
                         <div className="flex flex-col gap-2">
                           <Label className="font-bold">Image</Label>
@@ -508,6 +519,38 @@ export default function CareersPage() {
                     </div>
                   </div>
                 ))}
+              </div>
+            </div>
+          </AdminItemContainer>
+
+          {/* Application page (/careers/<job>) */}
+          <AdminItemContainer>
+            <Label main>Application Page</Label>
+            <div className="p-5 flex flex-col gap-4">
+              <p className="text-[12.5px] text-secondary/60">
+                Text beside the job application form (opened from &quot;Apply
+                Job&quot;).
+              </p>
+              <div className="flex flex-col gap-2">
+                <Label className="font-bold">Title</Label>
+                <Input
+                  {...register("applySection.title")}
+                  placeholder="Title"
+                />
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label className="font-bold">Subtitle</Label>
+                <Textarea
+                  {...register("applySection.subtitle")}
+                  placeholder="Subtitle"
+                />
+              </div>
+              <div className="flex flex-col gap-2">
+                <Label className="font-bold">Description</Label>
+                <Textarea
+                  {...register("applySection.description")}
+                  placeholder="Description"
+                />
               </div>
             </div>
           </AdminItemContainer>

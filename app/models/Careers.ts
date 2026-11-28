@@ -37,6 +37,12 @@ const careersSchema = new mongoose.Schema({
       default: [],
     },
   },
+  // text beside the application form on /careers/<job>
+  applySection: {
+    title: { type: String },
+    subtitle: { type: String },
+    description: { type: String },
+  },
   thirdSection: {
     isHidden: { type: Boolean, default: false },
     title: { type: String },

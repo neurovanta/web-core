@@ -1,15 +1,19 @@
 "use client";
 
 import CareersForm, { ApplyingForProps } from "../sections/CareerForm";
-import { careersFormData } from "../data";
 import { AnimatedHeading } from "../../animations/AnimateHeading";
 import { SectionDescription } from "../../animations/SectionDescription";
 import { motion } from "framer-motion";
 import { moveUp } from "../../animations/motionVarinats";
 import { useState, useEffect } from "react";
 
-export default function CareersApply(props: ApplyingForProps) {
-  const { title, subtitle, description } = careersFormData;
+export interface CareersApplyProps extends ApplyingForProps {
+  // heading, subtitle and description beside the form (CMS → Careers → Application Page)
+  intro: { title: string; subtitle: string; description: string };
+}
+
+export default function CareersApply({ intro, ...props }: CareersApplyProps) {
+  const { title, subtitle, description } = intro;
     const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
