@@ -153,11 +153,11 @@ text-19 pointer-events-none
                   });
                   setOpen(false);
                 }}
-                className="px-4 py-3 text-19 cursor-pointer select-none hover:opacity-60"
-                style={{
-                  color: "var(--text-secondary)",
-                  opacity: opt.value === value ? 0.5 : 1,
-                }}
+                // background tint, not opacity: framer-motion sets opacity inline, which would override a hover class
+                className={`px-4 py-3 text-19 cursor-pointer select-none transition-colors duration-200 hover:bg-secondary/[0.07] ${
+                  opt.value === value ? "bg-secondary/[0.05] font-medium" : ""
+                }`}
+                style={{ color: "var(--text-secondary)" }}
               >
                 {opt.label}
               </motion.li>

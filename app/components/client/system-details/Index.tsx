@@ -11,7 +11,7 @@ const Index = ({ data }: { data: IndividualProduct }) => {
   return (
     <>
       {isShown(data.bannerSection) && (
-        <InnerBanner data={data.bannerSection} maxWTitle="max-w-[54ch]" />
+        <InnerBanner data={data.bannerSection} maxWTitle="max-w-[68ch]" />
       )}
       {isShown(data.firstSection) && data?.firstSection.title && (
         <SectionHeader
