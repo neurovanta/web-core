@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import * as jose from "jose";
+import { getJwtSecret } from "@/lib/jwtSecret";
 import { PERMANENT_REDIRECTS } from "@/lib/redirects";
 import { decodeSlug } from "@/lib/slug";
 
@@ -9,7 +10,8 @@ const ADMIN_LOGIN = `${ADMIN_BASE}/login`;
 const isValidToken = async (token: string | undefined) => {
   if (!token) return false;
   try {
-    const secret = new TextEncoder().encode(process.env.JWT_SECRET || "your-secret-key");
+    const secret = getJwtSecret();
+    if (!secret) return false;
     await jose.jwtVerify(token, secret);
     return true;
   } catch {

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import * as jose from "jose";
+import { getJwtSecret } from "@/lib/jwtSecret";
 import connectDB from "@/lib/mongodb";
 import { cookies } from "next/headers";
 import Admin from "@/app/models/Admin";
@@ -33,10 +34,14 @@ export async function POST(request: Request) {
       );
     }
 
-    // Create JWT token
-    const secret = new TextEncoder().encode(
-      process.env.JWT_SECRET || "your-secret-key",
-    );
+    // Create JWT token (refuse to sign without a configured secret)
+    const secret = getJwtSecret();
+    if (!secret) {
+      return NextResponse.json(
+        { success: false, message: "Login is not configured on the server" },
+        { status: 500 },
+      );
+    }
     const token = await new jose.SignJWT({ userId: admin._id })
       .setProtectedHeader({ alg: "HS256" })
       .setIssuedAt()
