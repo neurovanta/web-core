@@ -90,7 +90,8 @@ export default function AdminLogin() {
                 alt="Neuro Vanta"
                 width={180}
                 height={60}
-                className="h-auto w-[170px]"
+                // the brand panel shows the logo on large screens; keep it here only on small ones
+                className="h-auto w-[170px] lg:hidden"
               />
               <div>
                 <h2 className="text-[22px] font-semibold text-secondary">
