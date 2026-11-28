@@ -45,7 +45,21 @@ export async function DELETE(request: NextRequest, ctx: Ctx) {
   if (!Model) return NextResponse.json({ message: "Not found" }, { status: 404 });
 
   try {
-    const { id } = await request.json();
+    // single delete: { id }; bulk delete: { ids: [...] }
+    const body = await request.json();
+    if (Array.isArray(body?.ids)) {
+      const ids: unknown[] = body.ids;
+      if (ids.length === 0 || ids.length > 500 || !ids.every((v) => typeof v === "string" && mongoose.isValidObjectId(v))) {
+        return NextResponse.json({ message: "Invalid enquiry ids" }, { status: 400 });
+      }
+      await connectDB();
+      const { deletedCount } = await Model.deleteMany({ _id: { $in: ids } });
+      return NextResponse.json(
+        { message: `${deletedCount} ${deletedCount === 1 ? "entry" : "entries"} deleted`, deletedCount },
+        { status: 200 },
+      );
+    }
+    const { id } = body ?? {};
     if (typeof id !== "string" || !mongoose.isValidObjectId(id)) {
       return NextResponse.json({ message: "Invalid enquiry id" }, { status: 400 });
     }

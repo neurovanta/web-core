@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { Download, Eye, FileText, Inbox, Loader2, Mail, Phone, Search, Trash2 } from "lucide-react";
+import { ChevronLeft, ChevronRight, Download, Eye, FileText, Inbox, Loader2, Mail, Phone, Search, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import {
   Dialog,
@@ -46,6 +46,8 @@ const formatDate = (value: string) => {
       });
 };
 
+const PAGE_SIZE = 10;
+
 const iconBtn =
   "inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg text-secondary/60 transition-colors";
 
@@ -73,6 +75,11 @@ export default function EnquiriesList({ config }: { config: EnquiriesConfig }) {
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("all");
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [bulkDeleting, setBulkDeleting] = useState(false);
+  const [page, setPage] = useState(1);
+  const noun = kind === "career" ? "application" : "enquiry";
+  const nounPlural = kind === "career" ? "applications" : "enquiries";
 
   const load = useCallback(async () => {
     try {
@@ -103,6 +110,11 @@ export default function EnquiriesList({ config }: { config: EnquiriesConfig }) {
       if (!res.ok) return void toast.error(data.message || "Failed to delete enquiry");
       toast.success(data.message || "Enquiry deleted");
       setList((prev) => prev.filter((e) => e._id !== id));
+      setSelected((prev) => {
+        const next = new Set(prev);
+        next.delete(id);
+        return next;
+      });
     } catch {
       toast.error("Failed to delete enquiry");
     } finally {
@@ -128,6 +140,56 @@ export default function EnquiriesList({ config }: { config: EnquiriesConfig }) {
           ),
       );
   }, [list, search, filter, filterField, extras, nameOf, emailKey, phoneKey, messageKey]);
+
+  // 10 per page; clamp when deletes or filters shrink the list
+  const pageCount = Math.max(1, Math.ceil(visible.length / PAGE_SIZE));
+  const currentPage = Math.min(page, pageCount);
+  const pageStart = (currentPage - 1) * PAGE_SIZE;
+  const pageRows = useMemo(() => visible.slice(pageStart, pageStart + PAGE_SIZE), [visible, pageStart]);
+
+  // selection persists across pages but only rows matching the search/filter count, so hidden rows are never deleted
+  const selectedVisible = useMemo(() => visible.filter((e) => selected.has(e._id)).map((e) => e._id), [visible, selected]);
+  const pageSelectedCount = pageRows.filter((e) => selected.has(e._id)).length;
+  const allPageSelected = pageRows.length > 0 && pageSelectedCount === pageRows.length;
+
+  const toggleOne = (id: string) =>
+    setSelected((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+
+  const toggleAllOnPage = () =>
+    setSelected((prev) => {
+      const next = new Set(prev);
+      if (allPageSelected) pageRows.forEach((e) => next.delete(e._id));
+      else pageRows.forEach((e) => next.add(e._id));
+      return next;
+    });
+
+  const removeSelected = async () => {
+    const ids = selectedVisible;
+    if (ids.length === 0) return;
+    setBulkDeleting(true);
+    try {
+      const res = await fetch(`/api/admin/enquiries/${kind}`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ids }),
+      });
+      const data = await res.json();
+      if (!res.ok) return void toast.error(data.message || `Failed to delete ${nounPlural}`);
+      toast.success(data.message || `${ids.length} ${ids.length === 1 ? noun : nounPlural} deleted`);
+      const gone = new Set(ids);
+      setList((prev) => prev.filter((e) => !gone.has(e._id)));
+      setSelected((prev) => new Set([...prev].filter((id) => !gone.has(id))));
+    } catch {
+      toast.error(`Failed to delete ${nounPlural}`);
+    } finally {
+      setBulkDeleting(false);
+    }
+  };
 
   const exportCsv = () => {
     const head = [
@@ -189,14 +251,20 @@ export default function EnquiriesList({ config }: { config: EnquiriesConfig }) {
               type="search"
               placeholder="Search name, email, phone, message"
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setPage(1);
+              }}
               className="h-9 w-72 rounded-lg border border-border-color/70 bg-white pl-9 pr-3 text-sm outline-none transition-colors focus:border-secondary/50"
             />
           </div>
           {filterField && filterOptions.length > 0 && (
             <select
               value={filter}
-              onChange={(e) => setFilter(e.target.value)}
+              onChange={(e) => {
+                setFilter(e.target.value);
+                setPage(1);
+              }}
               aria-label={`Filter by ${filterField.label}`}
               className="h-9 cursor-pointer rounded-lg border border-border-color/70 bg-white px-3 text-sm text-secondary outline-none focus:border-secondary/50"
             >
@@ -207,6 +275,36 @@ export default function EnquiriesList({ config }: { config: EnquiriesConfig }) {
                 </option>
               ))}
             </select>
+          )}
+          {selectedVisible.length > 0 && (
+            <Dialog>
+              <DialogTrigger
+                disabled={bulkDeleting}
+                className="inline-flex h-9 cursor-pointer items-center gap-1.5 rounded-lg border border-red-200 bg-red-50 px-3 text-sm text-red-700 transition-colors hover:border-red-300 hover:bg-red-100 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {bulkDeleting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
+                Delete selected ({selectedVisible.length})
+              </DialogTrigger>
+              <DialogContent hideClose className="bg-white">
+                <DialogHeader>
+                  <DialogTitle className="text-secondary">
+                    Delete {selectedVisible.length} {selectedVisible.length === 1 ? noun : nounPlural}?
+                  </DialogTitle>
+                  <DialogDescription>This cannot be undone.</DialogDescription>
+                </DialogHeader>
+                <div className="flex justify-end gap-2">
+                  <DialogClose className="cursor-pointer rounded-full border border-border-color/70 px-4 py-2 text-sm text-secondary hover:bg-cream-bg">
+                    Cancel
+                  </DialogClose>
+                  <DialogClose
+                    className="cursor-pointer rounded-full bg-red-600 px-4 py-2 text-sm text-white hover:bg-red-700"
+                    onClick={removeSelected}
+                  >
+                    Delete
+                  </DialogClose>
+                </div>
+              </DialogContent>
+            </Dialog>
           )}
           <button
             type="button"
@@ -233,6 +331,18 @@ export default function EnquiriesList({ config }: { config: EnquiriesConfig }) {
             <table className="w-full text-left text-sm">
               <thead className="border-b border-border-color/50 bg-cream-bg text-xs uppercase tracking-wide text-secondary/60">
                 <tr>
+                  <th className="w-10 py-3 pl-4 pr-0">
+                    <input
+                      type="checkbox"
+                      aria-label={`Select all ${nounPlural} on this page`}
+                      checked={allPageSelected}
+                      ref={(el) => {
+                        if (el) el.indeterminate = pageSelectedCount > 0 && !allPageSelected;
+                      }}
+                      onChange={toggleAllOnPage}
+                      className="h-4 w-4 cursor-pointer accent-secondary align-middle"
+                    />
+                  </th>
                   <th className="px-4 py-3 font-medium">Received</th>
                   <th className="px-4 py-3 font-medium">From</th>
                   <th className="px-4 py-3 font-medium">Phone</th>
@@ -246,8 +356,20 @@ export default function EnquiriesList({ config }: { config: EnquiriesConfig }) {
                 </tr>
               </thead>
               <tbody className="divide-y divide-border-color/30">
-                {visible.map((e) => (
-                  <tr key={e._id} className="align-top transition-colors hover:bg-cream-bg/60">
+                {pageRows.map((e) => (
+                  <tr
+                    key={e._id}
+                    className={cn("align-top transition-colors hover:bg-cream-bg/60", selected.has(e._id) && "bg-primary/20")}
+                  >
+                    <td className="w-10 py-3 pl-4 pr-0">
+                      <input
+                        type="checkbox"
+                        aria-label={`Select ${noun} from ${nameOf(e) || e[emailKey]}`}
+                        checked={selected.has(e._id)}
+                        onChange={() => toggleOne(e._id)}
+                        className="mt-0.5 h-4 w-4 cursor-pointer accent-secondary"
+                      />
+                    </td>
                     <td className="whitespace-nowrap px-4 py-3 text-secondary/60">{formatDate(e.createdAt)}</td>
                     <td className="px-4 py-3">
                       <p className="font-medium text-secondary">{nameOf(e) || "-"}</p>
@@ -397,6 +519,51 @@ export default function EnquiriesList({ config }: { config: EnquiriesConfig }) {
                 ))}
               </tbody>
             </table>
+          </div>
+        )}
+        {visible.length > PAGE_SIZE && (
+          <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border-color/50 px-4 py-3 text-sm text-secondary/70">
+            <span>
+              Showing {pageStart + 1}–{pageStart + pageRows.length} of {visible.length}
+            </span>
+            <div className="flex items-center gap-1">
+              <button
+                type="button"
+                onClick={() => setPage(currentPage - 1)}
+                disabled={currentPage === 1}
+                aria-label="Previous page"
+                className={cn(iconBtn, "hover:bg-primary/40 hover:text-secondary disabled:cursor-not-allowed disabled:opacity-30")}
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </button>
+              {Array.from({ length: pageCount }, (_, i) => i + 1)
+                .filter((n) => n === 1 || n === pageCount || Math.abs(n - currentPage) <= 1)
+                .map((n, i, arr) => (
+                  <span key={n} className="flex items-center gap-1">
+                    {i > 0 && n - arr[i - 1] > 1 && <span className="px-1 text-secondary/40">…</span>}
+                    <button
+                      type="button"
+                      onClick={() => setPage(n)}
+                      aria-current={n === currentPage ? "page" : undefined}
+                      className={cn(
+                        "h-8 min-w-8 cursor-pointer rounded-lg px-2 text-sm transition-colors",
+                        n === currentPage ? "bg-secondary text-white" : "text-secondary hover:bg-primary/40",
+                      )}
+                    >
+                      {n}
+                    </button>
+                  </span>
+                ))}
+              <button
+                type="button"
+                onClick={() => setPage(currentPage + 1)}
+                disabled={currentPage === pageCount}
+                aria-label="Next page"
+                className={cn(iconBtn, "hover:bg-primary/40 hover:text-secondary disabled:cursor-not-allowed disabled:opacity-30")}
+              >
+                <ChevronRight className="h-4 w-4" />
+              </button>
+            </div>
           </div>
         )}
       </div>
