@@ -10,6 +10,7 @@ import {
   LogOut,
 } from "lucide-react";
 import AdminNavbar from "@/app/components/admin/AdminNavbar/Index";
+import AdminSearch from "@/app/components/admin/common/AdminSearch";
 import { cn } from "@/lib/utils";
 
 const STORAGE_KEY = "nv-admin-sidebar-collapsed";
@@ -132,6 +133,7 @@ export default function AdminSidebar({ username }: { username: string | null }) 
             <ExternalLink className="h-3.5 w-3.5 transition-transform group-hover:-translate-y-px group-hover:translate-x-px" />
             {!collapsed && "View website"}
           </a>
+          <AdminSearch collapsed={collapsed} />
         </div>
       </div>
 
