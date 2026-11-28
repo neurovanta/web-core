@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, useCallback } from "react";
+import { preload } from "react-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
 import type { Swiper as SwiperType } from "swiper";
 import "swiper/css";
@@ -42,8 +43,13 @@ export default function WellnessSlider({
   const { items: slides } = data;
   const swiperRef = useRef<SwiperType | null>(null);
   const sectionRef = useRef<HTMLElement>(null);
-  // Off-screen or background tab → autoplay pauses (no timers, no re-renders).
-  const isPlaying = useAutoplayActive(sectionRef);
+  // Off-screen, covered by the next stacked (sticky) section, or background tab
+  // → autoplay pauses (no timers, no re-renders).
+  const isPlaying = useAutoplayActive(sectionRef, { detectCovered: true });
+
+  // First image is a CSS background, which the browser only finds late; preload
+  // it from the server-rendered <head> so it is ready when the section scrolls in.
+  if (slides[0]?.image) preload(slides[0].image, { as: "image" });
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const settleTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   // ↓ NEW: prevents onSlideChange from hijacking activeIndex on programmatic scrolls
