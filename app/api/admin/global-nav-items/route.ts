@@ -6,6 +6,7 @@ import Systems from "@/app/models/Systems";
 import Industries from "@/app/models/industries";
 import { verifyAdmin } from "@/lib/verifyAdmin";
 import { revalidateTag } from "next/cache";
+import { toExternalHref } from "@/lib/externalLink";
 
 function mergeOverrides<T extends { _id: any }>(
   liveItems: T[],
@@ -156,7 +157,11 @@ export async function PATCH(request: NextRequest) {
       settings.socials = body.socials;
     }
 
-    if (body.contact) settings.contact = body.contact;
+    if (body.contact)
+      settings.contact = {
+        ...body.contact,
+        addressLink: toExternalHref(body.contact.addressLink),
+      };
 
     if (body.header?.navLinks) settings.header.navLinks = body.header.navLinks;
     if (body.header?.image !== undefined)

@@ -104,7 +104,7 @@ export default function SystemsMainPage() {
     if (!guardNavigation(href)) router.push(href);
   };
 
-  const [activeTab, setActiveTab] = useState<"list" | "page">("list");
+  const [activeTab, setActiveTab] = useState<"list" | "page">("page");
 
   const fetchData = async () => {
     try {
@@ -315,12 +315,12 @@ export default function SystemsMainPage() {
       <div className="flex flex-col gap-5">
         <AdminTabs
           tabs={[
+            { key: "page", label: "Page" },
             {
               key: "list",
               label: "Systems",
               count: categories.reduce((n, c) => n + c.products.length, 0),
             },
-            { key: "page", label: "Page" },
           ]}
           active={activeTab}
           onChange={setActiveTab}
@@ -505,7 +505,7 @@ export default function SystemsMainPage() {
           <AdminItemContainer>
             <Label main>SEO</Label>
             <div className="p-5 flex flex-col gap-4">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="flex flex-col gap-4">
                 <div className="flex flex-col gap-2">
                   <Label className="font-bold">Meta Title</Label>
                   <Input
@@ -515,9 +515,10 @@ export default function SystemsMainPage() {
                 </div>
                 <div className="flex flex-col gap-2">
                   <Label className="font-bold">Meta Description</Label>
-                  <Input
+                  <Textarea
                     {...register("seo.metaDescription")}
                     placeholder="Meta Description"
+                    className="min-h-[72px]"
                   />
                 </div>
               </div>

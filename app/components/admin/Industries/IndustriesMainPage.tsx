@@ -78,7 +78,7 @@ export default function IndustriesMainPage() {
     name: "industries",
   });
 
-  const [activeTab, setActiveTab] = useState<"list" | "page">("list");
+  const [activeTab, setActiveTab] = useState<"list" | "page">("page");
   const [confirmDialog, setConfirmDialog] = useState<{
     open: boolean;
     id: string;
@@ -181,8 +181,8 @@ export default function IndustriesMainPage() {
       <div className="flex flex-col gap-5">
         <AdminTabs
           tabs={[
-            { key: "list", label: "Industries List", count: industries.length },
             { key: "page", label: "Page" },
+            { key: "list", label: "Industries List", count: industries.length },
           ]}
           active={activeTab}
           onChange={setActiveTab}
@@ -379,7 +379,7 @@ export default function IndustriesMainPage() {
           <AdminItemContainer>
             <Label main>SEO</Label>
             <div className="p-5 flex flex-col gap-4">
-              <div className="grid grid-cols-2 gap-4">
+              <div className="flex flex-col gap-4">
                 <div className="flex flex-col gap-2">
                   <Label className="font-bold">Meta Title</Label>
                   <Input
@@ -389,9 +389,10 @@ export default function IndustriesMainPage() {
                 </div>
                 <div className="flex flex-col gap-2">
                   <Label className="font-bold">Meta Description</Label>
-                  <Input
+                  <Textarea
                     {...register("seo.metaDescription")}
                     placeholder="Meta Description"
+                    className="min-h-[72px]"
                   />
                 </div>
               </div>

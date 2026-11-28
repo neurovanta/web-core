@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { Code2, Eye, EyeOff, KeyRound, Loader2, Mail, ShieldCheck } from "lucide-react";
@@ -9,7 +9,8 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import UnsavedLeaveGuard from "@/app/components/admin/common/UnsavedLeaveGuard";
+import AdminPageActions from "@/app/components/admin/common/AdminPageActions";
+import type { UnsavedChange } from "@/app/components/admin/common/useUnsavedChanges";
 
 interface ScriptsForm {
   headerScript: string;
@@ -27,6 +28,17 @@ interface PasswordForm {
   newPassword: string;
   confirmPassword: string;
 }
+
+const EMAIL_FIELD_LABELS: Record<keyof EmailsForm, string> = {
+  toEmailContact: "Contact form",
+  toEmailCareer: "Career applications",
+  toEmailHome: "Home page enquiries",
+};
+
+const SCRIPT_FIELD_LABELS: Record<keyof ScriptsForm, string> = {
+  headerScript: "Header Script",
+  bodyScript: "Body Script",
+};
 
 const MIN_PASSWORD_LENGTH = 8;
 const EMAIL = /^[^\s@,]+@[^\s@,]+\.[^\s@,]+$/;
@@ -150,14 +162,19 @@ const Settings = () => {
   });
   // Unsaved edits (reset() after load/save sets each form's baseline): warn on
   // reload / tab close and confirm before leaving through the admin.
-  const scriptsDirty = scripts.formState.isDirty;
-  const emailsDirty = emails.formState.isDirty;
-  const unsavedSections = [
-    emailsDirty && "Notification Emails",
-    scriptsDirty && "Tracking Scripts",
-  ].filter(Boolean) as string[];
-  const isDirty = unsavedSections.length > 0;
-  const noActionsRef = useRef<HTMLElement>(null);
+  const emailFields = Object.keys(emails.formState.dirtyFields) as (keyof EmailsForm)[];
+  const scriptFields = Object.keys(scripts.formState.dirtyFields) as (keyof ScriptsForm)[];
+  const changes: UnsavedChange[] = [
+    emailFields.length > 0 && {
+      section: "Notification Emails",
+      fields: emailFields.map((f) => EMAIL_FIELD_LABELS[f]),
+    },
+    scriptFields.length > 0 && {
+      section: "Tracking Scripts",
+      fields: scriptFields.map((f) => SCRIPT_FIELD_LABELS[f]),
+    },
+  ].filter(Boolean) as UnsavedChange[];
+  const isDirty = changes.length > 0;
 
   useEffect(() => {
     if (!isDirty) return;
@@ -265,12 +282,14 @@ const Settings = () => {
 
   return (
     <div className="grid grid-cols-1 items-start gap-5 xl:grid-cols-[1.4fr_1fr]">
-      {/* renders only a portal dialog, no grid cell */}
-      <UnsavedLeaveGuard
-        active={isDirty}
-        sections={unsavedSections}
-        actionsRef={noActionsRef}
-      />
+      {/* fixed in the page header row, no grid cell */}
+      <AdminPageActions
+        isDirty={isDirty}
+        changes={changes}
+        hint="Use each section's Save button to keep these edits"
+      >
+        {null}
+      </AdminPageActions>
       <div className="flex flex-col gap-5">
         {/* Notification emails */}
         <form onSubmit={emails.handleSubmit(saveEmails)} noValidate>

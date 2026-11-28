@@ -12,6 +12,7 @@ import { useAutoplayActive } from "@/app/hooks/useAutoplayActive";
 import { useLenis } from "@/app/components/client/layout/LenisProvider";
 import { NavData } from "@/app/types/header";
 import { usePathname } from "next/navigation";
+import { toExternalHref } from "@/lib/externalLink";
 
 /* ─── Social brand styles ─────────────────────────────────────────── */
 const socialStyles: Record<SocialType, React.CSSProperties> = {
@@ -58,6 +59,7 @@ export default function Footer({ navData }: { navData: NavData }) {
   // background drift runs only while the footer is on screen and the tab is visible
   const bgPlaying = useAutoplayActive(footerRef);
   const pathname = usePathname();
+  const addressHref = toExternalHref(navData.contact.addressLink);
   const { scrollTo } = useLenis();
 
   const handleHashLinkClick = (
@@ -229,10 +231,24 @@ export default function Footer({ navData }: { navData: NavData }) {
         <div className="mt-40 md:mt-70 grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-[minmax(0,1fr)_repeat(3,auto)] gap-x-120 gap-y-40 xl:gap-y-60 2xl:gap-y-40">
           {/* Address + socials */}
           <div className="flex flex-col gap-y-25 xl:gap-y-30">
-            <SectionDescription
-              text={navData.contact.address}
-              className="text-white/70 text-19 leading-[1.42] whitespace-pre-line tracking-[-0.03em]"
-            />
+            {addressHref ? (
+              <a
+                href={addressHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-fit text-white/70 transition-colors duration-300 hover:text-white"
+              >
+                <SectionDescription
+                  text={navData.contact.address}
+                  className="text-inherit text-19 leading-[1.42] whitespace-pre-line tracking-[-0.03em]"
+                />
+              </a>
+            ) : (
+              <SectionDescription
+                text={navData.contact.address}
+                className="text-white/70 text-19 leading-[1.42] whitespace-pre-line tracking-[-0.03em]"
+              />
+            )}
             {socialLinks}
           </div>
 

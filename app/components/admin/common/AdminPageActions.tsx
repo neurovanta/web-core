@@ -12,6 +12,8 @@ interface AdminPageActionsProps {
   isDirty?: boolean;
   // edited sections/fields, listed in the pill's hover card and the leave dialog
   changes?: UnsavedChange[];
+  // footer line of the pill's hover card
+  hint?: string;
   className?: string;
 }
 
@@ -20,6 +22,7 @@ export default function AdminPageActions({
   children,
   isDirty = false,
   changes = [],
+  hint = "Press Save Changes to keep these edits",
   className,
 }: AdminPageActionsProps) {
   const ref = useRef<HTMLDivElement>(null);
@@ -91,7 +94,7 @@ export default function AdminPageActions({
                 </ul>
                 <div className="flex items-center gap-2 border-t border-border-color/50 px-4 py-3 text-[11.5px] text-secondary/60">
                   <Check className="h-3.5 w-3.5 shrink-0" />
-                  Press Save Changes to keep these edits
+                  {hint}
                 </div>
               </div>
             </div>
